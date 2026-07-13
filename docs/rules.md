@@ -1,6 +1,6 @@
 # NexLex — Engineering Rulebook
 
-> **Status**: Living document · **Version**: 0.1.0 · **Last updated**: 2026-07-13
+> **Status**: Living document · **Version**: 0.2.0 · **Last updated**: 2026-07-13
 > These rules are binding for all code written in this repository — by humans or AI. Violations found in review block merge. Rule changes require an entry in memory.md (Design/Architecture Decisions).
 
 ---
@@ -33,8 +33,9 @@ Domain vocabulary is fixed: use `act`, `section`, `chapter`, `mapping`, `margina
 
 ## 3. Folder Conventions
 
-- Structure defined in architecture.md §4 is canonical. New top-level folders require an ADR.
-- Feature modules own their domain: `src/features/<feature>/{actions.ts, queries.ts, schemas.ts, types.ts}`. Components never import supabase clients directly — they call feature queries/actions.
+- Structure defined in architecture.md §4 is canonical (monorepo: `apps/mobile`, `apps/web`, `packages/*`). New top-level folders and new workspace packages require an ADR.
+- Validation schemas, domain types, constants, and the section-ref parser live **only** in `packages/shared` — apps import, never duplicate. Design token values live only in `packages/tokens`.
+- Feature modules own their domain: `features/<feature>/{queries,mutations,schemas-reexport,types}`. Components never import supabase clients directly — they call feature queries/actions.
 - `components/ui/` is only shadcn primitives + tokens-level atoms; feature components live in `components/<feature>/`.
 - No barrel files (`index.ts` re-exports) except in `components/ui/icons`.
 - Path aliases: `@/` = `src/`. No `../../..` imports.
@@ -72,7 +73,7 @@ Domain vocabulary is fixed: use `act`, `section`, `chapter`, `mapping`, `margina
 
 ## 8. Testing Standards
 
-- Test pyramid: many unit (Vitest, colocated `*.test.ts`), some integration (feature actions against local Supabase), few e2e (Playwright, critical journeys only).
+- Test pyramid: many unit (Vitest, colocated `*.test.ts`, all workspaces), some integration (feature logic against local Supabase), few end-to-end (Playwright for web, Maestro for app — critical journeys only).
 - **Required per feature before "done"**: happy path, validation failure, authz failure (RLS: user A cannot read user B), edge cases listed in the phase checklist.
 - AI features additionally require: golden-set eval run (architecture.md §10.4), citation-validator unit tests, guardrail bypass attempts (prompt-injection fixtures).
 - Coverage is a signal, not a goal — but `features/*` logic ≥ 80% lines.
@@ -88,9 +89,10 @@ Domain vocabulary is fixed: use `act`, `section`, `chapter`, `mapping`, `margina
 
 ## 10. Performance Rules
 
-- Bundle budget: first-load JS ≤ 180 KB gzip per route; CI fails over budget. Reader route stays RSC-heavy (target ≤ 100 KB client JS).
-- Images via `next/image`; fonts self-hosted variable subsets, `font-display: swap`.
-- No client-side data waterfalls: RSC fetch or parallel queries.
+- **App**: cold start < 2 s on mid-range Android; AAB ≤ 40 MB; list screens use FlashList (never plain map-rendered lists); Hermes enabled; no synchronous storage on the render path; new native modules require justification (each one costs binary size + build complexity).
+- **Web**: first-load JS ≤ 180 KB gzip per route (CI-enforced); content pages stay RSC-heavy (target ≤ 100 KB client JS); images via `next/image`.
+- Fonts bundled/self-hosted variable subsets on both platforms.
+- No client-side data waterfalls: parallel queries; RSC fetch on web.
 - DB: every query used in a list view must have a supporting index; `EXPLAIN` any query touching `act_sections` beyond PK.
 - Memoization only after measurement; premature `useMemo` is noise.
 
@@ -176,4 +178,5 @@ Domain vocabulary is fixed: use `act`, `section`, `chapter`, `mapping`, `margina
 ---
 
 *Change log*
+- 2026-07-13 · v0.2.0 · Monorepo/Android-first updates: shared-package ownership rules (§3), app performance budgets + FlashList/Hermes rules (§10), Maestro added to test pyramid (§8).
 - 2026-07-13 · v0.1.0 · Initial rulebook established.

@@ -1,6 +1,6 @@
 # NexLex — Design System
 
-> **Status**: Living document · **Version**: 0.1.0 · **Last updated**: 2026-07-13
+> **Status**: Living document · **Version**: 0.2.0 · **Last updated**: 2026-07-13
 > Every UI decision must trace back to this document. When UI changes, update this first or alongside.
 
 ---
@@ -17,7 +17,7 @@
 
 ## 2. Color Palette
 
-Design tokens are defined as CSS variables (`src/styles/tokens.css`), consumed via Tailwind theme. **Never hardcode hex values in components.**
+Design tokens are defined once in `packages/tokens` and exported as a Tailwind preset (web) and NativeWind preset (app). **Never hardcode hex values in components — either platform.**
 
 ### 2.1 Brand
 | Token | Light | Dark | Use |
@@ -88,7 +88,13 @@ Reader offers user-adjustable text size (4 steps, persisted). Max reading measur
 - **Radius**: `--radius-sm 6px` (inputs, chips), `--radius-md 10px` (cards, buttons), `--radius-lg 16px` (modals, sheets). Never fully-round rectangles except pills/avatars.
 - **Elevation**: 3 levels only — flat (borders), raised (`shadow-sm`), overlay (`shadow-lg` + scrim). Dark mode uses surface lightening instead of shadows.
 
-## 5. Responsive Rules
+## 5. Platform & Responsive Rules
+
+**The Android app (Expo/React Native) is the primary surface.** Design every feature for the app first at a 360dp-width baseline; touch targets ≥ 44×44dp; respect Android conventions: system back (button/gesture) always navigates predictably and closes sheets/modals first, safe-area insets honored, native share sheet for sharing sections.
+
+Both renderers (NativeWind in the app, Tailwind on web) consume the same `packages/tokens` — colors, spacing, radii, and type scale are identical by construction.
+
+Web breakpoints (`apps/web` — marketing, SEO content pages, later full web app):
 
 | Breakpoint | Width | Behavior |
 |---|---|---|
@@ -97,8 +103,6 @@ Reader offers user-adjustable text size (4 steps, persisted). Max reading measur
 | `md` | ≥768 | Sidebar navigation appears; reader gains margin notes column |
 | `lg` | ≥1024 | Split views (mapping side-by-side, tutor beside reader) |
 | `xl` | ≥1280 | Max content width caps |
-
-Mobile is the **primary** design target; desktop is the enhancement. Every feature is designed mobile-first and must be fully usable at 360px width. Touch targets ≥ 44×44px.
 
 ## 6. Components
 
@@ -117,8 +121,9 @@ Built on shadcn/ui primitives, customized via tokens. Canonical variants:
 - Labels always visible above inputs (no placeholder-as-label). Inline validation on blur, summary on submit. Error text below field in `--danger` with icon. All inputs 40px+ height. OTP input: 6 boxed digits, auto-advance.
 
 ### Navigation
-- Mobile: bottom tab bar — **Library · Mapping · Tutor · Notes · Profile**.
-- Desktop: left sidebar, collapsible; global search (`⌘K` / `/`) command palette from Phase 1.
+- App (and mobile web): bottom tab bar — **Library · Mapping · Tutor · Notes · Profile**.
+- App: global search reachable from a persistent search affordance in Library + Mapping headers; deep links (`nexlex://acts/bns/103`) for every section.
+- Desktop web: left sidebar, collapsible; global search (`⌘K` / `/`) command palette.
 - Breadcrumbs in reader: Act → Chapter → Section.
 
 ### Icons
@@ -183,4 +188,5 @@ Every screen/component ships all four states — reviewed in PR:
 ---
 
 *Change log*
+- 2026-07-13 · v0.2.0 · Android-first pivot: tokens single-sourced in `packages/tokens` (Tailwind + NativeWind presets); §5 reframed around the native app (Android back, safe areas, deep links); navigation split app vs desktop web.
 - 2026-07-13 · v0.1.0 · Initial design system defined (pre-implementation).

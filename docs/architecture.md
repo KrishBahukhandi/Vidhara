@@ -1,109 +1,136 @@
 # NexLex — Technical Architecture
 
-> **Status**: Living document · **Version**: 0.1.0 · **Last updated**: 2026-07-13
+> **Status**: Living document · **Version**: 0.2.0 · **Last updated**: 2026-07-13
 > Any change to system design, APIs, database, or infrastructure MUST be reflected here in the same task.
+> **v0.2.0 pivot**: Android-first native launch; this repository is now a monorepo (Android app + web + shared packages). See ADR-8…10.
 
 ---
 
 ## 1. Architecture Principles
 
-1. **Boring technology, few moving parts** — one web app, one database, one AI provider behind an abstraction. Optimize for a small team shipping for years.
+1. **Boring technology, few moving parts** — one repo, one database, one AI provider behind an abstraction, one language (TypeScript) across app, web, and server. Optimize for a small team shipping for years.
 2. **Content is relational, not blobs** — acts, sections, and mappings are first-class rows so search, linking, citation validation, and AI grounding all query the same truth.
 3. **AI is grounded or it doesn't ship** — every AI feature retrieves from our own content DB and validates citations post-generation.
-4. **Client is untrusted** — all authorization via Postgres RLS + server-side checks; AI keys and prompts never reach the browser.
-5. **Offline-tolerant by design** — PWA shell, cache-first content reads, queued writes.
-6. **Every layer replaceable** — repository pattern for data, provider interface for AI, so Supabase/Anthropic are choices, not handcuffs.
+4. **Clients are untrusted** — all authorization via Postgres RLS + server-side checks; AI keys and prompts never reach app or browser.
+5. **Offline-tolerant by design** — the Android app treats connectivity as optional for reading: downloaded acts in on-device SQLite, queued writes, cache-first UX.
+6. **Every layer replaceable** — repository pattern for data, provider interface for AI, so Supabase/Anthropic/Expo are choices, not handcuffs.
 
 ## 2. System Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        CLIENT (PWA)                             │
-│  Next.js App Router · React Server Components · Service Worker  │
-│  IndexedDB (offline acts/notes cache) · TanStack Query          │
-└───────────────┬─────────────────────────────────────────────────┘
-                │ HTTPS
-┌───────────────▼─────────────────────────────────────────────────┐
-│                 NEXT.JS SERVER (Vercel)                         │
-│  ├── Server Components (content reads)                          │
-│  ├── Server Actions (user mutations)                            │
-│  ├── Route Handlers /api/v1/* (AI streaming, webhooks, search)  │
-│  ├── Middleware (auth session refresh, rate-limit headers)      │
-│  └── AI Service Layer (prompt assembly, guardrails, validation) │
-└───────┬──────────────────────────┬──────────────────────────────┘
-        │                          │
-┌───────▼──────────────┐   ┌───────▼──────────────────────────────┐
+┌───────────────────────────────┐    ┌──────────────────────────────────┐
+│  ANDROID APP  (primary)       │    │  WEB  (apps/web)                 │
+│  Expo / React Native · TS     │    │  Next.js 15 (App Router, RSC)    │
+│  expo-router · NativeWind     │    │  marketing site + SEO act/mapping│
+│  TanStack Query · SQLite      │    │  pages + admin → full web app    │
+│  (offline acts) · SecureStore │    │  later                           │
+└──────────────┬────────────────┘    └────────────────┬─────────────────┘
+               │  supabase-js (RLS-guarded data, auth) │
+               │  HTTPS /api/v1 (AI SSE, secrets-side) │
+       ┌───────▼───────────────────────────────────────▼───────┐
+       │   SERVER LAYER — Next.js server (Vercel, in apps/web) │
+       │   ├── /api/v1/* route handlers: AI streaming, search  │
+       │   │   orchestration, payment webhooks, health         │
+       │   ├── Server Actions + RSC (web app surfaces)         │
+       │   └── AI Service Layer (prompts, guardrails,          │
+       │       citation validation, quotas, logging)           │
+       └───────┬──────────────────────────┬────────────────────┘
+               │                          │
+┌──────────────▼───────┐   ┌──────────────▼───────────────────────┐
 │  SUPABASE            │   │  ANTHROPIC API                       │
 │  ├── Postgres (+RLS) │   │  claude-sonnet-5 (tutor/sim/draft)   │
 │  ├── Auth (OTP,OAuth)│   │  claude-haiku-4-5 (classify/cheap)   │
-│  ├── Storage (files) │   └──────────────────────────────────────┘
-│  ├── pg FTS + pgvector   ┌──────────────────────────────────────┐
-│  └── Edge Functions   │  │  RAZORPAY (Phase 5) · webhooks       │
+│  ├── Storage         │   └──────────────────────────────────────┘
+│  ├── FTS + pgvector  │   ┌──────────────────────────────────────┐
+│  └── Edge Functions  │   │  RAZORPAY (Phase 5) · webhooks       │
 └──────────────────────┘   └──────────────────────────────────────┘
 ```
 
-Supporting services: Vercel Analytics + self-hosted-friendly product analytics (PostHog), Sentry (errors), Upstash Redis (rate limiting + hot cache) — added only when the phase requires them.
+**Client–backend contract (ADR-10)**: both clients speak to Supabase **directly** via supabase-js for auth and RLS-guarded data (acts, bookmarks, notes, progress) — no API hop, works identically offline-queued. The Next.js server layer exists **only** for operations requiring server secrets or orchestration: AI calls, payment webhooks, admin mutations, and cross-cutting search orchestration. Search itself is a Postgres function exposed via RPC, callable from both clients.
+
+Supporting services (added only when their phase requires): Sentry (app + web + server), PostHog (product analytics), Upstash Redis (rate limiting at scale), EAS (build/submit/update for the app).
 
 ## 3. Technology Stack
 
+### 3.1 Android app (`apps/mobile`) — primary surface
 | Layer | Choice | Rationale |
 |---|---|---|
-| Framework | **Next.js 15+ (App Router), TypeScript strict** | RSC = fast content reads + SEO for acts/mapping pages (acquisition channel); one deployable |
-| UI | **Tailwind CSS + shadcn/ui + Radix** | Accessible primitives, design-system friendly (see design.md) |
-| State/data | **TanStack Query** (client) + Server Components (server) | Cache + offline-friendly mutations |
-| Database | **Supabase Postgres** | RLS auth model, FTS, pgvector, storage, generous free tier |
-| Auth | **Supabase Auth** — email OTP + Google OAuth | OTP suits Indian users (no password culture); Google covers rest |
-| Search | **Postgres FTS (tsvector, pg_trgm)** now; Typesense/Meilisearch later if needed | Zero extra infra at MVP scale |
-| Vector/RAG | **pgvector** embeddings of sections | Same DB = same RLS/backup story |
+| Framework | **Expo (React Native), TypeScript strict** | TS end-to-end; shared schemas/types with web+server; EAS build pipeline; OTA JS updates |
+| Navigation | **expo-router** (file-based) | Mirrors Next.js mental model; typed routes; deep links (`nexlex://acts/bns/103`) |
+| Styling | **NativeWind** consuming `packages/tokens` | Same design tokens as web Tailwind — one design system, two renderers |
+| Data | **supabase-js + TanStack Query** (persisted cache) | Direct RLS data access; offline-friendly caching |
+| Offline store | **expo-sqlite** (downloaded acts, search index) + **MMKV** (prefs) | Real offline reading, better than webview caches |
+| Auth session | **expo-secure-store** persistence; Google native sign-in + email OTP | |
+| AI streaming | `expo/fetch` streaming consumer of `/api/v1/ai/*` SSE | |
+| Push (Phase 2+) | expo-notifications | Streaks, news digest |
+| Distribution | **EAS Build → Play Console** (internal → closed → production tracks); **EAS Update** for OTA JS fixes | |
+
+### 3.2 Web (`apps/web`)
+| Layer | Choice | Rationale |
+|---|---|---|
+| Framework | **Next.js 15+ (App Router), TypeScript strict** | RSC + ISR for SEO on act/section/mapping pages — the acquisition engine; also hosts the server layer |
+| UI | **Tailwind CSS + shadcn/ui + Radix**, tokens from `packages/tokens` | |
+| Role now | Marketing + SEO content pages (read-only reader, mapping lookup) + admin | Full interactive web app grows here post-MVP |
+
+### 3.3 Shared platform
+| Layer | Choice | Rationale |
+|---|---|---|
+| Monorepo | **pnpm workspaces + Turborepo** | Shared packages, one CI, atomic cross-cutting changes |
+| Shared code | `packages/shared` (Zod schemas, types, constants, plans/quotas, error codes, section-ref parser), `packages/tokens` (design tokens), `packages/db` (generated Supabase types, client factories) | Single source of truth consumed by app, web, server |
+| Database | **Supabase Postgres** (RLS, FTS, pgvector, Storage) | |
+| Auth | **Supabase Auth** — email OTP (primary) + Google | OTP suits Indian users; Google native on Android |
+| Search | **Postgres FTS (tsvector, pg_trgm)** via RPC; Typesense later if metrics demand | |
+| Vector/RAG | **pgvector** embeddings of sections | Same DB = same backup/RLS story |
 | AI | **Anthropic Claude** via server-side AI service layer | Best legal reasoning; streaming; prompt caching |
-| Offline | **Serwist (service worker) + IndexedDB** | PWA install + offline reader |
-| Payments | **Razorpay** (Phase 5) | UPI-first Indian market |
-| Hosting | **Vercel** (app) + Supabase cloud (data) | Zero-ops |
-| Errors/Monitoring | **Sentry** + Vercel/Supabase dashboards | |
-| Analytics | **PostHog** (EU/self-host option, DPDP-friendly config) | |
-| Testing | **Vitest** (unit) + **Playwright** (e2e) + **Testing Library** | |
-| Lint/format | **ESLint + Prettier**, CI-enforced | |
+| Payments | **Razorpay** (Phase 5) — UPI-first; Play Billing implications tracked in Phase 5 design | |
+| Hosting | Vercel (web+server) · Supabase cloud (data) · EAS (app builds) | Zero-ops |
+| Testing | **Vitest** (unit, all packages) · **Playwright** (web e2e) · **Maestro** (app flows) | |
+| Errors/analytics | Sentry (RN + Next) · PostHog | |
 
-## 4. Folder Structure
+## 4. Folder Structure (monorepo)
 
 ```
-NexLex/
-├── docs/                       # Living documentation (this folder)
-├── public/                     # Static assets, PWA manifest, icons
-├── scripts/                    # Content ingestion & maintenance scripts
-│   └── ingest/                 #   act parsers, mapping importers
+NexLex/                            # ← this repo = the whole platform (ADR-9)
+├── docs/                          # Living documentation (this folder)
+├── apps/
+│   ├── mobile/                    # PRIMARY: Android app (Expo / React Native)
+│   │   ├── app/                   #   expo-router routes
+│   │   │   ├── (auth)/            #     sign-in, otp, onboarding
+│   │   │   └── (tabs)/            #     library/ mapping/ tutor/ notes/ profile/
+│   │   ├── src/
+│   │   │   ├── components/        #   RN components (ui/ + per-feature)
+│   │   │   ├── features/          #   app-side feature logic (queries, mutations)
+│   │   │   └── lib/               #   supabase client, offline (sqlite), analytics
+│   │   ├── assets/                #   fonts, icons, splash
+│   │   └── app.json · eas.json
+│   └── web/                       # Next.js: marketing + SEO content + admin + server layer
+│       └── src/
+│           ├── app/
+│           │   ├── (marketing)/   #   landing, pricing
+│           │   ├── acts/ mapping/ #   SEO read-only content pages (ISR)
+│           │   ├── admin/         #   role-gated admin
+│           │   └── api/v1/        #   AI SSE, webhooks, health
+│           ├── components/
+│           ├── features/
+│           └── lib/ai/            #   AI service layer (server-only; see §10)
+├── packages/
+│   ├── shared/                    # Zod schemas, domain types, constants, error codes,
+│   │                              # plans/quotas, section-ref parser ("302 IPC" → ref)
+│   ├── tokens/                    # design tokens → tailwind preset + nativewind preset
+│   └── db/                        # supabase generated types + typed client factories
 ├── supabase/
-│   ├── migrations/             # SQL migrations (numbered, immutable)
-│   └── seed/                   # Seed data (dev fixtures)
-├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── (marketing)/        #   landing, pricing, about (public)
-│   │   ├── (app)/              #   authenticated app shell
-│   │   │   ├── acts/           #   /acts, /acts/[slug], /acts/[slug]/[section]
-│   │   │   ├── mapping/        #   /mapping (IPC⇄BNS etc.)
-│   │   │   ├── tutor/          #   AI tutor chat
-│   │   │   ├── notes/ bookmarks/ profile/ ...
-│   │   ├── api/v1/             #   route handlers (ai, search, webhooks)
-│   │   └── admin/              #   admin dashboard (role-gated)
-│   ├── components/
-│   │   ├── ui/                 #   shadcn primitives (generated)
-│   │   └── <feature>/          #   feature components
-│   ├── features/               # Feature modules (domain logic per feature)
-│   │   └── <feature>/{actions,queries,schemas,types}.ts
-│   ├── lib/
-│   │   ├── supabase/           #   client/server/admin clients
-│   │   ├── ai/                 #   AI service layer (see §10)
-│   │   ├── search/             #   search query builders
-│   │   └── utils/
-│   ├── config/                 # constants, feature flags, plans/quotas
-│   └── styles/
-├── tests/                      # e2e (Playwright); unit tests live beside source
-└── .github/workflows/          # CI
+│   ├── migrations/                # numbered, immutable SQL migrations
+│   └── seed/
+├── scripts/ingest/                # act parsers, mapping importers (run with service role)
+├── turbo.json · pnpm-workspace.yaml · package.json
+└── .github/workflows/             # CI
 ```
 
-**Rule**: domain logic lives in `src/features/*`, never in components or route files. Route files orchestrate; features implement. (Enforced by rules.md.)
+**Rules**: domain logic lives in `features/*` (per app) with all validation schemas imported from `packages/shared` — never duplicated. Components never import supabase clients directly. New top-level folders require an ADR. (Enforced by rules.md.)
 
 ## 5. Database Design
+
+*(Unchanged by the v0.2.0 client pivot — the database is client-agnostic by design.)*
 
 ### 5.1 Schema overview (MVP tables)
 
@@ -159,7 +186,7 @@ ai_feedback     (id, message_id, user_id, rating[up|down], reason, created_at)
 
 ### 5.2 Key relationships
 
-- `law_mappings` is a section→section edge table; 1→many and many→1 supported naturally (multiple rows). A single composite view `v_mapping_lookup` serves bidirectional queries.
+- `law_mappings` is a section→section edge table; 1→many and many→1 supported naturally (multiple rows). A composite view `v_mapping_lookup` serves bidirectional queries.
 - `act_sections.embedding` powers RAG retrieval; refreshed by ingestion pipeline, never at request time.
 - All user tables FK to `auth.users` via `profiles.id`; `ON DELETE CASCADE` for DPDP deletion compliance.
 
@@ -171,44 +198,48 @@ ai_feedback     (id, message_id, user_id, rating[up|down], reason, created_at)
 
 ## 6. Authentication & Authorization
 
-- **AuthN**: Supabase Auth. Email OTP (primary), Google OAuth (secondary). Session = HTTP-only cookies via `@supabase/ssr`; middleware refreshes tokens.
+- **AuthN**: Supabase Auth. Email OTP (primary), Google (native sign-in on Android via ID-token flow; OAuth on web). App sessions persisted in expo-secure-store; web sessions in HTTP-only cookies via `@supabase/ssr`.
+- **Deep links**: `nexlex://` scheme + Android App Links for OAuth callbacks and shared section links.
 - **AuthZ layers**:
   1. Postgres RLS — source of truth for data access.
   2. Server-side plan/quota checks in the AI service layer (`profiles.plan` + `ai_usage_daily`).
-  3. Admin: `app_role` claim (`admin|editor`) set via custom access token hook; admin routes verify claim server-side; RLS policies check JWT claim for admin tables.
-- Anonymous users: can read acts/mapping (SEO + acquisition); any save/AI action prompts sign-in.
+  3. Admin: `app_role` claim (`admin|editor`) via custom access token hook; admin surfaces (web only) verify claim server-side; RLS policies check the claim for admin tables.
+- Anonymous users: app allows browsing acts/mapping without account (sign-in prompted on save/AI); web content pages fully public (SEO).
 
-## 7. Caching Strategy
+## 7. Caching & Offline Strategy
 
-| Layer | What | TTL/strategy |
+| Layer | What | Strategy |
 |---|---|---|
-| CDN/ISR | Act & section pages, mapping pages (public, SEO) | ISR: revalidate on content publish (tag-based) |
-| TanStack Query | User data (bookmarks, notes) | stale-while-revalidate, optimistic updates |
-| Service Worker | App shell, fonts, downloaded acts | Cache-first; downloads stored in IndexedDB |
-| Anthropic prompt caching | System prompt + act context blocks | Reduces AI cost ~50–80% on tutor traffic |
+| App: TanStack Query + persister | All reads | stale-while-revalidate; cache survives restarts |
+| App: SQLite (`expo-sqlite`) | Downloaded acts (premium), recently-read sections, pending write queue | Cache-first reader; background sync of queued writes on reconnect |
+| App: MMKV | Prefs, reader settings, quota snapshot | |
+| Web: CDN/ISR | Act/section/mapping pages | Tag-based revalidation on content publish |
+| Anthropic prompt caching | System prompt + act context blocks | Cuts tutor cost 50–80% |
 | Upstash Redis (when added) | Rate-limit counters, hot mapping lookups | Phase 3+ |
+
+Conflict policy for offline edits: last-write-wins on `updated_at` with the losing local copy preserved as a local-only "conflicted copy" note — user text is never silently discarded.
 
 ## 8. Search Architecture
 
-1. **Structured query parser** first: `"302 ipc"`, `"bns 103"`, `"s. 420"` → direct section resolution (regex + abbreviation table).
-2. **Postgres FTS** over `act_sections.fts` (weighted: marginal_note A, body B) with `pg_trgm` fallback for typos.
-3. **Ranking**: exact section number > marginal note match > body match; boost priority acts.
-4. API: `GET /api/v1/search?q=&scope=all|act:<slug>` returns typed result union (section | act | mapping).
-5. Upgrade path: if FTS latency/relevance fails targets at scale → Typesense sidecar, same API contract.
+1. **Structured query parser** (in `packages/shared`, used by both clients): `"302 ipc"`, `"bns 103"`, `"s. 420"` → direct section resolution (regex + abbreviation table).
+2. **Postgres FTS** over `act_sections.fts` (weighted: marginal_note A, body B) with `pg_trgm` typo fallback — implemented as a SQL function `search_sections(q, scope)` exposed via **RPC** to both clients.
+3. **Ranking**: exact section number > marginal note > body; boost priority acts.
+4. **Offline search** (app): downloaded acts get a local SQLite FTS index; app merges local results when offline.
+5. Upgrade path: if FTS latency/relevance fails targets at scale → Typesense sidecar behind the same RPC/API contract.
 
 ## 9. API Design
 
-- **Reads** (content): React Server Components query Supabase directly — no API hop.
-- **Mutations** (user data): Next.js Server Actions per feature (`src/features/*/actions.ts`), Zod-validated input, typed results `{ ok, data | error }`.
-- **Route Handlers** (`/api/v1/*`) only where RSC/actions don't fit:
-  - `POST /api/v1/ai/tutor` — SSE streaming chat
-  - `GET  /api/v1/search`
+- **Data reads/writes**: supabase-js direct from clients (RLS-guarded) — both app and web. Web content pages read via RSC server client.
+- **Server surfaces** (`apps/web`), only where secrets/orchestration demand:
+  - `POST /api/v1/ai/tutor` — SSE streaming chat (app + web clients)
   - `POST /api/v1/webhooks/razorpay` (Phase 5)
-- **Conventions**: versioned prefix `/v1`; JSON error envelope `{ error: { code, message, details? } }`; kebab-case paths; idempotency keys on payment-adjacent endpoints; every handler rate-limited.
+  - `GET  /api/v1/health`
+  - Server Actions for web-app and admin mutations
+- **Conventions**: versioned prefix `/v1`; JSON error envelope `{ error: { code, message, details? } }` with codes from `packages/shared/error-codes`; mobile clients send `x-nexlex-client: android/<version>` for observability and forced-upgrade support; idempotency keys on payment-adjacent endpoints; every handler rate-limited; API changes must remain backward-compatible with the oldest supported app version (store review lag — expand-only within `/v1`).
 
 ## 10. AI Services Architecture
 
-### 10.1 AI Service Layer (`src/lib/ai/`)
+### 10.1 AI Service Layer (`apps/web/src/lib/ai/` — server-only)
 
 ```
 ai/
@@ -219,14 +250,14 @@ ai/
 ├── context.ts         # Context Builder: RAG retrieval (structured lookup → FTS → vector), token budgeter
 ├── memory.ts          # conversation windowing + summarization for long chats
 ├── guardrails.ts      # pre-flight: input classification (off-topic, advice-seeking, abuse)
-├── validate.ts        # post-flight: citation validator (checks act+section against DB), schema validation for structured outputs
+├── validate.ts        # post-flight: citation validator (checks act+section against DB), schema validation
 ├── quota.ts           # plan-based quota check/decrement (ai_usage_daily)
 └── log.ts             # usage logging (tokens, latency, prompt_version)
 ```
 
-### 10.2 Prompt architecture (per master pattern)
+### 10.2 Prompt architecture
 
-Every AI feature separates: **System Prompt** (identity, safety, output contract) · **Developer Prompt** (feature-specific instructions) · **Context Builder** (retrieved sections/mappings, token-budgeted) · **Memory** (windowed history + rolling summary) · **User Prompt** (sanitized) · **Guardrails** (pre-classification) · **Output Validation** (citation check + schema) — assembled server-side only.
+Every AI feature separates: **System Prompt** (identity, safety, output contract) · **Developer Prompt** (feature-specific instructions) · **Context Builder** (retrieved sections/mappings, token-budgeted) · **Memory** (windowed history + rolling summary) · **User Prompt** (sanitized) · **Guardrails** (pre-classification) · **Output Validation** (citation check + schema) — assembled server-side only. Neither client ever sees prompts or keys.
 
 ### 10.3 Grounding & citation validation flow (Tutor)
 
@@ -235,16 +266,16 @@ user msg → guardrails.classify (haiku)
         → context.retrieve: parse explicit citations → fetch those sections;
           else hybrid retrieve (FTS + pgvector) top-k within token budget
         → assemble prompt (cached system block + context + memory + user)
-        → stream from claude-sonnet-5
+        → stream from claude-sonnet-5 → SSE to app/web client
         → validate.citations: extract [Act §N] refs, verify against act_sections;
-          invalid → strip/flag + append correction notice
+          invalid → strip/flag + correction event appended to stream
         → persist ai_messages (+ citations jsonb, tokens, version) → decrement quota
 ```
 
 ### 10.4 Prompt versioning, testing, evaluation
 
-- Prompts live in code (`prompts/*.vN.ts`) AND are registered in `prompt_versions` table; `ai_messages.prompt_version` links every output to its prompt.
-- Golden-set eval per feature (`tests/ai-evals/`): fixed question sets with expected citation sets / rubric; run before activating a new prompt version.
+- Prompts live in code (`prompts/*.vN.ts`) AND are registered in `prompt_versions`; `ai_messages.prompt_version` links every output to its prompt.
+- Golden-set eval per feature (`tests/ai-evals/`): fixed question sets with expected citation sets / rubric; must pass before activating a new prompt version.
 - `ai_feedback` (👍/👎) feeds weekly eval review; hallucination reports are P0 bugs.
 
 ### 10.5 Model tiering & cost control
@@ -255,94 +286,104 @@ user msg → guardrails.classify (haiku)
 | Input classification, titles, tagging | claude-haiku-4-5 |
 | Answer evaluation (structured rubric) | claude-sonnet-5 |
 
-Controls: per-plan daily quotas; hard per-user daily token cap; prompt caching for system+context blocks; max_tokens bounded per feature; circuit breaker → friendly degradation when provider errors spike.
+Controls: per-plan daily quotas; hard per-user daily token cap; prompt caching; bounded max_tokens per feature; circuit breaker → friendly degradation when provider errors spike (app keeps full library function).
 
 ## 11. Security
 
-- Transport: HTTPS everywhere; HSTS.
-- Secrets: Vercel env vars only; `SUPABASE_SERVICE_ROLE_KEY` and `ANTHROPIC_API_KEY` server-only; CI secret scanning.
-- Input: Zod validation at every boundary (actions, route handlers); output encoding via React; markdown rendered through sanitizer (rehype-sanitize) — user notes and AI output both.
-- Injection: parameterized queries only (supabase-js/postgres); prompt-injection defenses: context clearly delimited, instructions-in-content ignored by system prompt contract, retrieved text treated as data.
-- Headers: CSP (no unsafe-inline where possible), X-Frame-Options DENY, Referrer-Policy strict-origin.
-- Rate limiting (see §14) + basic bot protection on auth/AI routes.
-- DPDP compliance: consent record at signup, data export endpoint, cascade deletion, no PII in analytics events, PII redaction before sending user text to AI logs.
-- Dependency hygiene: lockfile, Renovate/Dependabot, `npm audit` in CI.
+- Transport: HTTPS everywhere; certificate pinning considered for app in Phase 8.
+- Secrets: Vercel env vars only; `SUPABASE_SERVICE_ROLE_KEY` and `ANTHROPIC_API_KEY` server-only; the app binary contains only the publishable anon key; CI secret scanning. Android signing keys live in EAS credentials, never in repo.
+- Input: Zod validation (from `packages/shared`) at every boundary; markdown rendered through sanitizer on both clients (user notes and AI output).
+- Injection: parameterized queries only; prompt-injection defenses: context clearly delimited, instructions-in-content ignored per system prompt contract, retrieved text treated as data.
+- Web headers: CSP, X-Frame-Options DENY, Referrer-Policy strict-origin.
+- Rate limiting (§13) + basic bot protection on auth/AI routes.
+- DPDP compliance: consent record at signup, data export, cascade deletion, no PII in analytics events, PII minimization in AI logs.
+- Dependency hygiene: lockfile, Renovate, `pnpm audit` in CI.
 
 ## 12. Logging, Monitoring, Error Handling
 
-- **Errors**: Sentry (client + server), release-tagged; error boundaries per route group with branded fallback (design.md §states).
-- **Server logs**: structured JSON (`level, event, userId?, feature, durationMs`); no PII in logs; Vercel log drains later.
-- **AI observability**: every call logged to `ai_messages`/usage tables → admin dashboard charts (cost/day, latency P95, flag rate).
+- **Errors**: Sentry — React Native SDK (app, with source maps via EAS) + Next.js SDK (web/server); release-tagged per app version.
+- **Server logs**: structured JSON (`level, event, feature, durationMs`); no PII.
+- **AI observability**: every call logged → admin dashboard charts (cost/day, latency P95, flag rate).
+- **Client health**: app version distribution + forced-upgrade flag (`min_supported_version` served by `/api/v1/health`) so stale binaries can be gated gracefully.
 - **Uptime**: external ping on `/api/v1/health` (checks DB + auth reachability).
-- **Error handling standard** (rules.md): expected failures return typed results; unexpected throw → boundary; user-facing messages are human, actionable, never raw.
+- **Error handling standard** (rules.md §6): expected failures = typed results; unexpected = throw → boundary; user-facing messages human and actionable.
 
 ## 13. Rate Limiting
 
 | Surface | Limit (initial) |
 |---|---|
-| Auth endpoints | 5/min/IP |
-| Search API | 30/min/user |
+| Auth endpoints | 5/min/IP (Supabase built-in + our layer) |
+| Search RPC | 30/min/user (Postgres-side guard) |
 | AI tutor | plan quota/day + 10/min burst |
-| General actions | 60/min/user |
+| General API | 60/min/user |
 
-Implementation: sliding window; in-memory per-instance at MVP → Upstash Redis when >1 region/instance. Responses use 429 + `Retry-After`.
+Implementation: sliding window; in-memory per-instance at MVP → Upstash Redis when >1 instance. 429 + `Retry-After`.
 
 ## 14. Deployment & Environments
 
-- **Environments**: `local` (supabase CLI local stack) → `staging` (Vercel preview + Supabase branch) → `production`.
-- **CI (GitHub Actions)**: typecheck → lint → unit tests → build → Playwright smoke (on PR); migration dry-run against shadow DB.
-- **CD**: merge to `main` → Vercel production deploy; migrations applied via Supabase migration step before deploy promotion.
-- **Rollback**: Vercel instant rollback; migrations must be backward-compatible one release back (expand → migrate → contract pattern).
+- **Environments**: `local` (Expo dev client + supabase CLI local stack) → `staging` (EAS internal distribution + Vercel preview + Supabase branch) → `production` (Play Store + Vercel prod).
+- **App pipeline**: EAS Build (AAB) → EAS Submit → Play Console tracks: internal → closed testing → production. Note: a new personal Play developer account requires a closed test with 12+ testers over 14 days before production access — plan this into Phase 3 launch runway. **EAS Update** delivers OTA JS-only fixes between store releases (within Play policy); native-module changes always go through a store build.
+- **Web/CI (GitHub Actions)**: typecheck → lint → unit tests (all packages) → web build → Playwright smoke; migration dry-run against shadow DB; EAS build triggered on release tags.
+- **Rollback**: Vercel instant rollback; EAS Update rollback for JS regressions; staged rollout percentages on Play for native releases; migrations backward-compatible one release (expand → migrate → contract).
 
 ## 15. Data Flow — key sequences
 
-### 15.1 Read a section (anonymous, SEO path)
+### 15.1 Read a section (app)
 ```
-Browser → CDN (ISR hit? serve) → RSC render → supabase (anon, RLS SELECT)
-       → HTML + cache tags → subsequent visits: service-worker cache
-```
-
-### 15.2 Mapping lookup
-```
-Input "IPC 302" → parser → act_sections(IPC, "302") → law_mappings (indexed both directions)
-→ join target sections → side-by-side render with change_summary
+Tap section → TanStack cache hit? render → else supabase-js SELECT (anon/user, RLS)
+→ render + persist to query cache → if act downloaded: SQLite is source, network skipped
 ```
 
-### 15.3 Tutor message (authenticated)
+### 15.2 Read a section (web, anonymous SEO path)
 ```
-Client (stream UI) → POST /api/v1/ai/tutor → auth + quota check → guardrails
-→ context builder (DB retrieval) → Anthropic stream → SSE to client
-→ post-stream: citation validation patch event → persist + log
+Googlebot/browser → CDN (ISR hit? serve) → RSC render → supabase (anon SELECT) → HTML
 ```
 
-### 15.4 Offline note edit
+### 15.3 Mapping lookup (both clients)
 ```
-Edit → IndexedDB queue (if offline) → SW background sync on reconnect
-→ server action upsert (updated_at conflict: last-write-wins + local copy preserved)
+Input "IPC 302" → shared parser → act_sections(IPC,"302") → law_mappings (both directions)
+→ join targets → side-by-side render with change_summary
 ```
 
-## 16. Infrastructure Decisions (ADR summary)
+### 15.4 Tutor message (app)
+```
+App (SSE consumer) → POST /api/v1/ai/tutor (supabase JWT) → auth + quota → guardrails
+→ context builder (DB retrieval) → Anthropic stream → SSE chunks → citation-validation
+patch event → persist + log → app renders CitationLinks (deep links into library)
+```
+
+### 15.5 Offline note edit (app)
+```
+Edit → write to SQLite queue (offline) → connectivity listener → replay queue via
+supabase-js upsert → updated_at conflict: last-write-wins + local "conflicted copy" kept
+```
+
+## 16. Infrastructure Decisions (ADR log)
 
 | # | Decision | Status | Why (short) |
 |---|---|---|---|
-| ADR-1 | Next.js monolith over separate SPA+API | ✅ | SEO for content pages, one deploy, RSC perf |
-| ADR-2 | Supabase over self-managed Postgres/Firebase | ✅ | RLS model, SQL truth, low ops; Firebase's NoSQL poor fit for relational legal content |
-| ADR-3 | PWA-first, native later | ✅ | One codebase to MVP; installability + offline adequate for reading/tutor |
-| ADR-4 | Postgres FTS before dedicated search engine | ✅ | Corpus is small (~50K sections); avoid infra until relevance data justifies |
-| ADR-5 | Anthropic Claude as primary AI provider | ✅ | Reasoning quality for law; provider interface keeps optionality |
-| ADR-6 | Mapping data human-curated, AI-assisted only in authoring | ✅ | Category-defining accuracy requirement |
+| ~~ADR-1~~ | ~~Next.js monolith over separate SPA+API~~ | ⛔ superseded by ADR-8/9 (2026-07-13) | Held only while web was the sole client |
+| ADR-2 | Supabase over self-managed Postgres/Firebase | ✅ | RLS model, SQL truth, low ops; NoSQL poor fit for relational legal content |
+| ~~ADR-3~~ | ~~PWA-first, native later~~ | ⛔ superseded by ADR-8 (2026-07-13) | Founder decision: Android launch is the product |
+| ADR-4 | Postgres FTS before dedicated search engine | ✅ | Corpus ~50K sections; avoid infra until relevance data justifies |
+| ADR-5 | Anthropic Claude primary AI provider behind `AIProvider` interface | ✅ | Legal reasoning quality; optionality preserved |
+| ADR-6 | Mapping data human-curated; AI assists authoring only | ✅ | Category-defining accuracy requirement |
 | ADR-7 | Prompts versioned as code + DB registry | ✅ | Reproducibility of every AI output |
+| ADR-8 | **Android-first native launch, built with Expo (React Native)** | ✅ 2026-07-13 | Play Store is the dominant discovery/distribution channel for Indian students; native gives real offline (SQLite), push notifications, and low-end-device performance. Expo over Flutter: TypeScript end-to-end shares Zod schemas, types, tokens, and skills with web+server (Dart would fork the codebase; Flutter web is SEO-hostile). Expo over TWA/Capacitor wrapper: webview offline and perf are inadequate for the reading-heavy core. iOS later from the same codebase. |
+| ADR-9 | **Single monorepo in `NexLex/`** (pnpm + Turborepo): `apps/mobile`, `apps/web`, `packages/*` — no sibling website folder | ✅ 2026-07-13 | Shared schemas/tokens/types with atomic cross-cutting commits; one docs set, one CI, one backend. Sibling repos would drift precisely where legal-domain correctness demands sync. |
+| ADR-10 | Clients use supabase-js directly for RLS-guarded data; Next.js server hosts only secret-bearing surfaces (AI, webhooks, admin) | ✅ 2026-07-13 | Removes an entire API tier from the hot path; RLS is the authz truth anyway; smaller server = smaller attack surface and cost |
 
-New ADRs are appended here with date + rationale; superseded ADRs are struck through, never deleted.
+New ADRs are appended with date + rationale; superseded ADRs are struck through, never deleted.
 
 ## 17. Future Scaling Strategy
 
 - **10K MAU**: current architecture as-is; add Upstash rate limiting.
-- **100K MAU**: read-heavy content → ISR + CDN carries it; add Redis hot cache for mapping lookups; Supabase compute upgrade; move analytics to dedicated pipeline.
-- **1M MAU**: extract search to Typesense; AI gateway service (queueing, batching, multi-provider); read replicas; consider extracting ingestion/admin into separate deployment; native apps consume same `/api/v1`.
-- Signals to act, not dates: search P95 > 300 ms, DB CPU > 60% sustained, AI queue latency > 2 s.
+- **100K MAU**: content reads are client-cached + CDN (web); Redis hot cache for mapping lookups; Supabase compute upgrade.
+- **1M MAU**: extract search to Typesense; AI gateway service (queueing, batching, multi-provider); read replicas; iOS app ships from same codebase; web app reaches feature parity.
+- Signals to act, not dates: search P95 > 300 ms, DB CPU > 60% sustained, AI queue latency > 2 s, app-store review cycle blocking weekly iteration (→ heavier EAS Update usage).
 
 ---
 
 *Change log*
+- 2026-07-13 · v0.2.0 · **Android-first pivot**: monorepo (apps/mobile Expo + apps/web Next.js + packages), ADR-1/3 superseded, ADR-8/9/10 added; offline strategy moved to SQLite; deployment adds EAS/Play pipeline.
 - 2026-07-13 · v0.1.0 · Initial architecture defined (pre-implementation). ADR-1…7 recorded.

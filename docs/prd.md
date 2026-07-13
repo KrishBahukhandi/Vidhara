@@ -1,6 +1,6 @@
 # NexLex — Product Requirements Document (PRD)
 
-> **Status**: Living document · **Version**: 0.1.0 · **Last updated**: 2026-07-13
+> **Status**: Living document · **Version**: 0.2.0 · **Last updated**: 2026-07-13
 > **Owner**: Product (NexLex core team)
 > Update this document whenever features, scope, users, or strategy change.
 
@@ -73,7 +73,7 @@ Make Indian law **understandable, searchable, practicable, and practicable-at-sc
 - ❌ Enterprise legal research (competing with SCC Online / Manupatra head-on).
 - ❌ Lawyer–client marketplace or legal advice to laypersons (regulatory risk; BCI advertising rules).
 - ❌ Multi-country / non-Indian law.
-- ❌ Native iOS/Android apps in MVP (PWA first; native later).
+- ❌ iOS app in MVP (Android-first launch; iOS later from the same React Native codebase). The web surface at MVP is marketing + SEO content pages, not the full app.
 - ❌ User-generated content marketplace (notes selling etc.) — future consideration only.
 - ❌ Providing "legal advice" — NexLex is an education and productivity tool; disclaimers throughout.
 
@@ -93,7 +93,7 @@ Make Indian law **understandable, searchable, practicable, and practicable-at-sc
 | Bookmarks | Bookmark any section/case/article with folders | Free (limits) |
 | Notes | Rich-text notes linked to sections/cases; standalone notebooks | Free (limits) |
 | Progress Tracking | Reading progress per act, streaks, revision queue (spaced repetition) | Freemium |
-| Offline Support | Downloaded acts + notes available offline (PWA) | Premium |
+| Offline Support | Downloaded acts + notes available offline (on-device SQLite in the Android app) | Premium |
 
 ### 9.3 AI Suite
 | Feature | Description | Tier |
@@ -112,15 +112,15 @@ Make Indian law **understandable, searchable, practicable, and practicable-at-sc
 
 ## 10. MVP Scope (Phases 0–3; see phases.md)
 
-**In**: Auth + profiles, Bare Acts Library (priority acts: BNS, BNSS, BSA, IPC, CrPC, IEA, Constitution, Contract Act, plus ~10 exam-priority acts), full-text search, New Criminal Law Mapping (all three pairs), bookmarks, notes, AI Legal Tutor v1 (grounded chat with daily free quota), responsive PWA shell.
+**In**: **Android app on the Play Store** with auth + profiles, Bare Acts Library (priority acts: BNS, BNSS, BSA, IPC, CrPC, IEA, Constitution, Contract Act, plus ~10 exam-priority acts), full-text search, New Criminal Law Mapping (all three pairs), bookmarks, notes, AI Legal Tutor v1 (grounded chat with daily free quota); **web** ships in parallel as marketing site + SEO read-only act/mapping pages on the same backend.
 
-**Out (post-MVP)**: Trial Simulator, Drafting Assistant, Case Law Search, News, offline downloads, payments, admin dashboard v2, native apps.
+**Out (post-MVP)**: Trial Simulator, Drafting Assistant, Case Law Search, News, offline downloads, payments, admin dashboard v2, iOS app, full interactive web app.
 
 **MVP success bar**: A judiciary aspirant can, in one session — look up BNS §103, see it maps from IPC §302 with a change note, read the full section, bookmark it, ask the AI tutor "distinguish murder from culpable homicide with section citations", and save the explanation to notes.
 
 ## 11. Future Scope
 
-- Native apps (React Native or Flutter) reusing the API layer.
+- iOS app from the same Expo/React Native codebase; full interactive web app (same monorepo).
 - Hindi + regional language UI and content layer.
 - MCQ/test-series engine with All-India ranks.
 - Moot court mode (appellate simulation) for law school competitions.
@@ -172,7 +172,7 @@ Make Indian law **understandable, searchable, practicable, and practicable-at-sc
 
 | Category | Requirement |
 |---|---|
-| Performance | P75 page load < 2.5 s on mid-range Android over 4G; search < 300 ms server time |
+| Performance | App cold start < 2 s on mid-range Android; AAB download ≤ 40 MB; search < 300 ms server time; web SEO pages P75 LCP < 2.5 s |
 | Availability | 99.5% monthly (MVP); graceful degradation when AI provider is down |
 | Scalability | Architecture supports 100K MAU without redesign (see architecture.md) |
 | Security | OWASP ASVS L1 minimum; RLS on all user tables; secrets never client-side |
@@ -234,29 +234,33 @@ Make Indian law **understandable, searchable, practicable, and practicable-at-sc
 | AI tutor CSAT (👍 rate) | ≥ 80% |
 | Citation validity rate | ≥ 99% |
 | Free→paid conversion | ≥ 2% |
-| P75 LCP (mobile) | < 2.5 s |
+| Play Store rating | ≥ 4.3 ★ |
+| App cold start (P75) | < 2 s |
 
 ## 19. Technical Constraints
 
-- Solo/small-team development velocity → boring, well-documented technology; minimal service count.
-- India-first: low-end Android + intermittent connectivity dominate → PWA, aggressive caching, small bundles.
+- Solo/small-team development velocity → boring, well-documented technology; minimal service count; **one language (TypeScript) across app, web, and server** (monorepo, ADR-9).
+- **Android-first**: primary product is a native Android app (Expo/React Native, Play Store); low-end devices + intermittent connectivity dominate → on-device SQLite offline, small AAB, aggressive caching.
+- Web (same monorepo) serves marketing + SEO content pages at MVP; full web app later.
 - AI provider: Anthropic Claude family (primary); abstraction layer to allow fallback models.
-- Budget: near-zero fixed infra until revenue (Supabase free/pro tier, Vercel hobby/pro).
+- Budget: near-zero fixed infra until revenue (Supabase free/pro tier, Vercel hobby/pro, EAS free tier initially).
+- Play Store constraints: review cycles gate native releases (EAS Update for JS-only fixes); new personal developer accounts need a 12-tester × 14-day closed test before production — built into Phase 3 runway.
 - Content ingestion is manual-first (scripts + review), automated later.
 
 ## 20. Product Roadmap (summary — detail in phases.md)
 
-1. **Phase 0** — Foundation: docs, scaffold, design system, auth, CI. *(current)*
-2. **Phase 1** — Content Core: Bare Acts Library + search + Law Mapping.
+1. **Phase 0** — Foundation: docs, monorepo scaffold (Android app + web), design system, auth, CI/EAS. *(current)*
+2. **Phase 1** — Content Core: Bare Acts Library + search + Law Mapping (app) + SEO content pages (web).
 3. **Phase 2** — Study Layer: bookmarks, notes, profiles/onboarding, progress v1.
-4. **Phase 3** — AI Tutor v1 → **Public MVP launch**.
+4. **Phase 3** — AI Tutor v1 → **Play Store production launch**.
 5. **Phase 4** — Case Law Search + Legal News.
-6. **Phase 5** — Monetization: payments, premium gating, offline.
+6. **Phase 5** — Monetization: payments, premium gating, offline downloads.
 7. **Phase 6** — AI Drafting Assistant.
 8. **Phase 7** — AI Courtroom Trial Simulator (flagship).
-9. **Phase 8** — Admin dashboard v2, analytics depth, hardening, native-app groundwork.
+9. **Phase 8** — Admin dashboard v2, analytics depth, hardening, iOS groundwork.
 
 ---
 
 *Change log*
+- 2026-07-13 · v0.2.0 · **Android-first pivot** (founder directive): MVP launch surface = native Android app (Expo/React Native) on Play Store; web = marketing + SEO content pages in same monorepo; iOS moved to future scope; NFRs and metrics updated for app targets.
 - 2026-07-13 · v0.1.0 · Initial PRD created (pre-implementation).
