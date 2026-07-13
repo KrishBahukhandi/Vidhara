@@ -322,8 +322,11 @@ Implementation: sliding window; in-memory per-instance at MVP → Upstash Redis 
 
 ## 14. Deployment & Environments
 
-- **Environments**: `local` (Expo dev client + supabase CLI local stack) → `staging` (EAS internal distribution + Vercel preview + Supabase branch) → `production` (Play Store + Vercel prod).
-- **App pipeline**: EAS Build (AAB) → EAS Submit → Play Console tracks: internal → closed testing → production. Note: a new personal Play developer account requires a closed test with 12+ testers over 14 days before production access — plan this into Phase 3 launch runway. **EAS Update** delivers OTA JS-only fixes between store releases (within Play policy); native-module changes always go through a store build.
+- **Environments**: `local` (dev builds on a physical device via `npx expo run:android` using the local Android SDK — unlimited and free; founder has Android Studio + device) → `staging` (internal APKs) → `production` (Play Store + Vercel prod).
+- **App pipeline** (two-track, keeps EAS free-tier build quota irrelevant):
+  - **Daily development**: local builds — `npx expo run:android` installs the dev client on the founder's phone over USB; JS changes hot-reload with no rebuild. Zero cloud builds consumed.
+  - **Releases only**: EAS Build (AAB) → EAS Submit → Play Console tracks: internal → closed testing → production. Release cadence needs only ~1–4 cloud builds/month, well inside the EAS free tier (~30/mo); EAS also holds the managed signing credentials so the Play upload key can't be lost. (`eas build --local` remains the fallback if cloud quota ever binds.)
+  - Note: a new personal Play developer account requires a closed test with 12+ testers over 14 days before production access — plan this into Phase 3 launch runway. **EAS Update** delivers OTA JS-only fixes between store releases (within Play policy); native-module changes always go through a store build.
 - **Web/CI (GitHub Actions)**: typecheck → lint → unit tests (all packages) → web build → Playwright smoke; migration dry-run against shadow DB; EAS build triggered on release tags.
 - **Rollback**: Vercel instant rollback; EAS Update rollback for JS regressions; staged rollout percentages on Play for native releases; migrations backward-compatible one release (expand → migrate → contract).
 
