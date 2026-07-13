@@ -18,8 +18,8 @@ Complexity scale: S / M / L / XL. Times assume focused solo development with AI 
 - [x] Architecture pivot to Android-first monorepo documented (ADR-8…10)
 - [x] Monorepo scaffold (pnpm workspaces + Turborepo): `apps/mobile` (Expo SDK 57 + expo-router, TS strict), `apps/web` (Next.js 15 + Tailwind), `packages/{shared,tokens,db}` per architecture.md §4
 - [x] Design tokens implemented once in `packages/tokens` (light/dark, CI sync check), consumed by both apps via typed theme module (app, ADR-11) and Tailwind preset + CSS vars (web)
-- [x] `0001` profiles migration + RLS + signup trigger; placeholder types in `packages/db` — **remaining**: create Supabase cloud project (founder cost confirmation) and regenerate types
-- [x] App auth flow: email OTP screens + onboarding (role + exam targets) + tab shell (Library · Mapping · Tutor · Notes · Profile) — **remaining**: live verification against a real Supabase project; Google native sign-in deferred within Phase 0
+- [x] Supabase project live (`eubyvglzkbzfeznocilg`, ap-south-1 Mumbai, $0): migrations 0001–0002 applied, security advisors clean, signup trigger + DPDP cascade verified by test, real generated types in `packages/db`, env wired in both apps, anon REST probe returns RLS-empty 200
+- [x] App auth flow: email OTP screens + onboarding (role + exam targets) + tab shell (Library · Mapping · Tutor · Notes · Profile); auth gate verified live (unauthenticated /library redirects to sign-in against the real project) — **remaining**: founder completes an OTP sign-in end-to-end on device; Google native sign-in deferred within Phase 0
 - [x] Exemplar feature end-to-end (profile feature): shared Zod schema → typed Result API → RLS — the pattern all features copy
 - [x] CI: typecheck, unit tests, web build, Android Metro bundle smoke (GitHub Actions)
 - [x] `.env.example`, READMEs
