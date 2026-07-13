@@ -1,0 +1,28 @@
+{
+  "name": "@nexlex/tokens",
+  "version": "0.1.0",
+  "private": true,
+  "description": "NexLex design tokens — single source of truth (see docs/design.md)",
+  "main": "tokens.cjs",
+  "types": "tokens.d.ts",
+  "exports": {
+    ".": {
+      "types": "./tokens.d.ts",
+      "default": "./tokens.cjs"
+    },
+    "./tailwind-preset": "./tailwind-preset.cjs",
+    "./variables.css": "./dist/variables.css"
+  },
+  "files": [
+    "tokens.cjs",
+    "tokens.d.ts",
+    "tailwind-preset.cjs",
+    "dist/variables.css"
+  ],
+  "scripts": {
+    "gen": "node scripts/gen-css.cjs",
+    "typecheck": "node -e \"require('./tokens.cjs'); require('./tailwind-preset.cjs')\"",
+    "lint": "node -e \"require('./tokens.cjs'); require('./tailwind-preset.cjs'); console.log('tokens: modules load OK')\"",
+    "test": "node scripts/gen-css.cjs --check"
+  }
+}

@@ -16,22 +16,24 @@ Complexity scale: S / M / L / XL. Times assume focused solo development with AI 
 - [x] `/docs` six living documents (prd, architecture, design, rules, phases, memory)
 - [x] Git repo initialized; Conventional Commits from first commit
 - [x] Architecture pivot to Android-first monorepo documented (ADR-8…10)
-- [ ] Monorepo scaffold (pnpm workspaces + Turborepo): `apps/mobile` (Expo + expo-router + NativeWind, TS strict), `apps/web` (Next.js 15 + Tailwind + shadcn/ui), `packages/{shared,tokens,db}` per architecture.md §4
-- [ ] Design tokens implemented once in `packages/tokens` (light/dark), consumed by both apps; fonts bundled (Source Serif 4, Inter)
-- [ ] Supabase project + local CLI stack; `0001` profiles migration + RLS + signup trigger; generated types in `packages/db`
-- [ ] App auth: email OTP + Google native sign-in; onboarding (role + exam targets); native tab shell (Library · Mapping · Tutor · Notes · Profile)
-- [ ] Exemplar feature end-to-end (profile edit): shared Zod schema → app mutation → RLS — establishing the pattern all features copy
-- [ ] Error boundaries + logger conventions in both apps
-- [ ] EAS configured: dev client + internal distribution build installable on a physical Android device
-- [ ] CI: typecheck, lint, unit tests, web build (all workspaces); web deployed to Vercel (staging + production)
-- [ ] `.env.example`, README
+- [x] Monorepo scaffold (pnpm workspaces + Turborepo): `apps/mobile` (Expo SDK 57 + expo-router, TS strict), `apps/web` (Next.js 15 + Tailwind), `packages/{shared,tokens,db}` per architecture.md §4
+- [x] Design tokens implemented once in `packages/tokens` (light/dark, CI sync check), consumed by both apps via typed theme module (app, ADR-11) and Tailwind preset + CSS vars (web)
+- [x] `0001` profiles migration + RLS + signup trigger; placeholder types in `packages/db` — **remaining**: create Supabase cloud project (founder cost confirmation) and regenerate types
+- [x] App auth flow: email OTP screens + onboarding (role + exam targets) + tab shell (Library · Mapping · Tutor · Notes · Profile) — **remaining**: live verification against a real Supabase project; Google native sign-in deferred within Phase 0
+- [x] Exemplar feature end-to-end (profile feature): shared Zod schema → typed Result API → RLS — the pattern all features copy
+- [x] CI: typecheck, unit tests, web build, Android Metro bundle smoke (GitHub Actions)
+- [x] `.env.example`, READMEs
+- [ ] EAS configured: dev client + internal distribution build installable on a physical Android device (requires founder's Expo account login)
+- [ ] Web deployed to Vercel (staging + production)
+- [ ] Fonts bundled (Source Serif 4, Inter) + proper ESLint configs (currently typecheck-as-lint)
+- [ ] Error boundary + logger conventions finalized in both apps
 
 **Dependencies**: none.
 **Complexity**: M–L (monorepo + EAS setup added) · **Estimate**: 5–7 days
 
 **Testing checklist**
-- [ ] Unit: token/config helpers, profile schemas (`packages/shared`)
-- [ ] Integration: signup → profile row created (RLS verified: cross-user read blocked)
+- [x] Unit: section-ref parser (16 cases), tokens CSS sync check; all workspaces typecheck; web prod build (102 kB first-load, budget 180 kB); Android Metro bundle exports
+- [ ] Integration: signup → profile row created (RLS verified: cross-user read blocked) — needs live Supabase
 - [ ] App: Maestro smoke — launch → sign in (OTP) → onboard → tab shell renders both themes
 - [ ] Web: Playwright smoke on marketing shell; Lighthouse ≥ 90
 
@@ -168,5 +170,6 @@ Complexity scale: S / M / L / XL. Times assume focused solo development with AI 
 - At each phase close: retro notes → memory.md Lessons Learned; estimates recalibrated here.
 
 *Change log*
+- 2026-07-13 · v0.2.1 · Phase 0 scaffold delivered (monorepo, tokens, both apps, migration 0001, CI); remaining items: Supabase cloud project, EAS device build, Vercel deploy, fonts/ESLint/boundaries polish.
 - 2026-07-13 · v0.2.0 · Android-first pivot: Phase 0 rebuilt around monorepo + Expo + EAS; Phase 1 splits app reader vs web SEO pages; Phase 3 launch = Play Store (closed-testing clock flagged as critical path); Phase 5 offline → SQLite + Play Billing decision; Phase 8 adds iOS groundwork.
 - 2026-07-13 · v0.1.0 · Initial phase plan (0–8). Phase 0 started; docs deliverable completed.

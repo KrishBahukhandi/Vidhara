@@ -21,9 +21,9 @@
 ┌───────────────────────────────┐    ┌──────────────────────────────────┐
 │  ANDROID APP  (primary)       │    │  WEB  (apps/web)                 │
 │  Expo / React Native · TS     │    │  Next.js 15 (App Router, RSC)    │
-│  expo-router · NativeWind     │    │  marketing site + SEO act/mapping│
+│  expo-router · token theme    │    │  marketing site + SEO act/mapping│
 │  TanStack Query · SQLite      │    │  pages + admin → full web app    │
-│  (offline acts) · SecureStore │    │  later                           │
+│  (offline acts)               │    │  later                           │
 └──────────────┬────────────────┘    └────────────────┬─────────────────┘
                │  supabase-js (RLS-guarded data, auth) │
                │  HTTPS /api/v1 (AI SSE, secrets-side) │
@@ -57,10 +57,10 @@ Supporting services (added only when their phase requires): Sentry (app + web + 
 |---|---|---|
 | Framework | **Expo (React Native), TypeScript strict** | TS end-to-end; shared schemas/types with web+server; EAS build pipeline; OTA JS updates |
 | Navigation | **expo-router** (file-based) | Mirrors Next.js mental model; typed routes; deep links (`nexlex://acts/bns/103`) |
-| Styling | **NativeWind** consuming `packages/tokens` | Same design tokens as web Tailwind — one design system, two renderers |
+| Styling | **Typed theme module** (`src/theme`) reading `@nexlex/tokens` + RN StyleSheet (ADR-11) | Same token values as web; zero styling-runtime dependencies |
 | Data | **supabase-js + TanStack Query** (persisted cache) | Direct RLS data access; offline-friendly caching |
 | Offline store | **expo-sqlite** (downloaded acts, search index) + **MMKV** (prefs) | Real offline reading, better than webview caches |
-| Auth session | **expo-secure-store** persistence; Google native sign-in + email OTP | |
+| Auth session | **AsyncStorage** persistence (Supabase's documented Expo pattern; session JSON exceeds SecureStore's 2KB item limit); Google native sign-in + email OTP | |
 | AI streaming | `expo/fetch` streaming consumer of `/api/v1/ai/*` SSE | |
 | Push (Phase 2+) | expo-notifications | Streaks, news digest |
 | Distribution | **EAS Build → Play Console** (internal → closed → production tracks); **EAS Update** for OTA JS fixes | |
@@ -76,7 +76,7 @@ Supporting services (added only when their phase requires): Sentry (app + web + 
 | Layer | Choice | Rationale |
 |---|---|---|
 | Monorepo | **pnpm workspaces + Turborepo** | Shared packages, one CI, atomic cross-cutting changes |
-| Shared code | `packages/shared` (Zod schemas, types, constants, plans/quotas, error codes, section-ref parser), `packages/tokens` (design tokens), `packages/db` (generated Supabase types, client factories) | Single source of truth consumed by app, web, server |
+| Shared code | `packages/shared` (Zod schemas, types, constants, plans/quotas, error codes, section-ref parser), `packages/tokens` (design tokens: `tokens.cjs` source → typed theme module on app, Tailwind preset + generated CSS vars on web), `packages/db` (generated Supabase types, client factories) | Single source of truth consumed by app, web, server |
 | Database | **Supabase Postgres** (RLS, FTS, pgvector, Storage) | |
 | Auth | **Supabase Auth** — email OTP (primary) + Google | OTP suits Indian users; Google native on Android |
 | Search | **Postgres FTS (tsvector, pg_trgm)** via RPC; Typesense later if metrics demand | |
@@ -116,7 +116,8 @@ NexLex/                            # ← this repo = the whole platform (ADR-9)
 ├── packages/
 │   ├── shared/                    # Zod schemas, domain types, constants, error codes,
 │   │                              # plans/quotas, section-ref parser ("302 IPC" → ref)
-│   ├── tokens/                    # design tokens → tailwind preset + nativewind preset
+│   ├── tokens/                    # design tokens (tokens.cjs) → tailwind preset (web),
+│   │                              # generated CSS vars, typed theme module source (app)
 │   └── db/                        # supabase generated types + typed client factories
 ├── supabase/
 │   ├── migrations/                # numbered, immutable SQL migrations
@@ -372,6 +373,7 @@ supabase-js upsert → updated_at conflict: last-write-wins + local "conflicted 
 | ADR-8 | **Android-first native launch, built with Expo (React Native)** | ✅ 2026-07-13 | Play Store is the dominant discovery/distribution channel for Indian students; native gives real offline (SQLite), push notifications, and low-end-device performance. Expo over Flutter: TypeScript end-to-end shares Zod schemas, types, tokens, and skills with web+server (Dart would fork the codebase; Flutter web is SEO-hostile). Expo over TWA/Capacitor wrapper: webview offline and perf are inadequate for the reading-heavy core. iOS later from the same codebase. |
 | ADR-9 | **Single monorepo in `NexLex/`** (pnpm + Turborepo): `apps/mobile`, `apps/web`, `packages/*` — no sibling website folder | ✅ 2026-07-13 | Shared schemas/tokens/types with atomic cross-cutting commits; one docs set, one CI, one backend. Sibling repos would drift precisely where legal-domain correctness demands sync. |
 | ADR-10 | Clients use supabase-js directly for RLS-guarded data; Next.js server hosts only secret-bearing surfaces (AI, webhooks, admin) | ✅ 2026-07-13 | Removes an entire API tier from the hot path; RLS is the authz truth anyway; smaller server = smaller attack surface and cost |
+| ADR-11 | App styling via **typed theme module** (`apps/mobile/src/theme` reading `@nexlex/tokens`) + RN StyleSheet — **NativeWind dropped** | ✅ 2026-07-13 | Scaffold landed on Expo SDK 57 (RN 0.86); NativeWind compatibility with the new SDK is unverified and it adds a Babel/Metro styling runtime for ergonomics only. Direct token import gives the same single-source guarantee with zero extra dependencies; Tailwind (with the shared token preset) remains the web styling system. Revisit only if utility-class ergonomics become a measured velocity problem. |
 
 New ADRs are appended with date + rationale; superseded ADRs are struck through, never deleted.
 
@@ -385,5 +387,6 @@ New ADRs are appended with date + rationale; superseded ADRs are struck through,
 ---
 
 *Change log*
+- 2026-07-13 · v0.2.1 · Scaffold reality sync: Expo SDK 57 / RN 0.86 / React 19.2; ADR-11 (typed theme module replaces NativeWind on the app); auth session persistence via AsyncStorage (SecureStore 2KB limit).
 - 2026-07-13 · v0.2.0 · **Android-first pivot**: monorepo (apps/mobile Expo + apps/web Next.js + packages), ADR-1/3 superseded, ADR-8/9/10 added; offline strategy moved to SQLite; deployment adds EAS/Play pipeline.
 - 2026-07-13 · v0.1.0 · Initial architecture defined (pre-implementation). ADR-1…7 recorded.
