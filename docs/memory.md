@@ -7,10 +7,11 @@
 
 ## Current Status
 
-- **Phase**: Phase 0 — Foundation. **Scaffold delivered and verified**; four items remain before Phase 0 exit (see TODO 1–4).
-- **What runs today**: `pnpm install` → all 5 workspaces typecheck; `@nexlex/shared` 16 unit tests pass; web builds (102 kB first-load); Android JS bundle exports through Metro. App runs in "unconfigured mode" (shell + auth screens render; auth actions show a friendly error) until Supabase keys exist.
+- **Phase**: Phase 0 — Foundation. **Scaffold delivered; backend LIVE.** Remaining to exit: founder's on-device OTP sign-in, local device build, Vercel deploy, polish (fonts/ESLint/boundaries).
+- **Backend**: Supabase project **`eubyvglzkbzfeznocilg`** (name "NexLex", ap-south-1 Mumbai, $0/mo). Migrations 0001–0002 applied; security advisors **clean**; signup trigger + DPDP cascade verified with a throwaway auth user; anon REST probe → 200 RLS-empty; env wired (`apps/mobile/.env`, `apps/web/.env.local` — gitignored); real generated types in `packages/db`.
+- **What runs today**: all 5 workspaces typecheck; 16 unit tests pass; web builds (102 kB); Android bundle exports; app in configured mode gates /library → sign-in (verified live in browser).
 - **Stack as built**: Expo SDK 57 / RN 0.86 / React 19.2.3 (app) · Next.js 15 / Tailwind 3.4 (web) · pnpm 11 (hoisted) + Turborepo · TS 5.9 strict everywhere.
-- **Next action**: TODO 1 (Supabase cloud project — needs founder cost confirmation via Supabase MCP), then live auth verification, EAS device build, Vercel deploy.
+- **Next action**: founder runs `npx expo run:android` (phone on USB) and signs in with a real email OTP → then Vercel deploy + polish.
 
 ## Completed Features
 
@@ -83,7 +84,7 @@
 
 ## TODO List (near-term, actionable)
 
-1. **Supabase cloud project** (needs founder cost confirmation via Supabase MCP) → apply migration 0001 → `gen:types` → fill `apps/mobile/.env` + `apps/web/.env.local` → verify OTP sign-in → onboarding → profile edit on device/emulator; add RLS cross-user integration test.
+1. ~~Supabase cloud project~~ **DONE 2026-07-13** (`eubyvglzkbzfeznocilg`). Remaining from this item: founder's real OTP sign-in → onboarding → profile edit on device; RLS cross-user integration test (needs 2 users).
 2. **Device build (local-first strategy, 2026-07-13)**: founder has Android Studio + physical phone → daily dev via `npx expo run:android` (unlimited local builds, hot reload). `eas init` still wanted eventually for release builds + managed Play signing credentials, but NOT a Phase 0 blocker anymore.
 3. **Vercel**: connect repo, deploy apps/web (staging + production).
 4. **Polish to exit Phase 0**: bundle fonts (expo-font: Source Serif 4, Inter; next/font on web), real ESLint configs (expo config + next config), error boundary + logger conventions, Maestro smoke flow.
@@ -96,6 +97,7 @@ TODO 1 → 2 → 3 → 4 (Phase 0 exit) → 5 in parallel → Phase 1. No out-of
 
 ## Recent Changes
 
+- 2026-07-13 — **Supabase project created and verified live** (founder confirmed $0): ref `eubyvglzkbzfeznocilg` @ ap-south-1; migrations 0001 + **0002 (new: revoke public EXECUTE on SECURITY DEFINER trigger functions — security-advisor finding)**; trigger/cascade tested with throwaway user then cleaned; types regenerated from live schema; env files written (gitignored); auth gate verified in browser against real backend.
 - 2026-07-13 — **Browser verification pass**: web landing verified light+dark; app sign-in + tab shell verified via Expo web preview (mobile viewport). Three real bugs found and fixed: (1) unquoted "Source Serif 4" made the browser drop the `.font-serif` rule (preset now quotes font names); (2) hardcoded white-on-brand text was unreadable in dark mode → new `onBrand` token used by both apps; (3) AsyncStorage crashed expo-router's Node SSR on web → platform-conditional storage in the app's supabase client. `.claude/launch.json` added (web:3000, app-web-preview:8081).
 - 2026-07-13 — **Phase 0 scaffold commit**: monorepo + both apps + packages + migration + CI, all green (typecheck ×5, tests 16/16, web build 102 kB, Metro bundle OK). ADR-11 recorded; docs v0.2.1 sync.
 - 2026-07-13 — v0.2.0 docs sweep — Android-first pivot (ADR-8…10).
