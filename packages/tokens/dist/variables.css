@@ -5,6 +5,7 @@
   --nx-brand: #1E3A5F;
   --nx-brand-strong: #152C4A;
   --nx-accent: #B8860B;
+  --nx-on-brand: #FFFFFF;
   --nx-bg: #FAFAF7;
   --nx-surface: #FFFFFF;
   --nx-surface-raised: #FFFFFF;
@@ -27,6 +28,7 @@
     --nx-brand: #7FA6D9;
     --nx-brand-strong: #9DBCE6;
     --nx-accent: #D9A93F;
+    --nx-on-brand: #121417;
     --nx-bg: #121417;
     --nx-surface: #1A1D21;
     --nx-surface-raised: #22262B;
@@ -50,6 +52,7 @@
   --nx-brand: #1E3A5F;
   --nx-brand-strong: #152C4A;
   --nx-accent: #B8860B;
+  --nx-on-brand: #FFFFFF;
   --nx-bg: #FAFAF7;
   --nx-surface: #FFFFFF;
   --nx-surface-raised: #FFFFFF;
@@ -71,6 +74,7 @@
   --nx-brand: #7FA6D9;
   --nx-brand-strong: #9DBCE6;
   --nx-accent: #D9A93F;
+  --nx-on-brand: #121417;
   --nx-bg: #121417;
   --nx-surface: #1A1D21;
   --nx-surface-raised: #22262B;

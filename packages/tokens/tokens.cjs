@@ -14,6 +14,7 @@ const colors = {
   brand: { light: "#1E3A5F", dark: "#7FA6D9" },
   brandStrong: { light: "#152C4A", dark: "#9DBCE6" },
   accent: { light: "#B8860B", dark: "#D9A93F" },
+  onBrand: { light: "#FFFFFF", dark: "#121417" }, // text/icons on brand fills (dark brand is light)
 
   // Neutrals (design.md §2.2)
   bg: { light: "#FAFAF7", dark: "#121417" },

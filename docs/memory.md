@@ -95,6 +95,7 @@ TODO 1 → 2 → 3 → 4 (Phase 0 exit) → 5 in parallel → Phase 1. No out-of
 
 ## Recent Changes
 
+- 2026-07-13 — **Browser verification pass**: web landing verified light+dark; app sign-in + tab shell verified via Expo web preview (mobile viewport). Three real bugs found and fixed: (1) unquoted "Source Serif 4" made the browser drop the `.font-serif` rule (preset now quotes font names); (2) hardcoded white-on-brand text was unreadable in dark mode → new `onBrand` token used by both apps; (3) AsyncStorage crashed expo-router's Node SSR on web → platform-conditional storage in the app's supabase client. `.claude/launch.json` added (web:3000, app-web-preview:8081).
 - 2026-07-13 — **Phase 0 scaffold commit**: monorepo + both apps + packages + migration + CI, all green (typecheck ×5, tests 16/16, web build 102 kB, Metro bundle OK). ADR-11 recorded; docs v0.2.1 sync.
 - 2026-07-13 — v0.2.0 docs sweep — Android-first pivot (ADR-8…10).
 - 2026-07-13 — Created /docs six (v0.1.0); repo initialized (`66843f9`).

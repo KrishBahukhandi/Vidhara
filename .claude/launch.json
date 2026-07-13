@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@nexlex/web", "dev"],
+      "port": 3000
+    },
+    {
+      "name": "app-web-preview",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@nexlex/mobile", "web"],
+      "port": 8081
+    }
+  ]
+}

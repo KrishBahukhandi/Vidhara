@@ -14,6 +14,10 @@ const { colors, cssVarName, radius, typeScale, fonts, durations } = require("./t
 
 const kebab = (key) => key.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
 
+// Font names containing spaces + digits (e.g. "Source Serif 4") are invalid as
+// unquoted CSS identifiers — the browser silently drops the declaration.
+const quoteFont = (name) => (/[^a-zA-Z-]/.test(name) ? `"${name}"` : name);
+
 const colorScale = Object.fromEntries(
   Object.keys(colors).map((key) => [kebab(key), `var(${cssVarName(key)})`]),
 );
@@ -36,9 +40,9 @@ module.exports = {
         lg: `${radius.lg}px`,
       },
       fontFamily: {
-        serif: [fonts.serif, "Georgia", "serif"],
-        sans: [fonts.sans, "system-ui", "sans-serif"],
-        mono: [fonts.mono, "Menlo", "monospace"],
+        serif: [quoteFont(fonts.serif), "Georgia", "serif"],
+        sans: [quoteFont(fonts.sans), "system-ui", "sans-serif"],
+        mono: [quoteFont(fonts.mono), "Menlo", "monospace"],
       },
       fontSize,
       transitionDuration: {

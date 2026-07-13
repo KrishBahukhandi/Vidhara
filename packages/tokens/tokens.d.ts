@@ -7,6 +7,7 @@ export type ColorTokenName =
   | "brand"
   | "brandStrong"
   | "accent"
+  | "onBrand"
   | "bg"
   | "surface"
   | "surfaceRaised"
