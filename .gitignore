@@ -16,6 +16,16 @@ dist/
 .env.*
 !.env.example
 
+# expo / react native (native dirs are generated via prebuild; never committed)
+.expo/
+apps/mobile/android/
+apps/mobile/ios/
+*.jks
+*.keystore
+*.aab
+*.apk
+google-services.json
+
 # supabase local
 supabase/.branches/
 supabase/.temp/

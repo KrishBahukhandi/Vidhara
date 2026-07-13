@@ -1,6 +1,6 @@
 # NexLex — Development Phases
 
-> **Status**: Living document · **Version**: 0.1.0 · **Last updated**: 2026-07-13
+> **Status**: Living document · **Version**: 0.2.0 · **Last updated**: 2026-07-13
 > **CURRENT PHASE: Phase 0 — Foundation** (documentation complete; scaffolding next)
 > When a phase's exit criteria are met, mark it ✅ here and update memory.md in the same commit.
 
@@ -10,55 +10,58 @@ Complexity scale: S / M / L / XL. Times assume focused solo development with AI 
 
 ## Phase 0 — Foundation 🔵 IN PROGRESS
 
-**Objectives**: A running, deployable, tested skeleton with auth, design tokens, CI, and all documentation — so every later phase is pure feature work.
+**Objectives**: A running, installable, tested skeleton — monorepo, Android app shell, web shell, auth, design tokens, CI — so every later phase is pure feature work.
 
 **Features/Deliverables**
 - [x] `/docs` six living documents (prd, architecture, design, rules, phases, memory)
-- [ ] Git repo initialized; Conventional Commits from first commit
-- [ ] Next.js 15 + TypeScript strict + Tailwind + shadcn/ui scaffold per architecture.md §4
-- [ ] Design tokens implemented (`tokens.css`, light/dark, fonts self-hosted)
-- [ ] Supabase project + local CLI stack; `profiles` migration + RLS + signup trigger
-- [ ] Auth: email OTP + Google; onboarding (role + exam targets); app shell (bottom tabs / sidebar)
-- [ ] Error boundaries, logger, Zod-validated server-action pattern established (one exemplar feature: profile edit)
-- [ ] CI: typecheck, lint, unit tests, build; deployed to Vercel (staging + production)
+- [x] Git repo initialized; Conventional Commits from first commit
+- [x] Architecture pivot to Android-first monorepo documented (ADR-8…10)
+- [ ] Monorepo scaffold (pnpm workspaces + Turborepo): `apps/mobile` (Expo + expo-router + NativeWind, TS strict), `apps/web` (Next.js 15 + Tailwind + shadcn/ui), `packages/{shared,tokens,db}` per architecture.md §4
+- [ ] Design tokens implemented once in `packages/tokens` (light/dark), consumed by both apps; fonts bundled (Source Serif 4, Inter)
+- [ ] Supabase project + local CLI stack; `0001` profiles migration + RLS + signup trigger; generated types in `packages/db`
+- [ ] App auth: email OTP + Google native sign-in; onboarding (role + exam targets); native tab shell (Library · Mapping · Tutor · Notes · Profile)
+- [ ] Exemplar feature end-to-end (profile edit): shared Zod schema → app mutation → RLS — establishing the pattern all features copy
+- [ ] Error boundaries + logger conventions in both apps
+- [ ] EAS configured: dev client + internal distribution build installable on a physical Android device
+- [ ] CI: typecheck, lint, unit tests, web build (all workspaces); web deployed to Vercel (staging + production)
 - [ ] `.env.example`, README
 
 **Dependencies**: none.
-**Complexity**: M · **Estimate**: 3–5 days
+**Complexity**: M–L (monorepo + EAS setup added) · **Estimate**: 5–7 days
 
 **Testing checklist**
-- [ ] Unit: token/config helpers, profile schemas
+- [ ] Unit: token/config helpers, profile schemas (`packages/shared`)
 - [ ] Integration: signup → profile row created (RLS verified: cross-user read blocked)
-- [ ] e2e: signup → onboard → land on library placeholder (Playwright)
-- [ ] Lighthouse mobile ≥ 90 performance on shell
+- [ ] App: Maestro smoke — launch → sign in (OTP) → onboard → tab shell renders both themes
+- [ ] Web: Playwright smoke on marketing shell; Lighthouse ≥ 90
 
-**Exit criteria**: A new user can sign up, onboard, see the empty app shell in both themes on mobile + desktop, deployed on production URL, CI green, docs current.
+**Exit criteria**: A new user can install the internal build on a real Android device, sign up, onboard, and see the tab shell in both themes; web placeholder live on production URL; CI green; docs current.
 
 ---
 
 ## Phase 1 — Content Core: Bare Acts + Mapping ⚪ NOT STARTED
 
-**Objectives**: The content moat — best-in-class bare act reader and the canonical old⇄new criminal law mapping. Publicly readable (SEO) without login.
+**Objectives**: The content moat — best-in-class bare act reader and the canonical old⇄new criminal law mapping in the app, with the same content published as SEO pages on the web.
 
 **Features**
-- Content schema migrations (`acts`, `act_chapters`, `act_sections`, `law_mappings`) + FTS
+- Content schema migrations (`acts`, `act_chapters`, `act_sections`, `law_mappings`) + FTS + `search_sections` RPC
 - Ingestion pipeline (`scripts/ingest/`): parse → validate → review → publish; provenance recorded
 - Priority content ingested: **BNS, BNSS, BSA, IPC, CrPC, Evidence Act, Constitution (initial), Contract Act** + mapping datasets for all three pairs (human-reviewed)
-- Acts library UI: browse, act detail (chapter tree), section reader (design.md components), deep links, ISR/SEO (per-section metadata)
-- Global search: structured parser ("302 IPC") + FTS + `⌘K` palette
-- Mapping experience: lookup page, `MappingChip` in reader, `MappingComparator` side-by-side with change annotations
+- **App**: acts library (browse, chapter tree), section reader (design.md components), deep links (`nexlex://`), global search (shared structured parser "302 IPC" + FTS RPC)
+- **App**: mapping experience — lookup screen, `MappingChip` in reader, `MappingComparator` side-by-side with change annotations
+- **Web**: read-only SEO pages for every act/section/mapping pair (ISR, per-section metadata, sitemap) — the acquisition engine, reading the same DB
 
 **Dependencies**: Phase 0.
-**Complexity**: XL (ingestion quality is the long pole) · **Estimate**: 2–3 weeks
+**Complexity**: XL (ingestion quality is the long pole) · **Estimate**: 2.5–3.5 weeks
 
 **Testing checklist**
 - [ ] Ingestion validators (numbering continuity, empty bodies, orphan sections) with corrupted-fixture tests
 - [ ] Mapping integrity: every published mapping resolves both directions; spot-check list signed off (50 famous sections: 302/420/376/511 IPC, 154 CrPC …)
 - [ ] Search: section-ref queries resolve in 1 query; typo tolerance; perf < 300 ms on full corpus
-- [ ] e2e: browse → read → follow mapping chip → comparator
-- [ ] SEO: section pages render full text without JS; sitemap generated
+- [ ] App flows (Maestro): browse → read → follow mapping chip → comparator
+- [ ] Web SEO: section pages render full text without JS; sitemap generated; Lighthouse ≥ 90
 
-**Exit criteria**: All priority acts + three mapping pairs live and reviewed; search meets latency target; anonymous user can complete the full read+map journey; Lighthouse ≥ 90.
+**Exit criteria**: All priority acts + three mapping pairs live and reviewed; search meets latency target; the full read+map journey works in the app on a real device and every section has a public web URL.
 
 ---
 
@@ -68,7 +71,7 @@ Complexity scale: S / M / L / XL. Times assume focused solo development with AI 
 
 **Features**
 - Bookmarks + folders (free-tier caps from `src/config/plans.ts`), optimistic UI
-- Notes: rich-text (TipTap), section-anchored + standalone, tags, search within notes
+- Notes: rich-text (TipTap-based — 10tap editor on React Native, TipTap on web later), section-anchored + standalone, tags, search within notes
 - Reading progress per act; streaks; "continue where you left off" home surface
 - Profile v2: study stats
 - Data export (DPDP): user can download their data (JSON)
@@ -78,36 +81,38 @@ Complexity scale: S / M / L / XL. Times assume focused solo development with AI 
 
 **Testing checklist**
 - [ ] RLS cross-user isolation tests for all new tables
-- [ ] Offline-queued note edit syncs correctly (basic SW queue)
+- [ ] Offline-queued note edit syncs correctly (SQLite write queue, architecture.md §15.5)
 - [ ] Cap enforcement (free limits) server-side, not just UI
-- [ ] e2e: bookmark → foldered → note attached → visible on second device (second context)
+- [ ] Sync: bookmark → foldered → note attached → visible on a second device/session
 
 **Exit criteria**: Full study loop usable daily; caps enforced; export works; docs updated.
 
 ---
 
-## Phase 3 — AI Legal Tutor v1 → 🚀 PUBLIC MVP LAUNCH ⚪ NOT STARTED
+## Phase 3 — AI Legal Tutor v1 → 🚀 PLAY STORE LAUNCH ⚪ NOT STARTED
 
-**Objectives**: First AI feature, fully grounded, quota-ed, evaluated. Then launch.
+**Objectives**: First AI feature, fully grounded, quota-ed, evaluated. Then launch on the Play Store.
 
 **Features**
 - AI service layer complete (architecture.md §10): provider interface, prompt v1 (tutor), context builder (structured + FTS + pgvector retrieval; embeddings ingestion for sections), guardrails, citation validator, quota system, logging
-- Tutor chat UI: streaming, `CitationLink`s into library, feedback buttons, quota meter, conversation history
+- App tutor chat: SSE streaming, `CitationLink`s deep-linking into library, feedback buttons, quota meter, conversation history
 - Answer evaluation mode (paste answer → rubric feedback) behind same quota
 - Golden-set evals (≥ 60 questions across IPC/BNS core topics) + prompt-injection fixtures
-- Launch checklist: rate limiting live, Sentry, analytics events, marketing landing, disclaimers
+- **Play Store launch track**: store listing (screenshots, data-safety form, content rating), closed testing (≥ 12 testers × 14 days if account requires — start this clock during Phase 2), staged production rollout
+- Launch checklist: rate limiting live, Sentry, analytics events, web marketing landing final, disclaimers in-app
 
-**Dependencies**: Phases 1–2.
-**Complexity**: L · **Estimate**: 2 weeks
+**Dependencies**: Phases 1–2. **Closed-testing clock is the critical path — start it as soon as Phase 2 exits.**
+**Complexity**: L · **Estimate**: 2 weeks (+ Play review/testing calendar time in parallel)
 
 **Testing checklist**
 - [ ] Citation validator: valid/invalid/malformed refs; adversarial "fake section" fixtures
 - [ ] Guardrails: legal-advice-seeking, off-topic, injection attempts → correct refusals (fixture suite)
 - [ ] Quota: exhaustion, reset boundary (IST midnight), race on parallel messages
-- [ ] Provider-down degradation path
+- [ ] Provider-down degradation path (library remains fully usable)
+- [ ] Streaming on real devices over 4G (mid-range Android matrix)
 - [ ] Golden-set eval pass ≥ agreed threshold; results archived in repo
 
-**Exit criteria**: Eval pass; P95 first-token < 2.5 s; cost per free user per day within budget; MVP success-bar journey (prd.md §10) demo-able end-to-end; **launched**.
+**Exit criteria**: Eval pass; P95 first-token < 2.5 s on 4G; cost per free user per day within budget; MVP success-bar journey (prd.md §10) demo-able on a real device; **live on Play Store production**.
 
 ---
 
@@ -124,10 +129,10 @@ Complexity scale: S / M / L / XL. Times assume focused solo development with AI 
 
 **Objectives**: Revenue on; premium value real.
 
-**Features**: Razorpay subscriptions (webhooks, `subscriptions`/`payments` tables, idempotent handlers), plan gating middleware, pricing page, offline downloads (acts → IndexedDB, SW routes), quota tiers live, billing admin views.
+**Features**: Razorpay subscriptions (webhooks, `subscriptions`/`payments` tables, idempotent handlers), plan gating, pricing page (web) + upgrade flow, offline downloads (acts → on-device SQLite + local FTS index), quota tiers live, billing admin views. **Design decision to make at phase start**: Google Play Billing policy for in-app digital subscriptions vs web-checkout flow — document outcome as an ADR before implementation.
 **Dependencies**: Phase 3 (quota infra), Phase 2 (caps). **Complexity**: L · **Estimate**: 1.5–2 weeks
-**Testing**: webhook replay/idempotency, plan downgrade edge cases, offline reader airplane-mode e2e, payment failure paths.
-**Exit criteria**: A user can pay via UPI, get Plus features instantly, read a downloaded act in airplane mode; reconciliation report matches Razorpay dashboard.
+**Testing**: webhook replay/idempotency, plan downgrade edge cases, airplane-mode reading of downloaded acts (Maestro), payment failure paths.
+**Exit criteria**: A user can pay, get Plus features instantly, and read a downloaded act in airplane mode; reconciliation report matches Razorpay dashboard; billing approach compliant with Play policy.
 
 ## Phase 6 — AI Drafting Assistant ⚪ NOT STARTED
 
@@ -150,9 +155,9 @@ Complexity scale: S / M / L / XL. Times assume focused solo development with AI 
 
 **Objectives**: Operate at scale; prepare native-app groundwork.
 
-**Features**: admin dashboard v2 (content CMS with review queues, errata workflow, user/plan management, AI cost + quality dashboards, feature flags UI), study-analytics for users, performance hardening pass, security review (OWASP ASVS L1 checklist), load testing, API readiness for native clients.
+**Features**: admin dashboard v2 on web (content CMS with review queues, errata workflow, user/plan management, AI cost + quality dashboards, feature flags UI), study-analytics for users, performance hardening pass (app cold start, bundle size), security review (OWASP ASVS L1 + mobile MASVS-L1 checklist), load testing, **iOS groundwork** (same Expo codebase: safe-area/HIG audit, TestFlight pipeline).
 **Dependencies**: all prior. **Complexity**: L · **Estimate**: 2 weeks
-**Exit criteria**: Non-engineer can publish content corrections safely; ASVS checklist archived; load test at 10× current traffic passes.
+**Exit criteria**: Non-engineer can publish content corrections safely; ASVS/MASVS checklists archived; load test at 10× current traffic passes; iOS build runs on a simulator.
 
 ---
 
@@ -163,4 +168,5 @@ Complexity scale: S / M / L / XL. Times assume focused solo development with AI 
 - At each phase close: retro notes → memory.md Lessons Learned; estimates recalibrated here.
 
 *Change log*
+- 2026-07-13 · v0.2.0 · Android-first pivot: Phase 0 rebuilt around monorepo + Expo + EAS; Phase 1 splits app reader vs web SEO pages; Phase 3 launch = Play Store (closed-testing clock flagged as critical path); Phase 5 offline → SQLite + Play Billing decision; Phase 8 adds iOS groundwork.
 - 2026-07-13 · v0.1.0 · Initial phase plan (0–8). Phase 0 started; docs deliverable completed.

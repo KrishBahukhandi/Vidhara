@@ -4,13 +4,28 @@
 
 > ⚖️ NexLex explains law for learning — it is not legal advice.
 
+**This repository is the entire NexLex platform (monorepo):** the **Android app is the primary product** (launching on the Play Store), and the website lives alongside it sharing the same backend, types, and design tokens. iOS ships later from the same codebase.
+
 ## Status
 
-**Phase 0 — Foundation.** Documentation complete; application scaffold in progress. See [docs/phases.md](docs/phases.md) for the current phase and [docs/memory.md](docs/memory.md) for live project state.
+**Phase 0 — Foundation.** Documentation complete (incl. the Android-first architecture pivot, ADR-8…10); monorepo scaffold is next. See [docs/phases.md](docs/phases.md) for the current phase and [docs/memory.md](docs/memory.md) for live project state.
+
+## Repository layout
+
+```
+apps/mobile      # PRIMARY: Android app — Expo (React Native), expo-router, NativeWind
+apps/web         # Next.js — marketing + SEO act/mapping pages + admin + API (AI, webhooks)
+packages/shared  # Zod schemas, domain types, constants, section-ref parser
+packages/tokens  # Design tokens → Tailwind (web) + NativeWind (app) presets
+packages/db      # Generated Supabase types + client factories
+supabase/        # SQL migrations + seed (shared backend)
+scripts/ingest/  # Bare-act & mapping ingestion pipeline
+docs/            # Living documentation — the source of truth
+```
 
 ## Documentation (start here)
 
-The `/docs` folder is the source of truth and is maintained with the same rigor as code. **Read before contributing; update alongside every change.**
+The `/docs` folder is maintained with the same rigor as code. **Read before contributing; update alongside every change.**
 
 | Document | Purpose |
 |---|---|
@@ -23,16 +38,18 @@ The `/docs` folder is the source of truth and is maintained with the same rigor 
 
 ## Stack (summary)
 
-Next.js 15 (App Router, TypeScript strict) · Tailwind + shadcn/ui · Supabase (Postgres + RLS, Auth, Storage) · Anthropic Claude (AI features) · PWA (offline) · Vercel.
+**App**: Expo (React Native) · expo-router · NativeWind · TanStack Query · expo-sqlite (offline) · EAS → Play Store.
+**Web**: Next.js 15 (App Router, RSC/ISR) · Tailwind + shadcn/ui · Vercel.
+**Shared**: TypeScript strict everywhere · pnpm + Turborepo · Supabase (Postgres + RLS, Auth, Storage, pgvector) · Anthropic Claude (AI features, server-side only) · Razorpay (Phase 5).
 
-Full rationale in [docs/architecture.md](docs/architecture.md).
+Full rationale and ADRs in [docs/architecture.md](docs/architecture.md).
 
 ## Development
 
 ```bash
-# prerequisites: Node 20+, pnpm, Supabase CLI
+# prerequisites: Node 20+, pnpm, Supabase CLI, EAS CLI (for app builds)
 pnpm install
-pnpm dev
+pnpm dev            # turbo: runs app (Expo) + web (Next.js) dev servers
 ```
 
 (Environment setup details land with the Phase 0 scaffold — see `.env.example` once created.)
