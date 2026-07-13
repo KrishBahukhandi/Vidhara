@@ -48,6 +48,7 @@
 - **Expo SDK 57** (RN 0.86, React 19.2.3, TS ~6 default template — we pinned TS 5.9 for monorepo consistency; revisit TS 7 when whole repo can move). React/react-dom pinned to exactly 19.2.3 in BOTH apps to avoid duplicate React under hoisted node_modules — keep them aligned when upgrading.
 - AsyncStorage (not SecureStore) for Supabase session persistence — session JSON exceeds SecureStore's 2KB item limit; Supabase's documented Expo pattern.
 - Play Store: new personal dev accounts need 12-tester × 14-day closed test — verify founder's account status before Phase 2 ends (launch critical path).
+- Supabase account facts (checked 2026-07-13): org `gsswdolhgvphznhqldrf`; existing projects UniRide (paused) + Tareshwar Tutorials (active); new project cost $0; free tier = 2 active projects, so NexLex fits. Free-tier built-in email OTP is heavily rate-limited (~2–4/hr) — fine for dev, custom SMTP (e.g., Resend) required before Phase 3 launch (add to launch checklist). Free projects pause after ~1 week idle.
 - Play Billing vs Razorpay policy decision = ADR at Phase 5 start.
 - Bare act texts public domain (Copyright Act s.52(1)(q)); keep provenance.
 - Pricing (₹149/₹399) is a hypothesis; validate before Phase 5.
@@ -83,7 +84,7 @@
 ## TODO List (near-term, actionable)
 
 1. **Supabase cloud project** (needs founder cost confirmation via Supabase MCP) → apply migration 0001 → `gen:types` → fill `apps/mobile/.env` + `apps/web/.env.local` → verify OTP sign-in → onboarding → profile edit on device/emulator; add RLS cross-user integration test.
-2. **EAS**: `eas init` under founder's Expo account → development + preview builds → install preview APK on a physical Android device.
+2. **Device build (local-first strategy, 2026-07-13)**: founder has Android Studio + physical phone → daily dev via `npx expo run:android` (unlimited local builds, hot reload). `eas init` still wanted eventually for release builds + managed Play signing credentials, but NOT a Phase 0 blocker anymore.
 3. **Vercel**: connect repo, deploy apps/web (staging + production).
 4. **Polish to exit Phase 0**: bundle fonts (expo-font: Source Serif 4, Inter; next/font on web), real ESLint configs (expo config + next config), error boundary + logger conventions, Maestro smoke flow.
 5. Verify founder's Play developer account status (12-tester rule — launch runway).
