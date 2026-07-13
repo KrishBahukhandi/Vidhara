@@ -26,7 +26,7 @@ export default function HomePage() {
           built for law students, judiciary aspirants, and advocates.
         </p>
         <div className="flex items-center gap-4">
-          <span className="inline-flex h-12 items-center rounded-md bg-brand px-6 font-medium text-white">
+          <span className="inline-flex h-12 items-center rounded-md bg-brand px-6 font-medium text-on-brand">
             Coming to Google Play
           </span>
           <span className="text-small text-text-faint">Phase 0 — in the workshop</span>

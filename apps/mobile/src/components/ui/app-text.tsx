@@ -26,7 +26,7 @@ export function AppText({
     faint: colors.textFaint,
     brand: colors.brand,
     danger: colors.danger,
-    onBrand: "#FFFFFF",
+    onBrand: colors.onBrand,
   };
 
   return (

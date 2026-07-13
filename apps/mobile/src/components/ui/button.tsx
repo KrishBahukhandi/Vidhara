@@ -41,7 +41,9 @@ export function Button({ label, variant = "primary", loading = false, disabled, 
         },
       ]}>
       {loading ? (
-        <ActivityIndicator color={variant === "primary" || variant === "destructive" ? "#FFFFFF" : colors.brand} />
+        <ActivityIndicator
+          color={variant === "primary" || variant === "destructive" ? colors.onBrand : colors.brand}
+        />
       ) : (
         <AppText tone={labelTone} style={styles.label}>
           {label}

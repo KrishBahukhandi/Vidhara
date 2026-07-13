@@ -25,6 +25,7 @@ Design tokens are defined once in `packages/tokens` (`tokens.cjs`), consumed as 
 | `--brand` | `#1E3A5F` (deep judicial blue) | `#7FA6D9` | Primary actions, links, active states |
 | `--brand-strong` | `#152C4A` | `#9DBCE6` | Hover/pressed |
 | `--accent` | `#B8860B` (subdued brass) | `#D9A93F` | Highlights, premium markers, focus rings on brand surfaces |
+| `--on-brand` | `#FFFFFF` | `#121417` | Text/icons on brand fills (dark-mode brand is light — never hardcode white) |
 
 Brass/gold is used *sparingly* — premium badges, key highlights — never as large fills.
 
