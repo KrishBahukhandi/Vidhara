@@ -10,6 +10,8 @@ next-env.d.ts
 # builds
 build/
 dist/
+# generated design-token CSS is committed (single-source artifact, checked in CI)
+!packages/tokens/dist/
 
 # env & secrets — only .env.example is committed
 .env

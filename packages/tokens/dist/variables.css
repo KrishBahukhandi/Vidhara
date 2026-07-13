@@ -1,0 +1,89 @@
+/* GENERATED FILE — do not edit. Source: @nexlex/tokens/tokens.cjs (spec: docs/design.md).
+ * Regenerate: pnpm --filter @nexlex/tokens gen */
+
+:root {
+  --nx-brand: #1E3A5F;
+  --nx-brand-strong: #152C4A;
+  --nx-accent: #B8860B;
+  --nx-bg: #FAFAF7;
+  --nx-surface: #FFFFFF;
+  --nx-surface-raised: #FFFFFF;
+  --nx-border: #E4E2DC;
+  --nx-text: #1C1E21;
+  --nx-text-muted: #5B5F66;
+  --nx-text-faint: #8A8E94;
+  --nx-success: #1E7F4F;
+  --nx-warning: #B45309;
+  --nx-danger: #B3261E;
+  --nx-info: #0B6E99;
+  --nx-map-same: #46628C;
+  --nx-map-changed: #B45309;
+  --nx-map-new: #1E7F4F;
+  --nx-map-omitted: #B3261E;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --nx-brand: #7FA6D9;
+    --nx-brand-strong: #9DBCE6;
+    --nx-accent: #D9A93F;
+    --nx-bg: #121417;
+    --nx-surface: #1A1D21;
+    --nx-surface-raised: #22262B;
+    --nx-border: #2E3338;
+    --nx-text: #E8E6E1;
+    --nx-text-muted: #9BA0A6;
+    --nx-text-faint: #6B7076;
+    --nx-success: #4CC38A;
+    --nx-warning: #F5A623;
+    --nx-danger: #F2726F;
+    --nx-info: #5FB6DD;
+    --nx-map-same: #8FA9CF;
+    --nx-map-changed: #F5A623;
+    --nx-map-new: #4CC38A;
+    --nx-map-omitted: #F2726F;
+  }
+}
+
+/* Manual overrides (web theme toggle sets data-theme on <html>) — must win both ways. */
+[data-theme="light"] {
+  --nx-brand: #1E3A5F;
+  --nx-brand-strong: #152C4A;
+  --nx-accent: #B8860B;
+  --nx-bg: #FAFAF7;
+  --nx-surface: #FFFFFF;
+  --nx-surface-raised: #FFFFFF;
+  --nx-border: #E4E2DC;
+  --nx-text: #1C1E21;
+  --nx-text-muted: #5B5F66;
+  --nx-text-faint: #8A8E94;
+  --nx-success: #1E7F4F;
+  --nx-warning: #B45309;
+  --nx-danger: #B3261E;
+  --nx-info: #0B6E99;
+  --nx-map-same: #46628C;
+  --nx-map-changed: #B45309;
+  --nx-map-new: #1E7F4F;
+  --nx-map-omitted: #B3261E;
+}
+
+[data-theme="dark"] {
+  --nx-brand: #7FA6D9;
+  --nx-brand-strong: #9DBCE6;
+  --nx-accent: #D9A93F;
+  --nx-bg: #121417;
+  --nx-surface: #1A1D21;
+  --nx-surface-raised: #22262B;
+  --nx-border: #2E3338;
+  --nx-text: #E8E6E1;
+  --nx-text-muted: #9BA0A6;
+  --nx-text-faint: #6B7076;
+  --nx-success: #4CC38A;
+  --nx-warning: #F5A623;
+  --nx-danger: #F2726F;
+  --nx-info: #5FB6DD;
+  --nx-map-same: #8FA9CF;
+  --nx-map-changed: #F5A623;
+  --nx-map-new: #4CC38A;
+  --nx-map-omitted: #F2726F;
+}

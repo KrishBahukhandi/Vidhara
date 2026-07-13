@@ -17,7 +17,7 @@
 
 ## 2. Color Palette
 
-Design tokens are defined once in `packages/tokens` and exported as a Tailwind preset (web) and NativeWind preset (app). **Never hardcode hex values in components — either platform.**
+Design tokens are defined once in `packages/tokens` (`tokens.cjs`), consumed as a typed theme module in the app and as a Tailwind preset + CSS variables on the web. **Never hardcode hex values in components — either platform.**
 
 ### 2.1 Brand
 | Token | Light | Dark | Use |
@@ -92,7 +92,7 @@ Reader offers user-adjustable text size (4 steps, persisted). Max reading measur
 
 **The Android app (Expo/React Native) is the primary surface.** Design every feature for the app first at a 360dp-width baseline; touch targets ≥ 44×44dp; respect Android conventions: system back (button/gesture) always navigates predictably and closes sheets/modals first, safe-area insets honored, native share sheet for sharing sections.
 
-Both renderers (NativeWind in the app, Tailwind on web) consume the same `packages/tokens` — colors, spacing, radii, and type scale are identical by construction.
+Both renderers consume the same `packages/tokens`: the app through a typed theme module (`useTheme()` + RN StyleSheet, ADR-11), the web through the shared Tailwind preset + generated CSS variables — colors, spacing, radii, and type scale are identical by construction.
 
 Web breakpoints (`apps/web` — marketing, SEO content pages, later full web app):
 
@@ -188,5 +188,6 @@ Every screen/component ships all four states — reviewed in PR:
 ---
 
 *Change log*
-- 2026-07-13 · v0.2.0 · Android-first pivot: tokens single-sourced in `packages/tokens` (Tailwind + NativeWind presets); §5 reframed around the native app (Android back, safe areas, deep links); navigation split app vs desktop web.
+- 2026-07-13 · v0.2.1 · Token consumption updated per ADR-11: app uses typed theme module (RN StyleSheet); NativeWind references removed.
+- 2026-07-13 · v0.2.0 · Android-first pivot: tokens single-sourced in `packages/tokens`; §5 reframed around the native app (Android back, safe areas, deep links); navigation split app vs desktop web.
 - 2026-07-13 · v0.1.0 · Initial design system defined (pre-implementation).

@@ -13,13 +13,12 @@
 ## Repository layout
 
 ```
-apps/mobile      # PRIMARY: Android app — Expo (React Native), expo-router, NativeWind
+apps/mobile      # PRIMARY: Android app — Expo (React Native), expo-router, token theme
 apps/web         # Next.js — marketing + SEO act/mapping pages + admin + API (AI, webhooks)
 packages/shared  # Zod schemas, domain types, constants, section-ref parser
-packages/tokens  # Design tokens → Tailwind (web) + NativeWind (app) presets
+packages/tokens  # Design tokens (single source) → app theme module + web Tailwind preset
 packages/db      # Generated Supabase types + client factories
 supabase/        # SQL migrations + seed (shared backend)
-scripts/ingest/  # Bare-act & mapping ingestion pipeline
 docs/            # Living documentation — the source of truth
 ```
 
@@ -38,8 +37,8 @@ The `/docs` folder is maintained with the same rigor as code. **Read before cont
 
 ## Stack (summary)
 
-**App**: Expo (React Native) · expo-router · NativeWind · TanStack Query · expo-sqlite (offline) · EAS → Play Store.
-**Web**: Next.js 15 (App Router, RSC/ISR) · Tailwind + shadcn/ui · Vercel.
+**App**: Expo SDK 57 (React Native 0.86) · expo-router · typed token theme · expo-sqlite (offline, Phase 5) · EAS → Play Store.
+**Web**: Next.js 15 (App Router, RSC/ISR) · Tailwind (shared token preset) · Vercel.
 **Shared**: TypeScript strict everywhere · pnpm + Turborepo · Supabase (Postgres + RLS, Auth, Storage, pgvector) · Anthropic Claude (AI features, server-side only) · Razorpay (Phase 5).
 
 Full rationale and ADRs in [docs/architecture.md](docs/architecture.md).

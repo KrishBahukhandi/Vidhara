@@ -7,100 +7,99 @@
 
 ## Current Status
 
-- **Phase**: Phase 0 — Foundation (see phases.md).
-- **Done so far**: All six living documents created; **Android-first pivot decided and fully documented** (v0.2.0 across docs, ADR-8…10). This repo is the platform monorepo: `apps/mobile` (Expo/React Native, primary), `apps/web` (Next.js), `packages/{shared,tokens,db}`. No application code exists yet.
-- **Next action**: Scaffold the monorepo (pnpm workspaces + Turborepo → Expo app + Next.js web + shared packages) → design tokens in `packages/tokens` → Supabase setup (`profiles` migration, RLS) → app auth + tab shell → EAS internal build.
+- **Phase**: Phase 0 — Foundation. **Scaffold delivered and verified**; four items remain before Phase 0 exit (see TODO 1–4).
+- **What runs today**: `pnpm install` → all 5 workspaces typecheck; `@nexlex/shared` 16 unit tests pass; web builds (102 kB first-load); Android JS bundle exports through Metro. App runs in "unconfigured mode" (shell + auth screens render; auth actions show a friendly error) until Supabase keys exist.
+- **Stack as built**: Expo SDK 57 / RN 0.86 / React 19.2.3 (app) · Next.js 15 / Tailwind 3.4 (web) · pnpm 11 (hoisted) + Turborepo · TS 5.9 strict everywhere.
+- **Next action**: TODO 1 (Supabase cloud project — needs founder cost confirmation via Supabase MCP), then live auth verification, EAS device build, Vercel deploy.
 
 ## Completed Features
 
-- 2026-07-13 — Android-first architecture pivot documented across all six docs (ADR-8/9/10).
-- 2026-07-13 — Documentation foundation (the /docs six) — pre-implementation.
+- 2026-07-13 — **Phase 0 scaffold**: monorepo (apps/mobile, apps/web, packages/{tokens,shared,db}); design-token pipeline with CI sync check; app shell (5 tabs) + OTP auth flow + onboarding + profile exemplar feature; migration `0001_create_profiles.sql` (RLS + signup trigger); `.env.example`; GitHub Actions CI (typecheck, tests, web build, Metro bundle smoke); eas.json build profiles.
+- 2026-07-13 — Android-first architecture pivot documented (ADR-8/9/10) and executed.
+- 2026-07-13 — Documentation foundation (the /docs six).
 
 ## Pending Features (by phase — details in phases.md)
 
-- Phase 0 (rest): monorepo scaffold, tokens package, Supabase + auth, native tab shell, EAS internal build, CI, web placeholder on Vercel.
-- Phase 1: Bare Acts Library + mapping in the app; SEO content pages on web; ingestion pipeline; search RPC.
+- Phase 0 exit items: Supabase cloud project + regenerated types, live auth + RLS integration test, EAS internal build on a device, Vercel deploy, fonts/ESLint/error-boundary polish, Google native sign-in.
+- Phase 1: Bare Acts Library + mapping (app), SEO content pages (web), ingestion pipeline, search RPC.
 - Phase 2: bookmarks, notes, progress, data export. (Start Play closed-testing clock at exit!)
 - Phase 3: AI Legal Tutor v1 + **Play Store production launch**.
 - Phases 4–8: case law, news, payments/offline, drafting, trial simulator, admin/iOS groundwork.
 
 ## Known Bugs
 
-- None (no code yet).
+- None known. Serif font family referenced by `AppText serif` isn't bundled yet — silently falls back to system font until fonts land (Phase 0 TODO 4; cosmetic).
 
 ## Design Decisions
 
-- 2026-07-13 — **Platform**: Android app is the primary surface (360dp baseline, Android back conventions, deep links `nexlex://`); tokens single-sourced in `packages/tokens` → NativeWind (app) + Tailwind (web).
-- 2026-07-13 — Design language: "quiet library with a sharp mind" — Source Serif 4 for statute reading, Inter for UI, warm-paper light + charcoal dark, brass accent sparingly. (design.md)
-- 2026-07-13 — Bottom tab bar: Library · Mapping · Tutor · Notes · Profile (app + mobile web); desktop web gets sidebar.
-- 2026-07-13 — Mapping change-types get dedicated semantic colors + icons (never color alone).
+- 2026-07-13 — **ADR-11**: app consumes tokens via typed theme module (`apps/mobile/src/theme`: `useTheme()`, `sp()`, `type`) + RN StyleSheet; NativeWind dropped (unverified on SDK 57; ergonomics-only dependency). Web keeps Tailwind with the shared preset.
+- 2026-07-13 — UI primitives established in app: `Screen`, `AppText` (variant/tone/serif), `Button` (4 variants, loading locks width), `Field` (visible label + inline error), `EmptyState`, chip pattern in onboarding. All colors via theme; zero hardcoded hex (grep-checked).
+- 2026-07-13 — Design language: "quiet library with a sharp mind" (design.md); bottom tabs Library · Mapping · Tutor · Notes · Profile; mapping change-types color+icon.
 
 ## Architectural Decisions (ADR index — full text in architecture.md §16)
 
-- **ADR-8 (2026-07-13)** Android-first native launch built with **Expo (React Native)** — over Flutter (TS end-to-end, shared schemas/tokens; Dart forks the codebase) and over TWA wrapper (inadequate offline/perf). iOS later from same codebase.
-- **ADR-9 (2026-07-13)** Single monorepo in `NexLex/` (pnpm + Turborepo): `apps/mobile` + `apps/web` + `packages/*`. **No sibling website folder** — founder asked us to decide; sibling repos would drift.
-- **ADR-10 (2026-07-13)** Clients use supabase-js directly (RLS-guarded); Next.js server hosts only secret-bearing surfaces (AI SSE, webhooks, admin).
-- ADR-2 Supabase as the only backend service. · ADR-4 Postgres FTS + pgvector first. · ADR-5 Anthropic Claude behind `AIProvider` interface. · ADR-6 mapping data human-curated. · ADR-7 prompts versioned as code + DB registry.
-- ~~ADR-1 Next.js monolith~~, ~~ADR-3 PWA-first~~ — superseded 2026-07-13 by ADR-8/9.
+- **ADR-11 (2026-07-13)** Typed theme module replaces NativeWind on the app; Tailwind preset remains web-only.
+- **ADR-8/9/10 (2026-07-13)** Android-first with Expo · single monorepo in `NexLex/` · clients use supabase-js directly, server hosts only secret-bearing surfaces.
+- ADR-2 Supabase only backend · ADR-4 Postgres FTS + pgvector first · ADR-5 Claude behind `AIProvider` · ADR-6 mapping human-curated · ADR-7 prompts versioned code + DB registry.
+- ~~ADR-1~~, ~~ADR-3~~ superseded.
 
 ## Important Assumptions (verify when they matter)
 
-- Play Store publishing: if the founder's developer account is a **new personal account**, production access requires a closed test with 12+ testers for 14 days — verify account status before Phase 2 ends; this is the launch critical path.
-- Play Billing: whether Razorpay web-checkout is policy-compliant for our subscription flow vs. mandatory Play Billing — must be resolved as an ADR at Phase 5 start (rules differ for digital goods consumed in-app).
-- Bare act texts from India Code / official gazettes are public domain (Copyright Act s.52(1)(q)) — keep provenance regardless.
-- Priority act list for Phase 1 matches judiciary-exam demand — validate with 3–5 aspirant interviews during Phase 1.
-- Indicative pricing (₹149 Plus / ₹399 Pro) is a hypothesis — test before Phase 5.
-- Expo SDK streaming fetch supports SSE consumption on Android (verified pattern as of SDK 52+; confirm at Phase 3 implementation).
-- Supabase MCP server is connected (use for migrations/queries at implementation); Figma MCP available for design work.
+- **Expo SDK 57** (RN 0.86, React 19.2.3, TS ~6 default template — we pinned TS 5.9 for monorepo consistency; revisit TS 7 when whole repo can move). React/react-dom pinned to exactly 19.2.3 in BOTH apps to avoid duplicate React under hoisted node_modules — keep them aligned when upgrading.
+- AsyncStorage (not SecureStore) for Supabase session persistence — session JSON exceeds SecureStore's 2KB item limit; Supabase's documented Expo pattern.
+- Play Store: new personal dev accounts need 12-tester × 14-day closed test — verify founder's account status before Phase 2 ends (launch critical path).
+- Play Billing vs Razorpay policy decision = ADR at Phase 5 start.
+- Bare act texts public domain (Copyright Act s.52(1)(q)); keep provenance.
+- Pricing (₹149/₹399) is a hypothesis; validate before Phase 5.
 
 ## Database Decisions
 
-- Content tables public-read via RLS `anon SELECT`; user tables owner-only; admin via JWT `app_role` claim.
-- `law_mappings` = section→section edge table (1→many/many→1); bidirectional via indexes; `v_mapping_lookup` view.
-- Search = SQL function `search_sections(q, scope)` exposed via RPC to both clients (not an HTTP API route).
-- Migrations immutable; expand→migrate→contract; content corrections are data ops with errata provenance.
-- `act_sections` carries `body_md` (canonical) + generated `fts` + `embedding` columns.
-- App offline store: expo-sqlite (downloaded acts + local FTS + write queue), MMKV for prefs; conflict policy = last-write-wins + preserved "conflicted copy".
+- `0001_create_profiles.sql`: enums `user_role`/`plan_tier`; profiles owner-only RLS (no INSERT/DELETE policies — signup trigger + auth cascade handle those); `touch_updated_at()` + `handle_new_user()` security-definer functions with empty search_path.
+- `packages/db/src/database.types.ts` is a **hand-written placeholder** — regenerate via `pnpm --filter @nexlex/db gen:types` once Supabase exists (drop-in replacement).
+- Content tables anon-SELECT; search via `search_sections` RPC; `law_mappings` edge table; migrations immutable, expand→migrate→contract.
+- App offline store (Phase 5): expo-sqlite + MMKV; conflict = last-write-wins + preserved "conflicted copy".
 
 ## API Decisions
 
-- Data CRUD: supabase-js direct from both clients (no API tier). Server surfaces only: `POST /api/v1/ai/*` (SSE), payment webhooks, health, admin actions — hosted in `apps/web`.
-- `/v1` is expand-only once the app ships (store-review lag means old binaries live long); `x-nexlex-client` header + `min_supported_version` forced-upgrade mechanism.
-- Uniform result contract `{ ok, data | error: { code, message } }`; codes in `packages/shared/error-codes`.
+- Result contract `{ ok, data | error: { code, message } }` implemented in `@nexlex/shared` (`ok()`/`err()`, `ERROR_CODES`); profile + auth features follow it — the exemplar pattern.
+- Feature APIs live in `apps/mobile/src/features/*/api.ts`; components never import the supabase client directly.
+- `/api/v1/health` live (returns `minSupportedAppVersion` for the Phase 3 forced-upgrade gate). `/v1` expand-only once app ships.
 
 ## Important Conversations / Directives
 
-- 2026-07-13 — **Founder: "this is an app I will launch for Android"**; website also planned; founder delegated the folder/repo structure decision → we chose monorepo-in-this-folder (ADR-9) and Android-first (ADR-8). Web = SEO/marketing now, full app later.
-- 2026-07-13 — Founding master prompt: docs-first workflow, six living documents, docs = definition of done, full feature vision, SOLID/Clean Architecture bar, AI prompt architecture separation, challenge weak decisions, long-term maintainability over speed.
+- 2026-07-13 — Founder: Android-first launch; folder strategy delegated → monorepo (ADR-9). "Proceed" given for Phase 0 scaffold.
+- 2026-07-13 — Founding master prompt: docs-first, six living documents = definition of done, challenge weak decisions, long-term maintainability.
 
 ## Future Ideas (parking lot — not scope)
 
-- iOS app (same codebase); full interactive web app; Hindi + regional language layer; OLED-black theme; MCQ/test-series with All-India rank; moot-court appellate mode; state amendments layer; judgment summarizer; institutional licensing; community study groups; WhatsApp daily-section bot; push-notification revision nudges (expo-notifications, Phase 2+ candidate).
+- iOS app; full web app; Hindi layer; OLED-black theme; MCQ test series; moot-court mode; state amendments; judgment summarizer; institutional licensing; study groups; WhatsApp daily-section bot; push revision nudges.
 
 ## Technical Debt
 
-- None yet. (Record with: date, what, why accepted, planned payoff phase.)
+- 2026-07-13 — `lint` scripts are typecheck placeholders (no ESLint configs yet). Accepted to keep scaffold velocity; payoff: Phase 0 exit polish (TODO 4). Risk: low (strict TS catches most; conventions enforced in review).
+- 2026-07-13 — No error boundaries/logger util in apps yet (screens handle their own errors). Payoff: Phase 0 exit polish.
+- 2026-07-13 — `packages/db` types are hand-written placeholders until Supabase project exists.
 
 ## TODO List (near-term, actionable)
 
-1. Scaffold monorepo: pnpm-workspace + turbo.json; `apps/mobile` (create-expo-app, expo-router, NativeWind, TS strict), `apps/web` (create-next-app, Tailwind, shadcn/ui), `packages/{shared,tokens,db}`.
-2. Implement `packages/tokens` from design.md §2–4 (light/dark), wire NativeWind + Tailwind presets; bundle fonts.
-3. Supabase: create/link project, local CLI stack, `0001_create_profiles.sql` (RLS + signup trigger), generate types into `packages/db`. *(Cloud project creation needs founder cost confirmation via Supabase MCP.)*
-4. App auth flows (email OTP + Google native) + onboarding + tab shell; exemplar profile-edit feature using shared schema.
-5. EAS: configure project, dev client, internal distribution build on a physical device.
-6. CI workflow (all workspaces) + Vercel deploy of web placeholder.
-7. Verify founder's Play developer account status (new personal → 12-tester rule) — affects launch runway.
-8. Phase 1 prep: source official texts for the 8 priority acts; locate authoritative IPC⇄BNS mapping source material for human review.
+1. **Supabase cloud project** (needs founder cost confirmation via Supabase MCP) → apply migration 0001 → `gen:types` → fill `apps/mobile/.env` + `apps/web/.env.local` → verify OTP sign-in → onboarding → profile edit on device/emulator; add RLS cross-user integration test.
+2. **EAS**: `eas init` under founder's Expo account → development + preview builds → install preview APK on a physical Android device.
+3. **Vercel**: connect repo, deploy apps/web (staging + production).
+4. **Polish to exit Phase 0**: bundle fonts (expo-font: Source Serif 4, Inter; next/font on web), real ESLint configs (expo config + next config), error boundary + logger conventions, Maestro smoke flow.
+5. Verify founder's Play developer account status (12-tester rule — launch runway).
+6. Phase 1 prep: source official act texts (8 priority acts); locate authoritative IPC⇄BNS mapping source for human review.
 
 ## Priority Queue (order of execution)
 
-Phase 0 remainder (TODO 1–6, with 7 in parallel) → Phase 1. No out-of-phase work authorized.
+TODO 1 → 2 → 3 → 4 (Phase 0 exit) → 5 in parallel → Phase 1. No out-of-phase work authorized.
 
 ## Recent Changes
 
-- 2026-07-13 — **v0.2.0 docs sweep — Android-first pivot**: architecture.md rewritten (monorepo, Expo, EAS, offline SQLite, ADR-8…10); prd.md, design.md, rules.md, phases.md updated in sync.
-- 2026-07-13 — Created /docs six (v0.1.0); git repo initialized; founding commit `66843f9`.
+- 2026-07-13 — **Phase 0 scaffold commit**: monorepo + both apps + packages + migration + CI, all green (typecheck ×5, tests 16/16, web build 102 kB, Metro bundle OK). ADR-11 recorded; docs v0.2.1 sync.
+- 2026-07-13 — v0.2.0 docs sweep — Android-first pivot (ADR-8…10).
+- 2026-07-13 — Created /docs six (v0.1.0); repo initialized (`66843f9`).
 
 ## Lessons Learned
 
-- (Populate at each phase close — include estimate vs. actual.)
+- 2026-07-13 — Scaffold-time reality beats plan-time assumptions: Expo SDK 57 shipped a different template (src/app, native tabs, React Compiler) than the SDK 54 the plan assumed — checking the generated code before wiring styling avoided shipping an unverified NativeWind dependency (became ADR-11). Generalize: verify generated scaffolds before layering choices made on paper.
+- 2026-07-13 — pnpm 11 gates dependency build scripts (`allowBuilds` in workspace yaml) — remember for future native deps.

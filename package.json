@@ -1,0 +1,25 @@
+{
+  "name": "nexlex",
+  "private": true,
+  "version": "0.1.0",
+  "description": "NexLex — the AI-powered legal ecosystem for India (monorepo)",
+  "packageManager": "pnpm@11.12.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "dev:app": "pnpm --filter @nexlex/mobile dev",
+    "dev:web": "pnpm --filter @nexlex/web dev",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.6.0",
+    "turbo": "^2.5.0",
+    "typescript": "^5.9.0"
+  }
+}
