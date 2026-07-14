@@ -42,3 +42,6 @@ test-results/
 *.log
 .vercel
 .turbo
+
+# typescript incremental build info
+*.tsbuildinfo
