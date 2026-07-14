@@ -1,0 +1,14 @@
+{
+  "act": {
+    "slug": "bns",
+    "title": "The Bharatiya Nyaya Sanhita, 2023",
+    "shortTitle": "BNS",
+    "abbreviation": "BNS",
+    "year": 2023,
+    "category": "criminal",
+    "status": "active",
+    "enforcementDate": "2024-07-01",
+    "sourceUrl": "https://www.mha.gov.in/sites/default/files/250883_english_01042024.pdf"
+  },
+  "provenance": "Official Gazette text: The Bharatiya Nyaya Sanhita, 2023 (45 of 2023), English PDF as hosted by Ministry of Home Affairs (mha.gov.in, file 250883_english_01042024.pdf; canonical mirror indiacode.nic.in bitstream a202345.pdf). Extracted via pdftotext 26.07 -layout and @nexlex/ingest gazette-pdf parser on 2026-07-14. Automated parse; structural validation + spot verification of sections 1, 63, 103, 302, 358; full clause-level proofread pending."
+}
