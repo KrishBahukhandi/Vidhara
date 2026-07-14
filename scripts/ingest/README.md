@@ -15,15 +15,33 @@ validation — bundles carry real, sourced text or nothing.
 ## Commands
 
 ```bash
-# structural validation (no credentials needed; runs in CI via `pnpm test`)
-pnpm --filter @nexlex/ingest ingest validate bundles/ica.json
+# 1. Parse an official Gazette act PDF (word-coordinate extraction is canonical):
+pdftotext -bbox act.pdf act.xhtml
+pnpm --filter @nexlex/ingest ingest parse-gazette act.xhtml --meta bundles/<act>-meta.json --out bundles/<act>.json
+#    (also accepts `pdftotext -layout` text — heuristic fallback, drift-prone)
 
-# upsert to Supabase — lands as review_status=draft by default (invisible to clients)
-pnpm --filter @nexlex/ingest ingest publish bundles/ica.json
+# 2. Structural validation (no credentials needed; runs in CI via `pnpm test`)
+pnpm --filter @nexlex/ingest ingest validate bundles/<act>.json
 
-# after human review: make sections publicly readable
-pnpm --filter @nexlex/ingest ingest publish bundles/ica.json --status published --publish-act
+# 3a. Upsert to Supabase — review_status=draft by default (invisible to clients)
+pnpm --filter @nexlex/ingest ingest publish bundles/<act>.json
+#     after human review: make it publicly readable
+pnpm --filter @nexlex/ingest ingest publish bundles/<act>.json --status published --publish-act
+
+# 3b. Or emit reviewable SQL (chunked upserts; apply via any service-role channel)
+pnpm --filter @nexlex/ingest ingest emit-sql bundles/<act>.json --out out.sql --status published --publish-act
 ```
+
+### Gazette parser notes (learned on the real BNS 2023 PDF)
+
+Marginal notes are discriminated by **font height** (≈8.8pt vs body ≈11pt) plus x-position — the
+only signal that survives abutting columns, alternating note sides, and text-grid drift. The
+parser also handles: kerned headings ("CHAPTERI"), missing space after section numbers
+("192.Whoever"), notes overflowing past the next section's start (period-sealing), right-column
+statutory citations ("45 of 1860." → diagnostics), the drop-cap enactment formula ("B E it
+enacted"), and the signature block. Bundles in `bundles/` are the artifacts of record for
+human proofreading; upserts key on (act_id, number) so re-publishing preserves section ids
+(bookmarks and mappings survive).
 
 ## Credentials
 
