@@ -1,6 +1,7 @@
 packages:
   - "apps/*"
   - "packages/*"
+  - "scripts/*"
 
 # pnpm 11 reads config here, NOT .npmrc. Expo/RN Gradle autolinking requires a
 # flat npm-style tree (isolated symlinks break the :expo module classpath wiring).

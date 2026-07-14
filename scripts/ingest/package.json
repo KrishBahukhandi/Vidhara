@@ -1,0 +1,24 @@
+{
+  "name": "@nexlex/ingest",
+  "version": "0.1.0",
+  "private": true,
+  "description": "NexLex content ingestion pipeline: validate and publish act bundles (service-role only; never ships to clients)",
+  "type": "module",
+  "scripts": {
+    "ingest": "tsx src/cli.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@nexlex/db": "workspace:*",
+    "@supabase/supabase-js": "^2.50.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "~5.9.0",
+    "vitest": "^3.2.0"
+  }
+}

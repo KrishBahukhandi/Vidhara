@@ -15,7 +15,7 @@ const FEATURES = [
 
 export default function HomePage() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-content flex-col px-6 py-16">
+    <main className="mx-auto flex w-full max-w-content flex-1 flex-col px-6">
       <section className="flex flex-col gap-6 py-20">
         <p className="font-mono text-small text-accent">For Indian law · Android-first</p>
         <h1 className="max-w-2xl font-serif text-display font-semibold text-text">
@@ -44,12 +44,6 @@ export default function HomePage() {
         ))}
       </section>
 
-      <footer className="mt-auto border-t border-border pt-8">
-        <p className="text-small text-text-faint">
-          ⚖️ NexLex explains law for learning — it is not legal advice. ·{" "}
-          {new Date().getFullYear()} NexLex
-        </p>
-      </footer>
     </main>
   );
 }

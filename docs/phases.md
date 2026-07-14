@@ -51,8 +51,9 @@ Complexity scale: S / M / L / XL. Times assume focused solo development with AI 
 - [x] App screens live against real DB: Library (acts list + search box), act detail, section reader (serif statute type + mapping cards with change-type badges), Mapping tab lookup via shared parser
 - [x] Anonymous browsing per architecture.md §6 (tabs open to all; sign-in lives in Profile; onboarding redirect only for signed-in users)
 - [x] Verified in Expo web preview: library → act → §302 reader → mapping card → cross-navigate to BNS §103; "crpc 154" lookup → BNSS §173 card
-- [ ] Ingestion pipeline (`scripts/ingest/`) + real priority-act content (the long pole)
-- [ ] Web SEO pages for acts/sections/mappings
+- [x] Ingestion pipeline (`scripts/ingest`, workspace package): act-bundle Zod schema, structural validators (dupes, unsortable numbers, orphan chapter refs, out-of-order, placeholder-body and dev-sample rejection; gap warnings), service-role publish with draft→reviewed→published gating, CLI + README, 12 unit tests — **remaining**: source parsers (India Code) + real priority-act bundles + mapping bundles
+- [x] Web SEO pages (`apps/web`): /acts, /acts/[slug], /acts/[slug]/[number] (per-section metadata naming the counterpart section, schema.org Legislation JSON-LD, sample-content notice), /mapping index grouped by pair, sitemap.xml (25 URLs from DB) + robots.txt, site header/footer — all SSG with 1h ISR; verified served HTML contains statute text without JS
+- [ ] Real priority-act content via the pipeline (the long pole)
 - [ ] Search polish: `⌘K`-style palette, typo tolerance verification at corpus scale
 
 **Objectives**: The content moat — best-in-class bare act reader and the canonical old⇄new criminal law mapping in the app, with the same content published as SEO pages on the web.
