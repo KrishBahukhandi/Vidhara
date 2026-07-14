@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 
@@ -19,14 +20,19 @@ export default function ProfileScreen() {
   });
 
   useEffect(() => {
-    if (!isSupabaseConfigured) return;
+    if (!isSupabaseConfigured || !session) return;
     getMyProfile().then((result) => {
       if (result.ok) {
         setProfile(result.data);
         setDisplayName(result.data.display_name ?? "");
       }
     });
-  }, []);
+  }, [session]);
+
+  // Signed-out state: content stays browsable; profile is where sign-in lives.
+  if (!session) {
+    return <SignedOutProfile />;
+  }
 
   const onSave = async () => {
     setStatus({ kind: "saving" });
@@ -80,8 +86,33 @@ export default function ProfileScreen() {
   );
 }
 
+function SignedOutProfile() {
+  const router = useRouter();
+  return (
+    <Screen>
+      <AppText variant="h1">Profile</AppText>
+      <View style={styles.signedOut}>
+        <AppText variant="h3" style={styles.legal}>
+          Save your study, everywhere
+        </AppText>
+        <AppText tone="muted" style={styles.legal}>
+          Sign in to bookmark sections, keep notes, and sync progress across devices. Browsing the
+          library needs no account.
+        </AppText>
+        <Button label="Sign in" onPress={() => router.push("/(auth)/sign-in")} />
+      </View>
+      <View style={styles.footer}>
+        <AppText variant="micro" tone="faint" style={styles.legal}>
+          NexLex explains law for learning — it isn't legal advice.
+        </AppText>
+      </View>
+    </Screen>
+  );
+}
+
 const styles = StyleSheet.create({
   section: { gap: sp(3) },
+  signedOut: { gap: sp(3), paddingTop: sp(6) },
   footer: { marginTop: "auto", gap: sp(3) },
   legal: { textAlign: "center" },
 });
