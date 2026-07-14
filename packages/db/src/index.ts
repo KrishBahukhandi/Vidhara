@@ -22,6 +22,8 @@ export interface NexlexClientOptions {
   };
   /** Disable session detection in URLs (true on native, where deep links are handled manually). */
   detectSessionInUrl?: boolean;
+  /** Set false for stateless server-side readers (RSC content queries). Default true. */
+  persistSession?: boolean;
 }
 
 /**
@@ -34,10 +36,11 @@ export function createNexlexClient(
   anonKey: string,
   options: NexlexClientOptions = {},
 ): NexlexClient {
+  const persistSession = options.persistSession ?? true;
   return createClient<Database>(url, anonKey, {
     auth: {
-      persistSession: true,
-      autoRefreshToken: true,
+      persistSession,
+      autoRefreshToken: persistSession,
       detectSessionInUrl: options.detectSessionInUrl ?? false,
       ...(options.storage ? { storage: options.storage } : {}),
     },

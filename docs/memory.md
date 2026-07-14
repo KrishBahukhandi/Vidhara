@@ -29,7 +29,7 @@
 
 ## Known Bugs
 
-- **Android native build fails** (`:expo:compileDebugKotlin` — Unresolved reference `ExpoLogBoxPackage`). Root cause: pnpm 11 ignored `.npmrc`'s `node-linker=hoisted` (pnpm 11 reads config from pnpm-workspace.yaml), so the install is isolated/symlinked and Expo's Gradle autolinking wires codegen but not the `:expo`→`:expo-log-box` classpath. **Fix staged**: `nodeLinker: hoisted` now in pnpm-workspace.yaml — run `pnpm install` (full relink), then `npx expo run:android`. Founder deferred the relink 2026-07-13 to keep developing via web preview. `android/local.properties` (sdk.dir) already fixed the earlier "SDK location not found" error.
+- ~~**Android native build**~~ **RESOLVED 2026-07-14** — clean build succeeds (`BUILD SUCCESSFUL in 1m 35s`, app-debug.apk produced). Founder: plug the phone in and run `cd apps/mobile && npx expo run:android` — it will reuse the cached build, install, and launch against Metro. History: (1) "SDK location not found" → android/local.properties; (2) `ExpoLogBoxPackage` unresolved → pnpm 11 ignores .npmrc, `nodeLinker: hoisted` moved to pnpm-workspace.yaml; (3) after an interrupted install, THREE layouts coexisted (hoisted root + .pnpm store + per-app trees) and Gradle compiled stale generated code from the old .pnpm path → full clean (`rm -rf` all node_modules + generated android/) + fresh install + `expo prebuild`. Lesson: after switching nodeLinker, always clean-slate node_modules AND regenerated native dirs; local.properties must be re-written after every prebuild --clean.
 - Serif font family referenced by `AppText serif` isn't bundled yet — web preview falls back to Georgia via CSS; native falls back to system font (Phase 0 polish; cosmetic).
 
 ## Design Decisions
@@ -85,7 +85,7 @@
 
 ## TODO List (near-term, actionable)
 
-0. **Phase 1 next**: web SEO pages for acts/sections/mappings; `scripts/ingest/` pipeline (parse → validate → review → publish) targeting India Code sources; **purge `dev-sample` rows before real content lands** (`delete from law_mappings/act_sections/acts where provenance/slug in dev-sample set`); RLS re-check + advisors after any new DDL.
+0. **Phase 1 next**: India Code source parsers producing act bundles + first real act published through the pipeline; mapping-bundle format; **purge `dev-sample` rows before real content lands**; RLS re-check + advisors after any new DDL. (Web SEO pages ✓ and pipeline skeleton ✓ 2026-07-14.)
 
 1. ~~Supabase cloud project~~ **DONE 2026-07-13** (`eubyvglzkbzfeznocilg`). Remaining from this item: founder's real OTP sign-in → onboarding → profile edit on device; RLS cross-user integration test (needs 2 users).
 2. **Device build (local-first strategy, 2026-07-13)**: founder has Android Studio + physical phone → daily dev via `npx expo run:android` (unlimited local builds, hot reload). `eas init` still wanted eventually for release builds + managed Play signing credentials, but NOT a Phase 0 blocker anymore.
@@ -100,6 +100,7 @@ TODO 1 → 2 → 3 → 4 (Phase 0 exit) → 5 in parallel → Phase 1. No out-of
 
 ## Recent Changes
 
+- 2026-07-14 — **Web SEO pages + ingestion pipeline**: apps/web gains /acts, /acts/[slug], /acts/[slug]/[number] (counterpart-naming metadata + Legislation JSON-LD + no-JS statute HTML), /mapping, sitemap (25 URLs), robots, site chrome; all SSG+ISR, verified over HTTP. New `@nexlex/ingest` workspace package (bundle schema, validators + 12 tests, review-gated service-role publish, CLI). `scripts/*` added to workspace; db factory gains `persistSession` option. Hoisted relink applied after full clean (see Known Bugs history); android/ regenerated via prebuild.
 - 2026-07-13 — **Phase 1 slice: content core live** — migration 0003 + sample seed on Mumbai project; `features/acts` API (search with parser-first strategy, mapping lookup); Library/act-detail/reader/Mapping screens; anonymous browsing enabled (entry → Library, sign-in moved to Profile tab); MarkdownLite + MappingCard components. Browser-verified: acts list → IPC → §302 (serif text + sample-content chip + Modified mapping card) → cross-nav to BNS §103; "crpc 154" → BNSS §173. All screens themed via tokens only.
 - 2026-07-13 — **Android build attempt (founder, on-device)**: "SDK location not found" fixed via android/local.properties; second failure root-caused to pnpm isolated linking (see Known Bugs); `nodeLinker: hoisted` staged; founder chose web-preview development for now.
 - 2026-07-13 — **Supabase project created and verified live** (founder confirmed $0): ref `eubyvglzkbzfeznocilg` @ ap-south-1; migrations 0001 + **0002 (new: revoke public EXECUTE on SECURITY DEFINER trigger functions — security-advisor finding)**; trigger/cascade tested with throwaway user then cleaned; types regenerated from live schema; env files written (gitignored); auth gate verified in browser against real backend.
