@@ -1,6 +1,6 @@
 /**
  * Database types — GENERATED from the live NexLex Supabase project
- * (ref eubyvglzkbzfeznocilg, migrations 0001–0002).
+ * (ref eubyvglzkbzfeznocilg, migrations 0001–0003).
  * Regenerate after schema changes: pnpm --filter @nexlex/db gen:types
  */
 export type Json =
@@ -19,6 +19,260 @@ export type Database = {
   }
   public: {
     Tables: {
+      act_chapters: {
+        Row: {
+          act_id: string
+          id: string
+          number: string
+          part_number: string | null
+          part_title: string | null
+          sort_order: number
+          title: string
+        }
+        Insert: {
+          act_id: string
+          id?: string
+          number: string
+          part_number?: string | null
+          part_title?: string | null
+          sort_order: number
+          title: string
+        }
+        Update: {
+          act_id?: string
+          id?: string
+          number?: string
+          part_number?: string | null
+          part_title?: string | null
+          sort_order?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "act_chapters_act_id_fkey"
+            columns: ["act_id"]
+            isOneToOne: false
+            referencedRelation: "acts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      act_sections: {
+        Row: {
+          act_id: string
+          body_md: string
+          body_plain: string
+          chapter_id: string | null
+          created_at: string
+          effective_from: string | null
+          fts: unknown
+          id: string
+          is_repealed: boolean
+          marginal_note: string
+          number: string
+          provenance: string | null
+          review_status: string
+          sort_key: number
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          act_id: string
+          body_md: string
+          body_plain: string
+          chapter_id?: string | null
+          created_at?: string
+          effective_from?: string | null
+          fts?: unknown
+          id?: string
+          is_repealed?: boolean
+          marginal_note: string
+          number: string
+          provenance?: string | null
+          review_status?: string
+          sort_key: number
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          act_id?: string
+          body_md?: string
+          body_plain?: string
+          chapter_id?: string | null
+          created_at?: string
+          effective_from?: string | null
+          fts?: unknown
+          id?: string
+          is_repealed?: boolean
+          marginal_note?: string
+          number?: string
+          provenance?: string | null
+          review_status?: string
+          sort_key?: number
+          updated_at?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "act_sections_act_id_fkey"
+            columns: ["act_id"]
+            isOneToOne: false
+            referencedRelation: "acts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "act_sections_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "act_chapters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      acts: {
+        Row: {
+          abbreviation: string
+          category: string
+          created_at: string
+          enactment_date: string | null
+          enforcement_date: string | null
+          id: string
+          published_at: string | null
+          replaced_by_act_id: string | null
+          short_title: string | null
+          slug: string
+          source_url: string | null
+          status: string
+          title: string
+          updated_at: string
+          version: number
+          year: number
+        }
+        Insert: {
+          abbreviation: string
+          category?: string
+          created_at?: string
+          enactment_date?: string | null
+          enforcement_date?: string | null
+          id?: string
+          published_at?: string | null
+          replaced_by_act_id?: string | null
+          short_title?: string | null
+          slug: string
+          source_url?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          version?: number
+          year: number
+        }
+        Update: {
+          abbreviation?: string
+          category?: string
+          created_at?: string
+          enactment_date?: string | null
+          enforcement_date?: string | null
+          id?: string
+          published_at?: string | null
+          replaced_by_act_id?: string | null
+          short_title?: string | null
+          slug?: string
+          source_url?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          version?: number
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "acts_replaced_by_act_id_fkey"
+            columns: ["replaced_by_act_id"]
+            isOneToOne: false
+            referencedRelation: "acts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      law_mappings: {
+        Row: {
+          change_summary_md: string | null
+          created_at: string
+          id: string
+          mapping_type: string
+          provenance: string | null
+          review_status: string
+          reviewed_by: string | null
+          source_section_id: string
+          target_section_id: string
+        }
+        Insert: {
+          change_summary_md?: string | null
+          created_at?: string
+          id?: string
+          mapping_type: string
+          provenance?: string | null
+          review_status?: string
+          reviewed_by?: string | null
+          source_section_id: string
+          target_section_id: string
+        }
+        Update: {
+          change_summary_md?: string | null
+          created_at?: string
+          id?: string
+          mapping_type?: string
+          provenance?: string | null
+          review_status?: string
+          reviewed_by?: string | null
+          source_section_id?: string
+          target_section_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "law_mappings_source_section_id_fkey"
+            columns: ["source_section_id"]
+            isOneToOne: false
+            referencedRelation: "act_sections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "law_mappings_source_section_id_fkey"
+            columns: ["source_section_id"]
+            isOneToOne: false
+            referencedRelation: "v_mapping_lookup"
+            referencedColumns: ["source_section_id"]
+          },
+          {
+            foreignKeyName: "law_mappings_source_section_id_fkey"
+            columns: ["source_section_id"]
+            isOneToOne: false
+            referencedRelation: "v_mapping_lookup"
+            referencedColumns: ["target_section_id"]
+          },
+          {
+            foreignKeyName: "law_mappings_target_section_id_fkey"
+            columns: ["target_section_id"]
+            isOneToOne: false
+            referencedRelation: "act_sections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "law_mappings_target_section_id_fkey"
+            columns: ["target_section_id"]
+            isOneToOne: false
+            referencedRelation: "v_mapping_lookup"
+            referencedColumns: ["source_section_id"]
+          },
+          {
+            foreignKeyName: "law_mappings_target_section_id_fkey"
+            columns: ["target_section_id"]
+            isOneToOne: false
+            referencedRelation: "v_mapping_lookup"
+            referencedColumns: ["target_section_id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -60,10 +314,40 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      v_mapping_lookup: {
+        Row: {
+          change_summary_md: string | null
+          mapping_id: string | null
+          mapping_type: string | null
+          source_act: string | null
+          source_act_slug: string | null
+          source_marginal_note: string | null
+          source_number: string | null
+          source_section_id: string | null
+          target_act: string | null
+          target_act_slug: string | null
+          target_marginal_note: string | null
+          target_number: string | null
+          target_section_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      search_sections: {
+        Args: { max_results?: number; q: string; scope_act?: string }
+        Returns: {
+          act_abbreviation: string
+          act_slug: string
+          marginal_note: string
+          number: string
+          rank: number
+          section_id: string
+          snippet: string
+        }[]
+      }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
       plan_tier: "free" | "plus" | "pro"

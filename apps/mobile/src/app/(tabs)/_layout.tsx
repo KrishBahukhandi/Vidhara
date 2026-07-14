@@ -17,22 +17,26 @@ const TABS: { name: string; title: string; icon: IconName; iconFocused: IconName
   { name: "profile", title: "Profile", icon: "person-outline", iconFocused: "person" },
 ];
 
+/**
+ * Tabs are open to everyone — Library and Mapping work without an account
+ * (architecture.md §6). Signed-in users who haven't onboarded are routed to
+ * onboarding once; signed-out users see per-feature sign-in prompts instead.
+ */
 export default function TabsLayout() {
   const { session } = useSession();
   const { colors } = useTheme();
-  const [needsOnboarding, setNeedsOnboarding] = useState<boolean | null>(
-    isSupabaseConfigured ? null : false, // unconfigured dev mode: skip the check, show the shell
-  );
+  const [needsOnboarding, setNeedsOnboarding] = useState(false);
 
   useEffect(() => {
-    if (!session || !isSupabaseConfigured) return;
+    if (!session || !isSupabaseConfigured) {
+      setNeedsOnboarding(false);
+      return;
+    }
     getMyProfile().then((result) => {
-      setNeedsOnboarding(result.ok ? result.data.onboarded_at === null : false);
+      setNeedsOnboarding(result.ok && result.data.onboarded_at === null);
     });
   }, [session]);
 
-  if (!session && isSupabaseConfigured) return <Redirect href="/(auth)/sign-in" />;
-  if (needsOnboarding === null) return null;
   if (needsOnboarding) return <Redirect href="/onboarding" />;
 
   return (

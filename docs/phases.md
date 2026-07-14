@@ -1,14 +1,16 @@
 # NexLex — Development Phases
 
-> **Status**: Living document · **Version**: 0.2.0 · **Last updated**: 2026-07-13
-> **CURRENT PHASE: Phase 0 — Foundation** (documentation complete; scaffolding next)
+> **Status**: Living document · **Version**: 0.3.0 · **Last updated**: 2026-07-13
+> **CURRENT PHASE: Phase 1 — Content Core (in progress)**, opened by founder directive with three Phase 0 residuals tracked below (device build, Vercel deploy, polish). UI verification runs on the web previews until the Android build lands.
 > When a phase's exit criteria are met, mark it ✅ here and update memory.md in the same commit.
 
 Complexity scale: S / M / L / XL. Times assume focused solo development with AI assistance and will be recalibrated after Phase 1 (record actuals in memory.md → Lessons Learned).
 
 ---
 
-## Phase 0 — Foundation 🔵 IN PROGRESS
+## Phase 0 — Foundation 🟡 RESIDUALS ONLY
+
+> Remaining before ✅: (a) Android device build — `expo run:android` Gradle failure root-caused to pnpm isolated linking breaking Expo autolinking classpaths; fix staged (`nodeLinker: hoisted` in pnpm-workspace.yaml), applies on next `pnpm install`, then rebuild; (b) Vercel deploy of apps/web; (c) polish: fonts, ESLint, error boundaries; (d) founder OTP sign-in end-to-end on device.
 
 **Objectives**: A running, installable, tested skeleton — monorepo, Android app shell, web shell, auth, design tokens, CI — so every later phase is pure feature work.
 
@@ -41,7 +43,17 @@ Complexity scale: S / M / L / XL. Times assume focused solo development with AI 
 
 ---
 
-## Phase 1 — Content Core: Bare Acts + Mapping ⚪ NOT STARTED
+## Phase 1 — Content Core: Bare Acts + Mapping 🔵 IN PROGRESS
+
+**Progress 2026-07-13 — first vertical slice LIVE and browser-verified:**
+- [x] Migration 0003 applied (acts/chapters/sections/mappings, FTS + trigram indexes, published-only RLS, `search_sections` RPC, `v_mapping_lookup` security-invoker view)
+- [x] Dev sample seed (6 acts, 16 famous sections, 8 reviewed mappings across all three pairs) — honest provenance: placeholder bodies flagged in-UI with a "sample content" chip; **purge before real ingestion**
+- [x] App screens live against real DB: Library (acts list + search box), act detail, section reader (serif statute type + mapping cards with change-type badges), Mapping tab lookup via shared parser
+- [x] Anonymous browsing per architecture.md §6 (tabs open to all; sign-in lives in Profile; onboarding redirect only for signed-in users)
+- [x] Verified in Expo web preview: library → act → §302 reader → mapping card → cross-navigate to BNS §103; "crpc 154" lookup → BNSS §173 card
+- [ ] Ingestion pipeline (`scripts/ingest/`) + real priority-act content (the long pole)
+- [ ] Web SEO pages for acts/sections/mappings
+- [ ] Search polish: `⌘K`-style palette, typo tolerance verification at corpus scale
 
 **Objectives**: The content moat — best-in-class bare act reader and the canonical old⇄new criminal law mapping in the app, with the same content published as SEO pages on the web.
 
@@ -170,6 +182,7 @@ Complexity scale: S / M / L / XL. Times assume focused solo development with AI 
 - At each phase close: retro notes → memory.md Lessons Learned; estimates recalibrated here.
 
 *Change log*
+- 2026-07-13 · v0.3.0 · **Phase 1 opened** (founder directive; web previews for UI checks). Content-core slice shipped: migration 0003 live, sample seed, Library/Reader/Mapping screens verified end-to-end in browser. Phase 0 downgraded to residuals (device build blocked on staged nodeLinker fix, Vercel, polish).
 - 2026-07-13 · v0.2.1 · Phase 0 scaffold delivered (monorepo, tokens, both apps, migration 0001, CI); remaining items: Supabase cloud project, EAS device build, Vercel deploy, fonts/ESLint/boundaries polish.
 - 2026-07-13 · v0.2.0 · Android-first pivot: Phase 0 rebuilt around monorepo + Expo + EAS; Phase 1 splits app reader vs web SEO pages; Phase 3 launch = Play Store (closed-testing clock flagged as critical path); Phase 5 offline → SQLite + Play Billing decision; Phase 8 adds iOS groundwork.
 - 2026-07-13 · v0.1.0 · Initial phase plan (0–8). Phase 0 started; docs deliverable completed.
