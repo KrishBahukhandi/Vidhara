@@ -32,16 +32,36 @@ pnpm --filter @nexlex/ingest ingest publish bundles/<act>.json --status publishe
 pnpm --filter @nexlex/ingest ingest emit-sql bundles/<act>.json --out out.sql --status published --publish-act
 ```
 
-### Gazette parser notes (learned on the real BNS 2023 PDF)
+### Gazette parser notes (learned on BNS/BNSS/BSA 2023 — two different PDF producers)
 
-Marginal notes are discriminated by **font height** (≈8.8pt vs body ≈11pt) plus x-position — the
-only signal that survives abutting columns, alternating note sides, and text-grid drift. The
-parser also handles: kerned headings ("CHAPTERI"), missing space after section numbers
-("192.Whoever"), notes overflowing past the next section's start (period-sealing), right-column
-statutory citations ("45 of 1860." → diagnostics), the drop-cap enactment formula ("B E it
-enacted"), and the signature block. Bundles in `bundles/` are the artifacts of record for
-human proofreading; upserts key on (act_id, number) so re-publishing preserves section ids
-(bookmarks and mappings survive).
+`gazette-bbox.ts` is the canonical, **producer-independent** path. Design (do not regress these):
+
+- **Line grouping by baseline (yMax), not top edge (yMin).** Marginal notes and italic/emphasis
+  runs are smaller type on the same printed line — they share a baseline but have a larger yMin.
+  Grouping by yMin scattered them into phantom lines (this broke BNSS entirely). `gazette-common.ts`
+  holds the shared section/chapter assembly state machine.
+- **Note side is per page, decided by evidence.** Recto pages note right, verso left. A page is
+  right-note when it has more right-note lines than left-note lines (statutory citations like
+  "45 of 1860." are excluded — they appear in the right column on both sides; the digital-signature
+  certificate block is excluded by stopping at the end sentinel).
+- **Always extract the right column** (x ≥ ~484, past the body's right edge) regardless of page
+  side — a section's note occasionally sits on the right even on a left-note page.
+- **Bare-number section starts**: "262." alone on a line (long note pushed the body down) is a valid
+  start; the plausibility guard (strictly increasing, ≤20 jump) rejects stray list numbers.
+- Also handles: kerned headings ("CHAPTERI"), missing space after the number ("192.Whoever"),
+  note overflow past the next start (period-sealing), the drop-cap enactment formula ("B E it
+  enacted"), furniture/signature blocks.
+
+`gazette-pdf.ts` (-layout text) is a heuristic fallback only — character-grid columns drift.
+
+Bundles in `bundles/` are the **artifacts of record** for proofreading. Known residue after the
+2023-codes ingestion: ~40 sections across the three acts have multi-line marginal-note TITLES with
+wrap/word-order artifacts (bodies are correct). Upserts key on (act_id, number) so re-publishing
+preserves section ids — bookmarks and mappings survive.
+
+Publishing at scale (531-section BNSS) was done via a temporary secret-gated Supabase edge function
+(`ingest-publish`, redeploy → POST bundles → tombstone to 410) to keep the service-role key
+server-side; `emit-sql` is the reviewable-SQL alternative for smaller acts.
 
 ## Credentials
 

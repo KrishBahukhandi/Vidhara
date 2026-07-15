@@ -1,0 +1,14 @@
+{
+  "act": {
+    "slug": "bsa",
+    "title": "The Bharatiya Sakshya Adhiniyam, 2023",
+    "shortTitle": "BSA",
+    "abbreviation": "BSA",
+    "year": 2023,
+    "category": "criminal",
+    "status": "active",
+    "enforcementDate": "2024-07-01",
+    "sourceUrl": "https://www.mha.gov.in/sites/default/files/2024-04/250882_english_01042024_0.pdf"
+  },
+  "provenance": "Official Gazette text: The Bharatiya Sakshya Adhiniyam, 2023 (47 of 2023), English PDF as hosted by Ministry of Home Affairs (mha.gov.in, file 250882_english_01042024_0.pdf). Extracted via pdftotext 26.07 -bbox and @nexlex/ingest gazette-bbox parser on 2026-07-14. Automated parse; structural validation + spot verification; full clause-level proofread pending."
+}

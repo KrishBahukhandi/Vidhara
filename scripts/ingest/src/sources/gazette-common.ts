@@ -40,7 +40,11 @@ export const CITATION = /^\d{1,3}\s+of\s+\d{4}\.?$/;
 export const SIGNATURE_FRAGMENT = /^[A-Z][A-Z\s.]{3,},$/;
 // \s* not \s+: the gazette text layer sometimes drops the space after the
 // section number ("192.Whoever malignantly…").
-const SECTION_START = /^(\d{1,3}[A-Z]{0,2})\.\s*(\S.*)$/;
+// Trailing text is optional: when a section's marginal note is long, the
+// gazette can print the bare number ("262.") on its own line with the body
+// starting below. The plausibility guard (strictly increasing) rejects stray
+// bare numbers from lists.
+const SECTION_START = /^(\d{1,3}[A-Z]{0,2})\.\s*(.*)$/;
 // \s* not \s+: tight kerning in the PDF text layer yields "CHAPTERI".
 const CHAPTER_HEADING = /^CHAPTER\s*([IVXLCDM]+)$/;
 const ALL_CAPS_LINE = /^[A-Z][A-Z\s,.'()—–-]*$/;
@@ -162,10 +166,13 @@ export function assembleSections(lines: Iterable<LineParts>): GazetteParseResult
     let sectionMatch = body === undefined ? null : SECTION_START.exec(body);
     if (sectionMatch && sectionMatch[1] && sectionMatch[2] !== undefined) {
       const base = parseInt(sectionMatch[1], 10);
-      // First section accepted as-is (documents may excerpt); later ones must
-      // advance by a small step — anything else is body text ("2. ..." lists).
+      // Section numbers strictly increase. A start must advance the counter;
+      // a small forward jump is fine (tolerates a missed start), but a repeat
+      // or backward number is body text (numbered lists, "(1)"-style clauses,
+      // sub-item "1." inside a section). Cap the jump so a stray large number
+      // ("45 of 1860", schedule rows) can't hijack the sequence.
       const plausible =
-        lastBaseNumber === 0 || (base >= lastBaseNumber && base - lastBaseNumber <= 5);
+        lastBaseNumber === 0 || (base > lastBaseNumber && base - lastBaseNumber <= 20);
       if (!plausible) {
         diagnostics.push(
           `implausible section start "${sectionMatch[1]}." after §${lastBaseNumber} — treated as body`,
@@ -211,7 +218,9 @@ export function assembleSections(lines: Iterable<LineParts>): GazetteParseResult
       lastBaseNumber = parseInt(sectionMatch[1], 10);
       noteFragments = pendingNoteFragments;
       pendingNoteFragments = [];
-      paragraphs = [[sectionMatch[2]]];
+      // Bare-number start ("262." alone) → empty opening paragraph; the body
+      // text on following lines fills it.
+      paragraphs = sectionMatch[2].trim() ? [[sectionMatch[2].trim()]] : [[]];
       bodyLinesSinceNote = 0;
       noteSealed =
         noteFragments.length > 0 && /\.$/.test(noteFragments[noteFragments.length - 1]!);
