@@ -1,0 +1,186 @@
+/**
+ * Inline-heading act parser for the OLD codes (IPC 1860, CrPC 1973, Evidence
+ * Act 1872). These pre-date the marginal-note column format: the section title
+ * is a run-in heading —  `302. Punishment for murder.—Whoever commits murder…`
+ * — so the note lives between the number and the em-dash, not in a margin.
+ *
+ * Consumes `pdftotext -bbox` XHTML (word coordinates + height). Design facts
+ * verified on the India Code IPC/IEA PDFs:
+ * - Amendment FOOTNOTES ("1. Subs. by Act 4 of 1898…") and superscript
+ *   reference markers are set in SMALLER type (~8pt vs ~10pt body) at page
+ *   bottoms; dropping sub-body-height words removes both cleanly.
+ * - The table of contents ("ARRANGEMENT OF SECTIONS") repeats every section
+ *   number; real text begins after the "…enacted as follows" formula.
+ * - Section numbers still increase monotonically, so the strictly-increasing
+ *   guard rejects any footnote number that survives.
+ */
+import type { GazetteParseResult, ParsedChapter, ParsedSection } from "./gazette-common";
+import { END_SENTINELS, FURNITURE } from "./gazette-common";
+
+interface Word {
+  xMin: number;
+  yMin: number;
+  baseline: number;
+  height: number;
+  text: string;
+}
+
+const WORD_TAG =
+  /<word xMin="([\d.]+)" yMin="([\d.]+)" xMax="([\d.]+)" yMax="([\d.]+)">([^<]*)<\/word>/g;
+/** Body type is 9–10pt; footnotes/superscript markers ~8.2pt. Threshold sits
+ * between so borderline body pages (≈9.0pt) survive while footnotes drop. */
+const MIN_BODY_HEIGHT = 8.6;
+const LINE_Y_TOLERANCE = 4;
+const ENACTED = /enacted as follows/i;
+const CHAPTER_HEADING = /^CHAPTER\s*([IVXLCDM]+)([A-Z])?$/;
+const ALL_CAPS_LINE = /^[A-Z][A-Z0-9\s,.'()—–-]*$/;
+// Section start: "302. <rest…>" — the run-in title may wrap onto later lines,
+// so the title/body split happens after the whole section is accumulated.
+const SECTION_START = /^(\d{1,3}[A-Z]?)\.\s+(.*)$/;
+// Title ends at the first ".—"/".–" (em/en dash). Non-greedy, length-capped so
+// a stray mid-body dash can't swallow a paragraph as the "title".
+const TITLE_SPLIT = /^(.{3,160}?)\.\s*[—–]\s*([\s\S]*)$/;
+// Fallback for run-in titles with no dash (mostly repealed sections:
+// "Definition of “Queen”. Omitted by the A. O. 1950."): split at the first
+// sentence period.
+const TITLE_PERIOD_SPLIT = /^(.{3,120}?)\.\s+([\s\S]*)$/;
+/** Amendment/footnote glyphs that can precede a section number at line start. */
+const LEADING_MARKERS = /^[[\]*\s]+/;
+
+function decodeEntities(s: string): string {
+  return s
+    .replaceAll("&amp;", "&")
+    .replaceAll("&lt;", "<")
+    .replaceAll("&gt;", ">")
+    .replaceAll("&quot;", '"')
+    .replaceAll("&apos;", "'")
+    .replace(/&#(\d+);/g, (_, code: string) => String.fromCodePoint(Number(code)));
+}
+
+function groupIntoLines(words: Word[]): Word[][] {
+  const sorted = [...words].sort((a, b) => a.baseline - b.baseline || a.xMin - b.xMin);
+  const lines: Word[][] = [];
+  let current: Word[] = [];
+  let currentBaseline = Number.NEGATIVE_INFINITY;
+  for (const word of sorted) {
+    if (current.length === 0 || Math.abs(word.baseline - currentBaseline) <= LINE_Y_TOLERANCE) {
+      current.push(word);
+      if (current.length === 1) currentBaseline = word.baseline;
+    } else {
+      lines.push(current.sort((a, b) => a.xMin - b.xMin));
+      current = [word];
+      currentBaseline = word.baseline;
+    }
+  }
+  if (current.length > 0) lines.push(current.sort((a, b) => a.xMin - b.xMin));
+  return lines;
+}
+
+export function parseInlineAct(xhtml: string): GazetteParseResult {
+  const diagnostics: string[] = [];
+  const sections: ParsedSection[] = [];
+  const chapters: ParsedChapter[] = [];
+
+  let started = false;
+  let ended = false;
+  let currentChapter: string | undefined;
+  let pendingChapterNumber: string | null = null;
+  let pendingChapterTitle: string[] = [];
+
+  let currentNumber: string | null = null;
+  let currentChapterForSection: string | undefined;
+  let rawParts: string[] = [];
+  let lastBase = 0;
+
+  const flush = () => {
+    if (currentNumber === null) return;
+    const raw = rawParts.join(" ").replace(/\s+/g, " ").trim();
+    const split = TITLE_SPLIT.exec(raw) ?? TITLE_PERIOD_SPLIT.exec(raw);
+    // Strip stray amendment brackets from an extracted title.
+    let marginalNote = split ? (split[1] ?? "").replace(/[[\]]/g, "").trim() : "";
+    const bodyMd = split ? (split[2] ?? "").trim() : raw;
+    // Never-empty guarantee (heavily-amended/repealed old sections): fall back
+    // to the leading text of the body, then to the bare section label.
+    if (!marginalNote) {
+      marginalNote =
+        raw.replace(/[[\]]/g, "").slice(0, 80).replace(/\s+\S*$/, "").trim() ||
+        `Section ${currentNumber}`;
+    }
+    sections.push({ number: currentNumber, chapterNumber: currentChapterForSection, marginalNote, bodyMd });
+    currentNumber = null;
+    rawParts = [];
+  };
+  const flushChapter = () => {
+    if (pendingChapterNumber === null) return;
+    const title = pendingChapterTitle.join(" ").replace(/\s+/g, " ").trim();
+    chapters.push({
+      number: pendingChapterNumber,
+      title: title || `Chapter ${pendingChapterNumber}`,
+      sortOrder: chapters.length + 1,
+    });
+    currentChapter = pendingChapterNumber;
+    pendingChapterNumber = null;
+    pendingChapterTitle = [];
+  };
+
+  for (const pageXml of xhtml.split(/<page /).slice(1)) {
+    if (ended) break;
+    const words: Word[] = [];
+    for (const m of pageXml.matchAll(WORD_TAG)) {
+      const yMin = Number(m[2]);
+      const yMax = Number(m[4]);
+      if (yMax - yMin < MIN_BODY_HEIGHT) continue; // drop footnotes + superscripts
+      words.push({ xMin: Number(m[1]), yMin, baseline: yMax, height: yMax - yMin, text: decodeEntities(m[5] ?? "") });
+    }
+
+    for (const line of groupIntoLines(words)) {
+      const flat = line.map((w) => w.text).join(" ").replace(/\s+/g, " ").trim();
+      if (!flat) continue;
+      if (!started) {
+        if (ENACTED.test(flat)) started = true;
+        continue;
+      }
+      if (END_SENTINELS.some((re) => re.test(flat))) {
+        ended = true;
+        break;
+      }
+      if (FURNITURE.some((re) => re.test(flat))) continue;
+
+      const chapterMatch = CHAPTER_HEADING.exec(flat);
+      if (chapterMatch) {
+        flush();
+        flushChapter();
+        pendingChapterNumber = `${chapterMatch[1]}${chapterMatch[2] ?? ""}`;
+        continue;
+      }
+      // Section heading, ignoring any leading amendment bracket/marker.
+      const headline = flat.replace(LEADING_MARKERS, "");
+      if (pendingChapterNumber !== null && ALL_CAPS_LINE.test(flat) && !SECTION_START.test(headline)) {
+        pendingChapterTitle.push(flat);
+        continue;
+      }
+      flushChapter();
+
+      const match = SECTION_START.exec(headline);
+      if (match?.[1]) {
+        const base = parseInt(match[1], 10);
+        const plausible = base > lastBase && base - lastBase <= 20;
+        if (plausible) {
+          flush();
+          lastBase = base;
+          currentNumber = match[1];
+          currentChapterForSection = currentChapter;
+          rawParts = [match[2] ?? ""];
+          continue;
+        }
+        if (base <= lastBase) diagnostics.push(`skipped non-increasing "${match[1]}." (footnote/list) near §${lastBase}`);
+      }
+
+      if (currentNumber !== null) rawParts.push(flat);
+    }
+  }
+
+  flush();
+  flushChapter();
+  return { sections, chapters, diagnostics };
+}

@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "ipc",
+    "title": "The Indian Penal Code, 1860",
+    "shortTitle": "IPC",
+    "abbreviation": "IPC",
+    "year": 1860,
+    "category": "criminal",
+    "status": "replaced",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/2263"
+  },
+  "provenance": "Official India Code text: The Indian Penal Code, 1860 (45 of 1860), English PDF (A1860-45.pdf) retrieved via Internet Archive Wayback Machine snapshot 2020-04-21 of indiacode.nic.in (portal unreachable from ingest network). Extracted via pdftotext 26.07 -bbox and @nexlex/ingest inline parser on 2026-07-15. Repealed by BNS 2023 w.e.f. 2024-07-01. Automated parse; footnotes/amendment history excluded; spot-verified; full clause-level proofread pending."
+}

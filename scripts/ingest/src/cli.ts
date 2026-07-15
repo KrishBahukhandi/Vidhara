@@ -19,6 +19,7 @@ import process from "node:process";
 import { emitSqlFromRaw } from "./emit-sql";
 import { publishBundle, type PublishOptions } from "./publish";
 import { parseGazetteBBox } from "./sources/gazette-bbox";
+import { parseInlineAct } from "./sources/gazette-inline";
 import { parseGazetteLayoutText } from "./sources/gazette-pdf";
 import { validateBundle } from "./validate";
 
@@ -52,12 +53,28 @@ function parseGazetteCommand(inputPath: string, flags: string[]): void {
     provenance: string;
   };
   const inputText = readFileSync(inputPath, "utf8");
-  // Prefer -bbox XHTML (exact word coordinates); -layout text is the fallback.
   const isBBox = inputText.trimStart().startsWith("<");
-  const { sections, chapters, diagnostics } = isBBox
-    ? parseGazetteBBox(inputText)
-    : parseGazetteLayoutText(inputText);
-  console.log(`format: ${isBBox ? "bbox (coordinates)" : "layout (heuristic columns)"}`);
+  // --inline: run-in-heading format of the pre-2023 codes (IPC/CrPC/IEA),
+  //   requires -bbox. Otherwise the marginal-note gazette format (new codes).
+  const inline = flags.includes("--inline");
+  let format: string;
+  let result;
+  if (inline) {
+    if (!isBBox) {
+      console.error("--inline requires -bbox XHTML input");
+      process.exit(1);
+    }
+    result = parseInlineAct(inputText);
+    format = "inline (run-in headings, -bbox)";
+  } else if (isBBox) {
+    result = parseGazetteBBox(inputText);
+    format = "bbox (marginal-note column)";
+  } else {
+    result = parseGazetteLayoutText(inputText);
+    format = "layout (heuristic columns)";
+  }
+  const { sections, chapters, diagnostics } = result;
+  console.log(`format: ${format}`);
 
   for (const diagnostic of diagnostics) console.warn(`  ⚠ ${diagnostic}`);
 

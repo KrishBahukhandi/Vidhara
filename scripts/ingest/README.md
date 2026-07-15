@@ -54,6 +54,21 @@ pnpm --filter @nexlex/ingest ingest emit-sql bundles/<act>.json --out out.sql --
 
 `gazette-pdf.ts` (-layout text) is a heuristic fallback only — character-grid columns drift.
 
+**Old codes (pre-2023): `gazette-inline.ts` (`--inline` flag).** IPC 1860, CrPC 1973, Evidence
+Act 1872 have no marginal-note column — the title is a run-in heading:
+`302. Punishment for murder.—Whoever commits murder…`. The inline parser drops footnotes and
+superscript markers by font height (< 8.6pt; body is 9–10pt), strips amendment brackets
+(`[34. …` for inserted sections), starts after the "…enacted as follows" formula (skipping the
+ARRANGEMENT OF SECTIONS table of contents), and splits the title at the first `.—`/`.–` — with a
+first-period fallback for repealed sections (`Definition of "Queen". Omitted by the A. O. 1950.`)
+and a never-empty guarantee. Run with:
+
+    pdftotext -bbox act.pdf act.xhtml
+    ingest parse-gazette act.xhtml --meta bundles/<act>-meta.json --out bundles/<act>.json --inline
+
+Source PDFs for the old codes came from the Internet Archive Wayback Machine (CDX API) because
+indiacode.nic.in is unreachable from some networks; note this environment caps downloads at 1 MiB.
+
 Bundles in `bundles/` are the **artifacts of record** for proofreading. Known residue after the
 2023-codes ingestion: ~40 sections across the three acts have multi-line marginal-note TITLES with
 wrap/word-order artifacts (bodies are correct). Upserts key on (act_id, number) so re-publishing
