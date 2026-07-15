@@ -4,15 +4,19 @@
  * geometric and typographic — immune to the character-grid drift that plagues
  * -layout output.
  *
- * Measured on the official BNS 2023 PDF (A4, 595pt wide):
- * - Marginal notes are set in SMALLER type: word height ≈ 8.8pt vs body ≈ 11pt.
- *   That is the primary discriminator — on crowded lines the left-note column
- *   (x ∈ [~58, ~140]) and the body column (x ≥ ~108) touch with ~1pt gaps, so
- *   position alone cannot split them.
- * - Left notes: small words anchored at x ≈ 58, confined to x ≤ ~150.
- *   (Small type elsewhere — Illustrations blocks — runs past x > 150 and is
- *   kept as body.)
- * - Right notes: any word at xMin ≥ ~484 (body ends ≈ 482).
+ * Position/side model (producer-independent — verified on the cairo-produced
+ * BNS 2023 and the iTextSharp-produced BNSS/BSA 2023 PDFs, whose font-height
+ * metrics disagree, so height is NOT used):
+ * - Each page prints marginal notes in ONE outer column — right on recto,
+ *   left on verso. A page is a RIGHT-note page iff several non-furniture lines
+ *   carry a word starting at x ≥ RIGHT_NOTE_X (≈484; body ends ≈478).
+ * - Right-note page: words at x ≥ RIGHT_NOTE_X are the note; the rest is body,
+ *   which is flush-left — no left splitting (avoids false splits on body gaps).
+ * - Left-note page: a line whose first word starts in the margin column
+ *   (x ≤ LEFT_NOTE_ANCHOR) is a note prefix; it runs while words stay within
+ *   the note zone (x ≤ LEFT_NOTE_ZONE) and the body resumes at x ≥ BODY_MIN.
+ *   Body continuation lines are indented past the anchor, so they are never
+ *   mistaken for notes.
  * - Statutory citations ("45 of 1860.") share the right column — recorded in
  *   diagnostics, excluded from notes/body.
  * - Content begins after the "B E it enacted…" drop-cap formula and ends at
@@ -20,6 +24,7 @@
  */
 import {
   assembleSections,
+  CITATION,
   classifyRightFragment,
   ENACTMENT,
   END_SENTINELS,
@@ -32,18 +37,25 @@ export interface Word {
   xMin: number;
   xMax: number;
   yMin: number;
+  /** Text baseline (yMax from pdftotext). Words on one printed line share this
+   * even when italic/emphasis runs have a different height and yMin. */
+  baseline: number;
   height: number;
   text: string;
 }
 
+/** Body right edge ≈478; words starting at/after this are the right note column. */
 const RIGHT_NOTE_X = 484;
-/** Note type ≈ 8.8pt tall; body ≈ 11pt. */
-const NOTE_MAX_HEIGHT = 10;
-/** Left notes anchor at x ≈ 58 … */
+/** Left notes' first word starts at x ≈ 57–58. */
 const LEFT_NOTE_ANCHOR_MAX_X = 100;
-/** … and never extend past ~140; small type beyond this is body (Illustrations). */
-const LEFT_NOTE_ZONE_MAX_X = 150;
-const LINE_Y_TOLERANCE = 3;
+/** Left note words stay within this column; body resumes past it. */
+const LEFT_NOTE_ZONE_MAX_X = 135;
+/** Body (section number / indented continuation) resumes at/after this. */
+const BODY_MIN_X = 138;
+/** Non-furniture lines with a right-column word needed to call a page recto. */
+const RIGHT_NOTE_PAGE_MIN_LINES = 3;
+/** Baseline (yMax) grouping tolerance; body line spacing is ≈12pt. */
+const LINE_Y_TOLERANCE = 4;
 
 const WORD_TAG =
   /<word xMin="([\d.]+)" yMin="([\d.]+)" xMax="([\d.]+)" yMax="([\d.]+)">([^<]*)<\/word>/g;
@@ -58,54 +70,98 @@ function decodeEntities(s: string): string {
     .replace(/&#(\d+);/g, (_, code: string) => String.fromCodePoint(Number(code)));
 }
 
-/** Groups a page's words (already in reading order) into visual lines. */
+/**
+ * Groups a page's words into visual lines by shared text baseline (yMax).
+ * Baseline — not yMin — because marginal notes and italic/emphasis runs are
+ * set in smaller type: they share the body baseline but have a larger yMin,
+ * which would scatter them into phantom lines if grouped by top edge.
+ */
 export function groupIntoLines(words: Word[]): Word[][] {
-  const sorted = [...words].sort((a, b) => a.yMin - b.yMin || a.xMin - b.xMin);
+  const sorted = [...words].sort((a, b) => a.baseline - b.baseline || a.xMin - b.xMin);
   const lines: Word[][] = [];
   let current: Word[] = [];
-  let currentY = Number.NEGATIVE_INFINITY;
+  let currentBaseline = Number.NEGATIVE_INFINITY;
 
   for (const word of sorted) {
-    if (current.length === 0 || Math.abs(word.yMin - currentY) <= LINE_Y_TOLERANCE) {
+    if (current.length === 0 || Math.abs(word.baseline - currentBaseline) <= LINE_Y_TOLERANCE) {
       current.push(word);
-      if (current.length === 1) currentY = word.yMin;
+      if (current.length === 1) currentBaseline = word.baseline;
     } else {
       lines.push(current.sort((a, b) => a.xMin - b.xMin));
       current = [word];
-      currentY = word.yMin;
+      currentBaseline = word.baseline;
     }
   }
   if (current.length > 0) lines.push(current.sort((a, b) => a.xMin - b.xMin));
   return lines;
 }
 
-/** Classifies one visual line into margin / body / citation parts. */
-export function classifyLine(line: Word[]): LineParts {
+/** A line has a left-margin note: first word in the anchor column, then a gap
+ * to body resuming past the note zone. */
+export function isLeftNoteLine(line: Word[]): boolean {
+  const first = line[0];
+  if (!first || first.xMin > LEFT_NOTE_ANCHOR_MAX_X) return false;
+  let split = 0;
+  while (split < line.length && line[split]!.xMax <= LEFT_NOTE_ZONE_MAX_X) split++;
+  if (split === 0 || split === line.length) return false;
+  return line[split]!.xMin >= BODY_MIN_X;
+}
+
+/** A line has a right-margin NOTE (not merely a statutory citation, which
+ * appears in the right column on left-note pages too). */
+export function isRightNoteLine(line: Word[]): boolean {
+  const rightWords = line.filter((w) => w.xMin >= RIGHT_NOTE_X);
+  if (rightWords.length === 0) return false;
+  return !CITATION.test(rightWords.map((w) => w.text).join(" ").trim());
+}
+
+/**
+ * Determines a page's note side by weighing evidence: recto pages have many
+ * right-margin notes, verso pages many left-margin notes. Citations (which sit
+ * in the right column regardless of side) are excluded from right evidence.
+ */
+export function isRightNotePage(contentLines: Word[][]): boolean {
+  let right = 0;
+  let left = 0;
+  for (const line of contentLines) {
+    if (isRightNoteLine(line)) right++;
+    if (isLeftNoteLine(line)) left++;
+  }
+  return right > left && right >= RIGHT_NOTE_PAGE_MIN_LINES;
+}
+
+/**
+ * Classifies one visual line into margin / body / citation parts.
+ * `rightNotePage` selects the primary note column, but right-column words
+ * (x ≥ RIGHT_NOTE_X, past the body's right edge) are ALWAYS notes/citations —
+ * a section's note occasionally sits on the right even on a left-note page.
+ */
+export function classifyLine(line: Word[], rightNotePage: boolean): LineParts {
   const parts: LineParts = {};
 
   const rightWords = line.filter((w) => w.xMin >= RIGHT_NOTE_X);
-  const mainWords = line.filter((w) => w.xMin < RIGHT_NOTE_X);
-
+  let rest = line.filter((w) => w.xMin < RIGHT_NOTE_X);
   if (rightWords.length > 0) {
     classifyRightFragment(rightWords.map((w) => w.text).join(" ").trim(), parts);
   }
-  if (mainWords.length === 0) return parts;
 
-  // Left marginal note: SMALL type anchored in the left column and confined to
-  // the note zone. Small type running wider is body (Illustrations blocks).
-  const smallWords = mainWords.filter((w) => w.height < NOTE_MAX_HEIGHT);
-  let bodyWords = mainWords;
-  if (
-    smallWords.length > 0 &&
-    smallWords[0]!.xMin <= LEFT_NOTE_ANCHOR_MAX_X &&
-    smallWords.every((w) => w.xMax <= LEFT_NOTE_ZONE_MAX_X)
-  ) {
-    const fragment = smallWords.map((w) => w.text).join(" ").trim();
-    if (fragment) parts.margin = parts.margin ? `${fragment} ${parts.margin}` : fragment;
-    bodyWords = mainWords.filter((w) => w.height >= NOTE_MAX_HEIGHT);
+  // Left-note page: a margin prefix is present only when the FIRST word sits in
+  // the anchor column; body continuation lines are indented past it.
+  if (!rightNotePage) {
+    const first = rest[0];
+    if (first && first.xMin <= LEFT_NOTE_ANCHOR_MAX_X) {
+      let split = 0;
+      while (split < rest.length && rest[split]!.xMax <= LEFT_NOTE_ZONE_MAX_X) split++;
+      const bodyStart = rest[split];
+      if (split > 0 && (bodyStart === undefined || bodyStart.xMin >= BODY_MIN_X)) {
+        const fragment = rest.slice(0, split).map((w) => w.text).join(" ").trim();
+        if (fragment) parts.margin = parts.margin ? `${fragment} ${parts.margin}` : fragment;
+        rest = rest.slice(split);
+      }
+    }
   }
 
-  const body = bodyWords.map((w) => w.text).join(" ").replace(/\s+/g, " ").trim();
+  const body = rest.map((w) => w.text).join(" ").replace(/\s+/g, " ").trim();
   if (body) parts.body = body;
   return parts;
 }
@@ -121,16 +177,32 @@ export function parseGazetteBBox(xhtml: string): GazetteParseResult {
     const words: Word[] = [];
     for (const match of pageXml.matchAll(WORD_TAG)) {
       const yMin = Number(match[2]);
+      const yMax = Number(match[4]);
       words.push({
         xMin: Number(match[1]),
         yMin,
         xMax: Number(match[3]),
-        height: Number(match[4]) - yMin,
+        baseline: yMax,
+        height: yMax - yMin,
         text: decodeEntities(match[5] ?? ""),
       });
     }
 
-    for (const line of groupIntoLines(words)) {
+    const pageLines = groupIntoLines(words);
+    // Page-side evidence is gathered only from real content lines — furniture
+    // and anything from the end-signature block onward (a digital-certificate
+    // dump lives in the right column and would skew the vote) are excluded.
+    const sentinelIdx = pageLines.findIndex((line) =>
+      END_SENTINELS.some((re) => re.test(line.map((w) => w.text).join(" "))),
+    );
+    const upto = sentinelIdx === -1 ? pageLines.length : sentinelIdx;
+    const contentLines = pageLines.slice(0, upto).filter((line) => {
+      const flat = line.map((w) => w.text).join(" ").trim();
+      return !FURNITURE.some((re) => re.test(flat));
+    });
+    const rightNotePage = isRightNotePage(contentLines);
+
+    for (const line of pageLines) {
       const flat = line.map((w) => w.text).join(" ");
       if (!started) {
         if (ENACTMENT.test(flat)) started = true;
@@ -141,7 +213,7 @@ export function parseGazetteBBox(xhtml: string): GazetteParseResult {
         break;
       }
       if (FURNITURE.some((re) => re.test(flat.trim()))) continue;
-      lineParts.push(classifyLine(line));
+      lineParts.push(classifyLine(line, rightNotePage));
     }
   }
 
