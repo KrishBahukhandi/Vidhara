@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "iea",
+    "title": "The Indian Evidence Act, 1872",
+    "shortTitle": "IEA",
+    "abbreviation": "IEA",
+    "year": 1872,
+    "category": "criminal",
+    "status": "replaced",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/15351"
+  },
+  "provenance": "Official India Code text: The Indian Evidence Act, 1872 (1 of 1872), English PDF (iea_1872.pdf) retrieved via Internet Archive Wayback Machine snapshot 2021-09-03 of indiacode.nic.in (portal unreachable from ingest network). Extracted via pdftotext 26.07 -bbox and @nexlex/ingest inline parser on 2026-07-15. Repealed by BSA 2023 w.e.f. 2024-07-01. Automated parse; footnotes/amendment history excluded; spot-verified; full clause-level proofread pending."
+}
