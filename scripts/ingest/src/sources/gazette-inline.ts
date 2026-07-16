@@ -32,14 +32,20 @@ const WORD_TAG =
 const MIN_BODY_HEIGHT = 8.6;
 const LINE_Y_TOLERANCE = 4;
 // "It is enacted as follows:—" (IPC) / "BE it enacted by Parliament in the
-// twenty-fourth Year…" (CrPC). A SECOND occurrence mid-document marks an
+// twenty-fourth Year…" (CrPC) / "…ADOPT, ENACT AND GIVE TO OURSELVES THIS
+// CONSTITUTION" (COI preamble). A SECOND occurrence mid-document marks an
 // appended amendment act — parsing stops there.
-const ENACTED = /enacted\s+(?:as\s+follows|by\s+Parliament)/i;
-const CHAPTER_HEADING = /^CHAPTER\s*([IVXLCDM]+)([A-Z])?$/;
+const ENACTED = /enacted\s+(?:as\s+follows|by\s+Parliament)|ENACT\s+AND\s+GIVE\s+TO\s+OURSELVES/i;
+/** Schedules follow the last article of the Constitution — parsing ends. */
+const SCHEDULE_START =
+  /^(FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH|EIGHTH|NINTH|TENTH|ELEVENTH|TWELFTH)\s+SCHEDULE/;
+// Constitution uses PART headings; other acts CHAPTER. Both fold to chapters.
+const CHAPTER_HEADING = /^(?:CHAPTER|PART)\s*([IVXLCDM]+)([A-Z])?$/;
 const ALL_CAPS_LINE = /^[A-Z][A-Z0-9\s,.'()—–-]*$/;
 // Section start: "302. <rest…>" — the run-in title may wrap onto later lines,
 // so the title/body split happens after the whole section is accumulated.
-const SECTION_START = /^(\d{1,3}[A-Z]?)\.\s+(.*)$/;
+// \s* not \s+: some PDFs drop the space after the number ("16.“Undue…").
+const SECTION_START = /^(\d{1,3}[A-Z]{0,2})\.\s*(\S.*)$/;
 // Title ends at the first ".—"/".–" (em/en dash). Non-greedy, length-capped so
 // a stray mid-body dash can't swallow a paragraph as the "title".
 const TITLE_SPLIT = /^(.{3,160}?)\.\s*[—–]\s*([\s\S]*)$/;
@@ -148,6 +154,11 @@ export function parseInlineAct(xhtml: string): GazetteParseResult {
         ended = true;
         break;
       }
+      if (SCHEDULE_START.test(flat)) {
+        diagnostics.push(`stopped at schedules: "${flat.slice(0, 40)}"`);
+        ended = true;
+        break;
+      }
       if (END_SENTINELS.some((re) => re.test(flat))) {
         ended = true;
         break;
@@ -172,7 +183,12 @@ export function parseInlineAct(xhtml: string): GazetteParseResult {
       const match = SECTION_START.exec(headline);
       if (match?.[1]) {
         const base = parseInt(match[1], 10);
-        const plausible = base > lastBase && base - lastBase <= 20;
+        // Run-in headings always continue with a Title ("16. Equality of…",
+        // "[31. Compulsory…", "31. “…”"). A number at line start followed by
+        // lowercase (or nothing) is a WRAPPED cross-reference ("…of article\n
+        // 30. shall…") — never a section start.
+        const titleShaped = /^[A-Z“"[(]/.test(match[2] ?? "");
+        const plausible = titleShaped && base > lastBase && base - lastBase <= 20;
         if (plausible) {
           flush();
           lastBase = base;

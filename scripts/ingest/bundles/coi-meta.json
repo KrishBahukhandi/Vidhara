@@ -1,0 +1,14 @@
+{
+  "act": {
+    "slug": "constitution",
+    "title": "The Constitution of India",
+    "shortTitle": "Constitution",
+    "abbreviation": "COI",
+    "year": 1950,
+    "category": "constitutional",
+    "status": "active",
+    "enforcementDate": "1950-01-26",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/16124"
+  },
+  "provenance": "Official India Code text: The Constitution of India [As on 9th December, 2020], English PDF (bitstream 123456789/16124/1/the_constitution_of_india.pdf, 2,712,149 bytes) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-07-16. Extracted via pdftotext 26.07 -bbox and @nexlex/ingest inline parser. Articles only — Schedules excluded from this pass. Consolidation as on 2020-12-09 (105th/106th Amendments not yet incorporated — refresh when a newer official English consolidation is sourced). Automated parse; footnotes/amendment history excluded; spot-verified; full clause-level proofread pending."
+}
