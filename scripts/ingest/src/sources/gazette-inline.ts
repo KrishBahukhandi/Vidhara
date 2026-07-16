@@ -31,7 +31,10 @@ const WORD_TAG =
  * between so borderline body pages (≈9.0pt) survive while footnotes drop. */
 const MIN_BODY_HEIGHT = 8.6;
 const LINE_Y_TOLERANCE = 4;
-const ENACTED = /enacted as follows/i;
+// "It is enacted as follows:—" (IPC) / "BE it enacted by Parliament in the
+// twenty-fourth Year…" (CrPC). A SECOND occurrence mid-document marks an
+// appended amendment act — parsing stops there.
+const ENACTED = /enacted\s+(?:as\s+follows|by\s+Parliament)/i;
 const CHAPTER_HEADING = /^CHAPTER\s*([IVXLCDM]+)([A-Z])?$/;
 const ALL_CAPS_LINE = /^[A-Z][A-Z0-9\s,.'()—–-]*$/;
 // Section start: "302. <rest…>" — the run-in title may wrap onto later lines,
@@ -139,6 +142,11 @@ export function parseInlineAct(xhtml: string): GazetteParseResult {
       if (!started) {
         if (ENACTED.test(flat)) started = true;
         continue;
+      }
+      if (ENACTED.test(flat)) {
+        diagnostics.push(`stopped at appended amendment act: "${flat.slice(0, 60)}"`);
+        ended = true;
+        break;
       }
       if (END_SENTINELS.some((re) => re.test(flat))) {
         ended = true;

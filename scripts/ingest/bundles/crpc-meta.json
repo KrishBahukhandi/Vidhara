@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "crpc",
+    "title": "The Code of Criminal Procedure, 1973",
+    "shortTitle": "CrPC",
+    "abbreviation": "CRPC",
+    "year": 1973,
+    "category": "criminal",
+    "status": "replaced",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/15247"
+  },
+  "provenance": "Official India Code text: The Code of Criminal Procedure, 1973 (2 of 1974), English PDF (bitstream 123456789/15272/1/the_code_of_criminal_procedure,_1973.pdf, 1,879,339 bytes) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-07-16. Extracted via pdftotext 26.07 -bbox and @nexlex/ingest inline parser. Repealed by BNSS 2023 w.e.f. 2024-07-01. Automated parse; footnotes/amendment history excluded; spot-verified; full clause-level proofread pending."
+}
