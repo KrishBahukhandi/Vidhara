@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "ica",
+    "title": "The Indian Contract Act, 1872",
+    "shortTitle": "Contract Act",
+    "abbreviation": "ICA",
+    "year": 1872,
+    "category": "civil",
+    "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/2187"
+  },
+  "provenance": "Official India Code text: The Indian Contract Act, 1872 (9 of 1872), English PDF (bitstream 123456789/2187/2/A187209.pdf, 568,075 bytes) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-07-16. Extracted via pdftotext 26.07 -bbox and @nexlex/ingest inline parser. Automated parse; footnotes/amendment history excluded; spot-verified; full clause-level proofread pending."
+}
