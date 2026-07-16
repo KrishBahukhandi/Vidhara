@@ -1,0 +1,1123 @@
+{
+  "oldAct": "IEA",
+  "newAct": "BSA",
+  "provenance": "Official NCRB Sankalan comparative table (ncrb.gov.in/uploads/SankalanPortal/SectionTableBSA.html), fetched 2026-07-16; parsed by @nexlex/ingest ncrb-table parser; section-level aggregation, both table directions cross-validated.",
+  "entries": [
+    {
+      "oldSection": "1",
+      "newSection": "1",
+      "type": "merged",
+      "note": "IEA §1 → BSA §1 per the official NCRB Sankalan table. BSA §1 consolidates multiple IEA sections."
+    },
+    {
+      "oldSection": "2",
+      "newSection": "1",
+      "type": "merged",
+      "note": "IEA §2 → BSA §1 per the official NCRB Sankalan table. BSA §1 consolidates multiple IEA sections."
+    },
+    {
+      "oldSection": "3",
+      "newSection": "2",
+      "type": "modified",
+      "note": "IEA §3 → BSA §2 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "5",
+      "newSection": "3",
+      "type": "renumbered",
+      "note": "IEA §5 → BSA §3 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "6",
+      "newSection": "4",
+      "type": "modified",
+      "note": "IEA §6 → BSA §4 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "7",
+      "newSection": "5",
+      "type": "renumbered",
+      "note": "IEA §7 → BSA §5 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "8",
+      "newSection": "6",
+      "type": "renumbered",
+      "note": "IEA §8 → BSA §6 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "9",
+      "newSection": "7",
+      "type": "renumbered",
+      "note": "IEA §9 → BSA §7 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "10",
+      "newSection": "8",
+      "type": "renumbered",
+      "note": "IEA §10 → BSA §8 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "11",
+      "newSection": "9",
+      "type": "renumbered",
+      "note": "IEA §11 → BSA §9 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "12",
+      "newSection": "10",
+      "type": "renumbered",
+      "note": "IEA §12 → BSA §10 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "13",
+      "newSection": "11",
+      "type": "renumbered",
+      "note": "IEA §13 → BSA §11 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "14",
+      "newSection": "12",
+      "type": "renumbered",
+      "note": "IEA §14 → BSA §12 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "15",
+      "newSection": "13",
+      "type": "renumbered",
+      "note": "IEA §15 → BSA §13 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "16",
+      "newSection": "14",
+      "type": "renumbered",
+      "note": "IEA §16 → BSA §14 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "17",
+      "newSection": "15",
+      "type": "renumbered",
+      "note": "IEA §17 → BSA §15 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "18",
+      "newSection": "16",
+      "type": "renumbered",
+      "note": "IEA §18 → BSA §16 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "19",
+      "newSection": "17",
+      "type": "renumbered",
+      "note": "IEA §19 → BSA §17 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "20",
+      "newSection": "18",
+      "type": "renumbered",
+      "note": "IEA §20 → BSA §18 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "21",
+      "newSection": "19",
+      "type": "renumbered",
+      "note": "IEA §21 → BSA §19 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "22",
+      "newSection": "20",
+      "type": "renumbered",
+      "note": "IEA §22 → BSA §20 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "23",
+      "newSection": "21",
+      "type": "renumbered",
+      "note": "IEA §23 → BSA §21 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "24",
+      "newSection": "22",
+      "type": "merged",
+      "note": "IEA §24 → BSA §22 per the official NCRB Sankalan table. BSA §22 consolidates multiple IEA sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "25",
+      "newSection": "23",
+      "type": "merged",
+      "note": "IEA §25 → BSA §23 per the official NCRB Sankalan table. BSA §23 consolidates multiple IEA sections."
+    },
+    {
+      "oldSection": "26",
+      "newSection": "23",
+      "type": "merged",
+      "note": "IEA §26 → BSA §23 per the official NCRB Sankalan table. BSA §23 consolidates multiple IEA sections."
+    },
+    {
+      "oldSection": "27",
+      "newSection": "23",
+      "type": "merged",
+      "note": "IEA §27 → BSA §23 per the official NCRB Sankalan table. BSA §23 consolidates multiple IEA sections."
+    },
+    {
+      "oldSection": "28",
+      "newSection": "22",
+      "type": "merged",
+      "note": "IEA §28 → BSA §22 per the official NCRB Sankalan table. BSA §22 consolidates multiple IEA sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "29",
+      "newSection": "22",
+      "type": "merged",
+      "note": "IEA §29 → BSA §22 per the official NCRB Sankalan table. BSA §22 consolidates multiple IEA sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "30",
+      "newSection": "24",
+      "type": "modified",
+      "note": "IEA §30 → BSA §24 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "31",
+      "newSection": "25",
+      "type": "renumbered",
+      "note": "IEA §31 → BSA §25 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "32",
+      "newSection": "26",
+      "type": "modified",
+      "note": "IEA §32 → BSA §26 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "33",
+      "newSection": "27",
+      "type": "renumbered",
+      "note": "IEA §33 → BSA §27 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "34",
+      "newSection": "28",
+      "type": "renumbered",
+      "note": "IEA §34 → BSA §28 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "35",
+      "newSection": "29",
+      "type": "renumbered",
+      "note": "IEA §35 → BSA §29 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "36",
+      "newSection": "30",
+      "type": "renumbered",
+      "note": "IEA §36 → BSA §30 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "37",
+      "newSection": "31",
+      "type": "modified",
+      "note": "IEA §37 → BSA §31 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "38",
+      "newSection": "32",
+      "type": "modified",
+      "note": "IEA §38 → BSA §32 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "39",
+      "newSection": "33",
+      "type": "renumbered",
+      "note": "IEA §39 → BSA §33 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "40",
+      "newSection": "34",
+      "type": "renumbered",
+      "note": "IEA §40 → BSA §34 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "41",
+      "newSection": "35",
+      "type": "modified",
+      "note": "IEA §41 → BSA §35 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "42",
+      "newSection": "36",
+      "type": "renumbered",
+      "note": "IEA §42 → BSA §36 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "43",
+      "newSection": "37",
+      "type": "renumbered",
+      "note": "IEA §43 → BSA §37 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "44",
+      "newSection": "38",
+      "type": "renumbered",
+      "note": "IEA §44 → BSA §38 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "45",
+      "newSection": "39",
+      "type": "merged",
+      "note": "IEA §45 → BSA §39 per the official NCRB Sankalan table. BSA §39 consolidates multiple IEA sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "45A",
+      "newSection": "39",
+      "type": "merged",
+      "note": "IEA §45A → BSA §39 per the official NCRB Sankalan table. BSA §39 consolidates multiple IEA sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "46",
+      "newSection": "40",
+      "type": "renumbered",
+      "note": "IEA §46 → BSA §40 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "47",
+      "newSection": "41",
+      "type": "merged",
+      "note": "IEA §47 → BSA §41 per the official NCRB Sankalan table. BSA §41 consolidates multiple IEA sections."
+    },
+    {
+      "oldSection": "47A",
+      "newSection": "41",
+      "type": "merged",
+      "note": "IEA §47A → BSA §41 per the official NCRB Sankalan table. BSA §41 consolidates multiple IEA sections."
+    },
+    {
+      "oldSection": "48",
+      "newSection": "42",
+      "type": "renumbered",
+      "note": "IEA §48 → BSA §42 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "49",
+      "newSection": "43",
+      "type": "renumbered",
+      "note": "IEA §49 → BSA §43 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "50",
+      "newSection": "44",
+      "type": "renumbered",
+      "note": "IEA §50 → BSA §44 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "51",
+      "newSection": "45",
+      "type": "renumbered",
+      "note": "IEA §51 → BSA §45 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "52",
+      "newSection": "46",
+      "type": "renumbered",
+      "note": "IEA §52 → BSA §46 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "53",
+      "newSection": "47",
+      "type": "renumbered",
+      "note": "IEA §53 → BSA §47 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "53A",
+      "newSection": "48",
+      "type": "renumbered",
+      "note": "IEA §53A → BSA §48 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "54",
+      "newSection": "49",
+      "type": "renumbered",
+      "note": "IEA §54 → BSA §49 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "55",
+      "newSection": "50",
+      "type": "renumbered",
+      "note": "IEA §55 → BSA §50 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "56",
+      "newSection": "51",
+      "type": "renumbered",
+      "note": "IEA §56 → BSA §51 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "57",
+      "newSection": "52",
+      "type": "modified",
+      "note": "IEA §57 → BSA §52 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "58",
+      "newSection": "53",
+      "type": "renumbered",
+      "note": "IEA §58 → BSA §53 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "59",
+      "newSection": "54",
+      "type": "modified",
+      "note": "IEA §59 → BSA §54 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "60",
+      "newSection": "55",
+      "type": "renumbered",
+      "note": "IEA §60 → BSA §55 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "61",
+      "newSection": "56",
+      "type": "renumbered",
+      "note": "IEA §61 → BSA §56 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "62",
+      "newSection": "57",
+      "type": "modified",
+      "note": "IEA §62 → BSA §57 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "63",
+      "newSection": "58",
+      "type": "modified",
+      "note": "IEA §63 → BSA §58 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "64",
+      "newSection": "59",
+      "type": "renumbered",
+      "note": "IEA §64 → BSA §59 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "65",
+      "newSection": "60",
+      "type": "renumbered",
+      "note": "IEA §65 → BSA §60 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "65A",
+      "newSection": "62",
+      "type": "renumbered",
+      "note": "IEA §65A → BSA §62 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "65B",
+      "newSection": "63",
+      "type": "modified",
+      "note": "IEA §65B → BSA §63 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "66",
+      "newSection": "64",
+      "type": "modified",
+      "note": "IEA §66 → BSA §64 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "67",
+      "newSection": "65",
+      "type": "renumbered",
+      "note": "IEA §67 → BSA §65 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "67A",
+      "newSection": "66",
+      "type": "renumbered",
+      "note": "IEA §67A → BSA §66 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "68",
+      "newSection": "67",
+      "type": "renumbered",
+      "note": "IEA §68 → BSA §67 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "69",
+      "newSection": "68",
+      "type": "renumbered",
+      "note": "IEA §69 → BSA §68 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "70",
+      "newSection": "69",
+      "type": "renumbered",
+      "note": "IEA §70 → BSA §69 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "71",
+      "newSection": "70",
+      "type": "renumbered",
+      "note": "IEA §71 → BSA §70 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "72",
+      "newSection": "71",
+      "type": "renumbered",
+      "note": "IEA §72 → BSA §71 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "73",
+      "newSection": "72",
+      "type": "renumbered",
+      "note": "IEA §73 → BSA §72 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "73A",
+      "newSection": "73",
+      "type": "renumbered",
+      "note": "IEA §73A → BSA §73 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "74",
+      "newSection": "74",
+      "type": "merged",
+      "note": "IEA §74 → BSA §74 per the official NCRB Sankalan table. BSA §74 consolidates multiple IEA sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "75",
+      "newSection": "74",
+      "type": "merged",
+      "note": "IEA §75 → BSA §74 per the official NCRB Sankalan table. BSA §74 consolidates multiple IEA sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "76",
+      "newSection": "75",
+      "type": "renumbered",
+      "note": "IEA §76 → BSA §75 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "77",
+      "newSection": "76",
+      "type": "renumbered",
+      "note": "IEA §77 → BSA §76 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "78",
+      "newSection": "77",
+      "type": "modified",
+      "note": "IEA §78 → BSA §77 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "79",
+      "newSection": "78",
+      "type": "renumbered",
+      "note": "IEA §79 → BSA §78 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "80",
+      "newSection": "79",
+      "type": "renumbered",
+      "note": "IEA §80 → BSA §79 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "81",
+      "newSection": "80",
+      "type": "renumbered",
+      "note": "IEA §81 → BSA §80 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "81A",
+      "newSection": "81",
+      "type": "modified",
+      "note": "IEA §81A → BSA §81 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "83",
+      "newSection": "82",
+      "type": "renumbered",
+      "note": "IEA §83 → BSA §82 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "84",
+      "newSection": "83",
+      "type": "renumbered",
+      "note": "IEA §84 → BSA §83 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "85",
+      "newSection": "84",
+      "type": "renumbered",
+      "note": "IEA §85 → BSA §84 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "85A",
+      "newSection": "85",
+      "type": "modified",
+      "note": "IEA §85A → BSA §85 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "85B",
+      "newSection": "86",
+      "type": "renumbered",
+      "note": "IEA §85B → BSA §86 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "85C",
+      "newSection": "87",
+      "type": "renumbered",
+      "note": "IEA §85C → BSA §87 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "86",
+      "newSection": "88",
+      "type": "renumbered",
+      "note": "IEA §86 → BSA §88 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "87",
+      "newSection": "89",
+      "type": "renumbered",
+      "note": "IEA §87 → BSA §89 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "88A",
+      "newSection": "90",
+      "type": "renumbered",
+      "note": "IEA §88A → BSA §90 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "89",
+      "newSection": "91",
+      "type": "renumbered",
+      "note": "IEA §89 → BSA §91 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "90",
+      "newSection": "92",
+      "type": "renumbered",
+      "note": "IEA §90 → BSA §92 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "90A",
+      "newSection": "93",
+      "type": "renumbered",
+      "note": "IEA §90A → BSA §93 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "91",
+      "newSection": "94",
+      "type": "renumbered",
+      "note": "IEA §91 → BSA §94 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "92",
+      "newSection": "95",
+      "type": "renumbered",
+      "note": "IEA §92 → BSA §95 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "93",
+      "newSection": "96",
+      "type": "renumbered",
+      "note": "IEA §93 → BSA §96 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "94",
+      "newSection": "97",
+      "type": "renumbered",
+      "note": "IEA §94 → BSA §97 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "95",
+      "newSection": "98",
+      "type": "renumbered",
+      "note": "IEA §95 → BSA §98 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "96",
+      "newSection": "99",
+      "type": "renumbered",
+      "note": "IEA §96 → BSA §99 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "97",
+      "newSection": "100",
+      "type": "renumbered",
+      "note": "IEA §97 → BSA §100 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "98",
+      "newSection": "101",
+      "type": "modified",
+      "note": "IEA §98 → BSA §101 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "99",
+      "newSection": "102",
+      "type": "renumbered",
+      "note": "IEA §99 → BSA §102 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "100",
+      "newSection": "103",
+      "type": "renumbered",
+      "note": "IEA §100 → BSA §103 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "101",
+      "newSection": "104",
+      "type": "renumbered",
+      "note": "IEA §101 → BSA §104 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "102",
+      "newSection": "105",
+      "type": "renumbered",
+      "note": "IEA §102 → BSA §105 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "103",
+      "newSection": "106",
+      "type": "renumbered",
+      "note": "IEA §103 → BSA §106 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "104",
+      "newSection": "107",
+      "type": "renumbered",
+      "note": "IEA §104 → BSA §107 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "105",
+      "newSection": "108",
+      "type": "renumbered",
+      "note": "IEA §105 → BSA §108 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "106",
+      "newSection": "109",
+      "type": "renumbered",
+      "note": "IEA §106 → BSA §109 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "107",
+      "newSection": "110",
+      "type": "renumbered",
+      "note": "IEA §107 → BSA §110 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "108",
+      "newSection": "111",
+      "type": "renumbered",
+      "note": "IEA §108 → BSA §111 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "109",
+      "newSection": "112",
+      "type": "renumbered",
+      "note": "IEA §109 → BSA §112 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "110",
+      "newSection": "113",
+      "type": "renumbered",
+      "note": "IEA §110 → BSA §113 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "111",
+      "newSection": "114",
+      "type": "renumbered",
+      "note": "IEA §111 → BSA §114 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "111A",
+      "newSection": "115",
+      "type": "renumbered",
+      "note": "IEA §111A → BSA §115 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "112",
+      "newSection": "116",
+      "type": "renumbered",
+      "note": "IEA §112 → BSA §116 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "113A",
+      "newSection": "117",
+      "type": "renumbered",
+      "note": "IEA §113A → BSA §117 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "113B",
+      "newSection": "118",
+      "type": "renumbered",
+      "note": "IEA §113B → BSA §118 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "114",
+      "newSection": "119",
+      "type": "renumbered",
+      "note": "IEA §114 → BSA §119 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "114A",
+      "newSection": "120",
+      "type": "modified",
+      "note": "IEA §114A → BSA §120 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "115",
+      "newSection": "121",
+      "type": "renumbered",
+      "note": "IEA §115 → BSA §121 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "116",
+      "newSection": "122",
+      "type": "renumbered",
+      "note": "IEA §116 → BSA §122 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "117",
+      "newSection": "123",
+      "type": "renumbered",
+      "note": "IEA §117 → BSA §123 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "118",
+      "newSection": "124",
+      "type": "renumbered",
+      "note": "IEA §118 → BSA §124 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "119",
+      "newSection": "125",
+      "type": "renumbered",
+      "note": "IEA §119 → BSA §125 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "120",
+      "newSection": "126",
+      "type": "renumbered",
+      "note": "IEA §120 → BSA §126 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "121",
+      "newSection": "127",
+      "type": "renumbered",
+      "note": "IEA §121 → BSA §127 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "122",
+      "newSection": "128",
+      "type": "renumbered",
+      "note": "IEA §122 → BSA §128 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "123",
+      "newSection": "129",
+      "type": "renumbered",
+      "note": "IEA §123 → BSA §129 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "124",
+      "newSection": "130",
+      "type": "renumbered",
+      "note": "IEA §124 → BSA §130 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "125",
+      "newSection": "131",
+      "type": "renumbered",
+      "note": "IEA §125 → BSA §131 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "126",
+      "newSection": "132",
+      "type": "merged",
+      "note": "IEA §126 → BSA §132 per the official NCRB Sankalan table. BSA §132 consolidates multiple IEA sections."
+    },
+    {
+      "oldSection": "127",
+      "newSection": "132",
+      "type": "merged",
+      "note": "IEA §127 → BSA §132 per the official NCRB Sankalan table. BSA §132 consolidates multiple IEA sections."
+    },
+    {
+      "oldSection": "128",
+      "newSection": "133",
+      "type": "renumbered",
+      "note": "IEA §128 → BSA §133 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "129",
+      "newSection": "134",
+      "type": "renumbered",
+      "note": "IEA §129 → BSA §134 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "130",
+      "newSection": "135",
+      "type": "renumbered",
+      "note": "IEA §130 → BSA §135 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "131",
+      "newSection": "136",
+      "type": "renumbered",
+      "note": "IEA §131 → BSA §136 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "132",
+      "newSection": "137",
+      "type": "renumbered",
+      "note": "IEA §132 → BSA §137 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "133",
+      "newSection": "138",
+      "type": "modified",
+      "note": "IEA §133 → BSA §138 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "134",
+      "newSection": "139",
+      "type": "renumbered",
+      "note": "IEA §134 → BSA §139 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "135",
+      "newSection": "140",
+      "type": "renumbered",
+      "note": "IEA §135 → BSA §140 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "136",
+      "newSection": "141",
+      "type": "renumbered",
+      "note": "IEA §136 → BSA §141 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "137",
+      "newSection": "142",
+      "type": "renumbered",
+      "note": "IEA §137 → BSA §142 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "138",
+      "newSection": "143",
+      "type": "renumbered",
+      "note": "IEA §138 → BSA §143 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "139",
+      "newSection": "144",
+      "type": "renumbered",
+      "note": "IEA §139 → BSA §144 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "140",
+      "newSection": "145",
+      "type": "renumbered",
+      "note": "IEA §140 → BSA §145 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "141",
+      "newSection": "146",
+      "type": "merged",
+      "note": "IEA §141 → BSA §146 per the official NCRB Sankalan table. BSA §146 consolidates multiple IEA sections."
+    },
+    {
+      "oldSection": "142",
+      "newSection": "146",
+      "type": "merged",
+      "note": "IEA §142 → BSA §146 per the official NCRB Sankalan table. BSA §146 consolidates multiple IEA sections."
+    },
+    {
+      "oldSection": "143",
+      "newSection": "146",
+      "type": "merged",
+      "note": "IEA §143 → BSA §146 per the official NCRB Sankalan table. BSA §146 consolidates multiple IEA sections."
+    },
+    {
+      "oldSection": "144",
+      "newSection": "147",
+      "type": "renumbered",
+      "note": "IEA §144 → BSA §147 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "145",
+      "newSection": "148",
+      "type": "renumbered",
+      "note": "IEA §145 → BSA §148 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "146",
+      "newSection": "149",
+      "type": "renumbered",
+      "note": "IEA §146 → BSA §149 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "147",
+      "newSection": "150",
+      "type": "renumbered",
+      "note": "IEA §147 → BSA §150 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "148",
+      "newSection": "151",
+      "type": "renumbered",
+      "note": "IEA §148 → BSA §151 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "149",
+      "newSection": "152",
+      "type": "renumbered",
+      "note": "IEA §149 → BSA §152 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "150",
+      "newSection": "153",
+      "type": "renumbered",
+      "note": "IEA §150 → BSA §153 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "151",
+      "newSection": "154",
+      "type": "renumbered",
+      "note": "IEA §151 → BSA §154 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "152",
+      "newSection": "155",
+      "type": "renumbered",
+      "note": "IEA §152 → BSA §155 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "153",
+      "newSection": "156",
+      "type": "renumbered",
+      "note": "IEA §153 → BSA §156 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "154",
+      "newSection": "157",
+      "type": "renumbered",
+      "note": "IEA §154 → BSA §157 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "155",
+      "newSection": "158",
+      "type": "renumbered",
+      "note": "IEA §155 → BSA §158 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "156",
+      "newSection": "159",
+      "type": "renumbered",
+      "note": "IEA §156 → BSA §159 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "157",
+      "newSection": "160",
+      "type": "renumbered",
+      "note": "IEA §157 → BSA §160 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "158",
+      "newSection": "161",
+      "type": "renumbered",
+      "note": "IEA §158 → BSA §161 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "159",
+      "newSection": "162",
+      "type": "renumbered",
+      "note": "IEA §159 → BSA §162 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "160",
+      "newSection": "163",
+      "type": "renumbered",
+      "note": "IEA §160 → BSA §163 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "161",
+      "newSection": "164",
+      "type": "renumbered",
+      "note": "IEA §161 → BSA §164 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "162",
+      "newSection": "165",
+      "type": "modified",
+      "note": "IEA §162 → BSA §165 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "163",
+      "newSection": "166",
+      "type": "renumbered",
+      "note": "IEA §163 → BSA §166 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "164",
+      "newSection": "167",
+      "type": "renumbered",
+      "note": "IEA §164 → BSA §167 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "165",
+      "newSection": "168",
+      "type": "modified",
+      "note": "IEA §165 → BSA §168 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "167",
+      "newSection": "169",
+      "type": "renumbered",
+      "note": "IEA §167 → BSA §169 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "22A",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IEA §22A has no counterpart in BSA (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "82",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IEA §82 has no counterpart in BSA (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "88",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IEA §88 has no counterpart in BSA (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "113",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IEA §113 has no counterpart in BSA (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "166",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IEA §166 has no counterpart in BSA (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": null,
+      "newSection": "61",
+      "type": "new",
+      "note": "BSA §61 is a new provision with no IEA antecedent per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": null,
+      "newSection": "170",
+      "type": "new",
+      "note": "BSA §170 is a new provision with no IEA antecedent per the official NCRB Sankalan table."
+    }
+  ]
+}

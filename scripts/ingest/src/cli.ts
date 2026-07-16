@@ -21,6 +21,7 @@ import { publishBundle, type PublishOptions } from "./publish";
 import { parseGazetteBBox } from "./sources/gazette-bbox";
 import { parseInlineAct } from "./sources/gazette-inline";
 import { parseGazetteLayoutText } from "./sources/gazette-pdf";
+import { parseNcrbTable } from "./sources/ncrb-table";
 import { validateBundle } from "./validate";
 
 function loadBundle(path: string): unknown {
@@ -102,7 +103,7 @@ async function main(): Promise<void> {
   if (
     !command ||
     !bundlePath ||
-    !["validate", "publish", "parse-gazette", "emit-sql"].includes(command)
+    !["validate", "publish", "parse-gazette", "parse-ncrb", "emit-sql"].includes(command)
   ) {
     console.error(
       "Usage: ingest <parse-gazette|validate|publish|emit-sql> <file> [--meta m.json] [--out f] [--status s] [--publish-act]",
@@ -112,6 +113,31 @@ async function main(): Promise<void> {
 
   if (command === "parse-gazette") {
     parseGazetteCommand(bundlePath, flags);
+    return;
+  }
+
+  if (command === "parse-ncrb") {
+    const oldIdx = flags.indexOf("--old");
+    const newIdx = flags.indexOf("--new");
+    const outIdx = flags.indexOf("--out");
+    const oldAct = oldIdx >= 0 ? flags[oldIdx + 1] : undefined;
+    const newAct = newIdx >= 0 ? flags[newIdx + 1] : undefined;
+    const outPath = outIdx >= 0 ? flags[outIdx + 1] : undefined;
+    const provIdx = flags.indexOf("--provenance");
+    const provenance = provIdx >= 0 ? flags[provIdx + 1] : undefined;
+    if (!oldAct || !newAct || !outPath || !provenance) {
+      console.error(
+        "Usage: ingest parse-ncrb <table.html> --old IPC --new BNS --provenance <text> --out <mappings.json>",
+      );
+      process.exit(1);
+    }
+    const { entries, diagnostics } = parseNcrbTable(readFileSync(bundlePath, "utf8"), oldAct, newAct);
+    for (const d of diagnostics) console.warn(`  ⚠ ${d}`);
+    const byType: Record<string, number> = {};
+    for (const e of entries) byType[e.type] = (byType[e.type] ?? 0) + 1;
+    writeFileSync(outPath, `${JSON.stringify({ oldAct, newAct, provenance, entries }, null, 2)}\n`);
+    console.log(`Parsed ${entries.length} mapping entries → ${outPath}`);
+    console.log(`  by type: ${JSON.stringify(byType)}`);
     return;
   }
 
