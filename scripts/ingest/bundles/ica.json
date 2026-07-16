@@ -166,7 +166,13 @@
       "number": "19",
       "chapterNumber": "II",
       "marginalNote": "Voidability of agreements without free consent",
-      "bodyMd": "When consent to an agreement is caused by coercion, *** fraud or misrepresentation, the agreement is a contract voidable at the option of the party whose consent was so caused. A party to a contract whose consent was caused by fraud or misrepresentation, may, if he thinks fit, insist that the contract shall be performed, and that he shall be put in the position in which he would have been if the representations made had been true. Exception. — If such consent was caused by misrepresentation or by silence, fraudulent within the meaning of section 17, the contract, nevertheless, is not voidable, if the party whose consent was so caused had the means of discovering the truth with ordinary diligence. Explanation. — A fraud or misrepresentation which did not cause the consent to a contract of the party on whom such fraud was practised, or to whom such misrepresentation was made, does not render a contract voidable. Illustrations [19A. Power to set aside contract induced by undue influence. — When consent to an agreement is caused by undue influence, the agreement is a contract voidable at the option of the party whose consent was so caused. 1. The words “undue influence” rep. by Act 6 of 1899, s. Any such contract may be set aside either absolutely or, if the party who was entitled to avoid it has received any benefit thereunder, upon such terms and conditions as to the Court may seem just. Illustrations"
+      "bodyMd": "When consent to an agreement is caused by coercion, *** fraud or misrepresentation, the agreement is a contract voidable at the option of the party whose consent was so caused. A party to a contract whose consent was caused by fraud or misrepresentation, may, if he thinks fit, insist that the contract shall be performed, and that he shall be put in the position in which he would have been if the representations made had been true. Exception. — If such consent was caused by misrepresentation or by silence, fraudulent within the meaning of section 17, the contract, nevertheless, is not voidable, if the party whose consent was so caused had the means of discovering the truth with ordinary diligence. Explanation. — A fraud or misrepresentation which did not cause the consent to a contract of the party on whom such fraud was practised, or to whom such misrepresentation was made, does not render a contract voidable. Illustrations"
+    },
+    {
+      "number": "19A",
+      "chapterNumber": "II",
+      "marginalNote": "Power to set aside contract induced by undue influence",
+      "bodyMd": "When consent to an agreement is caused by undue influence, the agreement is a contract voidable at the option of the party whose consent was so caused. 1. The words “undue influence” rep. by Act 6 of 1899, s. Any such contract may be set aside either absolutely or, if the party who was entitled to avoid it has received any benefit thereunder, upon such terms and conditions as to the Court may seem just. Illustrations"
     },
     {
       "number": "20",
@@ -1120,7 +1126,13 @@
       "number": "178",
       "chapterNumber": "IX",
       "marginalNote": "Pledge by mercantile agent",
-      "bodyMd": "Where a mercantile agent is, with the consent of the owner, in possession of goods or the document of title to goods, any pledge made by him, when acting in the ordinary course of business of a mercantile agent, shall be as valid as if he were expressly authorised by the owner of the goods to make the same; provided that the pawnee acts in good faith and has not at the time of the pledge notice that the pawnor has not authority to pledge. Explanation. — In this section, the expressions “mercantile agent” and “documents of title” shall have the meanings assigned to them in the Indian Sale of Goods Act, 1930 (3 of 1930). 178A. Pledge by person in possession under voidable contract. — When the pawnor has obtained possession of the goods pledged by him under a contract voidable under section 19 or section 19A, but the contract has not been rescinded at the time of the pledge, the pawnee acquires a good title to the goods, provided he acts in good faith and without notice of the pawnor’s defect of title.]"
+      "bodyMd": "Where a mercantile agent is, with the consent of the owner, in possession of goods or the document of title to goods, any pledge made by him, when acting in the ordinary course of business of a mercantile agent, shall be as valid as if he were expressly authorised by the owner of the goods to make the same; provided that the pawnee acts in good faith and has not at the time of the pledge notice that the pawnor has not authority to pledge. Explanation. — In this section, the expressions “mercantile agent” and “documents of title” shall have the meanings assigned to them in the Indian Sale of Goods Act, 1930 (3 of 1930)."
+    },
+    {
+      "number": "178A",
+      "chapterNumber": "IX",
+      "marginalNote": "Pledge by person in possession under voidable contract",
+      "bodyMd": "When the pawnor has obtained possession of the goods pledged by him under a contract voidable under section 19 or section 19A, but the contract has not been rescinded at the time of the pledge, the pawnee acquires a good title to the goods, provided he acts in good faith and without notice of the pawnor’s defect of title.]"
     },
     {
       "number": "179",

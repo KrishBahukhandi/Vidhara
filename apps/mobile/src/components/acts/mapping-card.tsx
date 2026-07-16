@@ -58,7 +58,9 @@ export function MappingCard({
   ) => (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`Open ${act} section ${number}`}
+      accessibilityLabel={
+        act && number ? `Open ${act} section ${number}` : "No corresponding provision"
+      }
       disabled={!slug || !number}
       onPress={() => slug && number && router.push(`/acts/${slug}/${encodeURIComponent(number)}`)}
       style={[
@@ -71,11 +73,10 @@ export function MappingCard({
       <AppText variant="micro" tone="faint">
         {label}
       </AppText>
-      <AppText variant="h3">
-        {act} §{number}
-      </AppText>
+      {/* Omitted/new mappings have one side with no provision at all. */}
+      <AppText variant="h3">{act && number ? `${act} §${number}` : "—"}</AppText>
       <AppText variant="small" tone="muted" numberOfLines={2}>
-        {note}
+        {act && number ? note : "No corresponding provision"}
       </AppText>
     </Pressable>
   );

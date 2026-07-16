@@ -145,6 +145,21 @@ export function classifyLine(line: Word[], rightNotePage: boolean): LineParts {
     classifyRightFragment(rightWords.map((w) => w.text).join(" ").trim(), parts);
   }
 
+  // A statutory citation ("1 of 1872.") can sit in the LEFT margin beside its
+  // body line on EITHER page side (BSA §170 hid behind one on a recto page).
+  // Body text never starts in the anchor column, so a citation-shaped leading
+  // zone fragment is stripped unconditionally.
+  const anchor = rest[0];
+  if (anchor && anchor.xMin <= LEFT_NOTE_ANCHOR_MAX_X) {
+    let zone = 0;
+    while (zone < rest.length && rest[zone]!.xMax <= LEFT_NOTE_ZONE_MAX_X) zone++;
+    const fragment = rest.slice(0, zone).map((w) => w.text).join(" ").trim();
+    if (zone > 0 && CITATION.test(fragment)) {
+      parts.citation = parts.citation ? `${parts.citation} ${fragment}` : fragment;
+      rest = rest.slice(zone);
+    }
+  }
+
   // Left-note page: a margin prefix is present only when the FIRST word sits in
   // the anchor column; body continuation lines are indented past it.
   if (!rightNotePage) {

@@ -16,6 +16,7 @@
  */
 import type { GazetteParseResult, ParsedChapter, ParsedSection } from "./gazette-common";
 import { END_SENTINELS, FURNITURE } from "./gazette-common";
+import { deriveSortKey } from "../sort-key";
 
 interface Word {
   xMin: number;
@@ -45,7 +46,11 @@ const ALL_CAPS_LINE = /^[A-Z][A-Z0-9\s,.'()—–-]*$/;
 // Section start: "302. <rest…>" — the run-in title may wrap onto later lines,
 // so the title/body split happens after the whole section is accumulated.
 // \s* not \s+: some PDFs drop the space after the number ("16.“Undue…").
-const SECTION_START = /^(\d{1,3}[A-Z]{0,2})\.\s*(\S.*)$/;
+// \s?\. : the PDF sometimes splits "174A ." with a space before the period.
+const SECTION_START = /^(\d{1,3}[A-Z]{0,2})\s?\.\s*(\S.*)$/;
+// Amendment brackets can eat the number's period ("1[17 “Government”.—…" →
+// "17 “Government”.—…"). Only a quote-led title is accepted dotless.
+const SECTION_START_NODOT = /^(\d{1,3}[A-Z]{0,2})\s+([“"].*)$/;
 // Title ends at the first ".—"/".–" (em/en dash). Non-greedy, length-capped so
 // a stray mid-body dash can't swallow a paragraph as the "title".
 const TITLE_SPLIT = /^(.{3,160}?)\.\s*[—–]\s*([\s\S]*)$/;
@@ -53,8 +58,10 @@ const TITLE_SPLIT = /^(.{3,160}?)\.\s*[—–]\s*([\s\S]*)$/;
 // "Definition of “Queen”. Omitted by the A. O. 1950."): split at the first
 // sentence period.
 const TITLE_PERIOD_SPLIT = /^(.{3,120}?)\.\s+([\s\S]*)$/;
-/** Amendment/footnote glyphs that can precede a section number at line start. */
-const LEADING_MARKERS = /^[[\]*\s]+/;
+/** Amendment/footnote glyphs that can precede a section number at line start —
+ * brackets/stars, and a body-height footnote digit directly before an opening
+ * bracket ("4 [174A. Non-appearance…"). */
+const LEADING_MARKERS = /^(?:\d{1,2}\s*\[|[[\]*\s])+/;
 
 function decodeEntities(s: string): string {
   return s
@@ -100,6 +107,8 @@ export function parseInlineAct(xhtml: string): GazetteParseResult {
   let currentChapterForSection: string | undefined;
   let rawParts: string[] = [];
   let lastBase = 0;
+  /** Sort key (base + letter fraction) — "120A" must sort after "120". */
+  let lastKey = 0;
 
   const flush = () => {
     if (currentNumber === null) return;
@@ -180,24 +189,28 @@ export function parseInlineAct(xhtml: string): GazetteParseResult {
       }
       flushChapter();
 
-      const match = SECTION_START.exec(headline);
+      const match = SECTION_START.exec(headline) ?? SECTION_START_NODOT.exec(headline);
       if (match?.[1]) {
         const base = parseInt(match[1], 10);
+        const key = deriveSortKey(match[1]);
         // Run-in headings always continue with a Title ("16. Equality of…",
         // "[31. Compulsory…", "31. “…”"). A number at line start followed by
         // lowercase (or nothing) is a WRAPPED cross-reference ("…of article\n
         // 30. shall…") — never a section start.
         const titleShaped = /^[A-Z“"[(]/.test(match[2] ?? "");
-        const plausible = titleShaped && base > lastBase && base - lastBase <= 20;
+        // Sort-KEY strictly increases (so "120A" follows "120", "498A"
+        // follows "498"); the BASE may only step forward a little.
+        const plausible = titleShaped && key > lastKey && base - lastBase <= 20;
         if (plausible) {
           flush();
           lastBase = base;
+          lastKey = key;
           currentNumber = match[1];
           currentChapterForSection = currentChapter;
           rawParts = [match[2] ?? ""];
           continue;
         }
-        if (base <= lastBase) diagnostics.push(`skipped non-increasing "${match[1]}." (footnote/list) near §${lastBase}`);
+        if (key <= lastKey) diagnostics.push(`skipped non-increasing "${match[1]}." (footnote/list) near §${lastBase}`);
       }
 
       if (currentNumber !== null) rawParts.push(flat);

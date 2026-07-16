@@ -1,0 +1,3163 @@
+{
+  "oldAct": "CRPC",
+  "newAct": "BNSS",
+  "provenance": "Official NCRB Sankalan comparative table (ncrb.gov.in/uploads/SankalanPortal/SectionTableBNSS.html), fetched 2026-07-16; parsed by @nexlex/ingest ncrb-table parser; section-level aggregation, both table directions cross-validated.",
+  "entries": [
+    {
+      "oldSection": "1",
+      "newSection": "1",
+      "type": "identical",
+      "note": "CRPC §1 → BNSS §1 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "2",
+      "newSection": "2",
+      "type": "modified",
+      "note": "CRPC §2 → BNSS §2 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "3",
+      "newSection": "3",
+      "type": "identical",
+      "note": "CRPC §3 → BNSS §3 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "4",
+      "newSection": "4",
+      "type": "identical",
+      "note": "CRPC §4 → BNSS §4 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "5",
+      "newSection": "5",
+      "type": "identical",
+      "note": "CRPC §5 → BNSS §5 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "6",
+      "newSection": "6",
+      "type": "identical",
+      "note": "CRPC §6 → BNSS §6 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "7",
+      "newSection": "7",
+      "type": "identical",
+      "note": "CRPC §7 → BNSS §7 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "9",
+      "newSection": "8",
+      "type": "modified",
+      "note": "CRPC §9 → BNSS §8 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "11",
+      "newSection": "9",
+      "type": "renumbered",
+      "note": "CRPC §11 → BNSS §9 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "12",
+      "newSection": "10",
+      "type": "renumbered",
+      "note": "CRPC §12 → BNSS §10 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "13",
+      "newSection": "11",
+      "type": "modified",
+      "note": "CRPC §13 → BNSS §11 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "14",
+      "newSection": "12",
+      "type": "modified",
+      "note": "CRPC §14 → BNSS §12 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "15",
+      "newSection": "13",
+      "type": "renumbered",
+      "note": "CRPC §15 → BNSS §13 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "20",
+      "newSection": "14",
+      "type": "modified",
+      "note": "CRPC §20 → BNSS §14 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "21",
+      "newSection": "15",
+      "type": "modified",
+      "note": "CRPC §21 → BNSS §15 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "22",
+      "newSection": "16",
+      "type": "renumbered",
+      "note": "CRPC §22 → BNSS §16 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "23",
+      "newSection": "17",
+      "type": "renumbered",
+      "note": "CRPC §23 → BNSS §17 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "24",
+      "newSection": "18",
+      "type": "modified",
+      "note": "CRPC §24 → BNSS §18 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "25",
+      "newSection": "19",
+      "type": "modified",
+      "note": "CRPC §25 → BNSS §19 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "25A",
+      "newSection": "20",
+      "type": "modified",
+      "note": "CRPC §25A → BNSS §20 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "26",
+      "newSection": "21",
+      "type": "renumbered",
+      "note": "CRPC §26 → BNSS §21 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "28",
+      "newSection": "22",
+      "type": "modified",
+      "note": "CRPC §28 → BNSS §22 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "29",
+      "newSection": "23",
+      "type": "modified",
+      "note": "CRPC §29 → BNSS §23 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "30",
+      "newSection": "24",
+      "type": "renumbered",
+      "note": "CRPC §30 → BNSS §24 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "31",
+      "newSection": "25",
+      "type": "modified",
+      "note": "CRPC §31 → BNSS §25 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "32",
+      "newSection": "26",
+      "type": "renumbered",
+      "note": "CRPC §32 → BNSS §26 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "33",
+      "newSection": "27",
+      "type": "renumbered",
+      "note": "CRPC §33 → BNSS §27 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "34",
+      "newSection": "28",
+      "type": "renumbered",
+      "note": "CRPC §34 → BNSS §28 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "35",
+      "newSection": "29",
+      "type": "modified",
+      "note": "CRPC §35 → BNSS §29 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "36",
+      "newSection": "30",
+      "type": "renumbered",
+      "note": "CRPC §36 → BNSS §30 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "38",
+      "newSection": "32",
+      "type": "renumbered",
+      "note": "CRPC §38 → BNSS §32 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "39",
+      "newSection": "33",
+      "type": "renumbered",
+      "note": "CRPC §39 → BNSS §33 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "40",
+      "newSection": "34",
+      "type": "renumbered",
+      "note": "CRPC §40 → BNSS §34 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "41",
+      "newSection": "35",
+      "type": "modified",
+      "note": "CRPC §41 → BNSS §35 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "41B",
+      "newSection": "36",
+      "type": "renumbered",
+      "note": "CRPC §41B → BNSS §36 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "41C",
+      "newSection": "37",
+      "type": "modified",
+      "note": "CRPC §41C → BNSS §37 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "41D",
+      "newSection": "38",
+      "type": "renumbered",
+      "note": "CRPC §41D → BNSS §38 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "42",
+      "newSection": "39",
+      "type": "modified",
+      "note": "CRPC §42 → BNSS §39 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "43",
+      "newSection": "40",
+      "type": "modified",
+      "note": "CRPC §43 → BNSS §40 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "44",
+      "newSection": "41",
+      "type": "renumbered",
+      "note": "CRPC §44 → BNSS §41 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "45",
+      "newSection": "42",
+      "type": "renumbered",
+      "note": "CRPC §45 → BNSS §42 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "46",
+      "newSection": "43",
+      "type": "modified",
+      "note": "CRPC §46 → BNSS §43 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "47",
+      "newSection": "44",
+      "type": "renumbered",
+      "note": "CRPC §47 → BNSS §44 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "48",
+      "newSection": "45",
+      "type": "renumbered",
+      "note": "CRPC §48 → BNSS §45 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "49",
+      "newSection": "46",
+      "type": "renumbered",
+      "note": "CRPC §49 → BNSS §46 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "50",
+      "newSection": "47",
+      "type": "renumbered",
+      "note": "CRPC §50 → BNSS §47 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "50A",
+      "newSection": "48",
+      "type": "modified",
+      "note": "CRPC §50A → BNSS §48 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "51",
+      "newSection": "49",
+      "type": "renumbered",
+      "note": "CRPC §51 → BNSS §49 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "52",
+      "newSection": "50",
+      "type": "modified",
+      "note": "CRPC §52 → BNSS §50 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "53",
+      "newSection": "51",
+      "type": "modified",
+      "note": "CRPC §53 → BNSS §51 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "53A",
+      "newSection": "52",
+      "type": "modified",
+      "note": "CRPC §53A → BNSS §52 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "54",
+      "newSection": "53",
+      "type": "modified",
+      "note": "CRPC §54 → BNSS §53 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "54A",
+      "newSection": "54",
+      "type": "modified",
+      "note": "CRPC §54A → BNSS §54 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "55",
+      "newSection": "55",
+      "type": "identical",
+      "note": "CRPC §55 → BNSS §55 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "55A",
+      "newSection": "56",
+      "type": "renumbered",
+      "note": "CRPC §55A → BNSS §56 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "56",
+      "newSection": "57",
+      "type": "renumbered",
+      "note": "CRPC §56 → BNSS §57 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "57",
+      "newSection": "58",
+      "type": "modified",
+      "note": "CRPC §57 → BNSS §58 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "58",
+      "newSection": "59",
+      "type": "renumbered",
+      "note": "CRPC §58 → BNSS §59 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "59",
+      "newSection": "60",
+      "type": "modified",
+      "note": "CRPC §59 → BNSS §60 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "60",
+      "newSection": "61",
+      "type": "renumbered",
+      "note": "CRPC §60 → BNSS §61 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "60A",
+      "newSection": "62",
+      "type": "renumbered",
+      "note": "CRPC §60A → BNSS §62 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "61",
+      "newSection": "63",
+      "type": "modified",
+      "note": "CRPC §61 → BNSS §63 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "62",
+      "newSection": "64",
+      "type": "modified",
+      "note": "CRPC §62 → BNSS §64 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "63",
+      "newSection": "65",
+      "type": "modified",
+      "note": "CRPC §63 → BNSS §65 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "64",
+      "newSection": "66",
+      "type": "renumbered",
+      "note": "CRPC §64 → BNSS §66 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "65",
+      "newSection": "67",
+      "type": "renumbered",
+      "note": "CRPC §65 → BNSS §67 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "66",
+      "newSection": "68",
+      "type": "renumbered",
+      "note": "CRPC §66 → BNSS §68 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "67",
+      "newSection": "69",
+      "type": "renumbered",
+      "note": "CRPC §67 → BNSS §69 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "68",
+      "newSection": "70",
+      "type": "modified",
+      "note": "CRPC §68 → BNSS §70 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "69",
+      "newSection": "71",
+      "type": "modified",
+      "note": "CRPC §69 → BNSS §71 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "70",
+      "newSection": "72",
+      "type": "renumbered",
+      "note": "CRPC §70 → BNSS §72 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "71",
+      "newSection": "73",
+      "type": "modified",
+      "note": "CRPC §71 → BNSS §73 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "72",
+      "newSection": "74",
+      "type": "renumbered",
+      "note": "CRPC §72 → BNSS §74 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "73",
+      "newSection": "75",
+      "type": "renumbered",
+      "note": "CRPC §73 → BNSS §75 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "74",
+      "newSection": "76",
+      "type": "renumbered",
+      "note": "CRPC §74 → BNSS §76 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "75",
+      "newSection": "77",
+      "type": "renumbered",
+      "note": "CRPC §75 → BNSS §77 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "76",
+      "newSection": "78",
+      "type": "renumbered",
+      "note": "CRPC §76 → BNSS §78 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "77",
+      "newSection": "79",
+      "type": "renumbered",
+      "note": "CRPC §77 → BNSS §79 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "78",
+      "newSection": "80",
+      "type": "renumbered",
+      "note": "CRPC §78 → BNSS §80 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "79",
+      "newSection": "81",
+      "type": "renumbered",
+      "note": "CRPC §79 → BNSS §81 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "80",
+      "newSection": "82",
+      "type": "modified",
+      "note": "CRPC §80 → BNSS §82 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "81",
+      "newSection": "83",
+      "type": "modified",
+      "note": "CRPC §81 → BNSS §83 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "82",
+      "newSection": "84",
+      "type": "modified",
+      "note": "CRPC §82 → BNSS §84 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "83",
+      "newSection": "85",
+      "type": "renumbered",
+      "note": "CRPC §83 → BNSS §85 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "84",
+      "newSection": "87",
+      "type": "renumbered",
+      "note": "CRPC §84 → BNSS §87 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "85",
+      "newSection": "88",
+      "type": "renumbered",
+      "note": "CRPC §85 → BNSS §88 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "86",
+      "newSection": "89",
+      "type": "renumbered",
+      "note": "CRPC §86 → BNSS §89 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "87",
+      "newSection": "90",
+      "type": "renumbered",
+      "note": "CRPC §87 → BNSS §90 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "88",
+      "newSection": "91",
+      "type": "modified",
+      "note": "CRPC §88 → BNSS §91 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "89",
+      "newSection": "92",
+      "type": "modified",
+      "note": "CRPC §89 → BNSS §92 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "91",
+      "newSection": "94",
+      "type": "modified",
+      "note": "CRPC §91 → BNSS §94 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "92",
+      "newSection": "95",
+      "type": "modified",
+      "note": "CRPC §92 → BNSS §95 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "93",
+      "newSection": "96",
+      "type": "modified",
+      "note": "CRPC §93 → BNSS §96 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "94",
+      "newSection": "97",
+      "type": "modified",
+      "note": "CRPC §94 → BNSS §97 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "95",
+      "newSection": "98",
+      "type": "renumbered",
+      "note": "CRPC §95 → BNSS §98 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "96",
+      "newSection": "99",
+      "type": "renumbered",
+      "note": "CRPC §96 → BNSS §99 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "97",
+      "newSection": "100",
+      "type": "renumbered",
+      "note": "CRPC §97 → BNSS §100 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "98",
+      "newSection": "101",
+      "type": "modified",
+      "note": "CRPC §98 → BNSS §101 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "99",
+      "newSection": "102",
+      "type": "renumbered",
+      "note": "CRPC §99 → BNSS §102 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "100",
+      "newSection": "103",
+      "type": "renumbered",
+      "note": "CRPC §100 → BNSS §103 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "101",
+      "newSection": "104",
+      "type": "renumbered",
+      "note": "CRPC §101 → BNSS §104 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "102",
+      "newSection": "106",
+      "type": "renumbered",
+      "note": "CRPC §102 → BNSS §106 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "103",
+      "newSection": "108",
+      "type": "renumbered",
+      "note": "CRPC §103 → BNSS §108 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "104",
+      "newSection": "109",
+      "type": "renumbered",
+      "note": "CRPC §104 → BNSS §109 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "105",
+      "newSection": "110",
+      "type": "renumbered",
+      "note": "CRPC §105 → BNSS §110 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "105A",
+      "newSection": "111",
+      "type": "renumbered",
+      "note": "CRPC §105A → BNSS §111 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "105B",
+      "newSection": "114",
+      "type": "renumbered",
+      "note": "CRPC §105B → BNSS §114 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "105C",
+      "newSection": "115",
+      "type": "renumbered",
+      "note": "CRPC §105C → BNSS §115 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "105D",
+      "newSection": "116",
+      "type": "renumbered",
+      "note": "CRPC §105D → BNSS §116 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "105E",
+      "newSection": "117",
+      "type": "renumbered",
+      "note": "CRPC §105E → BNSS §117 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "105G",
+      "newSection": "119",
+      "type": "renumbered",
+      "note": "CRPC §105G → BNSS §119 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "105H",
+      "newSection": "120",
+      "type": "renumbered",
+      "note": "CRPC §105H → BNSS §120 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "105J",
+      "newSection": "122",
+      "type": "renumbered",
+      "note": "CRPC §105J → BNSS §122 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "105K",
+      "newSection": "123",
+      "type": "renumbered",
+      "note": "CRPC §105K → BNSS §123 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "106",
+      "newSection": "125",
+      "type": "modified",
+      "note": "CRPC §106 → BNSS §125 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "107",
+      "newSection": "126",
+      "type": "modified",
+      "note": "CRPC §107 → BNSS §126 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "108",
+      "newSection": "127",
+      "type": "modified",
+      "note": "CRPC §108 → BNSS §127 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "109",
+      "newSection": "128",
+      "type": "modified",
+      "note": "CRPC §109 → BNSS §128 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "110",
+      "newSection": "129",
+      "type": "modified",
+      "note": "CRPC §110 → BNSS §129 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "111",
+      "newSection": "130",
+      "type": "modified",
+      "note": "CRPC §111 → BNSS §130 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "112",
+      "newSection": "131",
+      "type": "renumbered",
+      "note": "CRPC §112 → BNSS §131 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "113",
+      "newSection": "132",
+      "type": "renumbered",
+      "note": "CRPC §113 → BNSS §132 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "114",
+      "newSection": "133",
+      "type": "renumbered",
+      "note": "CRPC §114 → BNSS §133 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "115",
+      "newSection": "134",
+      "type": "modified",
+      "note": "CRPC §115 → BNSS §134 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "116",
+      "newSection": "135",
+      "type": "modified",
+      "note": "CRPC §116 → BNSS §135 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "117",
+      "newSection": "136",
+      "type": "modified",
+      "note": "CRPC §117 → BNSS §136 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "118",
+      "newSection": "137",
+      "type": "renumbered",
+      "note": "CRPC §118 → BNSS §137 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "119",
+      "newSection": "138",
+      "type": "renumbered",
+      "note": "CRPC §119 → BNSS §138 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "120",
+      "newSection": "139",
+      "type": "modified",
+      "note": "CRPC §120 → BNSS §139 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "121",
+      "newSection": "140",
+      "type": "modified",
+      "note": "CRPC §121 → BNSS §140 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "122",
+      "newSection": "141",
+      "type": "modified",
+      "note": "CRPC §122 → BNSS §141 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "123",
+      "newSection": "142",
+      "type": "renumbered",
+      "note": "CRPC §123 → BNSS §142 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "124",
+      "newSection": "143",
+      "type": "modified",
+      "note": "CRPC §124 → BNSS §143 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "125",
+      "newSection": "144",
+      "type": "renumbered",
+      "note": "CRPC §125 → BNSS §144 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "126",
+      "newSection": "145",
+      "type": "renumbered",
+      "note": "CRPC §126 → BNSS §145 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "127",
+      "newSection": "146",
+      "type": "renumbered",
+      "note": "CRPC §127 → BNSS §146 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "128",
+      "newSection": "147",
+      "type": "renumbered",
+      "note": "CRPC §128 → BNSS §147 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "129",
+      "newSection": "148",
+      "type": "modified",
+      "note": "CRPC §129 → BNSS §148 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "130",
+      "newSection": "149",
+      "type": "modified",
+      "note": "CRPC §130 → BNSS §149 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "131",
+      "newSection": "150",
+      "type": "renumbered",
+      "note": "CRPC §131 → BNSS §150 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "132",
+      "newSection": "151",
+      "type": "renumbered",
+      "note": "CRPC §132 → BNSS §151 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "133",
+      "newSection": "152",
+      "type": "renumbered",
+      "note": "CRPC §133 → BNSS §152 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "134",
+      "newSection": "153",
+      "type": "renumbered",
+      "note": "CRPC §134 → BNSS §153 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "135",
+      "newSection": "154",
+      "type": "modified",
+      "note": "CRPC §135 → BNSS §154 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "136",
+      "newSection": "155",
+      "type": "renumbered",
+      "note": "CRPC §136 → BNSS §155 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "137",
+      "newSection": "156",
+      "type": "renumbered",
+      "note": "CRPC §137 → BNSS §156 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "138",
+      "newSection": "157",
+      "type": "modified",
+      "note": "CRPC §138 → BNSS §157 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "139",
+      "newSection": "158",
+      "type": "renumbered",
+      "note": "CRPC §139 → BNSS §158 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "140",
+      "newSection": "159",
+      "type": "renumbered",
+      "note": "CRPC §140 → BNSS §159 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "141",
+      "newSection": "160",
+      "type": "renumbered",
+      "note": "CRPC §141 → BNSS §160 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "142",
+      "newSection": "161",
+      "type": "renumbered",
+      "note": "CRPC §142 → BNSS §161 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "143",
+      "newSection": "162",
+      "type": "modified",
+      "note": "CRPC §143 → BNSS §162 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "144",
+      "newSection": "163",
+      "type": "renumbered",
+      "note": "CRPC §144 → BNSS §163 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "145",
+      "newSection": "164",
+      "type": "renumbered",
+      "note": "CRPC §145 → BNSS §164 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "146",
+      "newSection": "165",
+      "type": "renumbered",
+      "note": "CRPC §146 → BNSS §165 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "147",
+      "newSection": "166",
+      "type": "renumbered",
+      "note": "CRPC §147 → BNSS §166 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "148",
+      "newSection": "167",
+      "type": "renumbered",
+      "note": "CRPC §148 → BNSS §167 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "149",
+      "newSection": "168",
+      "type": "renumbered",
+      "note": "CRPC §149 → BNSS §168 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "150",
+      "newSection": "169",
+      "type": "renumbered",
+      "note": "CRPC §150 → BNSS §169 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "152",
+      "newSection": "171",
+      "type": "renumbered",
+      "note": "CRPC §152 → BNSS §171 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "154",
+      "newSection": "173",
+      "type": "modified",
+      "note": "CRPC §154 → BNSS §173 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "155",
+      "newSection": "174",
+      "type": "modified",
+      "note": "CRPC §155 → BNSS §174 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "156",
+      "newSection": "175",
+      "type": "modified",
+      "note": "CRPC §156 → BNSS §175 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "157",
+      "newSection": "176",
+      "type": "modified",
+      "note": "CRPC §157 → BNSS §176 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "158",
+      "newSection": "177",
+      "type": "renumbered",
+      "note": "CRPC §158 → BNSS §177 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "159",
+      "newSection": "178",
+      "type": "renumbered",
+      "note": "CRPC §159 → BNSS §178 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "160",
+      "newSection": "179",
+      "type": "modified",
+      "note": "CRPC §160 → BNSS §179 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "161",
+      "newSection": "180",
+      "type": "modified",
+      "note": "CRPC §161 → BNSS §180 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "162",
+      "newSection": "181",
+      "type": "renumbered",
+      "note": "CRPC §162 → BNSS §181 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "163",
+      "newSection": "182",
+      "type": "renumbered",
+      "note": "CRPC §163 → BNSS §182 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "164",
+      "newSection": "183",
+      "type": "modified",
+      "note": "CRPC §164 → BNSS §183 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "165",
+      "newSection": "185",
+      "type": "modified",
+      "note": "CRPC §165 → BNSS §185 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "166",
+      "newSection": "186",
+      "type": "renumbered",
+      "note": "CRPC §166 → BNSS §186 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "166A",
+      "newSection": "112",
+      "type": "renumbered",
+      "note": "CRPC §166A → BNSS §112 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "166B",
+      "newSection": "113",
+      "type": "modified",
+      "note": "CRPC §166B → BNSS §113 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "167",
+      "newSection": "187",
+      "type": "modified",
+      "note": "CRPC §167 → BNSS §187 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "168",
+      "newSection": "188",
+      "type": "renumbered",
+      "note": "CRPC §168 → BNSS §188 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "169",
+      "newSection": "189",
+      "type": "modified",
+      "note": "CRPC §169 → BNSS §189 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "170",
+      "newSection": "190",
+      "type": "modified",
+      "note": "CRPC §170 → BNSS §190 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "171",
+      "newSection": "191",
+      "type": "renumbered",
+      "note": "CRPC §171 → BNSS §191 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "172",
+      "newSection": "192",
+      "type": "renumbered",
+      "note": "CRPC §172 → BNSS §192 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "173",
+      "newSection": "193",
+      "type": "modified",
+      "note": "CRPC §173 → BNSS §193 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "174",
+      "newSection": "194",
+      "type": "modified",
+      "note": "CRPC §174 → BNSS §194 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "175",
+      "newSection": "195",
+      "type": "modified",
+      "note": "CRPC §175 → BNSS §195 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "176",
+      "newSection": "196",
+      "type": "modified",
+      "note": "CRPC §176 → BNSS §196 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "177",
+      "newSection": "197",
+      "type": "renumbered",
+      "note": "CRPC §177 → BNSS §197 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "178",
+      "newSection": "198",
+      "type": "renumbered",
+      "note": "CRPC §178 → BNSS §198 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "179",
+      "newSection": "199",
+      "type": "renumbered",
+      "note": "CRPC §179 → BNSS §199 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "180",
+      "newSection": "200",
+      "type": "renumbered",
+      "note": "CRPC §180 → BNSS §200 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "181",
+      "newSection": "201",
+      "type": "modified",
+      "note": "CRPC §181 → BNSS §201 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "182",
+      "newSection": "202",
+      "type": "modified",
+      "note": "CRPC §182 → BNSS §202 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "183",
+      "newSection": "203",
+      "type": "renumbered",
+      "note": "CRPC §183 → BNSS §203 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "184",
+      "newSection": "204",
+      "type": "renumbered",
+      "note": "CRPC §184 → BNSS §204 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "185",
+      "newSection": "205",
+      "type": "renumbered",
+      "note": "CRPC §185 → BNSS §205 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "186",
+      "newSection": "206",
+      "type": "renumbered",
+      "note": "CRPC §186 → BNSS §206 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "187",
+      "newSection": "207",
+      "type": "modified",
+      "note": "CRPC §187 → BNSS §207 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "188",
+      "newSection": "208",
+      "type": "modified",
+      "note": "CRPC §188 → BNSS §208 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "189",
+      "newSection": "209",
+      "type": "modified",
+      "note": "CRPC §189 → BNSS §209 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "190",
+      "newSection": "210",
+      "type": "modified",
+      "note": "CRPC §190 → BNSS §210 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "191",
+      "newSection": "211",
+      "type": "renumbered",
+      "note": "CRPC §191 → BNSS §211 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "192",
+      "newSection": "212",
+      "type": "renumbered",
+      "note": "CRPC §192 → BNSS §212 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "193",
+      "newSection": "213",
+      "type": "renumbered",
+      "note": "CRPC §193 → BNSS §213 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "194",
+      "newSection": "214",
+      "type": "modified",
+      "note": "CRPC §194 → BNSS §214 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "195",
+      "newSection": "215",
+      "type": "modified",
+      "note": "CRPC §195 → BNSS §215 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "195A",
+      "newSection": "216",
+      "type": "renumbered",
+      "note": "CRPC §195A → BNSS §216 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "196",
+      "newSection": "217",
+      "type": "renumbered",
+      "note": "CRPC §196 → BNSS §217 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "197",
+      "newSection": "218",
+      "type": "modified",
+      "note": "CRPC §197 → BNSS §218 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "198",
+      "newSection": "219",
+      "type": "modified",
+      "note": "CRPC §198 → BNSS §219 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "198A",
+      "newSection": "220",
+      "type": "renumbered",
+      "note": "CRPC §198A → BNSS §220 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "198B",
+      "newSection": "221",
+      "type": "renumbered",
+      "note": "CRPC §198B → BNSS §221 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "199",
+      "newSection": "222",
+      "type": "modified",
+      "note": "CRPC §199 → BNSS §222 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "200",
+      "newSection": "223",
+      "type": "modified",
+      "note": "CRPC §200 → BNSS §223 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "201",
+      "newSection": "224",
+      "type": "renumbered",
+      "note": "CRPC §201 → BNSS §224 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "202",
+      "newSection": "225",
+      "type": "renumbered",
+      "note": "CRPC §202 → BNSS §225 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "203",
+      "newSection": "226",
+      "type": "renumbered",
+      "note": "CRPC §203 → BNSS §226 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "204",
+      "newSection": "227",
+      "type": "modified",
+      "note": "CRPC §204 → BNSS §227 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "205",
+      "newSection": "228",
+      "type": "renumbered",
+      "note": "CRPC §205 → BNSS §228 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "206",
+      "newSection": "229",
+      "type": "modified",
+      "note": "CRPC §206 → BNSS §229 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "207",
+      "newSection": "230",
+      "type": "modified",
+      "note": "CRPC §207 → BNSS §230 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "208",
+      "newSection": "231",
+      "type": "modified",
+      "note": "CRPC §208 → BNSS §231 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "209",
+      "newSection": "232",
+      "type": "modified",
+      "note": "CRPC §209 → BNSS §232 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "210",
+      "newSection": "233",
+      "type": "renumbered",
+      "note": "CRPC §210 → BNSS §233 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "211",
+      "newSection": "234",
+      "type": "renumbered",
+      "note": "CRPC §211 → BNSS §234 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "212",
+      "newSection": "235",
+      "type": "renumbered",
+      "note": "CRPC §212 → BNSS §235 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "213",
+      "newSection": "236",
+      "type": "renumbered",
+      "note": "CRPC §213 → BNSS §236 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "214",
+      "newSection": "237",
+      "type": "renumbered",
+      "note": "CRPC §214 → BNSS §237 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "215",
+      "newSection": "238",
+      "type": "renumbered",
+      "note": "CRPC §215 → BNSS §238 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "216",
+      "newSection": "239",
+      "type": "renumbered",
+      "note": "CRPC §216 → BNSS §239 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "217",
+      "newSection": "240",
+      "type": "renumbered",
+      "note": "CRPC §217 → BNSS §240 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "218",
+      "newSection": "241",
+      "type": "renumbered",
+      "note": "CRPC §218 → BNSS §241 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "219",
+      "newSection": "242",
+      "type": "modified",
+      "note": "CRPC §219 → BNSS §242 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "220",
+      "newSection": "243",
+      "type": "renumbered",
+      "note": "CRPC §220 → BNSS §243 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "221",
+      "newSection": "244",
+      "type": "renumbered",
+      "note": "CRPC §221 → BNSS §244 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "222",
+      "newSection": "245",
+      "type": "renumbered",
+      "note": "CRPC §222 → BNSS §245 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "223",
+      "newSection": "246",
+      "type": "renumbered",
+      "note": "CRPC §223 → BNSS §246 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "224",
+      "newSection": "247",
+      "type": "renumbered",
+      "note": "CRPC §224 → BNSS §247 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "225",
+      "newSection": "248",
+      "type": "renumbered",
+      "note": "CRPC §225 → BNSS §248 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "226",
+      "newSection": "249",
+      "type": "modified",
+      "note": "CRPC §226 → BNSS §249 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "227",
+      "newSection": "250",
+      "type": "modified",
+      "note": "CRPC §227 → BNSS §250 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "228",
+      "newSection": "251",
+      "type": "modified",
+      "note": "CRPC §228 → BNSS §251 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "229",
+      "newSection": "252",
+      "type": "renumbered",
+      "note": "CRPC §229 → BNSS §252 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "230",
+      "newSection": "253",
+      "type": "renumbered",
+      "note": "CRPC §230 → BNSS §253 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "231",
+      "newSection": "254",
+      "type": "modified",
+      "note": "CRPC §231 → BNSS §254 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "232",
+      "newSection": "255",
+      "type": "renumbered",
+      "note": "CRPC §232 → BNSS §255 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "233",
+      "newSection": "256",
+      "type": "renumbered",
+      "note": "CRPC §233 → BNSS §256 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "234",
+      "newSection": "257",
+      "type": "renumbered",
+      "note": "CRPC §234 → BNSS §257 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "235",
+      "newSection": "258",
+      "type": "modified",
+      "note": "CRPC §235 → BNSS §258 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "236",
+      "newSection": "259",
+      "type": "renumbered",
+      "note": "CRPC §236 → BNSS §259 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "237",
+      "newSection": "260",
+      "type": "renumbered",
+      "note": "CRPC §237 → BNSS §260 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "238",
+      "newSection": "261",
+      "type": "renumbered",
+      "note": "CRPC §238 → BNSS §261 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "239",
+      "newSection": "262",
+      "type": "modified",
+      "note": "CRPC §239 → BNSS §262 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "240",
+      "newSection": "263",
+      "type": "modified",
+      "note": "CRPC §240 → BNSS §263 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "241",
+      "newSection": "264",
+      "type": "renumbered",
+      "note": "CRPC §241 → BNSS §264 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "242",
+      "newSection": "265",
+      "type": "modified",
+      "note": "CRPC §242 → BNSS §265 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "243",
+      "newSection": "266",
+      "type": "modified",
+      "note": "CRPC §243 → BNSS §266 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "244",
+      "newSection": "267",
+      "type": "renumbered",
+      "note": "CRPC §244 → BNSS §267 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "245",
+      "newSection": "268",
+      "type": "renumbered",
+      "note": "CRPC §245 → BNSS §268 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "246",
+      "newSection": "269",
+      "type": "modified",
+      "note": "CRPC §246 → BNSS §269 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "247",
+      "newSection": "270",
+      "type": "renumbered",
+      "note": "CRPC §247 → BNSS §270 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "248",
+      "newSection": "271",
+      "type": "renumbered",
+      "note": "CRPC §248 → BNSS §271 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "249",
+      "newSection": "272",
+      "type": "modified",
+      "note": "CRPC §249 → BNSS §272 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "250",
+      "newSection": "273",
+      "type": "modified",
+      "note": "CRPC §250 → BNSS §273 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "251",
+      "newSection": "274",
+      "type": "modified",
+      "note": "CRPC §251 → BNSS §274 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "252",
+      "newSection": "275",
+      "type": "renumbered",
+      "note": "CRPC §252 → BNSS §275 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "253",
+      "newSection": "276",
+      "type": "renumbered",
+      "note": "CRPC §253 → BNSS §276 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "254",
+      "newSection": "277",
+      "type": "renumbered",
+      "note": "CRPC §254 → BNSS §277 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "255",
+      "newSection": "278",
+      "type": "renumbered",
+      "note": "CRPC §255 → BNSS §278 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "256",
+      "newSection": "279",
+      "type": "modified",
+      "note": "CRPC §256 → BNSS §279 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "257",
+      "newSection": "280",
+      "type": "renumbered",
+      "note": "CRPC §257 → BNSS §280 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "258",
+      "newSection": "281",
+      "type": "renumbered",
+      "note": "CRPC §258 → BNSS §281 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "259",
+      "newSection": "282",
+      "type": "renumbered",
+      "note": "CRPC §259 → BNSS §282 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "260",
+      "newSection": "283",
+      "type": "modified",
+      "note": "CRPC §260 → BNSS §283 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "261",
+      "newSection": "284",
+      "type": "renumbered",
+      "note": "CRPC §261 → BNSS §284 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "262",
+      "newSection": "285",
+      "type": "renumbered",
+      "note": "CRPC §262 → BNSS §285 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "263",
+      "newSection": "286",
+      "type": "renumbered",
+      "note": "CRPC §263 → BNSS §286 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "264",
+      "newSection": "287",
+      "type": "renumbered",
+      "note": "CRPC §264 → BNSS §287 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "265",
+      "newSection": "288",
+      "type": "renumbered",
+      "note": "CRPC §265 → BNSS §288 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "265B",
+      "newSection": "290",
+      "type": "modified",
+      "note": "CRPC §265B → BNSS §290 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "265C",
+      "newSection": "291",
+      "type": "renumbered",
+      "note": "CRPC §265C → BNSS §291 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "265D",
+      "newSection": "292",
+      "type": "renumbered",
+      "note": "CRPC §265D → BNSS §292 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "265E",
+      "newSection": "293",
+      "type": "modified",
+      "note": "CRPC §265E → BNSS §293 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "265F",
+      "newSection": "294",
+      "type": "renumbered",
+      "note": "CRPC §265F → BNSS §294 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "265G",
+      "newSection": "295",
+      "type": "renumbered",
+      "note": "CRPC §265G → BNSS §295 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "265H",
+      "newSection": "296",
+      "type": "renumbered",
+      "note": "CRPC §265H → BNSS §296 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "265J",
+      "newSection": "298",
+      "type": "renumbered",
+      "note": "CRPC §265J → BNSS §298 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "265K",
+      "newSection": "299",
+      "type": "renumbered",
+      "note": "CRPC §265K → BNSS §299 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "266",
+      "newSection": "301",
+      "type": "renumbered",
+      "note": "CRPC §266 → BNSS §301 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "267",
+      "newSection": "302",
+      "type": "renumbered",
+      "note": "CRPC §267 → BNSS §302 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "268",
+      "newSection": "303",
+      "type": "modified",
+      "note": "CRPC §268 → BNSS §303 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "269",
+      "newSection": "304",
+      "type": "renumbered",
+      "note": "CRPC §269 → BNSS §304 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "270",
+      "newSection": "305",
+      "type": "renumbered",
+      "note": "CRPC §270 → BNSS §305 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "271",
+      "newSection": "306",
+      "type": "renumbered",
+      "note": "CRPC §271 → BNSS §306 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "272",
+      "newSection": "307",
+      "type": "renumbered",
+      "note": "CRPC §272 → BNSS §307 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "273",
+      "newSection": "308",
+      "type": "modified",
+      "note": "CRPC §273 → BNSS §308 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "274",
+      "newSection": "309",
+      "type": "renumbered",
+      "note": "CRPC §274 → BNSS §309 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "275",
+      "newSection": "310",
+      "type": "renumbered",
+      "note": "CRPC §275 → BNSS §310 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "276",
+      "newSection": "311",
+      "type": "renumbered",
+      "note": "CRPC §276 → BNSS §311 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "277",
+      "newSection": "312",
+      "type": "renumbered",
+      "note": "CRPC §277 → BNSS §312 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "278",
+      "newSection": "313",
+      "type": "modified",
+      "note": "CRPC §278 → BNSS §313 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "279",
+      "newSection": "314",
+      "type": "renumbered",
+      "note": "CRPC §279 → BNSS §314 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "280",
+      "newSection": "315",
+      "type": "renumbered",
+      "note": "CRPC §280 → BNSS §315 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "281",
+      "newSection": "316",
+      "type": "modified",
+      "note": "CRPC §281 → BNSS §316 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "282",
+      "newSection": "317",
+      "type": "renumbered",
+      "note": "CRPC §282 → BNSS §317 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "283",
+      "newSection": "318",
+      "type": "renumbered",
+      "note": "CRPC §283 → BNSS §318 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "284",
+      "newSection": "319",
+      "type": "renumbered",
+      "note": "CRPC §284 → BNSS §319 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "285",
+      "newSection": "320",
+      "type": "modified",
+      "note": "CRPC §285 → BNSS §320 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "286",
+      "newSection": "321",
+      "type": "modified",
+      "note": "CRPC §286 → BNSS §321 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "287",
+      "newSection": "322",
+      "type": "renumbered",
+      "note": "CRPC §287 → BNSS §322 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "288",
+      "newSection": "323",
+      "type": "renumbered",
+      "note": "CRPC §288 → BNSS §323 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "289",
+      "newSection": "324",
+      "type": "renumbered",
+      "note": "CRPC §289 → BNSS §324 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "290",
+      "newSection": "325",
+      "type": "renumbered",
+      "note": "CRPC §290 → BNSS §325 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "291",
+      "newSection": "326",
+      "type": "renumbered",
+      "note": "CRPC §291 → BNSS §326 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "291A",
+      "newSection": "327",
+      "type": "renumbered",
+      "note": "CRPC §291A → BNSS §327 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "292",
+      "newSection": "328",
+      "type": "renumbered",
+      "note": "CRPC §292 → BNSS §328 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "293",
+      "newSection": "329",
+      "type": "renumbered",
+      "note": "CRPC §293 → BNSS §329 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "294",
+      "newSection": "330",
+      "type": "modified",
+      "note": "CRPC §294 → BNSS §330 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "295",
+      "newSection": "331",
+      "type": "renumbered",
+      "note": "CRPC §295 → BNSS §331 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "296",
+      "newSection": "332",
+      "type": "renumbered",
+      "note": "CRPC §296 → BNSS §332 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "297",
+      "newSection": "333",
+      "type": "renumbered",
+      "note": "CRPC §297 → BNSS §333 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "298",
+      "newSection": "334",
+      "type": "renumbered",
+      "note": "CRPC §298 → BNSS §334 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "299",
+      "newSection": "335",
+      "type": "renumbered",
+      "note": "CRPC §299 → BNSS §335 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "300",
+      "newSection": "337",
+      "type": "renumbered",
+      "note": "CRPC §300 → BNSS §337 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "301",
+      "newSection": "338",
+      "type": "renumbered",
+      "note": "CRPC §301 → BNSS §338 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "302",
+      "newSection": "339",
+      "type": "renumbered",
+      "note": "CRPC §302 → BNSS §339 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "303",
+      "newSection": "340",
+      "type": "renumbered",
+      "note": "CRPC §303 → BNSS §340 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "304",
+      "newSection": "341",
+      "type": "modified",
+      "note": "CRPC §304 → BNSS §341 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "305",
+      "newSection": "342",
+      "type": "renumbered",
+      "note": "CRPC §305 → BNSS §342 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "306",
+      "newSection": "343",
+      "type": "modified",
+      "note": "CRPC §306 → BNSS §343 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "307",
+      "newSection": "344",
+      "type": "renumbered",
+      "note": "CRPC §307 → BNSS §344 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "308",
+      "newSection": "345",
+      "type": "renumbered",
+      "note": "CRPC §308 → BNSS §345 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "309",
+      "newSection": "346",
+      "type": "modified",
+      "note": "CRPC §309 → BNSS §346 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "310",
+      "newSection": "347",
+      "type": "renumbered",
+      "note": "CRPC §310 → BNSS §347 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "311",
+      "newSection": "348",
+      "type": "renumbered",
+      "note": "CRPC §311 → BNSS §348 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "311A",
+      "newSection": "349",
+      "type": "modified",
+      "note": "CRPC §311A → BNSS §349 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "312",
+      "newSection": "350",
+      "type": "renumbered",
+      "note": "CRPC §312 → BNSS §350 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "313",
+      "newSection": "351",
+      "type": "renumbered",
+      "note": "CRPC §313 → BNSS §351 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "314",
+      "newSection": "352",
+      "type": "renumbered",
+      "note": "CRPC §314 → BNSS §352 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "315",
+      "newSection": "353",
+      "type": "renumbered",
+      "note": "CRPC §315 → BNSS §353 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "316",
+      "newSection": "354",
+      "type": "renumbered",
+      "note": "CRPC §316 → BNSS §354 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "317",
+      "newSection": "355",
+      "type": "modified",
+      "note": "CRPC §317 → BNSS §355 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "318",
+      "newSection": "357",
+      "type": "renumbered",
+      "note": "CRPC §318 → BNSS §357 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "319",
+      "newSection": "358",
+      "type": "renumbered",
+      "note": "CRPC §319 → BNSS §358 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "320",
+      "newSection": "359",
+      "type": "modified",
+      "note": "CRPC §320 → BNSS §359 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "321",
+      "newSection": "360",
+      "type": "modified",
+      "note": "CRPC §321 → BNSS §360 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "322",
+      "newSection": "361",
+      "type": "renumbered",
+      "note": "CRPC §322 → BNSS §361 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "323",
+      "newSection": "362",
+      "type": "renumbered",
+      "note": "CRPC §323 → BNSS §362 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "324",
+      "newSection": "363",
+      "type": "renumbered",
+      "note": "CRPC §324 → BNSS §363 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "325",
+      "newSection": "364",
+      "type": "renumbered",
+      "note": "CRPC §325 → BNSS §364 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "326",
+      "newSection": "365",
+      "type": "renumbered",
+      "note": "CRPC §326 → BNSS §365 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "327",
+      "newSection": "366",
+      "type": "renumbered",
+      "note": "CRPC §327 → BNSS §366 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "328",
+      "newSection": "367",
+      "type": "modified",
+      "note": "CRPC §328 → BNSS §367 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "329",
+      "newSection": "368",
+      "type": "renumbered",
+      "note": "CRPC §329 → BNSS §368 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "330",
+      "newSection": "369",
+      "type": "modified",
+      "note": "CRPC §330 → BNSS §369 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "331",
+      "newSection": "370",
+      "type": "renumbered",
+      "note": "CRPC §331 → BNSS §370 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "332",
+      "newSection": "371",
+      "type": "renumbered",
+      "note": "CRPC §332 → BNSS §371 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "333",
+      "newSection": "372",
+      "type": "renumbered",
+      "note": "CRPC §333 → BNSS §372 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "334",
+      "newSection": "373",
+      "type": "renumbered",
+      "note": "CRPC §334 → BNSS §373 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "335",
+      "newSection": "374",
+      "type": "modified",
+      "note": "CRPC §335 → BNSS §374 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "336",
+      "newSection": "375",
+      "type": "renumbered",
+      "note": "CRPC §336 → BNSS §375 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "337",
+      "newSection": "376",
+      "type": "modified",
+      "note": "CRPC §337 → BNSS §376 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "338",
+      "newSection": "377",
+      "type": "modified",
+      "note": "CRPC §338 → BNSS §377 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "339",
+      "newSection": "378",
+      "type": "modified",
+      "note": "CRPC §339 → BNSS §378 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "340",
+      "newSection": "379",
+      "type": "renumbered",
+      "note": "CRPC §340 → BNSS §379 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "341",
+      "newSection": "380",
+      "type": "renumbered",
+      "note": "CRPC §341 → BNSS §380 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "342",
+      "newSection": "381",
+      "type": "renumbered",
+      "note": "CRPC §342 → BNSS §381 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "343",
+      "newSection": "382",
+      "type": "renumbered",
+      "note": "CRPC §343 → BNSS §382 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "344",
+      "newSection": "383",
+      "type": "modified",
+      "note": "CRPC §344 → BNSS §383 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "345",
+      "newSection": "384",
+      "type": "modified",
+      "note": "CRPC §345 → BNSS §384 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "346",
+      "newSection": "385",
+      "type": "renumbered",
+      "note": "CRPC §346 → BNSS §385 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "347",
+      "newSection": "386",
+      "type": "renumbered",
+      "note": "CRPC §347 → BNSS §386 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "348",
+      "newSection": "387",
+      "type": "renumbered",
+      "note": "CRPC §348 → BNSS §387 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "349",
+      "newSection": "388",
+      "type": "renumbered",
+      "note": "CRPC §349 → BNSS §388 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "350",
+      "newSection": "389",
+      "type": "renumbered",
+      "note": "CRPC §350 → BNSS §389 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "351",
+      "newSection": "390",
+      "type": "renumbered",
+      "note": "CRPC §351 → BNSS §390 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "352",
+      "newSection": "391",
+      "type": "renumbered",
+      "note": "CRPC §352 → BNSS §391 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "353",
+      "newSection": "392",
+      "type": "modified",
+      "note": "CRPC §353 → BNSS §392 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "354",
+      "newSection": "393",
+      "type": "renumbered",
+      "note": "CRPC §354 → BNSS §393 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "356",
+      "newSection": "394",
+      "type": "modified",
+      "note": "CRPC §356 → BNSS §394 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "357",
+      "newSection": "395",
+      "type": "renumbered",
+      "note": "CRPC §357 → BNSS §395 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "357A",
+      "newSection": "396",
+      "type": "merged",
+      "note": "CRPC §357A → BNSS §396 per the official NCRB Sankalan table. BNSS §396 consolidates multiple CRPC sections."
+    },
+    {
+      "oldSection": "357B",
+      "newSection": "396",
+      "type": "merged",
+      "note": "CRPC §357B → BNSS §396 per the official NCRB Sankalan table. BNSS §396 consolidates multiple CRPC sections."
+    },
+    {
+      "oldSection": "357C",
+      "newSection": "397",
+      "type": "modified",
+      "note": "CRPC §357C → BNSS §397 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "358",
+      "newSection": "399",
+      "type": "renumbered",
+      "note": "CRPC §358 → BNSS §399 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "359",
+      "newSection": "400",
+      "type": "renumbered",
+      "note": "CRPC §359 → BNSS §400 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "360",
+      "newSection": "401",
+      "type": "modified",
+      "note": "CRPC §360 → BNSS §401 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "361",
+      "newSection": "402",
+      "type": "renumbered",
+      "note": "CRPC §361 → BNSS §402 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "362",
+      "newSection": "403",
+      "type": "renumbered",
+      "note": "CRPC §362 → BNSS §403 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "363",
+      "newSection": "404",
+      "type": "modified",
+      "note": "CRPC §363 → BNSS §404 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "364",
+      "newSection": "405",
+      "type": "modified",
+      "note": "CRPC §364 → BNSS §405 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "365",
+      "newSection": "406",
+      "type": "renumbered",
+      "note": "CRPC §365 → BNSS §406 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "366",
+      "newSection": "407",
+      "type": "renumbered",
+      "note": "CRPC §366 → BNSS §407 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "367",
+      "newSection": "408",
+      "type": "renumbered",
+      "note": "CRPC §367 → BNSS §408 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "368",
+      "newSection": "409",
+      "type": "renumbered",
+      "note": "CRPC §368 → BNSS §409 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "369",
+      "newSection": "410",
+      "type": "renumbered",
+      "note": "CRPC §369 → BNSS §410 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "370",
+      "newSection": "411",
+      "type": "renumbered",
+      "note": "CRPC §370 → BNSS §411 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "371",
+      "newSection": "412",
+      "type": "modified",
+      "note": "CRPC §371 → BNSS §412 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "372",
+      "newSection": "413",
+      "type": "renumbered",
+      "note": "CRPC §372 → BNSS §413 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "373",
+      "newSection": "414",
+      "type": "renumbered",
+      "note": "CRPC §373 → BNSS §414 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "374",
+      "newSection": "415",
+      "type": "modified",
+      "note": "CRPC §374 → BNSS §415 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "375",
+      "newSection": "416",
+      "type": "renumbered",
+      "note": "CRPC §375 → BNSS §416 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "376",
+      "newSection": "417",
+      "type": "modified",
+      "note": "CRPC §376 → BNSS §417 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "377",
+      "newSection": "418",
+      "type": "modified",
+      "note": "CRPC §377 → BNSS §418 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "378",
+      "newSection": "419",
+      "type": "modified",
+      "note": "CRPC §378 → BNSS §419 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "379",
+      "newSection": "420",
+      "type": "renumbered",
+      "note": "CRPC §379 → BNSS §420 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "380",
+      "newSection": "421",
+      "type": "renumbered",
+      "note": "CRPC §380 → BNSS §421 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "381",
+      "newSection": "422",
+      "type": "modified",
+      "note": "CRPC §381 → BNSS §422 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "382",
+      "newSection": "423",
+      "type": "renumbered",
+      "note": "CRPC §382 → BNSS §423 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "383",
+      "newSection": "424",
+      "type": "renumbered",
+      "note": "CRPC §383 → BNSS §424 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "384",
+      "newSection": "425",
+      "type": "renumbered",
+      "note": "CRPC §384 → BNSS §425 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "385",
+      "newSection": "426",
+      "type": "renumbered",
+      "note": "CRPC §385 → BNSS §426 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "386",
+      "newSection": "427",
+      "type": "renumbered",
+      "note": "CRPC §386 → BNSS §427 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "387",
+      "newSection": "428",
+      "type": "renumbered",
+      "note": "CRPC §387 → BNSS §428 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "388",
+      "newSection": "429",
+      "type": "renumbered",
+      "note": "CRPC §388 → BNSS §429 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "389",
+      "newSection": "430",
+      "type": "modified",
+      "note": "CRPC §389 → BNSS §430 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "390",
+      "newSection": "431",
+      "type": "renumbered",
+      "note": "CRPC §390 → BNSS §431 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "391",
+      "newSection": "432",
+      "type": "renumbered",
+      "note": "CRPC §391 → BNSS §432 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "392",
+      "newSection": "433",
+      "type": "renumbered",
+      "note": "CRPC §392 → BNSS §433 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "393",
+      "newSection": "434",
+      "type": "renumbered",
+      "note": "CRPC §393 → BNSS §434 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "394",
+      "newSection": "435",
+      "type": "renumbered",
+      "note": "CRPC §394 → BNSS §435 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "395",
+      "newSection": "436",
+      "type": "modified",
+      "note": "CRPC §395 → BNSS §436 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "396",
+      "newSection": "437",
+      "type": "renumbered",
+      "note": "CRPC §396 → BNSS §437 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "397",
+      "newSection": "438",
+      "type": "modified",
+      "note": "CRPC §397 → BNSS §438 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "398",
+      "newSection": "439",
+      "type": "renumbered",
+      "note": "CRPC §398 → BNSS §439 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "399",
+      "newSection": "440",
+      "type": "renumbered",
+      "note": "CRPC §399 → BNSS §440 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "400",
+      "newSection": "441",
+      "type": "renumbered",
+      "note": "CRPC §400 → BNSS §441 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "401",
+      "newSection": "442",
+      "type": "renumbered",
+      "note": "CRPC §401 → BNSS §442 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "402",
+      "newSection": "443",
+      "type": "renumbered",
+      "note": "CRPC §402 → BNSS §443 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "403",
+      "newSection": "444",
+      "type": "renumbered",
+      "note": "CRPC §403 → BNSS §444 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "405",
+      "newSection": "445",
+      "type": "renumbered",
+      "note": "CRPC §405 → BNSS §445 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "406",
+      "newSection": "446",
+      "type": "renumbered",
+      "note": "CRPC §406 → BNSS §446 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "407",
+      "newSection": "447",
+      "type": "modified",
+      "note": "CRPC §407 → BNSS §447 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "408",
+      "newSection": "448",
+      "type": "modified",
+      "note": "CRPC §408 → BNSS §448 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "409",
+      "newSection": "449",
+      "type": "renumbered",
+      "note": "CRPC §409 → BNSS §449 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "410",
+      "newSection": "450",
+      "type": "renumbered",
+      "note": "CRPC §410 → BNSS §450 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "411",
+      "newSection": "451",
+      "type": "renumbered",
+      "note": "CRPC §411 → BNSS §451 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "413",
+      "newSection": "453",
+      "type": "renumbered",
+      "note": "CRPC §413 → BNSS §453 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "414",
+      "newSection": "454",
+      "type": "renumbered",
+      "note": "CRPC §414 → BNSS §454 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "415",
+      "newSection": "455",
+      "type": "renumbered",
+      "note": "CRPC §415 → BNSS §455 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "416",
+      "newSection": "456",
+      "type": "modified",
+      "note": "CRPC §416 → BNSS §456 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "417",
+      "newSection": "457",
+      "type": "renumbered",
+      "note": "CRPC §417 → BNSS §457 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "418",
+      "newSection": "458",
+      "type": "modified",
+      "note": "CRPC §418 → BNSS §458 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "419",
+      "newSection": "459",
+      "type": "renumbered",
+      "note": "CRPC §419 → BNSS §459 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "420",
+      "newSection": "460",
+      "type": "renumbered",
+      "note": "CRPC §420 → BNSS §460 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "421",
+      "newSection": "461",
+      "type": "modified",
+      "note": "CRPC §421 → BNSS §461 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "422",
+      "newSection": "462",
+      "type": "renumbered",
+      "note": "CRPC §422 → BNSS §462 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "423",
+      "newSection": "463",
+      "type": "renumbered",
+      "note": "CRPC §423 → BNSS §463 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "424",
+      "newSection": "464",
+      "type": "modified",
+      "note": "CRPC §424 → BNSS §464 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "425",
+      "newSection": "465",
+      "type": "renumbered",
+      "note": "CRPC §425 → BNSS §465 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "426",
+      "newSection": "466",
+      "type": "renumbered",
+      "note": "CRPC §426 → BNSS §466 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "427",
+      "newSection": "467",
+      "type": "renumbered",
+      "note": "CRPC §427 → BNSS §467 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "428",
+      "newSection": "468",
+      "type": "renumbered",
+      "note": "CRPC §428 → BNSS §468 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "429",
+      "newSection": "469",
+      "type": "renumbered",
+      "note": "CRPC §429 → BNSS §469 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "430",
+      "newSection": "470",
+      "type": "renumbered",
+      "note": "CRPC §430 → BNSS §470 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "431",
+      "newSection": "471",
+      "type": "renumbered",
+      "note": "CRPC §431 → BNSS §471 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "432",
+      "newSection": "473",
+      "type": "renumbered",
+      "note": "CRPC §432 → BNSS §473 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "433",
+      "newSection": "474",
+      "type": "modified",
+      "note": "CRPC §433 → BNSS §474 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "433A",
+      "newSection": "475",
+      "type": "renumbered",
+      "note": "CRPC §433A → BNSS §475 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "434",
+      "newSection": "476",
+      "type": "renumbered",
+      "note": "CRPC §434 → BNSS §476 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "435",
+      "newSection": "477",
+      "type": "modified",
+      "note": "CRPC §435 → BNSS §477 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "436",
+      "newSection": "478",
+      "type": "renumbered",
+      "note": "CRPC §436 → BNSS §478 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "436A",
+      "newSection": "479",
+      "type": "modified",
+      "note": "CRPC §436A → BNSS §479 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "437",
+      "newSection": "480",
+      "type": "modified",
+      "note": "CRPC §437 → BNSS §480 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "437A",
+      "newSection": "481",
+      "type": "modified",
+      "note": "CRPC §437A → BNSS §481 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "438",
+      "newSection": "482",
+      "type": "modified",
+      "note": "CRPC §438 → BNSS §482 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "439",
+      "newSection": "483",
+      "type": "renumbered",
+      "note": "CRPC §439 → BNSS §483 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "440",
+      "newSection": "484",
+      "type": "renumbered",
+      "note": "CRPC §440 → BNSS §484 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "441",
+      "newSection": "485",
+      "type": "modified",
+      "note": "CRPC §441 → BNSS §485 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "441A",
+      "newSection": "486",
+      "type": "renumbered",
+      "note": "CRPC §441A → BNSS §486 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "442",
+      "newSection": "487",
+      "type": "modified",
+      "note": "CRPC §442 → BNSS §487 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "443",
+      "newSection": "488",
+      "type": "renumbered",
+      "note": "CRPC §443 → BNSS §488 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "444",
+      "newSection": "489",
+      "type": "renumbered",
+      "note": "CRPC §444 → BNSS §489 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "445",
+      "newSection": "490",
+      "type": "modified",
+      "note": "CRPC §445 → BNSS §490 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "446",
+      "newSection": "491",
+      "type": "renumbered",
+      "note": "CRPC §446 → BNSS §491 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "446A",
+      "newSection": "492",
+      "type": "modified",
+      "note": "CRPC §446A → BNSS §492 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "447",
+      "newSection": "493",
+      "type": "renumbered",
+      "note": "CRPC §447 → BNSS §493 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "448",
+      "newSection": "494",
+      "type": "modified",
+      "note": "CRPC §448 → BNSS §494 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "449",
+      "newSection": "495",
+      "type": "renumbered",
+      "note": "CRPC §449 → BNSS §495 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "450",
+      "newSection": "496",
+      "type": "renumbered",
+      "note": "CRPC §450 → BNSS §496 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "451",
+      "newSection": "497",
+      "type": "modified",
+      "note": "CRPC §451 → BNSS §497 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "452",
+      "newSection": "498",
+      "type": "renumbered",
+      "note": "CRPC §452 → BNSS §498 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "453",
+      "newSection": "499",
+      "type": "renumbered",
+      "note": "CRPC §453 → BNSS §499 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "454",
+      "newSection": "500",
+      "type": "renumbered",
+      "note": "CRPC §454 → BNSS §500 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "457",
+      "newSection": "503",
+      "type": "renumbered",
+      "note": "CRPC §457 → BNSS §503 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "458",
+      "newSection": "504",
+      "type": "renumbered",
+      "note": "CRPC §458 → BNSS §504 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "459",
+      "newSection": "505",
+      "type": "modified",
+      "note": "CRPC §459 → BNSS §505 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "460",
+      "newSection": "506",
+      "type": "renumbered",
+      "note": "CRPC §460 → BNSS §506 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "461",
+      "newSection": "507",
+      "type": "modified",
+      "note": "CRPC §461 → BNSS §507 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "462",
+      "newSection": "508",
+      "type": "renumbered",
+      "note": "CRPC §462 → BNSS §508 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "463",
+      "newSection": "509",
+      "type": "renumbered",
+      "note": "CRPC §463 → BNSS §509 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "464",
+      "newSection": "510",
+      "type": "renumbered",
+      "note": "CRPC §464 → BNSS §510 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "465",
+      "newSection": "511",
+      "type": "renumbered",
+      "note": "CRPC §465 → BNSS §511 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "466",
+      "newSection": "512",
+      "type": "renumbered",
+      "note": "CRPC §466 → BNSS §512 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "467",
+      "newSection": "513",
+      "type": "renumbered",
+      "note": "CRPC §467 → BNSS §513 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "468",
+      "newSection": "514",
+      "type": "modified",
+      "note": "CRPC §468 → BNSS §514 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "469",
+      "newSection": "515",
+      "type": "renumbered",
+      "note": "CRPC §469 → BNSS §515 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "470",
+      "newSection": "516",
+      "type": "renumbered",
+      "note": "CRPC §470 → BNSS §516 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "471",
+      "newSection": "517",
+      "type": "renumbered",
+      "note": "CRPC §471 → BNSS §517 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "472",
+      "newSection": "518",
+      "type": "renumbered",
+      "note": "CRPC §472 → BNSS §518 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "473",
+      "newSection": "519",
+      "type": "renumbered",
+      "note": "CRPC §473 → BNSS §519 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "474",
+      "newSection": "520",
+      "type": "renumbered",
+      "note": "CRPC §474 → BNSS §520 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "475",
+      "newSection": "521",
+      "type": "renumbered",
+      "note": "CRPC §475 → BNSS §521 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "476",
+      "newSection": "522",
+      "type": "renumbered",
+      "note": "CRPC §476 → BNSS §522 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "477",
+      "newSection": "523",
+      "type": "renumbered",
+      "note": "CRPC §477 → BNSS §523 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "478",
+      "newSection": "524",
+      "type": "renumbered",
+      "note": "CRPC §478 → BNSS §524 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "479",
+      "newSection": "525",
+      "type": "renumbered",
+      "note": "CRPC §479 → BNSS §525 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "480",
+      "newSection": "526",
+      "type": "modified",
+      "note": "CRPC §480 → BNSS §526 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "481",
+      "newSection": "527",
+      "type": "renumbered",
+      "note": "CRPC §481 → BNSS §527 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "482",
+      "newSection": "528",
+      "type": "renumbered",
+      "note": "CRPC §482 → BNSS §528 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "483",
+      "newSection": "529",
+      "type": "modified",
+      "note": "CRPC §483 → BNSS §529 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "484",
+      "newSection": "531",
+      "type": "modified",
+      "note": "CRPC §484 → BNSS §531 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "8",
+      "newSection": null,
+      "type": "omitted",
+      "note": "CRPC §8 has no counterpart in BNSS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "10",
+      "newSection": null,
+      "type": "omitted",
+      "note": "CRPC §10 has no counterpart in BNSS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "16",
+      "newSection": null,
+      "type": "omitted",
+      "note": "CRPC §16 has no counterpart in BNSS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "17",
+      "newSection": null,
+      "type": "omitted",
+      "note": "CRPC §17 has no counterpart in BNSS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "18",
+      "newSection": null,
+      "type": "omitted",
+      "note": "CRPC §18 has no counterpart in BNSS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "19",
+      "newSection": null,
+      "type": "omitted",
+      "note": "CRPC §19 has no counterpart in BNSS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "27",
+      "newSection": null,
+      "type": "omitted",
+      "note": "CRPC §27 has no counterpart in BNSS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "144A",
+      "newSection": null,
+      "type": "omitted",
+      "note": "CRPC §144A has no counterpart in BNSS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "153",
+      "newSection": null,
+      "type": "omitted",
+      "note": "CRPC §153 has no counterpart in BNSS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "355",
+      "newSection": null,
+      "type": "omitted",
+      "note": "CRPC §355 has no counterpart in BNSS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "404",
+      "newSection": null,
+      "type": "omitted",
+      "note": "CRPC §404 has no counterpart in BNSS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": null,
+      "newSection": "86",
+      "type": "new",
+      "note": "BNSS §86 is a new provision with no CRPC antecedent per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": null,
+      "newSection": "172",
+      "type": "new",
+      "note": "BNSS §172 is a new provision with no CRPC antecedent per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": null,
+      "newSection": "398",
+      "type": "new",
+      "note": "BNSS §398 is a new provision with no CRPC antecedent per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": null,
+      "newSection": "472",
+      "type": "new",
+      "note": "BNSS §472 is a new provision with no CRPC antecedent per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": null,
+      "newSection": "530",
+      "type": "new",
+      "note": "BNSS §530 is a new provision with no CRPC antecedent per the official NCRB Sankalan table."
+    }
+  ]
+}

@@ -1,0 +1,3361 @@
+{
+  "oldAct": "IPC",
+  "newAct": "BNS",
+  "provenance": "Official NCRB Sankalan comparative table (ncrb.gov.in/uploads/SankalanPortal/SectionTableBNS.html), fetched 2026-07-16; parsed by @nexlex/ingest ncrb-table parser; section-level aggregation, both table directions cross-validated.",
+  "entries": [
+    {
+      "oldSection": "1",
+      "newSection": "1",
+      "type": "merged",
+      "note": "IPC §1 → BNS §1 per the official NCRB Sankalan table. BNS §1 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "2",
+      "newSection": "1",
+      "type": "merged",
+      "note": "IPC §2 → BNS §1 per the official NCRB Sankalan table. BNS §1 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "3",
+      "newSection": "1",
+      "type": "merged",
+      "note": "IPC §3 → BNS §1 per the official NCRB Sankalan table. BNS §1 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "4",
+      "newSection": "1",
+      "type": "merged",
+      "note": "IPC §4 → BNS §1 per the official NCRB Sankalan table. BNS §1 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "5",
+      "newSection": "1",
+      "type": "merged",
+      "note": "IPC §5 → BNS §1 per the official NCRB Sankalan table. BNS §1 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "6",
+      "newSection": "3",
+      "type": "merged",
+      "note": "IPC §6 → BNS §3 per the official NCRB Sankalan table. BNS §3 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "7",
+      "newSection": "3",
+      "type": "merged",
+      "note": "IPC §7 → BNS §3 per the official NCRB Sankalan table. BNS §3 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "8",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §8 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "9",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §9 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "10",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §10 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "11",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §11 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "12",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §12 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "17",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §17 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "19",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §19 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "20",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §20 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "21",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §21 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "22",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §22 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "23",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §23 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "24",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §24 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "25",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §25 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "26",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §26 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "27",
+      "newSection": "3",
+      "type": "merged",
+      "note": "IPC §27 → BNS §3 per the official NCRB Sankalan table. BNS §3 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "28",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §28 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "29",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §29 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "30",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §30 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "31",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §31 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "32",
+      "newSection": "3",
+      "type": "merged",
+      "note": "IPC §32 → BNS §3 per the official NCRB Sankalan table. BNS §3 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "33",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §33 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "34",
+      "newSection": "3",
+      "type": "merged",
+      "note": "IPC §34 → BNS §3 per the official NCRB Sankalan table. BNS §3 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "35",
+      "newSection": "3",
+      "type": "merged",
+      "note": "IPC §35 → BNS §3 per the official NCRB Sankalan table. BNS §3 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "36",
+      "newSection": "3",
+      "type": "merged",
+      "note": "IPC §36 → BNS §3 per the official NCRB Sankalan table. BNS §3 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "37",
+      "newSection": "3",
+      "type": "merged",
+      "note": "IPC §37 → BNS §3 per the official NCRB Sankalan table. BNS §3 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "38",
+      "newSection": "3",
+      "type": "merged",
+      "note": "IPC §38 → BNS §3 per the official NCRB Sankalan table. BNS §3 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "39",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §39 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "40",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §40 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "41",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §41 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "42",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §42 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "43",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §43 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "44",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §44 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "45",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §45 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "46",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §46 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "47",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §47 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "48",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §48 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "49",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §49 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "51",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §51 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "52",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §52 → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "52A",
+      "newSection": "2",
+      "type": "merged",
+      "note": "IPC §52A → BNS §2 per the official NCRB Sankalan table. BNS §2 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "53",
+      "newSection": "4",
+      "type": "modified",
+      "note": "IPC §53 → BNS §4 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "54",
+      "newSection": "5",
+      "type": "merged",
+      "note": "IPC §54 → BNS §5 per the official NCRB Sankalan table. BNS §5 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "55",
+      "newSection": "5",
+      "type": "merged",
+      "note": "IPC §55 → BNS §5 per the official NCRB Sankalan table. BNS §5 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "57",
+      "newSection": "6",
+      "type": "renumbered",
+      "note": "IPC §57 → BNS §6 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "60",
+      "newSection": "7",
+      "type": "renumbered",
+      "note": "IPC §60 → BNS §7 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "63",
+      "newSection": "8",
+      "type": "merged",
+      "note": "IPC §63 → BNS §8 per the official NCRB Sankalan table. BNS §8 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "64",
+      "newSection": "8",
+      "type": "merged",
+      "note": "IPC §64 → BNS §8 per the official NCRB Sankalan table. BNS §8 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "65",
+      "newSection": "8",
+      "type": "merged",
+      "note": "IPC §65 → BNS §8 per the official NCRB Sankalan table. BNS §8 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "66",
+      "newSection": "8",
+      "type": "merged",
+      "note": "IPC §66 → BNS §8 per the official NCRB Sankalan table. BNS §8 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "67",
+      "newSection": "8",
+      "type": "merged",
+      "note": "IPC §67 → BNS §8 per the official NCRB Sankalan table. BNS §8 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "68",
+      "newSection": "8",
+      "type": "merged",
+      "note": "IPC §68 → BNS §8 per the official NCRB Sankalan table. BNS §8 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "69",
+      "newSection": "8",
+      "type": "merged",
+      "note": "IPC §69 → BNS §8 per the official NCRB Sankalan table. BNS §8 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "70",
+      "newSection": "8",
+      "type": "merged",
+      "note": "IPC §70 → BNS §8 per the official NCRB Sankalan table. BNS §8 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "71",
+      "newSection": "9",
+      "type": "renumbered",
+      "note": "IPC §71 → BNS §9 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "72",
+      "newSection": "10",
+      "type": "renumbered",
+      "note": "IPC §72 → BNS §10 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "73",
+      "newSection": "11",
+      "type": "renumbered",
+      "note": "IPC §73 → BNS §11 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "74",
+      "newSection": "12",
+      "type": "renumbered",
+      "note": "IPC §74 → BNS §12 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "76",
+      "newSection": "14",
+      "type": "renumbered",
+      "note": "IPC §76 → BNS §14 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "77",
+      "newSection": "15",
+      "type": "renumbered",
+      "note": "IPC §77 → BNS §15 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "78",
+      "newSection": "16",
+      "type": "renumbered",
+      "note": "IPC §78 → BNS §16 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "79",
+      "newSection": "17",
+      "type": "renumbered",
+      "note": "IPC §79 → BNS §17 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "80",
+      "newSection": "18",
+      "type": "renumbered",
+      "note": "IPC §80 → BNS §18 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "81",
+      "newSection": "19",
+      "type": "renumbered",
+      "note": "IPC §81 → BNS §19 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "82",
+      "newSection": "20",
+      "type": "renumbered",
+      "note": "IPC §82 → BNS §20 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "83",
+      "newSection": "21",
+      "type": "renumbered",
+      "note": "IPC §83 → BNS §21 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "84",
+      "newSection": "22",
+      "type": "renumbered",
+      "note": "IPC §84 → BNS §22 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "85",
+      "newSection": "23",
+      "type": "renumbered",
+      "note": "IPC §85 → BNS §23 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "86",
+      "newSection": "24",
+      "type": "renumbered",
+      "note": "IPC §86 → BNS §24 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "87",
+      "newSection": "25",
+      "type": "renumbered",
+      "note": "IPC §87 → BNS §25 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "88",
+      "newSection": "26",
+      "type": "renumbered",
+      "note": "IPC §88 → BNS §26 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "89",
+      "newSection": "27",
+      "type": "renumbered",
+      "note": "IPC §89 → BNS §27 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "90",
+      "newSection": "28",
+      "type": "renumbered",
+      "note": "IPC §90 → BNS §28 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "91",
+      "newSection": "29",
+      "type": "renumbered",
+      "note": "IPC §91 → BNS §29 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "92",
+      "newSection": "30",
+      "type": "renumbered",
+      "note": "IPC §92 → BNS §30 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "93",
+      "newSection": "31",
+      "type": "renumbered",
+      "note": "IPC §93 → BNS §31 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "94",
+      "newSection": "32",
+      "type": "renumbered",
+      "note": "IPC §94 → BNS §32 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "95",
+      "newSection": "33",
+      "type": "renumbered",
+      "note": "IPC §95 → BNS §33 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "96",
+      "newSection": "34",
+      "type": "renumbered",
+      "note": "IPC §96 → BNS §34 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "97",
+      "newSection": "35",
+      "type": "renumbered",
+      "note": "IPC §97 → BNS §35 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "98",
+      "newSection": "36",
+      "type": "renumbered",
+      "note": "IPC §98 → BNS §36 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "99",
+      "newSection": "37",
+      "type": "renumbered",
+      "note": "IPC §99 → BNS §37 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "100",
+      "newSection": "38",
+      "type": "renumbered",
+      "note": "IPC §100 → BNS §38 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "101",
+      "newSection": "39",
+      "type": "renumbered",
+      "note": "IPC §101 → BNS §39 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "102",
+      "newSection": "40",
+      "type": "renumbered",
+      "note": "IPC §102 → BNS §40 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "103",
+      "newSection": "41",
+      "type": "renumbered",
+      "note": "IPC §103 → BNS §41 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "104",
+      "newSection": "42",
+      "type": "renumbered",
+      "note": "IPC §104 → BNS §42 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "105",
+      "newSection": "43",
+      "type": "renumbered",
+      "note": "IPC §105 → BNS §43 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "106",
+      "newSection": "44",
+      "type": "renumbered",
+      "note": "IPC §106 → BNS §44 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "107",
+      "newSection": "45",
+      "type": "renumbered",
+      "note": "IPC §107 → BNS §45 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "108",
+      "newSection": "46",
+      "type": "renumbered",
+      "note": "IPC §108 → BNS §46 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "108A",
+      "newSection": "47",
+      "type": "renumbered",
+      "note": "IPC §108A → BNS §47 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "109",
+      "newSection": "49",
+      "type": "renumbered",
+      "note": "IPC §109 → BNS §49 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "110",
+      "newSection": "50",
+      "type": "renumbered",
+      "note": "IPC §110 → BNS §50 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "111",
+      "newSection": "51",
+      "type": "renumbered",
+      "note": "IPC §111 → BNS §51 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "112",
+      "newSection": "52",
+      "type": "renumbered",
+      "note": "IPC §112 → BNS §52 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "113",
+      "newSection": "53",
+      "type": "renumbered",
+      "note": "IPC §113 → BNS §53 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "114",
+      "newSection": "54",
+      "type": "renumbered",
+      "note": "IPC §114 → BNS §54 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "115",
+      "newSection": "55",
+      "type": "renumbered",
+      "note": "IPC §115 → BNS §55 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "116",
+      "newSection": "56",
+      "type": "renumbered",
+      "note": "IPC §116 → BNS §56 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "117",
+      "newSection": "57",
+      "type": "modified",
+      "note": "IPC §117 → BNS §57 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "118",
+      "newSection": "58",
+      "type": "renumbered",
+      "note": "IPC §118 → BNS §58 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "119",
+      "newSection": "59",
+      "type": "renumbered",
+      "note": "IPC §119 → BNS §59 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "120",
+      "newSection": "60",
+      "type": "renumbered",
+      "note": "IPC §120 → BNS §60 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "120A",
+      "newSection": "61",
+      "type": "merged",
+      "note": "IPC §120A → BNS §61 per the official NCRB Sankalan table. BNS §61 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "120B",
+      "newSection": "61",
+      "type": "merged",
+      "note": "IPC §120B → BNS §61 per the official NCRB Sankalan table. BNS §61 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "121",
+      "newSection": "147",
+      "type": "renumbered",
+      "note": "IPC §121 → BNS §147 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "121A",
+      "newSection": "148",
+      "type": "renumbered",
+      "note": "IPC §121A → BNS §148 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "122",
+      "newSection": "149",
+      "type": "renumbered",
+      "note": "IPC §122 → BNS §149 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "123",
+      "newSection": "150",
+      "type": "renumbered",
+      "note": "IPC §123 → BNS §150 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "124",
+      "newSection": "151",
+      "type": "renumbered",
+      "note": "IPC §124 → BNS §151 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "125",
+      "newSection": "153",
+      "type": "renumbered",
+      "note": "IPC §125 → BNS §153 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "126",
+      "newSection": "154",
+      "type": "renumbered",
+      "note": "IPC §126 → BNS §154 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "127",
+      "newSection": "155",
+      "type": "renumbered",
+      "note": "IPC §127 → BNS §155 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "128",
+      "newSection": "156",
+      "type": "renumbered",
+      "note": "IPC §128 → BNS §156 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "129",
+      "newSection": "157",
+      "type": "renumbered",
+      "note": "IPC §129 → BNS §157 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "130",
+      "newSection": "158",
+      "type": "renumbered",
+      "note": "IPC §130 → BNS §158 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "131",
+      "newSection": "159",
+      "type": "renumbered",
+      "note": "IPC §131 → BNS §159 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "132",
+      "newSection": "160",
+      "type": "renumbered",
+      "note": "IPC §132 → BNS §160 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "133",
+      "newSection": "161",
+      "type": "renumbered",
+      "note": "IPC §133 → BNS §161 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "134",
+      "newSection": "162",
+      "type": "renumbered",
+      "note": "IPC §134 → BNS §162 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "135",
+      "newSection": "163",
+      "type": "renumbered",
+      "note": "IPC §135 → BNS §163 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "136",
+      "newSection": "164",
+      "type": "renumbered",
+      "note": "IPC §136 → BNS §164 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "137",
+      "newSection": "165",
+      "type": "modified",
+      "note": "IPC §137 → BNS §165 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "138",
+      "newSection": "166",
+      "type": "modified",
+      "note": "IPC §138 → BNS §166 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "139",
+      "newSection": "167",
+      "type": "renumbered",
+      "note": "IPC §139 → BNS §167 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "140",
+      "newSection": "168",
+      "type": "modified",
+      "note": "IPC §140 → BNS §168 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "141",
+      "newSection": "189",
+      "type": "merged",
+      "note": "IPC §141 → BNS §189 per the official NCRB Sankalan table. BNS §189 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "143",
+      "newSection": "189",
+      "type": "merged",
+      "note": "IPC §143 → BNS §189 per the official NCRB Sankalan table. BNS §189 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "144",
+      "newSection": "189",
+      "type": "merged",
+      "note": "IPC §144 → BNS §189 per the official NCRB Sankalan table. BNS §189 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "145",
+      "newSection": "189",
+      "type": "merged",
+      "note": "IPC §145 → BNS §189 per the official NCRB Sankalan table. BNS §189 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "146",
+      "newSection": "191",
+      "type": "merged",
+      "note": "IPC §146 → BNS §191 per the official NCRB Sankalan table. BNS §191 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "147",
+      "newSection": "191",
+      "type": "merged",
+      "note": "IPC §147 → BNS §191 per the official NCRB Sankalan table. BNS §191 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "148",
+      "newSection": "191",
+      "type": "merged",
+      "note": "IPC §148 → BNS §191 per the official NCRB Sankalan table. BNS §191 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "149",
+      "newSection": "190",
+      "type": "renumbered",
+      "note": "IPC §149 → BNS §190 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "150",
+      "newSection": "189",
+      "type": "merged",
+      "note": "IPC §150 → BNS §189 per the official NCRB Sankalan table. BNS §189 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "151",
+      "newSection": "189",
+      "type": "merged",
+      "note": "IPC §151 → BNS §189 per the official NCRB Sankalan table. BNS §189 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "152",
+      "newSection": "195",
+      "type": "modified",
+      "note": "IPC §152 → BNS §195 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "153",
+      "newSection": "192",
+      "type": "renumbered",
+      "note": "IPC §153 → BNS §192 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "153A",
+      "newSection": "196",
+      "type": "renumbered",
+      "note": "IPC §153A → BNS §196 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "153B",
+      "newSection": "197",
+      "type": "modified",
+      "note": "IPC §153B → BNS §197 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "154",
+      "newSection": "193",
+      "type": "merged",
+      "note": "IPC §154 → BNS §193 per the official NCRB Sankalan table. BNS §193 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "155",
+      "newSection": "193",
+      "type": "merged",
+      "note": "IPC §155 → BNS §193 per the official NCRB Sankalan table. BNS §193 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "156",
+      "newSection": "193",
+      "type": "merged",
+      "note": "IPC §156 → BNS §193 per the official NCRB Sankalan table. BNS §193 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "157",
+      "newSection": "189",
+      "type": "merged",
+      "note": "IPC §157 → BNS §189 per the official NCRB Sankalan table. BNS §189 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "158",
+      "newSection": "189",
+      "type": "merged",
+      "note": "IPC §158 → BNS §189 per the official NCRB Sankalan table. BNS §189 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "159",
+      "newSection": "194",
+      "type": "merged",
+      "note": "IPC §159 → BNS §194 per the official NCRB Sankalan table. BNS §194 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "160",
+      "newSection": "194",
+      "type": "merged",
+      "note": "IPC §160 → BNS §194 per the official NCRB Sankalan table. BNS §194 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "166",
+      "newSection": "198",
+      "type": "renumbered",
+      "note": "IPC §166 → BNS §198 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "166A",
+      "newSection": "199",
+      "type": "renumbered",
+      "note": "IPC §166A → BNS §199 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "166B",
+      "newSection": "200",
+      "type": "renumbered",
+      "note": "IPC §166B → BNS §200 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "167",
+      "newSection": "201",
+      "type": "renumbered",
+      "note": "IPC §167 → BNS §201 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "168",
+      "newSection": "202",
+      "type": "modified",
+      "note": "IPC §168 → BNS §202 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "169",
+      "newSection": "203",
+      "type": "renumbered",
+      "note": "IPC §169 → BNS §203 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "170",
+      "newSection": "204",
+      "type": "modified",
+      "note": "IPC §170 → BNS §204 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "171",
+      "newSection": "205",
+      "type": "modified",
+      "note": "IPC §171 → BNS §205 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "171A",
+      "newSection": "169",
+      "type": "renumbered",
+      "note": "IPC §171A → BNS §169 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "171B",
+      "newSection": "170",
+      "type": "renumbered",
+      "note": "IPC §171B → BNS §170 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "171C",
+      "newSection": "171",
+      "type": "renumbered",
+      "note": "IPC §171C → BNS §171 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "171D",
+      "newSection": "172",
+      "type": "renumbered",
+      "note": "IPC §171D → BNS §172 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "171E",
+      "newSection": "173",
+      "type": "renumbered",
+      "note": "IPC §171E → BNS §173 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "171F",
+      "newSection": "174",
+      "type": "renumbered",
+      "note": "IPC §171F → BNS §174 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "171G",
+      "newSection": "175",
+      "type": "renumbered",
+      "note": "IPC §171G → BNS §175 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "171H",
+      "newSection": "176",
+      "type": "modified",
+      "note": "IPC §171H → BNS §176 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "172",
+      "newSection": "206",
+      "type": "modified",
+      "note": "IPC §172 → BNS §206 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "173",
+      "newSection": "207",
+      "type": "modified",
+      "note": "IPC §173 → BNS §207 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "174",
+      "newSection": "208",
+      "type": "modified",
+      "note": "IPC §174 → BNS §208 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "174A",
+      "newSection": "209",
+      "type": "modified",
+      "note": "IPC §174A → BNS §209 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "175",
+      "newSection": "210",
+      "type": "modified",
+      "note": "IPC §175 → BNS §210 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "176",
+      "newSection": "211",
+      "type": "modified",
+      "note": "IPC §176 → BNS §211 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "177",
+      "newSection": "212",
+      "type": "modified",
+      "note": "IPC §177 → BNS §212 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "178",
+      "newSection": "213",
+      "type": "modified",
+      "note": "IPC §178 → BNS §213 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "179",
+      "newSection": "214",
+      "type": "modified",
+      "note": "IPC §179 → BNS §214 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "180",
+      "newSection": "215",
+      "type": "modified",
+      "note": "IPC §180 → BNS §215 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "181",
+      "newSection": "216",
+      "type": "renumbered",
+      "note": "IPC §181 → BNS §216 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "182",
+      "newSection": "217",
+      "type": "modified",
+      "note": "IPC §182 → BNS §217 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "183",
+      "newSection": "218",
+      "type": "modified",
+      "note": "IPC §183 → BNS §218 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "184",
+      "newSection": "219",
+      "type": "modified",
+      "note": "IPC §184 → BNS §219 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "185",
+      "newSection": "220",
+      "type": "renumbered",
+      "note": "IPC §185 → BNS §220 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "186",
+      "newSection": "221",
+      "type": "modified",
+      "note": "IPC §186 → BNS §221 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "187",
+      "newSection": "222",
+      "type": "modified",
+      "note": "IPC §187 → BNS §222 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "188",
+      "newSection": "223",
+      "type": "modified",
+      "note": "IPC §188 → BNS §223 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "189",
+      "newSection": "224",
+      "type": "renumbered",
+      "note": "IPC §189 → BNS §224 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "190",
+      "newSection": "225",
+      "type": "renumbered",
+      "note": "IPC §190 → BNS §225 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "191",
+      "newSection": "227",
+      "type": "renumbered",
+      "note": "IPC §191 → BNS §227 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "192",
+      "newSection": "228",
+      "type": "renumbered",
+      "note": "IPC §192 → BNS §228 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "193",
+      "newSection": "229",
+      "type": "modified",
+      "note": "IPC §193 → BNS §229 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "194",
+      "newSection": "230",
+      "type": "modified",
+      "note": "IPC §194 → BNS §230 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "195",
+      "newSection": "231",
+      "type": "renumbered",
+      "note": "IPC §195 → BNS §231 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "195A",
+      "newSection": "232",
+      "type": "renumbered",
+      "note": "IPC §195A → BNS §232 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "196",
+      "newSection": "233",
+      "type": "renumbered",
+      "note": "IPC §196 → BNS §233 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "197",
+      "newSection": "234",
+      "type": "renumbered",
+      "note": "IPC §197 → BNS §234 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "198",
+      "newSection": "235",
+      "type": "renumbered",
+      "note": "IPC §198 → BNS §235 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "199",
+      "newSection": "236",
+      "type": "renumbered",
+      "note": "IPC §199 → BNS §236 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "200",
+      "newSection": "237",
+      "type": "renumbered",
+      "note": "IPC §200 → BNS §237 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "201",
+      "newSection": "238",
+      "type": "renumbered",
+      "note": "IPC §201 → BNS §238 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "202",
+      "newSection": "239",
+      "type": "modified",
+      "note": "IPC §202 → BNS §239 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "203",
+      "newSection": "240",
+      "type": "renumbered",
+      "note": "IPC §203 → BNS §240 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "204",
+      "newSection": "241",
+      "type": "modified",
+      "note": "IPC §204 → BNS §241 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "205",
+      "newSection": "242",
+      "type": "renumbered",
+      "note": "IPC §205 → BNS §242 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "206",
+      "newSection": "243",
+      "type": "modified",
+      "note": "IPC §206 → BNS §243 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "207",
+      "newSection": "244",
+      "type": "renumbered",
+      "note": "IPC §207 → BNS §244 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "208",
+      "newSection": "245",
+      "type": "renumbered",
+      "note": "IPC §208 → BNS §245 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "209",
+      "newSection": "246",
+      "type": "renumbered",
+      "note": "IPC §209 → BNS §246 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "210",
+      "newSection": "247",
+      "type": "renumbered",
+      "note": "IPC §210 → BNS §247 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "211",
+      "newSection": "248",
+      "type": "modified",
+      "note": "IPC §211 → BNS §248 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "212",
+      "newSection": "249",
+      "type": "renumbered",
+      "note": "IPC §212 → BNS §249 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "213",
+      "newSection": "250",
+      "type": "renumbered",
+      "note": "IPC §213 → BNS §250 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "214",
+      "newSection": "251",
+      "type": "renumbered",
+      "note": "IPC §214 → BNS §251 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "215",
+      "newSection": "252",
+      "type": "renumbered",
+      "note": "IPC §215 → BNS §252 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "216",
+      "newSection": "253",
+      "type": "renumbered",
+      "note": "IPC §216 → BNS §253 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "216A",
+      "newSection": "254",
+      "type": "renumbered",
+      "note": "IPC §216A → BNS §254 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "217",
+      "newSection": "255",
+      "type": "renumbered",
+      "note": "IPC §217 → BNS §255 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "218",
+      "newSection": "256",
+      "type": "renumbered",
+      "note": "IPC §218 → BNS §256 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "219",
+      "newSection": "257",
+      "type": "renumbered",
+      "note": "IPC §219 → BNS §257 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "220",
+      "newSection": "258",
+      "type": "renumbered",
+      "note": "IPC §220 → BNS §258 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "221",
+      "newSection": "259",
+      "type": "renumbered",
+      "note": "IPC §221 → BNS §259 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "222",
+      "newSection": "260",
+      "type": "renumbered",
+      "note": "IPC §222 → BNS §260 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "223",
+      "newSection": "261",
+      "type": "renumbered",
+      "note": "IPC §223 → BNS §261 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "224",
+      "newSection": "262",
+      "type": "renumbered",
+      "note": "IPC §224 → BNS §262 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "225",
+      "newSection": "263",
+      "type": "renumbered",
+      "note": "IPC §225 → BNS §263 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "225A",
+      "newSection": "264",
+      "type": "renumbered",
+      "note": "IPC §225A → BNS §264 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "225B",
+      "newSection": "265",
+      "type": "renumbered",
+      "note": "IPC §225B → BNS §265 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "227",
+      "newSection": "266",
+      "type": "renumbered",
+      "note": "IPC §227 → BNS §266 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "228",
+      "newSection": "267",
+      "type": "modified",
+      "note": "IPC §228 → BNS §267 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "228A",
+      "newSection": "72",
+      "type": "split",
+      "note": "IPC §228A → BNS §72 per the official NCRB Sankalan table. IPC §228A is split across multiple BNS sections."
+    },
+    {
+      "oldSection": "228A",
+      "newSection": "73",
+      "type": "split",
+      "note": "IPC §228A → BNS §73 per the official NCRB Sankalan table. IPC §228A is split across multiple BNS sections."
+    },
+    {
+      "oldSection": "229",
+      "newSection": "268",
+      "type": "renumbered",
+      "note": "IPC §229 → BNS §268 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "229A",
+      "newSection": "269",
+      "type": "renumbered",
+      "note": "IPC §229A → BNS §269 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "230",
+      "newSection": "178",
+      "type": "merged",
+      "note": "IPC §230 → BNS §178 per the official NCRB Sankalan table. BNS §178 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "231",
+      "newSection": "178",
+      "type": "merged",
+      "note": "IPC §231 → BNS §178 per the official NCRB Sankalan table. BNS §178 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "233",
+      "newSection": "181",
+      "type": "merged",
+      "note": "IPC §233 → BNS §181 per the official NCRB Sankalan table. BNS §181 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "234",
+      "newSection": "181",
+      "type": "merged",
+      "note": "IPC §234 → BNS §181 per the official NCRB Sankalan table. BNS §181 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "235",
+      "newSection": "181",
+      "type": "merged",
+      "note": "IPC §235 → BNS §181 per the official NCRB Sankalan table. BNS §181 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "237",
+      "newSection": "179",
+      "type": "merged",
+      "note": "IPC §237 → BNS §179 per the official NCRB Sankalan table. BNS §179 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "238",
+      "newSection": "179",
+      "type": "merged",
+      "note": "IPC §238 → BNS §179 per the official NCRB Sankalan table. BNS §179 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "239",
+      "newSection": "179",
+      "type": "merged",
+      "note": "IPC §239 → BNS §179 per the official NCRB Sankalan table. BNS §179 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "240",
+      "newSection": "179",
+      "type": "merged",
+      "note": "IPC §240 → BNS §179 per the official NCRB Sankalan table. BNS §179 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "241",
+      "newSection": "179",
+      "type": "merged",
+      "note": "IPC §241 → BNS §179 per the official NCRB Sankalan table. BNS §179 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "242",
+      "newSection": "180",
+      "type": "merged",
+      "note": "IPC §242 → BNS §180 per the official NCRB Sankalan table. BNS §180 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "243",
+      "newSection": "180",
+      "type": "merged",
+      "note": "IPC §243 → BNS §180 per the official NCRB Sankalan table. BNS §180 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "244",
+      "newSection": "187",
+      "type": "renumbered",
+      "note": "IPC §244 → BNS §187 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "245",
+      "newSection": "188",
+      "type": "renumbered",
+      "note": "IPC §245 → BNS §188 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "246",
+      "newSection": "178",
+      "type": "merged",
+      "note": "IPC §246 → BNS §178 per the official NCRB Sankalan table. BNS §178 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "248",
+      "newSection": "178",
+      "type": "merged",
+      "note": "IPC §248 → BNS §178 per the official NCRB Sankalan table. BNS §178 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "250",
+      "newSection": "179",
+      "type": "merged",
+      "note": "IPC §250 → BNS §179 per the official NCRB Sankalan table. BNS §179 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "251",
+      "newSection": "179",
+      "type": "merged",
+      "note": "IPC §251 → BNS §179 per the official NCRB Sankalan table. BNS §179 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "252",
+      "newSection": "180",
+      "type": "merged",
+      "note": "IPC §252 → BNS §180 per the official NCRB Sankalan table. BNS §180 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "253",
+      "newSection": "180",
+      "type": "merged",
+      "note": "IPC §253 → BNS §180 per the official NCRB Sankalan table. BNS §180 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "254",
+      "newSection": "179",
+      "type": "merged",
+      "note": "IPC §254 → BNS §179 per the official NCRB Sankalan table. BNS §179 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "255",
+      "newSection": "178",
+      "type": "merged",
+      "note": "IPC §255 → BNS §178 per the official NCRB Sankalan table. BNS §178 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "256",
+      "newSection": "181",
+      "type": "merged",
+      "note": "IPC §256 → BNS §181 per the official NCRB Sankalan table. BNS §181 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "257",
+      "newSection": "181",
+      "type": "merged",
+      "note": "IPC §257 → BNS §181 per the official NCRB Sankalan table. BNS §181 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "258",
+      "newSection": "179",
+      "type": "merged",
+      "note": "IPC §258 → BNS §179 per the official NCRB Sankalan table. BNS §179 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "259",
+      "newSection": "180",
+      "type": "merged",
+      "note": "IPC §259 → BNS §180 per the official NCRB Sankalan table. BNS §180 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "260",
+      "newSection": "179",
+      "type": "merged",
+      "note": "IPC §260 → BNS §179 per the official NCRB Sankalan table. BNS §179 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "261",
+      "newSection": "183",
+      "type": "renumbered",
+      "note": "IPC §261 → BNS §183 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "262",
+      "newSection": "184",
+      "type": "renumbered",
+      "note": "IPC §262 → BNS §184 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "263",
+      "newSection": "185",
+      "type": "renumbered",
+      "note": "IPC §263 → BNS §185 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "263A",
+      "newSection": "186",
+      "type": "renumbered",
+      "note": "IPC §263A → BNS §186 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "268",
+      "newSection": "270",
+      "type": "renumbered",
+      "note": "IPC §268 → BNS §270 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "269",
+      "newSection": "271",
+      "type": "renumbered",
+      "note": "IPC §269 → BNS §271 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "270",
+      "newSection": "272",
+      "type": "renumbered",
+      "note": "IPC §270 → BNS §272 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "271",
+      "newSection": "273",
+      "type": "renumbered",
+      "note": "IPC §271 → BNS §273 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "272",
+      "newSection": "274",
+      "type": "modified",
+      "note": "IPC §272 → BNS §274 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "273",
+      "newSection": "275",
+      "type": "modified",
+      "note": "IPC §273 → BNS §275 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "274",
+      "newSection": "276",
+      "type": "modified",
+      "note": "IPC §274 → BNS §276 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "275",
+      "newSection": "277",
+      "type": "modified",
+      "note": "IPC §275 → BNS §277 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "276",
+      "newSection": "278",
+      "type": "modified",
+      "note": "IPC §276 → BNS §278 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "277",
+      "newSection": "279",
+      "type": "modified",
+      "note": "IPC §277 → BNS §279 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "278",
+      "newSection": "280",
+      "type": "modified",
+      "note": "IPC §278 → BNS §280 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "279",
+      "newSection": "281",
+      "type": "renumbered",
+      "note": "IPC §279 → BNS §281 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "280",
+      "newSection": "282",
+      "type": "modified",
+      "note": "IPC §280 → BNS §282 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "281",
+      "newSection": "283",
+      "type": "modified",
+      "note": "IPC §281 → BNS §283 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "282",
+      "newSection": "284",
+      "type": "modified",
+      "note": "IPC §282 → BNS §284 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "283",
+      "newSection": "285",
+      "type": "modified",
+      "note": "IPC §283 → BNS §285 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "284",
+      "newSection": "286",
+      "type": "modified",
+      "note": "IPC §284 → BNS §286 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "285",
+      "newSection": "287",
+      "type": "modified",
+      "note": "IPC §285 → BNS §287 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "286",
+      "newSection": "288",
+      "type": "modified",
+      "note": "IPC §286 → BNS §288 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "287",
+      "newSection": "289",
+      "type": "modified",
+      "note": "IPC §287 → BNS §289 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "288",
+      "newSection": "290",
+      "type": "modified",
+      "note": "IPC §288 → BNS §290 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "289",
+      "newSection": "291",
+      "type": "modified",
+      "note": "IPC §289 → BNS §291 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "290",
+      "newSection": "292",
+      "type": "modified",
+      "note": "IPC §290 → BNS §292 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "291",
+      "newSection": "293",
+      "type": "modified",
+      "note": "IPC §291 → BNS §293 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "292",
+      "newSection": "294",
+      "type": "modified",
+      "note": "IPC §292 → BNS §294 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "293",
+      "newSection": "295",
+      "type": "renumbered",
+      "note": "IPC §293 → BNS §295 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "294",
+      "newSection": "296",
+      "type": "modified",
+      "note": "IPC §294 → BNS §296 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "294A",
+      "newSection": "297",
+      "type": "modified",
+      "note": "IPC §294A → BNS §297 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "295",
+      "newSection": "298",
+      "type": "renumbered",
+      "note": "IPC §295 → BNS §298 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "295A",
+      "newSection": "299",
+      "type": "renumbered",
+      "note": "IPC §295A → BNS §299 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "296",
+      "newSection": "300",
+      "type": "renumbered",
+      "note": "IPC §296 → BNS §300 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "297",
+      "newSection": "301",
+      "type": "renumbered",
+      "note": "IPC §297 → BNS §301 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "298",
+      "newSection": "302",
+      "type": "renumbered",
+      "note": "IPC §298 → BNS §302 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "299",
+      "newSection": "100",
+      "type": "renumbered",
+      "note": "IPC §299 → BNS §100 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "300",
+      "newSection": "101",
+      "type": "renumbered",
+      "note": "IPC §300 → BNS §101 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "301",
+      "newSection": "102",
+      "type": "renumbered",
+      "note": "IPC §301 → BNS §102 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "302",
+      "newSection": "103",
+      "type": "modified",
+      "note": "IPC §302 → BNS §103 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "303",
+      "newSection": "104",
+      "type": "modified",
+      "note": "IPC §303 → BNS §104 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "304",
+      "newSection": "105",
+      "type": "modified",
+      "note": "IPC §304 → BNS §105 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "304A",
+      "newSection": "106",
+      "type": "modified",
+      "note": "IPC §304A → BNS §106 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "304B",
+      "newSection": "80",
+      "type": "renumbered",
+      "note": "IPC §304B → BNS §80 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "305",
+      "newSection": "107",
+      "type": "renumbered",
+      "note": "IPC §305 → BNS §107 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "306",
+      "newSection": "108",
+      "type": "renumbered",
+      "note": "IPC §306 → BNS §108 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "307",
+      "newSection": "109",
+      "type": "modified",
+      "note": "IPC §307 → BNS §109 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "308",
+      "newSection": "110",
+      "type": "renumbered",
+      "note": "IPC §308 → BNS §110 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "312",
+      "newSection": "88",
+      "type": "renumbered",
+      "note": "IPC §312 → BNS §88 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "313",
+      "newSection": "89",
+      "type": "renumbered",
+      "note": "IPC §313 → BNS §89 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "314",
+      "newSection": "90",
+      "type": "renumbered",
+      "note": "IPC §314 → BNS §90 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "315",
+      "newSection": "91",
+      "type": "renumbered",
+      "note": "IPC §315 → BNS §91 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "316",
+      "newSection": "92",
+      "type": "renumbered",
+      "note": "IPC §316 → BNS §92 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "317",
+      "newSection": "93",
+      "type": "renumbered",
+      "note": "IPC §317 → BNS §93 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "318",
+      "newSection": "94",
+      "type": "renumbered",
+      "note": "IPC §318 → BNS §94 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "319",
+      "newSection": "114",
+      "type": "renumbered",
+      "note": "IPC §319 → BNS §114 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "320",
+      "newSection": "116",
+      "type": "modified",
+      "note": "IPC §320 → BNS §116 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "321",
+      "newSection": "115",
+      "type": "merged",
+      "note": "IPC §321 → BNS §115 per the official NCRB Sankalan table. BNS §115 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "322",
+      "newSection": "117",
+      "type": "merged",
+      "note": "IPC §322 → BNS §117 per the official NCRB Sankalan table. BNS §117 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "323",
+      "newSection": "115",
+      "type": "merged",
+      "note": "IPC §323 → BNS §115 per the official NCRB Sankalan table. BNS §115 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "324",
+      "newSection": "118",
+      "type": "merged",
+      "note": "IPC §324 → BNS §118 per the official NCRB Sankalan table. BNS §118 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "325",
+      "newSection": "117",
+      "type": "merged",
+      "note": "IPC §325 → BNS §117 per the official NCRB Sankalan table. BNS §117 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "326",
+      "newSection": "118",
+      "type": "merged",
+      "note": "IPC §326 → BNS §118 per the official NCRB Sankalan table. BNS §118 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "326A",
+      "newSection": "124",
+      "type": "merged",
+      "note": "IPC §326A → BNS §124 per the official NCRB Sankalan table. BNS §124 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "326B",
+      "newSection": "124",
+      "type": "merged",
+      "note": "IPC §326B → BNS §124 per the official NCRB Sankalan table. BNS §124 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "327",
+      "newSection": "119",
+      "type": "merged",
+      "note": "IPC §327 → BNS §119 per the official NCRB Sankalan table. BNS §119 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "328",
+      "newSection": "123",
+      "type": "renumbered",
+      "note": "IPC §328 → BNS §123 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "329",
+      "newSection": "119",
+      "type": "merged",
+      "note": "IPC §329 → BNS §119 per the official NCRB Sankalan table. BNS §119 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "330",
+      "newSection": "120",
+      "type": "merged",
+      "note": "IPC §330 → BNS §120 per the official NCRB Sankalan table. BNS §120 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "331",
+      "newSection": "120",
+      "type": "merged",
+      "note": "IPC §331 → BNS §120 per the official NCRB Sankalan table. BNS §120 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "332",
+      "newSection": "121",
+      "type": "merged",
+      "note": "IPC §332 → BNS §121 per the official NCRB Sankalan table. BNS §121 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "333",
+      "newSection": "121",
+      "type": "merged",
+      "note": "IPC §333 → BNS §121 per the official NCRB Sankalan table. BNS §121 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "334",
+      "newSection": "122",
+      "type": "merged",
+      "note": "IPC §334 → BNS §122 per the official NCRB Sankalan table. BNS §122 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "335",
+      "newSection": "122",
+      "type": "merged",
+      "note": "IPC §335 → BNS §122 per the official NCRB Sankalan table. BNS §122 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "336",
+      "newSection": "125",
+      "type": "merged",
+      "note": "IPC §336 → BNS §125 per the official NCRB Sankalan table. BNS §125 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "337",
+      "newSection": "125",
+      "type": "merged",
+      "note": "IPC §337 → BNS §125 per the official NCRB Sankalan table. BNS §125 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "338",
+      "newSection": "125",
+      "type": "merged",
+      "note": "IPC §338 → BNS §125 per the official NCRB Sankalan table. BNS §125 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "339",
+      "newSection": "126",
+      "type": "merged",
+      "note": "IPC §339 → BNS §126 per the official NCRB Sankalan table. BNS §126 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "340",
+      "newSection": "127",
+      "type": "merged",
+      "note": "IPC §340 → BNS §127 per the official NCRB Sankalan table. BNS §127 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "341",
+      "newSection": "126",
+      "type": "merged",
+      "note": "IPC §341 → BNS §126 per the official NCRB Sankalan table. BNS §126 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "342",
+      "newSection": "127",
+      "type": "merged",
+      "note": "IPC §342 → BNS §127 per the official NCRB Sankalan table. BNS §127 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "343",
+      "newSection": "127",
+      "type": "merged",
+      "note": "IPC §343 → BNS §127 per the official NCRB Sankalan table. BNS §127 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "344",
+      "newSection": "127",
+      "type": "merged",
+      "note": "IPC §344 → BNS §127 per the official NCRB Sankalan table. BNS §127 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "345",
+      "newSection": "127",
+      "type": "merged",
+      "note": "IPC §345 → BNS §127 per the official NCRB Sankalan table. BNS §127 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "346",
+      "newSection": "127",
+      "type": "merged",
+      "note": "IPC §346 → BNS §127 per the official NCRB Sankalan table. BNS §127 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "347",
+      "newSection": "127",
+      "type": "merged",
+      "note": "IPC §347 → BNS §127 per the official NCRB Sankalan table. BNS §127 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "348",
+      "newSection": "127",
+      "type": "merged",
+      "note": "IPC §348 → BNS §127 per the official NCRB Sankalan table. BNS §127 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "349",
+      "newSection": "128",
+      "type": "renumbered",
+      "note": "IPC §349 → BNS §128 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "350",
+      "newSection": "129",
+      "type": "renumbered",
+      "note": "IPC §350 → BNS §129 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "351",
+      "newSection": "130",
+      "type": "renumbered",
+      "note": "IPC §351 → BNS §130 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "352",
+      "newSection": "131",
+      "type": "modified",
+      "note": "IPC §352 → BNS §131 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "353",
+      "newSection": "132",
+      "type": "renumbered",
+      "note": "IPC §353 → BNS §132 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "354",
+      "newSection": "74",
+      "type": "renumbered",
+      "note": "IPC §354 → BNS §74 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "354A",
+      "newSection": "75",
+      "type": "renumbered",
+      "note": "IPC §354A → BNS §75 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "354B",
+      "newSection": "76",
+      "type": "modified",
+      "note": "IPC §354B → BNS §76 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "354C",
+      "newSection": "77",
+      "type": "modified",
+      "note": "IPC §354C → BNS §77 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "354D",
+      "newSection": "78",
+      "type": "renumbered",
+      "note": "IPC §354D → BNS §78 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "355",
+      "newSection": "133",
+      "type": "renumbered",
+      "note": "IPC §355 → BNS §133 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "356",
+      "newSection": "134",
+      "type": "renumbered",
+      "note": "IPC §356 → BNS §134 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "357",
+      "newSection": "135",
+      "type": "modified",
+      "note": "IPC §357 → BNS §135 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "358",
+      "newSection": "136",
+      "type": "modified",
+      "note": "IPC §358 → BNS §136 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "359",
+      "newSection": "137",
+      "type": "merged",
+      "note": "IPC §359 → BNS §137 per the official NCRB Sankalan table. BNS §137 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "360",
+      "newSection": "137",
+      "type": "merged",
+      "note": "IPC §360 → BNS §137 per the official NCRB Sankalan table. BNS §137 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "361",
+      "newSection": "137",
+      "type": "merged",
+      "note": "IPC §361 → BNS §137 per the official NCRB Sankalan table. BNS §137 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "362",
+      "newSection": "138",
+      "type": "renumbered",
+      "note": "IPC §362 → BNS §138 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "363",
+      "newSection": "137",
+      "type": "merged",
+      "note": "IPC §363 → BNS §137 per the official NCRB Sankalan table. BNS §137 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "363A",
+      "newSection": "139",
+      "type": "modified",
+      "note": "IPC §363A → BNS §139 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "364",
+      "newSection": "140",
+      "type": "merged",
+      "note": "IPC §364 → BNS §140 per the official NCRB Sankalan table. BNS §140 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "364A",
+      "newSection": "140",
+      "type": "merged",
+      "note": "IPC §364A → BNS §140 per the official NCRB Sankalan table. BNS §140 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "365",
+      "newSection": "140",
+      "type": "merged",
+      "note": "IPC §365 → BNS §140 per the official NCRB Sankalan table. BNS §140 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "366",
+      "newSection": "87",
+      "type": "renumbered",
+      "note": "IPC §366 → BNS §87 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "366A",
+      "newSection": "96",
+      "type": "renumbered",
+      "note": "IPC §366A → BNS §96 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "366B",
+      "newSection": "141",
+      "type": "modified",
+      "note": "IPC §366B → BNS §141 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "367",
+      "newSection": "140",
+      "type": "merged",
+      "note": "IPC §367 → BNS §140 per the official NCRB Sankalan table. BNS §140 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "368",
+      "newSection": "142",
+      "type": "renumbered",
+      "note": "IPC §368 → BNS §142 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "369",
+      "newSection": "97",
+      "type": "renumbered",
+      "note": "IPC §369 → BNS §97 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "370",
+      "newSection": "143",
+      "type": "modified",
+      "note": "IPC §370 → BNS §143 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "370A",
+      "newSection": "144",
+      "type": "modified",
+      "note": "IPC §370A → BNS §144 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "371",
+      "newSection": "145",
+      "type": "renumbered",
+      "note": "IPC §371 → BNS §145 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "372",
+      "newSection": "98",
+      "type": "renumbered",
+      "note": "IPC §372 → BNS §98 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "373",
+      "newSection": "99",
+      "type": "modified",
+      "note": "IPC §373 → BNS §99 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "374",
+      "newSection": "146",
+      "type": "renumbered",
+      "note": "IPC §374 → BNS §146 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "375",
+      "newSection": "63",
+      "type": "renumbered",
+      "note": "IPC §375 → BNS §63 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "376",
+      "newSection": "64",
+      "type": "split",
+      "note": "IPC §376 → BNS §64 per the official NCRB Sankalan table. IPC §376 is split across multiple BNS sections."
+    },
+    {
+      "oldSection": "376",
+      "newSection": "65",
+      "type": "split",
+      "note": "IPC §376 → BNS §65 per the official NCRB Sankalan table. IPC §376 is split across multiple BNS sections. BNS §65 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "376A",
+      "newSection": "66",
+      "type": "renumbered",
+      "note": "IPC §376A → BNS §66 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "376AB",
+      "newSection": "65",
+      "type": "merged",
+      "note": "IPC §376AB → BNS §65 per the official NCRB Sankalan table. BNS §65 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "376B",
+      "newSection": "67",
+      "type": "renumbered",
+      "note": "IPC §376B → BNS §67 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "376C",
+      "newSection": "68",
+      "type": "renumbered",
+      "note": "IPC §376C → BNS §68 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "376D",
+      "newSection": "70",
+      "type": "merged",
+      "note": "IPC §376D → BNS §70 per the official NCRB Sankalan table. BNS §70 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "376DA",
+      "newSection": "70",
+      "type": "merged",
+      "note": "IPC §376DA → BNS §70 per the official NCRB Sankalan table. BNS §70 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "376DB",
+      "newSection": "70",
+      "type": "merged",
+      "note": "IPC §376DB → BNS §70 per the official NCRB Sankalan table. BNS §70 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "376E",
+      "newSection": "71",
+      "type": "renumbered",
+      "note": "IPC §376E → BNS §71 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "378",
+      "newSection": "303",
+      "type": "merged",
+      "note": "IPC §378 → BNS §303 per the official NCRB Sankalan table. BNS §303 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "379",
+      "newSection": "303",
+      "type": "merged",
+      "note": "IPC §379 → BNS §303 per the official NCRB Sankalan table. BNS §303 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "380",
+      "newSection": "305",
+      "type": "modified",
+      "note": "IPC §380 → BNS §305 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "381",
+      "newSection": "306",
+      "type": "renumbered",
+      "note": "IPC §381 → BNS §306 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "382",
+      "newSection": "307",
+      "type": "renumbered",
+      "note": "IPC §382 → BNS §307 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "383",
+      "newSection": "308",
+      "type": "merged",
+      "note": "IPC §383 → BNS §308 per the official NCRB Sankalan table. BNS §308 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "384",
+      "newSection": "308",
+      "type": "merged",
+      "note": "IPC §384 → BNS §308 per the official NCRB Sankalan table. BNS §308 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "385",
+      "newSection": "308",
+      "type": "merged",
+      "note": "IPC §385 → BNS §308 per the official NCRB Sankalan table. BNS §308 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "386",
+      "newSection": "308",
+      "type": "merged",
+      "note": "IPC §386 → BNS §308 per the official NCRB Sankalan table. BNS §308 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "387",
+      "newSection": "308",
+      "type": "merged",
+      "note": "IPC §387 → BNS §308 per the official NCRB Sankalan table. BNS §308 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "388",
+      "newSection": "308",
+      "type": "merged",
+      "note": "IPC §388 → BNS §308 per the official NCRB Sankalan table. BNS §308 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "389",
+      "newSection": "308",
+      "type": "merged",
+      "note": "IPC §389 → BNS §308 per the official NCRB Sankalan table. BNS §308 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "390",
+      "newSection": "309",
+      "type": "merged",
+      "note": "IPC §390 → BNS §309 per the official NCRB Sankalan table. BNS §309 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "391",
+      "newSection": "310",
+      "type": "merged",
+      "note": "IPC §391 → BNS §310 per the official NCRB Sankalan table. BNS §310 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "392",
+      "newSection": "309",
+      "type": "merged",
+      "note": "IPC §392 → BNS §309 per the official NCRB Sankalan table. BNS §309 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "393",
+      "newSection": "309",
+      "type": "merged",
+      "note": "IPC §393 → BNS §309 per the official NCRB Sankalan table. BNS §309 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "394",
+      "newSection": "309",
+      "type": "merged",
+      "note": "IPC §394 → BNS §309 per the official NCRB Sankalan table. BNS §309 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "395",
+      "newSection": "310",
+      "type": "merged",
+      "note": "IPC §395 → BNS §310 per the official NCRB Sankalan table. BNS §310 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "396",
+      "newSection": "310",
+      "type": "merged",
+      "note": "IPC §396 → BNS §310 per the official NCRB Sankalan table. BNS §310 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "397",
+      "newSection": "311",
+      "type": "renumbered",
+      "note": "IPC §397 → BNS §311 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "398",
+      "newSection": "312",
+      "type": "renumbered",
+      "note": "IPC §398 → BNS §312 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "399",
+      "newSection": "310",
+      "type": "merged",
+      "note": "IPC §399 → BNS §310 per the official NCRB Sankalan table. BNS §310 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "400",
+      "newSection": "310",
+      "type": "merged",
+      "note": "IPC §400 → BNS §310 per the official NCRB Sankalan table. BNS §310 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "401",
+      "newSection": "313",
+      "type": "renumbered",
+      "note": "IPC §401 → BNS §313 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "402",
+      "newSection": "310",
+      "type": "merged",
+      "note": "IPC §402 → BNS §310 per the official NCRB Sankalan table. BNS §310 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "403",
+      "newSection": "314",
+      "type": "modified",
+      "note": "IPC §403 → BNS §314 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "404",
+      "newSection": "315",
+      "type": "renumbered",
+      "note": "IPC §404 → BNS §315 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "405",
+      "newSection": "316",
+      "type": "merged",
+      "note": "IPC §405 → BNS §316 per the official NCRB Sankalan table. BNS §316 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "406",
+      "newSection": "316",
+      "type": "merged",
+      "note": "IPC §406 → BNS §316 per the official NCRB Sankalan table. BNS §316 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "407",
+      "newSection": "316",
+      "type": "merged",
+      "note": "IPC §407 → BNS §316 per the official NCRB Sankalan table. BNS §316 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "408",
+      "newSection": "316",
+      "type": "merged",
+      "note": "IPC §408 → BNS §316 per the official NCRB Sankalan table. BNS §316 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "409",
+      "newSection": "316",
+      "type": "merged",
+      "note": "IPC §409 → BNS §316 per the official NCRB Sankalan table. BNS §316 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "410",
+      "newSection": "317",
+      "type": "merged",
+      "note": "IPC §410 → BNS §317 per the official NCRB Sankalan table. BNS §317 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "411",
+      "newSection": "317",
+      "type": "merged",
+      "note": "IPC §411 → BNS §317 per the official NCRB Sankalan table. BNS §317 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "412",
+      "newSection": "317",
+      "type": "merged",
+      "note": "IPC §412 → BNS §317 per the official NCRB Sankalan table. BNS §317 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "413",
+      "newSection": "317",
+      "type": "merged",
+      "note": "IPC §413 → BNS §317 per the official NCRB Sankalan table. BNS §317 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "414",
+      "newSection": "317",
+      "type": "merged",
+      "note": "IPC §414 → BNS §317 per the official NCRB Sankalan table. BNS §317 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "415",
+      "newSection": "318",
+      "type": "merged",
+      "note": "IPC §415 → BNS §318 per the official NCRB Sankalan table. BNS §318 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "416",
+      "newSection": "318",
+      "type": "merged",
+      "note": "IPC §416 → BNS §318 per the official NCRB Sankalan table. BNS §318 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "417",
+      "newSection": "318",
+      "type": "merged",
+      "note": "IPC §417 → BNS §318 per the official NCRB Sankalan table. BNS §318 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "418",
+      "newSection": "318",
+      "type": "merged",
+      "note": "IPC §418 → BNS §318 per the official NCRB Sankalan table. BNS §318 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "419",
+      "newSection": "319",
+      "type": "renumbered",
+      "note": "IPC §419 → BNS §319 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "420",
+      "newSection": "318",
+      "type": "merged",
+      "note": "IPC §420 → BNS §318 per the official NCRB Sankalan table. BNS §318 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "421",
+      "newSection": "320",
+      "type": "modified",
+      "note": "IPC §421 → BNS §320 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "422",
+      "newSection": "321",
+      "type": "renumbered",
+      "note": "IPC §422 → BNS §321 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "423",
+      "newSection": "322",
+      "type": "modified",
+      "note": "IPC §423 → BNS §322 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "424",
+      "newSection": "323",
+      "type": "modified",
+      "note": "IPC §424 → BNS §323 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "425",
+      "newSection": "324",
+      "type": "merged",
+      "note": "IPC §425 → BNS §324 per the official NCRB Sankalan table. BNS §324 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "426",
+      "newSection": "324",
+      "type": "merged",
+      "note": "IPC §426 → BNS §324 per the official NCRB Sankalan table. BNS §324 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "427",
+      "newSection": "324",
+      "type": "merged",
+      "note": "IPC §427 → BNS §324 per the official NCRB Sankalan table. BNS §324 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "428",
+      "newSection": "325",
+      "type": "merged",
+      "note": "IPC §428 → BNS §325 per the official NCRB Sankalan table. BNS §325 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "429",
+      "newSection": "325",
+      "type": "merged",
+      "note": "IPC §429 → BNS §325 per the official NCRB Sankalan table. BNS §325 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "430",
+      "newSection": "326",
+      "type": "merged",
+      "note": "IPC §430 → BNS §326 per the official NCRB Sankalan table. BNS §326 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "431",
+      "newSection": "326",
+      "type": "merged",
+      "note": "IPC §431 → BNS §326 per the official NCRB Sankalan table. BNS §326 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "432",
+      "newSection": "326",
+      "type": "merged",
+      "note": "IPC §432 → BNS §326 per the official NCRB Sankalan table. BNS §326 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "433",
+      "newSection": "326",
+      "type": "merged",
+      "note": "IPC §433 → BNS §326 per the official NCRB Sankalan table. BNS §326 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "434",
+      "newSection": "326",
+      "type": "merged",
+      "note": "IPC §434 → BNS §326 per the official NCRB Sankalan table. BNS §326 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "435",
+      "newSection": "326",
+      "type": "merged",
+      "note": "IPC §435 → BNS §326 per the official NCRB Sankalan table. BNS §326 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "436",
+      "newSection": "326",
+      "type": "merged",
+      "note": "IPC §436 → BNS §326 per the official NCRB Sankalan table. BNS §326 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "437",
+      "newSection": "327",
+      "type": "merged",
+      "note": "IPC §437 → BNS §327 per the official NCRB Sankalan table. BNS §327 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "438",
+      "newSection": "327",
+      "type": "merged",
+      "note": "IPC §438 → BNS §327 per the official NCRB Sankalan table. BNS §327 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "439",
+      "newSection": "328",
+      "type": "renumbered",
+      "note": "IPC §439 → BNS §328 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "440",
+      "newSection": "324",
+      "type": "merged",
+      "note": "IPC §440 → BNS §324 per the official NCRB Sankalan table. BNS §324 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "441",
+      "newSection": "329",
+      "type": "merged",
+      "note": "IPC §441 → BNS §329 per the official NCRB Sankalan table. BNS §329 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "442",
+      "newSection": "329",
+      "type": "merged",
+      "note": "IPC §442 → BNS §329 per the official NCRB Sankalan table. BNS §329 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "443",
+      "newSection": "330",
+      "type": "merged",
+      "note": "IPC §443 → BNS §330 per the official NCRB Sankalan table. BNS §330 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "445",
+      "newSection": "330",
+      "type": "merged",
+      "note": "IPC §445 → BNS §330 per the official NCRB Sankalan table. BNS §330 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "447",
+      "newSection": "329",
+      "type": "merged",
+      "note": "IPC §447 → BNS §329 per the official NCRB Sankalan table. BNS §329 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "448",
+      "newSection": "329",
+      "type": "merged",
+      "note": "IPC §448 → BNS §329 per the official NCRB Sankalan table. BNS §329 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "449",
+      "newSection": "332",
+      "type": "merged",
+      "note": "IPC §449 → BNS §332 per the official NCRB Sankalan table. BNS §332 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "450",
+      "newSection": "332",
+      "type": "merged",
+      "note": "IPC §450 → BNS §332 per the official NCRB Sankalan table. BNS §332 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "451",
+      "newSection": "332",
+      "type": "merged",
+      "note": "IPC §451 → BNS §332 per the official NCRB Sankalan table. BNS §332 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "452",
+      "newSection": "333",
+      "type": "renumbered",
+      "note": "IPC §452 → BNS §333 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "453",
+      "newSection": "331",
+      "type": "merged",
+      "note": "IPC §453 → BNS §331 per the official NCRB Sankalan table. BNS §331 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "454",
+      "newSection": "331",
+      "type": "merged",
+      "note": "IPC §454 → BNS §331 per the official NCRB Sankalan table. BNS §331 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "455",
+      "newSection": "331",
+      "type": "merged",
+      "note": "IPC §455 → BNS §331 per the official NCRB Sankalan table. BNS §331 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "456",
+      "newSection": "331",
+      "type": "merged",
+      "note": "IPC §456 → BNS §331 per the official NCRB Sankalan table. BNS §331 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "457",
+      "newSection": "331",
+      "type": "merged",
+      "note": "IPC §457 → BNS §331 per the official NCRB Sankalan table. BNS §331 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "458",
+      "newSection": "331",
+      "type": "merged",
+      "note": "IPC §458 → BNS §331 per the official NCRB Sankalan table. BNS §331 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "459",
+      "newSection": "331",
+      "type": "merged",
+      "note": "IPC §459 → BNS §331 per the official NCRB Sankalan table. BNS §331 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "460",
+      "newSection": "331",
+      "type": "merged",
+      "note": "IPC §460 → BNS §331 per the official NCRB Sankalan table. BNS §331 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "461",
+      "newSection": "334",
+      "type": "merged",
+      "note": "IPC §461 → BNS §334 per the official NCRB Sankalan table. BNS §334 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "462",
+      "newSection": "334",
+      "type": "merged",
+      "note": "IPC §462 → BNS §334 per the official NCRB Sankalan table. BNS §334 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "463",
+      "newSection": "336",
+      "type": "merged",
+      "note": "IPC §463 → BNS §336 per the official NCRB Sankalan table. BNS §336 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "464",
+      "newSection": "335",
+      "type": "renumbered",
+      "note": "IPC §464 → BNS §335 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "465",
+      "newSection": "336",
+      "type": "merged",
+      "note": "IPC §465 → BNS §336 per the official NCRB Sankalan table. BNS §336 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "466",
+      "newSection": "337",
+      "type": "renumbered",
+      "note": "IPC §466 → BNS §337 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "467",
+      "newSection": "338",
+      "type": "renumbered",
+      "note": "IPC §467 → BNS §338 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "468",
+      "newSection": "336",
+      "type": "merged",
+      "note": "IPC §468 → BNS §336 per the official NCRB Sankalan table. BNS §336 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "469",
+      "newSection": "336",
+      "type": "merged",
+      "note": "IPC §469 → BNS §336 per the official NCRB Sankalan table. BNS §336 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "470",
+      "newSection": "340",
+      "type": "merged",
+      "note": "IPC §470 → BNS §340 per the official NCRB Sankalan table. BNS §340 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "471",
+      "newSection": "340",
+      "type": "merged",
+      "note": "IPC §471 → BNS §340 per the official NCRB Sankalan table. BNS §340 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "472",
+      "newSection": "341",
+      "type": "merged",
+      "note": "IPC §472 → BNS §341 per the official NCRB Sankalan table. BNS §341 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "473",
+      "newSection": "341",
+      "type": "merged",
+      "note": "IPC §473 → BNS §341 per the official NCRB Sankalan table. BNS §341 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "474",
+      "newSection": "339",
+      "type": "renumbered",
+      "note": "IPC §474 → BNS §339 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "475",
+      "newSection": "342",
+      "type": "merged",
+      "note": "IPC §475 → BNS §342 per the official NCRB Sankalan table. BNS §342 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "476",
+      "newSection": "342",
+      "type": "merged",
+      "note": "IPC §476 → BNS §342 per the official NCRB Sankalan table. BNS §342 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "477",
+      "newSection": "343",
+      "type": "renumbered",
+      "note": "IPC §477 → BNS §343 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "477A",
+      "newSection": "344",
+      "type": "renumbered",
+      "note": "IPC §477A → BNS §344 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "479",
+      "newSection": "345",
+      "type": "merged",
+      "note": "IPC §479 → BNS §345 per the official NCRB Sankalan table. BNS §345 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "481",
+      "newSection": "345",
+      "type": "merged",
+      "note": "IPC §481 → BNS §345 per the official NCRB Sankalan table. BNS §345 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "482",
+      "newSection": "345",
+      "type": "merged",
+      "note": "IPC §482 → BNS §345 per the official NCRB Sankalan table. BNS §345 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "483",
+      "newSection": "347",
+      "type": "merged",
+      "note": "IPC §483 → BNS §347 per the official NCRB Sankalan table. BNS §347 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "484",
+      "newSection": "347",
+      "type": "merged",
+      "note": "IPC §484 → BNS §347 per the official NCRB Sankalan table. BNS §347 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "485",
+      "newSection": "348",
+      "type": "renumbered",
+      "note": "IPC §485 → BNS §348 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "486",
+      "newSection": "349",
+      "type": "renumbered",
+      "note": "IPC §486 → BNS §349 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "487",
+      "newSection": "350",
+      "type": "merged",
+      "note": "IPC §487 → BNS §350 per the official NCRB Sankalan table. BNS §350 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "488",
+      "newSection": "350",
+      "type": "merged",
+      "note": "IPC §488 → BNS §350 per the official NCRB Sankalan table. BNS §350 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "489",
+      "newSection": "346",
+      "type": "renumbered",
+      "note": "IPC §489 → BNS §346 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "489A",
+      "newSection": "178",
+      "type": "merged",
+      "note": "IPC §489A → BNS §178 per the official NCRB Sankalan table. BNS §178 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "489B",
+      "newSection": "179",
+      "type": "merged",
+      "note": "IPC §489B → BNS §179 per the official NCRB Sankalan table. BNS §179 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "489C",
+      "newSection": "180",
+      "type": "merged",
+      "note": "IPC §489C → BNS §180 per the official NCRB Sankalan table. BNS §180 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "489D",
+      "newSection": "181",
+      "type": "merged",
+      "note": "IPC §489D → BNS §181 per the official NCRB Sankalan table. BNS §181 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "489E",
+      "newSection": "182",
+      "type": "modified",
+      "note": "IPC §489E → BNS §182 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "491",
+      "newSection": "357",
+      "type": "renumbered",
+      "note": "IPC §491 → BNS §357 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "493",
+      "newSection": "81",
+      "type": "renumbered",
+      "note": "IPC §493 → BNS §81 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "494",
+      "newSection": "82",
+      "type": "merged",
+      "note": "IPC §494 → BNS §82 per the official NCRB Sankalan table. BNS §82 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "495",
+      "newSection": "82",
+      "type": "merged",
+      "note": "IPC §495 → BNS §82 per the official NCRB Sankalan table. BNS §82 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "496",
+      "newSection": "83",
+      "type": "renumbered",
+      "note": "IPC §496 → BNS §83 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "498",
+      "newSection": "84",
+      "type": "renumbered",
+      "note": "IPC §498 → BNS §84 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "498A",
+      "newSection": "85",
+      "type": "split",
+      "note": "IPC §498A → BNS §85 per the official NCRB Sankalan table. IPC §498A is split across multiple BNS sections."
+    },
+    {
+      "oldSection": "498A",
+      "newSection": "86",
+      "type": "split",
+      "note": "IPC §498A → BNS §86 per the official NCRB Sankalan table. IPC §498A is split across multiple BNS sections."
+    },
+    {
+      "oldSection": "499",
+      "newSection": "356",
+      "type": "merged",
+      "note": "IPC §499 → BNS §356 per the official NCRB Sankalan table. BNS §356 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "500",
+      "newSection": "356",
+      "type": "merged",
+      "note": "IPC §500 → BNS §356 per the official NCRB Sankalan table. BNS §356 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "501",
+      "newSection": "356",
+      "type": "merged",
+      "note": "IPC §501 → BNS §356 per the official NCRB Sankalan table. BNS §356 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "502",
+      "newSection": "356",
+      "type": "merged",
+      "note": "IPC §502 → BNS §356 per the official NCRB Sankalan table. BNS §356 consolidates multiple IPC sections. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "503",
+      "newSection": "351",
+      "type": "merged",
+      "note": "IPC §503 → BNS §351 per the official NCRB Sankalan table. BNS §351 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "504",
+      "newSection": "352",
+      "type": "renumbered",
+      "note": "IPC §504 → BNS §352 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "505",
+      "newSection": "353",
+      "type": "renumbered",
+      "note": "IPC §505 → BNS §353 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "506",
+      "newSection": "351",
+      "type": "merged",
+      "note": "IPC §506 → BNS §351 per the official NCRB Sankalan table. BNS §351 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "507",
+      "newSection": "351",
+      "type": "merged",
+      "note": "IPC §507 → BNS §351 per the official NCRB Sankalan table. BNS §351 consolidates multiple IPC sections."
+    },
+    {
+      "oldSection": "508",
+      "newSection": "354",
+      "type": "renumbered",
+      "note": "IPC §508 → BNS §354 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "509",
+      "newSection": "79",
+      "type": "renumbered",
+      "note": "IPC §509 → BNS §79 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "510",
+      "newSection": "355",
+      "type": "modified",
+      "note": "IPC §510 → BNS §355 per the official NCRB Sankalan table. Marked \"(Change)\" — substance modified; compare texts."
+    },
+    {
+      "oldSection": "511",
+      "newSection": "62",
+      "type": "renumbered",
+      "note": "IPC §511 → BNS §62 per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "18",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IPC §18 has no counterpart in BNS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "29A",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IPC §29A has no counterpart in BNS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "50",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IPC §50 has no counterpart in BNS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "53A",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IPC §53A has no counterpart in BNS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "124A",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IPC §124A has no counterpart in BNS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "153AA",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IPC §153AA has no counterpart in BNS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "236",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IPC §236 has no counterpart in BNS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "264",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IPC §264 has no counterpart in BNS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "265",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IPC §265 has no counterpart in BNS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "266",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IPC §266 has no counterpart in BNS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "267",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IPC §267 has no counterpart in BNS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "309",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IPC §309 has no counterpart in BNS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "310",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IPC §310 has no counterpart in BNS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "311",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IPC §311 has no counterpart in BNS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "377",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IPC §377 has no counterpart in BNS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "444",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IPC §444 has no counterpart in BNS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "446",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IPC §446 has no counterpart in BNS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": "497",
+      "newSection": null,
+      "type": "omitted",
+      "note": "IPC §497 has no counterpart in BNS (omitted) per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": null,
+      "newSection": "48",
+      "type": "new",
+      "note": "BNS §48 is a new provision with no IPC antecedent per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": null,
+      "newSection": "69",
+      "type": "new",
+      "note": "BNS §69 is a new provision with no IPC antecedent per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": null,
+      "newSection": "95",
+      "type": "new",
+      "note": "BNS §95 is a new provision with no IPC antecedent per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": null,
+      "newSection": "111",
+      "type": "new",
+      "note": "BNS §111 is a new provision with no IPC antecedent per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": null,
+      "newSection": "112",
+      "type": "new",
+      "note": "BNS §112 is a new provision with no IPC antecedent per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": null,
+      "newSection": "113",
+      "type": "new",
+      "note": "BNS §113 is a new provision with no IPC antecedent per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": null,
+      "newSection": "152",
+      "type": "new",
+      "note": "BNS §152 is a new provision with no IPC antecedent per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": null,
+      "newSection": "226",
+      "type": "new",
+      "note": "BNS §226 is a new provision with no IPC antecedent per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": null,
+      "newSection": "304",
+      "type": "new",
+      "note": "BNS §304 is a new provision with no IPC antecedent per the official NCRB Sankalan table."
+    },
+    {
+      "oldSection": null,
+      "newSection": "358",
+      "type": "new",
+      "note": "BNS §358 is a new provision with no IPC antecedent per the official NCRB Sankalan table."
+    }
+  ]
+}

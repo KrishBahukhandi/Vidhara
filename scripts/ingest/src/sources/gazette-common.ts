@@ -52,7 +52,9 @@ const NEW_PARAGRAPH =
   /^(\(\d+[A-Za-z]?\)|\([a-z]{1,4}\)|\([ivxlc]{1,6}\)|Explanation|Illustrations?\b|Exception|Provided\b|Note\.)/;
 
 export const FURNITURE = [
-  /THE GAZETTE OF INDIA/i,
+  // Case-SENSITIVE: the masthead is all-caps; body text routinely says
+  // "notification in the Gazette of India" (an /i here ate IEA §113 whole).
+  /THE GAZETTE OF INDIA/,
   /^\s*EXTRAORDINARY\s*$/i,
   /^\s*\[?PART\s+II\b/i,
   /^\s*SEC\.?\s*\d+\]/i,

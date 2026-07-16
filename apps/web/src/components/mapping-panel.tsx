@@ -42,15 +42,18 @@ function Side({
   note: string | null;
   slug: string | null;
 }) {
+  // Omitted/new mappings have one side with no provision at all.
   const heading = (
     <>
       <span className="text-micro font-medium uppercase tracking-wide text-text-faint">
         {label}
       </span>
       <span className="block text-h3 font-semibold text-text">
-        {act} §{number}
+        {act && number ? `${act} §${number}` : "—"}
       </span>
-      <span className="block text-small text-text-muted">{note}</span>
+      <span className="block text-small text-text-muted">
+        {act && number ? note : "No corresponding provision"}
+      </span>
     </>
   );
 
