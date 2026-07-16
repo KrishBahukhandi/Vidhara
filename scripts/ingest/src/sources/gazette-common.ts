@@ -35,7 +35,9 @@ export interface LineParts {
   signature?: string;
 }
 
-export const CITATION = /^\d{1,3}\s+of\s+\d{4}\.?$/;
+/** One or more statutory citations — the PDF can pad a space before the
+ * period ("32 of 2012 .") or stack two on one line ("20 of 1958. 2 of 2016."). */
+export const CITATION = /^(?:\d{1,3}\s+of\s+\d{4}\s*\.?\s*)+$/;
 /** Right-aligned signatory names ("DIWAKAR SINGH,") — never marginal notes. */
 export const SIGNATURE_FRAGMENT = /^[A-Z][A-Z\s.]{3,},$/;
 // \s* not \s+: the gazette text layer sometimes drops the space after the
@@ -67,6 +69,12 @@ export const FURNITURE = [
 
 /** "B E it enacted…": the ornamental drop-cap splits into separate words. */
 export const ENACTMENT = /B\s?E\s+it\s+enacted\s+by\s+Parliament/i;
+
+/** Schedules/forms follow the last section ("THE SCHEDULE [See section…]",
+ * "THE FIRST SCHEDULE") — statute text ends there. Case-sensitive: body
+ * sentences say "the Schedule". */
+export const SCHEDULE_HEADING =
+  /^THE\s+(?:FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH)?\s*SCHEDULE\b/;
 
 export const END_SENTINELS = [
   /Legislative Counsel/i,
@@ -203,7 +211,9 @@ export function assembleSections(lines: Iterable<LineParts>): GazetteParseResult
     if (!margin && currentNumber !== null && !startsSection) bodyLinesSinceNote += 1;
 
     if (chapterMatch?.[1]) {
-      flushSection();
+      // Section flush is DEFERRED to the next section start: the running
+      // section's note tail can wrap below this chapter heading (BNSS §391's
+      // "themselves." prints under "CHAPTER XXIX").
       flushChapter();
       pendingChapterNumber = chapterMatch[1];
       continue;
@@ -212,10 +222,26 @@ export function assembleSections(lines: Iterable<LineParts>): GazetteParseResult
       pendingChapterTitle.push(body);
       continue;
     }
-    flushChapter();
 
     if (startsSection && sectionMatch?.[1] && sectionMatch[2] !== undefined) {
+      // A long note can wrap BELOW the next section's start rows, so its tail
+      // fragments were queued for the next section. A RAGGED note at section
+      // start (its last fragment has no trailing period at all — "…when
+      // committed before") is missing its tail: peel the queue's head through
+      // the first period-ended fragment back to it. Any period-terminated
+      // note (including "…, etc.") keeps the queue intact — a period-ended
+      // head is then the next note printed early ("Stalking." above §78).
+      const lastFragment = noteFragments[noteFragments.length - 1];
+      if (currentNumber !== null && lastFragment && !/\.$/.test(lastFragment)) {
+        const seal = pendingNoteFragments.findIndex((f) => /\.$/.test(f));
+        if (seal >= 0) {
+          noteFragments.push(...pendingNoteFragments.splice(0, seal + 1));
+        }
+      }
+      // Flush BEFORE the pending chapter so the finishing section keeps the
+      // chapter it was printed under.
       flushSection();
+      flushChapter();
       currentNumber = sectionMatch[1];
       lastBaseNumber = parseInt(sectionMatch[1], 10);
       noteFragments = pendingNoteFragments;
@@ -230,6 +256,10 @@ export function assembleSections(lines: Iterable<LineParts>): GazetteParseResult
     }
 
     if (currentNumber === null) continue; // preamble between enactment and §1
+    // Between a chapter heading and the next section start, body-column text
+    // is chapter-title material in ANY case ("Of abetment", "A.—Summons") —
+    // never the running section's body. Margins above still flow to it.
+    if (pendingChapterNumber !== null) continue;
 
     const lastParagraph = paragraphs[paragraphs.length - 1];
     if (NEW_PARAGRAPH.test(body) || !lastParagraph) {
@@ -242,11 +272,15 @@ export function assembleSections(lines: Iterable<LineParts>): GazetteParseResult
   flushSection();
   flushChapter();
 
-  // Defensive: strip a trailing right-aligned signatory name that slipped
-  // into the last section's body (layout variants).
+  // Defensive: strip a trailing signatory block that slipped into the last
+  // section's body — a rule line + all-caps name ("————— DIWAKAR SINGH,"),
+  // with or without its own paragraph break.
   const last = sections[sections.length - 1];
   if (last) {
-    last.bodyMd = last.bodyMd.replace(/\n\n[A-Z][A-Z\s.]+,$/m, "").trim();
+    last.bodyMd = last.bodyMd
+      .replace(/\n\n[A-Z][A-Z\s.]+,$/m, "")
+      .replace(/[\s\n]*[—–_]{2,}[\s\n]*[A-Z][A-Z\s.]+,?\s*$/, "")
+      .trim();
   }
 
   return { sections, chapters, diagnostics };
