@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { ActSectionList } from "@/components/act-section-list";
 import { PageShell } from "@/components/site-chrome";
 import { getActBySlug, listActs, listSectionsByAct } from "@/features/acts/queries";
 import { TrackEvent } from "@/lib/analytics";
@@ -55,26 +56,13 @@ export default async function ActPage({ params }: { params: Promise<Params> }) {
         {act.status !== "active" ? " · no longer in force" : ""}
       </p>
 
-      <ul className="mt-8 divide-y divide-border rounded-md border border-border bg-surface">
-        {sections.map((section) => (
-          <li key={section.id}>
-            <Link
-              href={`/acts/${slug}/${encodeURIComponent(section.number)}?via=browse`}
-              className="flex items-baseline gap-4 px-4 py-3 transition-colors hover:bg-bg">
-              <span className="min-w-14 font-mono text-small font-bold text-brand">
-                §{section.number}
-              </span>
-              <span className="font-medium text-text">{section.marginal_note}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-
       {sections.length === 0 ? (
         <p className="mt-8 text-body text-text-muted">
           Sections for this act are still being ingested.
         </p>
-      ) : null}
+      ) : (
+        <ActSectionList slug={slug} sections={sections} />
+      )}
     </PageShell>
   );
 }

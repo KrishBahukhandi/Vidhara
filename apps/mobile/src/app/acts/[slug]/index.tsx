@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
-import { FlatList, Pressable, StyleSheet, View } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import { FlatList, Pressable, StyleSheet, TextInput, View } from "react-native";
 
 import { AppText } from "@/components/ui/app-text";
 import { Screen } from "@/components/ui/screen";
@@ -14,6 +14,7 @@ export default function ActDetailScreen() {
   const { colors } = useTheme();
   const [act, setAct] = useState<Act | null>(null);
   const [sections, setSections] = useState<SectionListItem[] | null>(null);
+  const [filter, setFilter] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -27,6 +28,15 @@ export default function ActDetailScreen() {
       else setError(result.error.message);
     });
   }, [slug]);
+
+  const visible = useMemo(() => {
+    if (!sections) return null;
+    const q = filter.trim().toLowerCase();
+    if (!q) return sections;
+    return sections.filter(
+      (s) => s.number.toLowerCase().includes(q) || s.marginal_note.toLowerCase().includes(q),
+    );
+  }, [sections, filter]);
 
   return (
     <Screen scroll={false} padBottom>
@@ -54,13 +64,28 @@ export default function ActDetailScreen() {
         <AppText tone="muted">Loading…</AppText>
       )}
 
+      {sections && sections.length > 12 ? (
+        <TextInput
+          placeholder={`Filter ${sections.length} sections`}
+          placeholderTextColor={colors.textFaint}
+          value={filter}
+          onChangeText={setFilter}
+          autoCapitalize="none"
+          autoCorrect={false}
+          style={[styles.filter, { borderColor: colors.border, backgroundColor: colors.surface, color: colors.text }]}
+        />
+      ) : null}
+
       {sections === null ? null : sections.length === 0 ? (
         <AppText tone="muted">Sections for this act are still being ingested.</AppText>
+      ) : visible && visible.length === 0 ? (
+        <AppText tone="muted">No section matches “{filter}”.</AppText>
       ) : (
         <FlatList
-          data={sections}
+          data={visible ?? []}
           keyExtractor={(section) => section.id}
           contentContainerStyle={styles.list}
+          keyboardShouldPersistTaps="handled"
           renderItem={({ item }) => (
             <Pressable
               accessibilityRole="button"
@@ -94,6 +119,13 @@ export default function ActDetailScreen() {
 const styles = StyleSheet.create({
   back: { minHeight: 44, minWidth: 44, justifyContent: "center" },
   header: { gap: sp(1) },
+  filter: {
+    height: 44,
+    borderWidth: 1,
+    borderRadius: radius.md,
+    paddingHorizontal: sp(3),
+    fontSize: 16,
+  },
   list: { gap: sp(2), paddingBottom: sp(6), paddingTop: sp(2) },
   row: {
     flexDirection: "row",
