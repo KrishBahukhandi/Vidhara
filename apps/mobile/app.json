@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "NexLex",
-    "slug": "nexlex",
+    "name": "Vidhara",
+    "slug": "vidhara",
     "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "nexlex",
+    "scheme": "vidhara",
     "userInterfaceStyle": "automatic",
     "android": {
-      "package": "com.nexlex.app",
+      "package": "com.vidhara.app",
       "adaptiveIcon": {
         "backgroundColor": "#1E3A5F",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

@@ -81,7 +81,7 @@ export default function OnboardingScreen() {
 
   return (
     <Screen padBottom>
-      <AppText variant="h1">Welcome to NexLex</AppText>
+      <AppText variant="h1">Welcome to Vidhara</AppText>
       <AppText tone="muted">A minute of setup so we can tailor things for you.</AppText>
 
       <Field

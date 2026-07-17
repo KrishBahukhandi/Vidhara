@@ -79,7 +79,7 @@ export default function ProfileScreen() {
       <View style={styles.footer}>
         <Button label="Sign out" variant="secondary" onPress={signOut} />
         <AppText variant="micro" tone="faint" style={styles.legal}>
-          NexLex explains law for learning — it isn't legal advice.
+          Vidhara explains law for learning — it isn't legal advice.
         </AppText>
       </View>
     </Screen>
@@ -103,7 +103,7 @@ function SignedOutProfile() {
       </View>
       <View style={styles.footer}>
         <AppText variant="micro" tone="faint" style={styles.legal}>
-          NexLex explains law for learning — it isn't legal advice.
+          Vidhara explains law for learning — it isn't legal advice.
         </AppText>
       </View>
     </Screen>

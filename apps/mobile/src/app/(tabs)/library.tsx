@@ -2,6 +2,8 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 
+import { FakeDoor } from "@/components/fake-door";
+import { SectionMiniCard } from "@/components/acts/section-mini-card";
 import { AppText } from "@/components/ui/app-text";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Field } from "@/components/ui/field";
@@ -12,6 +14,8 @@ import {
   type Act,
   type SearchHit,
 } from "@/features/acts/api";
+import { track } from "@/lib/analytics";
+import { useRecents } from "@/lib/local-library";
 import { radius, sp, useTheme } from "@/theme";
 
 const STATUS_LABEL: Record<string, string> = {
@@ -75,6 +79,40 @@ function HitRow({ hit, onPress }: { hit: SearchHit; onPress: () => void }) {
         ) : null}
       </View>
     </Pressable>
+  );
+}
+
+/** Continue-reading + Daily MCQ fake door, shown above the acts list only. */
+function LibraryHeader() {
+  const router = useRouter();
+  const { items: recents } = useRecents();
+  return (
+    <View style={styles.header}>
+      {recents.length > 0 ? (
+        <View style={styles.headerBlock}>
+          <AppText variant="h3">Continue reading</AppText>
+          <View style={styles.recents}>
+            {recents.slice(0, 4).map((item) => (
+              <SectionMiniCard
+                key={`${item.slug}-${item.number}`}
+                item={item}
+                onPress={() => {
+                  track("recents_resumed", { act: item.act, number: item.number });
+                  router.push(`/acts/${item.slug}/${encodeURIComponent(item.number)}`);
+                }}
+              />
+            ))}
+          </View>
+        </View>
+      ) : null}
+      <FakeDoor
+        feature="daily_mcq"
+        icon="help-circle-outline"
+        title="Daily MCQ"
+        description="One exam-style question a day, from the bare acts"
+      />
+      <AppText variant="h3">All acts</AppText>
+    </View>
   );
 }
 
@@ -165,6 +203,7 @@ export default function LibraryScreen() {
           data={acts}
           keyExtractor={(act) => act.id}
           contentContainerStyle={styles.list}
+          ListHeaderComponent={LibraryHeader}
           renderItem={({ item }) => (
             <ActRow act={item} onPress={() => router.push(`/acts/${item.slug}`)} />
           )}
@@ -176,6 +215,9 @@ export default function LibraryScreen() {
 
 const styles = StyleSheet.create({
   list: { gap: sp(2), paddingBottom: sp(6) },
+  header: { gap: sp(3), paddingBottom: sp(1) },
+  headerBlock: { gap: sp(2) },
+  recents: { gap: sp(2) },
   actRow: {
     flexDirection: "row",
     alignItems: "center",

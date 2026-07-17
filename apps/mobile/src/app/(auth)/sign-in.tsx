@@ -31,7 +31,7 @@ export default function SignInScreen() {
     <View style={styles.root}>
       <View style={styles.header}>
         <AppText variant="display" serif>
-          NexLex
+          Vidhara
         </AppText>
         <AppText tone="muted">Bare acts, new criminal law mapping, and an AI tutor — built for Indian law.</AppText>
       </View>
@@ -50,7 +50,7 @@ export default function SignInScreen() {
         />
         <Button label="Send sign-in code" loading={loading} onPress={onSubmit} />
         <AppText variant="micro" tone="faint" style={styles.disclaimer}>
-          NexLex explains law for learning — it isn't legal advice.
+          Vidhara explains law for learning — it isn't legal advice.
         </AppText>
       </View>
     </View>
