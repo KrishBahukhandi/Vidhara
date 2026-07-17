@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { LandingLookup } from "@/components/landing-lookup";
+
 const FEATURES = [
   {
     title: "Old law ⇄ new law, instantly",
@@ -29,10 +31,11 @@ export default function HomePage() {
           Complete bare acts and the official old⇄new criminal law mapping — IPC⇄BNS, CrPC⇄BNSS,
           Evidence⇄BSA — built for the transition every exam now tests.
         </p>
+        <LandingLookup />
         <div className="flex flex-wrap items-center gap-4">
           <Link
             href="/acts"
-            className="inline-flex h-12 items-center rounded-md bg-brand px-6 font-medium text-on-brand transition-opacity hover:opacity-90">
+            className="inline-flex h-12 items-center rounded-md border border-border px-6 font-medium text-text transition-colors hover:border-brand">
             Browse the Bare Acts
           </Link>
           <Link

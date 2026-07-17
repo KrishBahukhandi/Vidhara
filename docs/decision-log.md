@@ -41,6 +41,9 @@ The corpus is the moat and the trust anchor. India Code's own body-heading typos
 **D-012 · 2026-07-16 · Documentation cadence: decision-log same-day; release docs at release boundaries; docs never block a ship.**
 Ten strategy docs + six build docs is a lot for a solo founder; the failure mode is documentation-as-procrastination. The only artifact that matters in any given week is the shipped release and the Monday numbers. Revisit: if docs drift is causing real mistakes (then simplify the doc set, don't write more).
 
+**D-013 · 2026-07-16 · Observability accounts deferred by founder; V0.2 build proceeds; Vercel deploy flagged as the one deferral that hollows V0.1.**
+Context: founder deferred PostHog/Sentry/Vercel/UptimeRobot account creation. Decision: acceptable for the three observability tools — all code no-ops without keys and activates by pasting env vars; NOT neutral for Vercel, which *is* V0.1 (a product nobody can reach isn't released) — recorded as the standing top founder action. Build continues into V0.2 so the eventual single deploy ships V0.1+V0.2 together. Cost accepted: friendly-user walkthroughs run without dashboards (observation only). Repo pushed to github.com/KrishBahukhandi/Vidhara. Revisit: the moment the Vercel import happens (then wire keys, verify live events, tag v0.1.0).
+
 ---
 
 *Template for future entries:*
