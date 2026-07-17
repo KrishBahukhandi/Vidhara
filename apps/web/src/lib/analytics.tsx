@@ -41,15 +41,29 @@ export const VIA_VALUES = [
 ] as const;
 export type Via = (typeof VIA_VALUES)[number];
 
-const KEY = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-const HOST = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://us.i.posthog.com";
-const COHORT_STORAGE_KEY = "nexlex_cohort";
+// PostHog project API key — a PUBLISHABLE, write-only key (safe in client JS
+// and in git; it can't read data). Env vars override for rotation/region.
+const KEY = process.env.NEXT_PUBLIC_POSTHOG_KEY ?? "phc_Am2qAgBZhg3ca6ZpC3Rx2wk6nrVo5qARkyx8tGZxHcqX";
+const HOST = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://eu.i.posthog.com";
+const COHORT_STORAGE_KEY = "vidhara_cohort";
+
+/**
+ * Only send analytics from the real deployed site — never from localhost (the
+ * dev server + the preview browser) or Vercel preview builds. Keeps founder/
+ * agent testing out of the beta cohort's data. Toggle a preview on by setting
+ * NEXT_PUBLIC_POSTHOG_KEY there explicitly if ever needed.
+ */
+function isAnalyticsHost(): boolean {
+  if (typeof window === "undefined") return false;
+  const host = window.location.hostname;
+  return host !== "localhost" && host !== "127.0.0.1" && !host.endsWith(".local");
+}
 
 let initialized = false;
 
 function ensureInit(): boolean {
   if (initialized) return true;
-  if (!KEY || typeof window === "undefined") return false;
+  if (!KEY || typeof window === "undefined" || !isAnalyticsHost()) return false;
 
   posthog.init(KEY, {
     api_host: HOST,
@@ -58,6 +72,7 @@ function ensureInit(): boolean {
     autocapture: false, // schema'd events only; auto-clicks are noise
     capture_pageview: false, // manual $pageview on route change (SPA-correct)
     capture_pageleave: true,
+    person_profiles: "identified_only", // we never identify() — no anon person profiles (privacy + cost)
   });
 
   // Beta invite links carry ?c=<cohort>; persist so the tag survives navigation.
