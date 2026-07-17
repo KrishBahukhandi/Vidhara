@@ -31,7 +31,7 @@
 
 **Founder-account side (READY — blocked only on account creation):**
 - [ ] **Vercel**: import the GitHub repo → *Root Directory: `apps/web`* (framework auto-detects Next.js; pnpm workspace handled automatically — "Include files outside root directory" stays ON). Env vars: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_SITE_URL` (the deploy URL), then PostHog/Sentry vars as created below.
-- [ ] **PostHog**: create project (US cloud) → paste `NEXT_PUBLIC_POSTHOG_KEY` into Vercel → redeploy → verify live events → build "NexLex Core" dashboard (analytics-plan §Dashboards)
+- [x] **PostHog** (DONE 2026-07-17): project on **EU** cloud; publishable key baked into analytics.tsx (localhost-gated so dev never pollutes); **verified live** — config.js loads with the key, events POST to `eu.i.posthog.com/e/`. Remaining: build the "Vidhara Core" dashboard (analytics-plan §Dashboards) in the PostHog UI.
 - [ ] **Sentry**: create project (Next.js) → paste `NEXT_PUBLIC_SENTRY_DSN` (+ `SENTRY_ORG`/`SENTRY_PROJECT`/`SENTRY_AUTH_TOKEN` for source maps) → force a test error → verify
 - [ ] **UptimeRobot**: monitors on `/` and `/api/v1/health`
 - [ ] Smoke script on the LIVE URL (desktop + Android Chrome)
@@ -64,7 +64,7 @@
 - [x] All events fire in dev debug stream; `via` values thread through recents/bookmark links
 
 **Founder / account side (blocked):**
-- [ ] Cohort tagging: click an invite link with `?c=beta-1` → confirm property on events end-to-end **before any invite goes out** (needs PostHog key live — code path exists in analytics.tsx)
+- [ ] Cohort tagging: PostHog is now live so the code path is active (`?c=beta-1` → `vidhara_cohort` → `cohort` on every event). Still verify once end-to-end in the PostHog UI **before any invite goes out**.
 - [ ] Beta WhatsApp group created; add its link (a beta-welcome banner is deliberately NOT built yet — pointless without the group URL; ~20 min once the link exists)
 - [ ] Recruitment posts sent per user-feedback-plan §channels; 30+ committed before freeze
 - [ ] Interview calendar: ≥3/week booked for weeks 1–3
