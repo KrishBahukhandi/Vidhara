@@ -59,7 +59,7 @@ function Side({
 
   return slug && number ? (
     <Link
-      href={`/acts/${slug}/${encodeURIComponent(number)}`}
+      href={`/acts/${slug}/${encodeURIComponent(number)}?via=mapping`}
       className="flex-1 rounded-sm border border-border bg-bg p-4 transition-colors hover:border-brand">
       {heading}
     </Link>

@@ -79,24 +79,44 @@ export async function getMappingsForSection(sectionId: string): Promise<MappingR
   return data;
 }
 
-export async function listAllMappings(): Promise<MappingRow[]> {
-  if (!isContentConfigured) return [];
-  const { data, error } = await getServerClient()
+/**
+ * Preview of one mapping pair for the /mapping index: the first `limit` rows
+ * plus the pair's EXACT total. Never fetch the whole corpus here — PostgREST
+ * caps un-ranged selects at 1,000 rows, which silently truncated the old
+ * fetch-everything query (the IPC group showed 295 of 549).
+ */
+export async function getMappingPairPreview(
+  sourceAct: string,
+  limit: number,
+): Promise<{ rows: MappingRow[]; total: number }> {
+  if (!isContentConfigured) return { rows: [], total: 0 };
+  const { data, error, count } = await getServerClient()
     .from("v_mapping_lookup")
-    .select("*")
-    .order("source_act", { ascending: true })
-    .order("source_number", { ascending: true });
-  if (error) throw new Error(`listAllMappings: ${error.message}`);
-  return data;
+    .select("*", { count: "exact" })
+    .eq("source_act", sourceAct)
+    .order("source_number", { ascending: true })
+    .limit(limit);
+  if (error) throw new Error(`getMappingPairPreview(${sourceAct}): ${error.message}`);
+  return { rows: data, total: count ?? data.length };
 }
 
-/** For sitemap generation: every published section's canonical path parts. */
+/** For sitemap generation: every published section's canonical path parts.
+ * Paged in 1,000-row ranges — PostgREST's default cap was silently truncating
+ * the sitemap to 1,000 of 3,118 URLs. */
 export async function listAllSectionPaths(): Promise<{ slug: string; number: string }[]> {
   if (!isContentConfigured) return [];
-  const { data, error } = await getServerClient()
-    .from("act_sections")
-    .select("number, acts!inner(slug)")
-    .order("sort_key", { ascending: true });
-  if (error) throw new Error(`listAllSectionPaths: ${error.message}`);
-  return data.map((row) => ({ slug: row.acts.slug, number: row.number }));
+  const paths: { slug: string; number: string }[] = [];
+  const pageSize = 1000;
+  for (let from = 0; ; from += pageSize) {
+    const { data, error } = await getServerClient()
+      .from("act_sections")
+      .select("number, acts!inner(slug)")
+      .order("act_id", { ascending: true })
+      .order("sort_key", { ascending: true })
+      .range(from, from + pageSize - 1);
+    if (error) throw new Error(`listAllSectionPaths: ${error.message}`);
+    for (const row of data) paths.push({ slug: row.acts.slug, number: row.number });
+    if (data.length < pageSize) break;
+  }
+  return paths;
 }

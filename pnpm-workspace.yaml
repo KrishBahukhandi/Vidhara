@@ -8,5 +8,7 @@ packages:
 nodeLinker: hoisted
 
 allowBuilds:
+  '@sentry/cli': true # downloads the sentry-cli binary (source-map upload at build)
+  core-js: false # postinstall is a funding banner only
   esbuild: true
   sharp: true
