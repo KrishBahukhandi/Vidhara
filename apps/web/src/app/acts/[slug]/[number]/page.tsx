@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { FeedbackWidget } from "@/components/feedback-widget";
 import { MarkdownLite } from "@/components/markdown-lite";
 import { MappingPanel } from "@/components/mapping-panel";
+import { SectionShare } from "@/components/section-share";
 import { PageShell } from "@/components/site-chrome";
 import { getMappingsForSection, getSectionWithAct } from "@/features/acts/queries";
 import { TrackEvent } from "@/lib/analytics";
@@ -132,6 +134,26 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
           ))}
         </section>
       ) : null}
+
+      <SectionShare
+        act={section.acts.abbreviation}
+        number={section.number}
+        note={section.marginal_note}
+        counterpart={(() => {
+          const m = mappings[0];
+          if (!m) return "";
+          return m.source_section_id === section.id
+            ? m.target_act
+              ? `${m.target_act} §${m.target_number}`
+              : ""
+            : m.source_act
+              ? `${m.source_act} §${m.source_number}`
+              : "";
+        })()}
+        url={`${SITE_URL}/acts/${slug}/${encodeURIComponent(section.number)}`}
+      />
+
+      <FeedbackWidget />
     </PageShell>
   );
 }

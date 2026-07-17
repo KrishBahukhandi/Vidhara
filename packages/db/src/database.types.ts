@@ -1,6 +1,6 @@
 /**
  * Database types — GENERATED from the live NexLex Supabase project
- * (ref eubyvglzkbzfeznocilg, migrations 0001–0003).
+ * (ref eubyvglzkbzfeznocilg, migrations 0001–0005).
  * Regenerate after schema changes: pnpm --filter @nexlex/db gen:types
  */
 export type Json =
@@ -194,6 +194,33 @@ export type Database = {
           },
         ]
       }
+      feedback: {
+        Row: {
+          created_at: string
+          id: string
+          message: string | null
+          path: string | null
+          platform: string
+          score: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          path?: string | null
+          platform?: string
+          score: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          path?: string | null
+          platform?: string
+          score?: number
+        }
+        Relationships: []
+      }
       law_mappings: {
         Row: {
           change_summary_md: string | null
@@ -203,8 +230,8 @@ export type Database = {
           provenance: string | null
           review_status: string
           reviewed_by: string | null
-          source_section_id: string
-          target_section_id: string
+          source_section_id: string | null
+          target_section_id: string | null
         }
         Insert: {
           change_summary_md?: string | null
@@ -214,8 +241,8 @@ export type Database = {
           provenance?: string | null
           review_status?: string
           reviewed_by?: string | null
-          source_section_id: string
-          target_section_id: string
+          source_section_id?: string | null
+          target_section_id?: string | null
         }
         Update: {
           change_summary_md?: string | null
@@ -225,8 +252,8 @@ export type Database = {
           provenance?: string | null
           review_status?: string
           reviewed_by?: string | null
-          source_section_id?: string
-          target_section_id?: string
+          source_section_id?: string | null
+          target_section_id?: string | null
         }
         Relationships: [
           {

@@ -12,7 +12,7 @@
 - **CONTENT CORE COMPLETE (2026-07-16)**: all 8 priority acts carry real official text — **IPC 585, CrPC 533, IEA 186, ICA 268, COI 487, BNS 358, BNSS 531, BSA 170 = 3,118 sections** — plus the **complete official old⇄new mapping tables: 1,271 mappings** from the NCRB Sankalan concordance (IPC⇄BNS 559, CrPC⇄BNSS 526, IEA⇄BSA 186), zero unresolved endpoints. Bundles in `scripts/ingest/bundles/` are the artifacts of record.
 - **Backend**: Supabase `eubyvglzkbzfeznocilg` (Mumbai, $0). Migrations 0001–0004 (0004 = nullable mapping endpoints for omitted/new + LEFT-JOIN view); advisors clean (re-check after future DDL); types in `packages/db` regenerated from live schema.
 - **What runs today**: 5/5 workspaces typecheck + lint; ingest suite 28 tests green; web builds; app browsable without sign-in per spec.
-- **Next action**: execute V0.1 (see above). After V0.1: V0.2 wedge landing + share links + feedback widget + Play closed-test clock (12 testers). Fonts land in V0.2, not before.
+- **Next action (2026-07-16 evening)**: V0.1 + V0.2 CODE is complete, verified, and pushed to github.com/KrishBahukhandi/Vidhara (founder deferred observability accounts — D-013). **Everything now waits on three founder account actions**: (1) Vercel import (Root Directory `apps/web` + 2 Supabase env vars) → product is LIVE with the full wedge landing; (2) PostHog/Sentry keys → measurement on; (3) Play Console + 12 testers → 14-day clock starts. Next CODE work is V0.5 (recents, local bookmarks, fake doors) — do not start before at least the Vercel deploy exists, per the ship-before-build principle.
 
 ## Completed Features
 

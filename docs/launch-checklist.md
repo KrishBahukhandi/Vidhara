@@ -40,14 +40,19 @@
 
 ## V0.2 checklist (target 2026-07-24)
 
-- [ ] Landing lookup: 3 example chips work; mobile keyboard behavior sane (numeric-friendly input)
-- [ ] OG images render for 5 spot-checked sections (WhatsApp + Telegram preview debuggers)
-- [ ] Migration `0005_feedback.sql` applied via migration file (not dashboard SQL); advisors re-checked; RLS: anon INSERT-only, no SELECT
-- [ ] Fonts: Source Serif 4 + Inter bundled (next/font web, expo-font app); visual check on low-end Android
-- [ ] Play Console: app created, closed-testing track, 12 testers' emails added, **opt-in link confirmed by all 12** (chase individually — the 14-day clock needs them IN)
-- [ ] EAS build installed by all 12 (verify in Play Console stats); clock start date recorded in decision-log
-- [ ] New events live: `landing_lookup_submitted`, `share_clicked`, `feedback_submitted`
-- [ ] Smoke script; tag `v0.2.0`
+**Code side (DONE 2026-07-16, verified in local preview):**
+- [x] Landing lookup hero (`landing-lookup.tsx`): shared `parseSectionRef` ("u/s 302 ipc" → IPC §302 verified in-browser), inline hints on bad input, 4 example chips
+- [x] Per-section share (`section-share.tsx`): WhatsApp/Telegram/copy with mapping-first text ("IPC §302 — Punishment for murder (now BNS §103)"), links carry `?via=share`
+- [x] OG image per section (`opengraph-image.tsx`, verified 200 image/png) — spot-check previews in WhatsApp/Telegram debuggers once LIVE (needs public URL)
+- [x] Feedback widget + migration `0005_feedback.sql` applied: anon INSERT 201 ✓, anon SELECT 401 ✓, score-constraint 400 ✓, UI submit → DB row ✓ (test rows cleaned)
+- [x] Fonts: Source Serif 4 + Inter via next/font, wired to token classes (visual check ✓) — app-side expo-font lands with the V0.5 Android build
+- [x] Events live in code: `landing_lookup_submitted`, `share_clicked`, `feedback_submitted`
+- [x] DB types regenerated (migrations 0001–0005)
+
+**Founder-account side (blocked on accounts):**
+- [ ] Play Console account (₹25 one-time) → app created → closed-testing track → 12 testers enrolled + opted in → EAS build installed by all 12 → **clock start date recorded in decision-log**
+- [ ] OG preview spot-check on the live URL (WhatsApp + Telegram debuggers) after Vercel deploy
+- [ ] Smoke script on live URL; tag `v0.2.0`
 
 ## V0.5 checklist (freeze 2026-08-01, cohort in by 2026-08-03)
 
