@@ -1,8 +1,8 @@
 # NexLex — Development Phases
 
-> **Status**: Living document · **Version**: 0.3.0 · **Last updated**: 2026-07-13
-> **CURRENT PHASE: Phase 1 — Content Core (in progress)**, opened by founder directive with three Phase 0 residuals tracked below (device build, Vercel deploy, polish). UI verification runs on the web previews until the Android build lands.
-> When a phase's exit criteria are met, mark it ✅ here and update memory.md in the same commit.
+> **Status**: ⚠️ **SUPERSEDED for forward planning (2026-07-16, decision D-001)** — retained as the historical build log through Phase 1. All forward planning now lives in [roadmap.md](roadmap.md) + [release-plan.md](release-plan.md) (lean, release-based: V0.1 → V2.0 with pre-registered gates). Phase 2–8 content below is ARCHIVED — those features were re-triaged in [feature-priority.md](feature-priority.md) and mostly parked in [future-ideas.md](future-ideas.md); do not build from this file.
+> **Version**: 0.4.0 · **Last updated**: 2026-07-16
+> Historical note: Phase 0 (scaffold) and Phase 1's content core (8 acts, 3,118 sections, 1,271 mappings — the corpus that the new roadmap's wedge is built on) completed under this plan; its log entries below remain the record of that work.
 
 Complexity scale: S / M / L / XL. Times assume focused solo development with AI assistance and will be recalibrated after Phase 1 (record actuals in memory.md → Lessons Learned).
 
