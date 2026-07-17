@@ -49,7 +49,7 @@ export async function generateMetadata({
     description:
       `${section.acts.abbreviation} Section ${section.number} (${section.marginal_note}), ${section.acts.title}.` +
       (counterpart ? ` Corresponds to ${counterpart} with what-changed notes.` : "") +
-      " Full text, free on NexLex.",
+      " Full text, free on Vidhara.",
     alternates: { canonical: `/acts/${slug}/${encodeURIComponent(section.number)}` },
   };
 }

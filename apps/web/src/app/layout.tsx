@@ -16,8 +16,8 @@ const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "NexLex — India's legal learning platform",
-    template: "%s · NexLex",
+    default: "Vidhara — India's legal learning platform",
+    template: "%s · Vidhara",
   },
   description:
     "Bare acts, IPC⇄BNS · CrPC⇄BNSS · Evidence⇄BSA mapping, and an AI legal tutor — built for Indian law students, judiciary aspirants, and advocates.",
