@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { BookmarkButton } from "@/components/bookmark-button";
+import { FakeDoor } from "@/components/fake-door";
 import { FeedbackWidget } from "@/components/feedback-widget";
 import { MarkdownLite } from "@/components/markdown-lite";
 import { MappingPanel } from "@/components/mapping-panel";
+import { RecordRecent } from "@/components/record-recent";
 import { SectionShare } from "@/components/section-share";
 import { PageShell } from "@/components/site-chrome";
 import { getMappingsForSection, getSectionWithAct } from "@/features/acts/queries";
@@ -107,11 +110,26 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
         / §{section.number}
       </nav>
 
+      <RecordRecent
+        act={section.acts.abbreviation}
+        slug={slug}
+        number={section.number}
+        note={section.marginal_note}
+      />
+
       <article className="mt-3">
         <p className="text-small text-text-muted">{section.acts.title}</p>
-        <h1 className="mt-1 max-w-measure font-serif text-h1 font-semibold text-text">
-          §{section.number} — {section.marginal_note}
-        </h1>
+        <div className="mt-1 flex flex-wrap items-start justify-between gap-3">
+          <h1 className="max-w-measure font-serif text-h1 font-semibold text-text">
+            §{section.number} — {section.marginal_note}
+          </h1>
+          <BookmarkButton
+            act={section.acts.abbreviation}
+            slug={slug}
+            number={section.number}
+            note={section.marginal_note}
+          />
+        </div>
 
         {isSample ? (
           <p className="mt-4 inline-flex items-center gap-2 rounded-lg border border-warning px-3 py-1 text-micro text-text-muted">
@@ -134,6 +152,14 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
           ))}
         </section>
       ) : null}
+
+      <div className="mt-8">
+        <FakeDoor
+          feature="ai_explain"
+          title="Explain this section with AI"
+          description="Plain-language breakdown, grounded in this section's own text"
+        />
+      </div>
 
       <SectionShare
         act={section.acts.abbreviation}

@@ -56,15 +56,21 @@
 
 ## V0.5 checklist (freeze 2026-08-01, cohort in by 2026-08-03)
 
-- [ ] Recents + local bookmarks work across restarts (web localStorage, app AsyncStorage)
-- [ ] Fake doors live with honest copy; `fake_door_clicked` verified
-- [ ] Cohort tagging: click an invite link with `?c=beta-1` → confirm property on events end-to-end **before any invite goes out**
-- [ ] Beta WhatsApp group created; onboarding screen links to it
+**Web code (DONE 2026-07-16, verified in preview):**
+- [x] Local library (`lib/local-library.ts`): recents (capped 12, deduped) + bookmarks in localStorage, no auth (D-007); same-tab + cross-tab sync; SSR-safe (populates post-hydration, no mismatch)
+- [x] Recents → "Continue reading" on home (`continue-reading.tsx`); verified viewing §420 surfaces it, link carries `?via=recents`
+- [x] Bookmarks: `☆ Save`/`★ Saved` toggle on section pages + `/saved` list page + "Saved" nav link; `bookmark_added`/`bookmark_removed` fire
+- [x] Fake doors (`fake-door.tsx`, honest "Coming soon · tap if you want this" → "Thanks — noted"): AI-explain (section), Daily MCQ (home); `fake_door_clicked {feature}` verified. Offline door is Android-only (ships with the app build)
+- [x] All events fire in dev debug stream; `via` values thread through recents/bookmark links
+
+**Founder / account side (blocked):**
+- [ ] Cohort tagging: click an invite link with `?c=beta-1` → confirm property on events end-to-end **before any invite goes out** (needs PostHog key live — code path exists in analytics.tsx)
+- [ ] Beta WhatsApp group created; add its link (a beta-welcome banner is deliberately NOT built yet — pointless without the group URL; ~20 min once the link exists)
 - [ ] Recruitment posts sent per user-feedback-plan §channels; 30+ committed before freeze
 - [ ] Interview calendar: ≥3/week booked for weeks 1–3
-- [ ] Android beta build shipped to closed track (same features)
-- [ ] Monday metrics ritual: PostHog "NexLex Core" dashboard exists; first `docs/metrics-log.md` entry template ready
-- [ ] Smoke script both platforms; tag `v0.5.0`
+- [ ] Android beta build shipped to closed track (same features — mobile app not yet built to parity; recents/bookmarks/fake-doors need porting to apps/mobile)
+- [ ] Monday metrics ritual: PostHog "Vidhara Core" dashboard exists; first `docs/metrics-log.md` entry template ready
+- [ ] Smoke script on live URL; tag `v0.5.0` (after cohort tagging verified)
 
 ## V1.0 checklist (week of 2026-09-01)
 
