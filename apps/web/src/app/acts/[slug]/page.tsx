@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { PageShell } from "@/components/site-chrome";
 import { getActBySlug, listActs, listSectionsByAct } from "@/features/acts/queries";
+import { TrackEvent } from "@/lib/analytics";
 
 export const revalidate = 3600;
 
@@ -40,6 +41,7 @@ export default async function ActPage({ params }: { params: Promise<Params> }) {
 
   return (
     <PageShell>
+      <TrackEvent name="act_opened" props={{ act: act.abbreviation }} />
       <nav className="text-small text-text-muted" aria-label="Breadcrumb">
         <Link href="/acts" className="hover:text-text">
           Bare Acts
@@ -57,7 +59,7 @@ export default async function ActPage({ params }: { params: Promise<Params> }) {
         {sections.map((section) => (
           <li key={section.id}>
             <Link
-              href={`/acts/${slug}/${encodeURIComponent(section.number)}`}
+              href={`/acts/${slug}/${encodeURIComponent(section.number)}?via=browse`}
               className="flex items-baseline gap-4 px-4 py-3 transition-colors hover:bg-bg">
               <span className="min-w-14 font-mono text-small font-bold text-brand">
                 §{section.number}

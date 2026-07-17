@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { MappingPanel } from "@/components/mapping-panel";
 import { PageShell } from "@/components/site-chrome";
-import { listAllMappings, type MappingRow } from "@/features/acts/queries";
+import { getMappingPairPreview } from "@/features/acts/queries";
 
 export const revalidate = 3600;
 
@@ -13,19 +13,34 @@ export const metadata: Metadata = {
   alternates: { canonical: "/mapping" },
 };
 
-const PAIRS: { key: string; source: string; heading: string }[] = [
-  { key: "IPC", source: "IPC", heading: "IPC ⇄ BNS (Bharatiya Nyaya Sanhita)" },
-  { key: "CRPC", source: "CRPC", heading: "CrPC ⇄ BNSS (Bharatiya Nagarik Suraksha Sanhita)" },
-  { key: "IEA", source: "IEA", heading: "Evidence Act ⇄ BSA (Bharatiya Sakshya Adhiniyam)" },
+const PAIRS: { key: string; source: string; heading: string; actSlug: string }[] = [
+  { key: "IPC", source: "IPC", heading: "IPC ⇄ BNS (Bharatiya Nyaya Sanhita)", actSlug: "ipc" },
+  {
+    key: "CRPC",
+    source: "CRPC",
+    heading: "CrPC ⇄ BNSS (Bharatiya Nagarik Suraksha Sanhita)",
+    actSlug: "crpc",
+  },
+  {
+    key: "IEA",
+    source: "IEA",
+    heading: "Evidence Act ⇄ BSA (Bharatiya Sakshya Adhiniyam)",
+    actSlug: "iea",
+  },
 ];
 
+/** Index shows a preview per pair — the full 1,271-row corpus made this page
+ * multi-megabyte. Every section page carries its own complete mapping. */
+const PREVIEW_PER_PAIR = 40;
+
 export default async function MappingPage() {
-  const mappings = await listAllMappings();
-  const byPair = new Map<string, MappingRow[]>();
-  for (const mapping of mappings) {
-    const key = mapping.source_act ?? "other";
-    byPair.set(key, [...(byPair.get(key) ?? []), mapping]);
-  }
+  const previews = await Promise.all(
+    PAIRS.map(async (pair) => ({
+      ...pair,
+      ...(await getMappingPairPreview(pair.source, PREVIEW_PER_PAIR)),
+    })),
+  );
+  const anyMappings = previews.some((p) => p.total > 0);
 
   return (
     <PageShell>
@@ -38,20 +53,32 @@ export default async function MappingPage() {
         any section reference resolves instantly — try &ldquo;302 IPC&rdquo;.
       </p>
 
-      {PAIRS.map(({ key, heading }) => {
-        const pairMappings = byPair.get(key) ?? [];
-        if (pairMappings.length === 0) return null;
+      {previews.map(({ key, heading, actSlug, rows, total }) => {
+        if (total === 0) return null;
         return (
           <section key={key} className="mt-10 space-y-4">
-            <h2 className="text-h2 font-semibold text-text">{heading}</h2>
-            {pairMappings.map((mapping) => (
+            <h2 className="text-h2 font-semibold text-text">
+              {heading}{" "}
+              <span className="text-small font-normal text-text-muted">· {total} mappings</span>
+            </h2>
+            {rows.map((mapping) => (
               <MappingPanel key={mapping.mapping_id} mapping={mapping} />
             ))}
+            {total > rows.length ? (
+              <p className="text-body text-text-muted">
+                Showing the first {rows.length} of {total}. Every section page carries its full
+                mapping —{" "}
+                <a href={`/acts/${actSlug}`} className="font-medium text-brand hover:underline">
+                  browse the act
+                </a>{" "}
+                and open any section.
+              </p>
+            ) : null}
           </section>
         );
       })}
 
-      {mappings.length === 0 ? (
+      {!anyMappings ? (
         <p className="mt-8 text-body text-text-muted">
           Mappings are being ingested — check back shortly.
         </p>

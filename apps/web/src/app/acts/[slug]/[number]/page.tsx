@@ -5,11 +5,8 @@ import { notFound } from "next/navigation";
 import { MarkdownLite } from "@/components/markdown-lite";
 import { MappingPanel } from "@/components/mapping-panel";
 import { PageShell } from "@/components/site-chrome";
-import {
-  getMappingsForSection,
-  getSectionWithAct,
-  listAllSectionPaths,
-} from "@/features/acts/queries";
+import { getMappingsForSection, getSectionWithAct } from "@/features/acts/queries";
+import { TrackEvent } from "@/lib/analytics";
 import { SITE_URL } from "@/lib/site";
 
 export const revalidate = 3600;
@@ -19,9 +16,12 @@ interface Params {
   number: string;
 }
 
+// 3,118 section pages render ON DEMAND (ISR, cached 1h via `revalidate`) instead
+// of being pre-built: pre-rendering all of them made every deploy a ~half-hour
+// build hammering Supabase. SEO is unaffected — the sitemap lists every URL and
+// crawlers get the same static HTML from the first hit onward.
 export async function generateStaticParams(): Promise<Params[]> {
-  const paths = await listAllSectionPaths();
-  return paths.map(({ slug, number }) => ({ slug, number }));
+  return [];
 }
 
 export async function generateMetadata({
@@ -73,6 +73,22 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
 
   return (
     <PageShell>
+      <TrackEvent
+        name="section_viewed"
+        props={{ act: section.acts.abbreviation, number: section.number }}
+        readVia
+      />
+      {mappings.map((m) => (
+        <TrackEvent
+          key={`t-${m.mapping_id}`}
+          name="mapping_card_viewed"
+          props={{
+            mapping_type: m.mapping_type,
+            source_act: m.source_act,
+            target_act: m.target_act,
+          }}
+        />
+      ))}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

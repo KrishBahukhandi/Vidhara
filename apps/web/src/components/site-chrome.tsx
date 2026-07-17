@@ -27,10 +27,15 @@ export function SiteHeader() {
 export function SiteFooter() {
   return (
     <footer className="border-t border-border">
-      <div className="mx-auto max-w-content px-6 py-8">
+      <div className="mx-auto flex max-w-content flex-col gap-2 px-6 py-8">
         <p className="text-small text-text-faint">
-          ⚖️ NexLex explains law for learning — it is not legal advice. ·{" "}
-          {new Date().getFullYear()} NexLex
+          ⚖️ Reference only — verify against the official Gazette of India. Not legal advice.
+        </p>
+        <p className="text-small text-text-faint">
+          {new Date().getFullYear()} NexLex ·{" "}
+          <Link href="/privacy" className="hover:text-text">
+            Privacy
+          </Link>
         </p>
       </div>
     </footer>

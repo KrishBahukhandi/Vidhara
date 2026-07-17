@@ -20,16 +20,23 @@
 
 ## V0.1 checklist (target Fri 2026-07-18)
 
-- [ ] Vercel project created; `apps/web` builds green in Vercel CI (monorepo root config: `pnpm turbo build --filter=web`)
-- [ ] Env vars: `NEXT_PUBLIC_SUPABASE_URL`, anon/publishable key ONLY (grep the client bundle for `service_role` as paranoia check)
-- [ ] Domain: `*.vercel.app` acceptable; custom domain if already owned (do not spend a day on DNS)
-- [ ] PostHog project + cookieless config + V0.1 events instrumented; events verified live
-- [ ] Sentry web wired, source maps uploading, test error visible
-- [ ] UptimeRobot monitors on `/` and `/api/v1/health`
-- [ ] Disclaimer footer + `/privacy` page (plain language, analytics posture from analytics-plan)
-- [ ] Smoke script passes (desktop + Android Chrome)
-- [ ] 5 friendly walkthroughs scheduled (calendar invites sent — scheduling IS a checklist item because it slips otherwise)
-- [ ] Tag `v0.1.0`; decision-log entry with checklist copy
+**Code side (DONE 2026-07-16, verified in local preview + prod build):**
+- [x] Analytics module `apps/web/src/lib/analytics.tsx` — PostHog cookieless, event schema v1, no-ops without key; `$pageview` / `act_opened` / `section_viewed`(+`via`) / `mapping_card_viewed` verified firing
+- [x] Sentry wired (client/server/edge configs + `global-error.tsx`), errors-only, no-ops without DSN; source-map upload activates on Vercel env
+- [x] Disclaimer footer + `/privacy` page (plain-language, matches analytics-plan posture)
+- [x] Landing honesty pass (no phantom AI tutor, real CTAs, wedge-first copy)
+- [x] Deploy hardening: section pages on-demand ISR (was: 3,118-page builds); /mapping index previews 40/pair with exact counts (was: 1,271 panels + silent 1,000-row truncation); **sitemap fixed — was silently capped at 1,000 of 3,129 URLs** (PostgREST default limit; now paginated)
+- [x] `.env.example` documents all observability vars
+- [x] Repo pushed to GitHub (`KrishBahukhandi/Vidhara`)
+
+**Founder-account side (READY — blocked only on account creation):**
+- [ ] **Vercel**: import the GitHub repo → *Root Directory: `apps/web`* (framework auto-detects Next.js; pnpm workspace handled automatically — "Include files outside root directory" stays ON). Env vars: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_SITE_URL` (the deploy URL), then PostHog/Sentry vars as created below.
+- [ ] **PostHog**: create project (US cloud) → paste `NEXT_PUBLIC_POSTHOG_KEY` into Vercel → redeploy → verify live events → build "NexLex Core" dashboard (analytics-plan §Dashboards)
+- [ ] **Sentry**: create project (Next.js) → paste `NEXT_PUBLIC_SENTRY_DSN` (+ `SENTRY_ORG`/`SENTRY_PROJECT`/`SENTRY_AUTH_TOKEN` for source maps) → force a test error → verify
+- [ ] **UptimeRobot**: monitors on `/` and `/api/v1/health`
+- [ ] Smoke script on the LIVE URL (desktop + Android Chrome)
+- [ ] 5 friendly walkthroughs scheduled
+- [ ] Tag `v0.1.0`; decision-log entry with this checklist's final state
 
 ## V0.2 checklist (target 2026-07-24)
 

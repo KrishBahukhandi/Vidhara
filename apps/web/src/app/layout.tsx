@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import { SiteFooter, SiteHeader } from "@/components/site-chrome";
+import { AnalyticsProvider } from "@/lib/analytics";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="flex min-h-screen flex-col">
+        <AnalyticsProvider />
         <SiteHeader />
         {children}
         <SiteFooter />
