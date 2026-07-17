@@ -10,6 +10,7 @@ module.exports = {
       fontFamily: {
         serif: ["var(--font-serif)", '"Source Serif 4"', "Georgia", "serif"],
         sans: ["var(--font-sans)", "Inter", "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", '"JetBrains Mono"', "Menlo", "monospace"],
       },
     },
   },
