@@ -68,7 +68,8 @@
 - [ ] Beta WhatsApp group created; add its link (a beta-welcome banner is deliberately NOT built yet — pointless without the group URL; ~20 min once the link exists)
 - [ ] Recruitment posts sent per user-feedback-plan §channels; 30+ committed before freeze
 - [ ] Interview calendar: ≥3/week booked for weeks 1–3
-- [ ] Android beta build shipped to closed track (same features — mobile app not yet built to parity; recents/bookmarks/fake-doors need porting to apps/mobile)
+- [x] **Mobile V0.5 parity built** (2026-07-17): apps/mobile has recents ("Continue reading" on Library), local bookmarks (Save on reader + Saved tab, was Notes), 3 fake doors (ai_explain reader / daily_mcq Library / offline Saved), all AsyncStorage local-first; renamed to Vidhara (app.json + strings; package com.vidhara.app); analytics is a stub (posthog-react-native to wire before the cohort). Verified in Expo web preview: view → recents, Save → Saved persists, fake doors vote. Typecheck green.
+- [ ] Android beta build shipped to closed track (founder: `expo run:android` on device first, then EAS build → Play closed track)
 - [ ] Monday metrics ritual: PostHog "Vidhara Core" dashboard exists; first `docs/metrics-log.md` entry template ready
 - [ ] Smoke script on live URL; tag `v0.5.0` (after cohort tagging verified)
 

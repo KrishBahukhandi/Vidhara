@@ -3,7 +3,9 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
+import { BookmarkButton } from "@/components/acts/bookmark-button";
 import { MappingCard } from "@/components/acts/mapping-card";
+import { FakeDoor } from "@/components/fake-door";
 import { AppText } from "@/components/ui/app-text";
 import { MarkdownLite } from "@/components/ui/markdown-lite";
 import { Screen } from "@/components/ui/screen";
@@ -13,6 +15,8 @@ import {
   type MappingRow,
   type SectionWithAct,
 } from "@/features/acts/api";
+import { track } from "@/lib/analytics";
+import { recordRecent } from "@/lib/local-library";
 import { radius, sp, useTheme } from "@/theme";
 
 export default function SectionReaderScreen() {
@@ -31,6 +35,16 @@ export default function SectionReaderScreen() {
         return;
       }
       setSection(result.data);
+      track("section_viewed", {
+        act: result.data.acts.abbreviation,
+        number: result.data.number,
+      });
+      void recordRecent({
+        act: result.data.acts.abbreviation,
+        slug: result.data.acts.slug,
+        number: result.data.number,
+        note: result.data.marginal_note,
+      });
       getMappings(result.data.id).then((m) => {
         if (m.ok) setMappings(m.data);
       });
@@ -61,6 +75,12 @@ export default function SectionReaderScreen() {
             <AppText variant="h1" serif>
               §{section.number} — {section.marginal_note}
             </AppText>
+            <BookmarkButton
+              act={section.acts.abbreviation}
+              slug={section.acts.slug}
+              number={section.number}
+              note={section.marginal_note}
+            />
           </View>
 
           {isSample ? (
@@ -88,6 +108,13 @@ export default function SectionReaderScreen() {
               ))}
             </View>
           ) : null}
+
+          <FakeDoor
+            feature="ai_explain"
+            icon="sparkles-outline"
+            title="Explain this section with AI"
+            description="Plain-language breakdown, grounded in this section's own text"
+          />
         </View>
       ) : null}
     </Screen>
