@@ -69,6 +69,43 @@ export async function getSectionWithAct(
   return data as SectionWithAct | null;
 }
 
+export interface AdjacentSection {
+  number: string;
+  marginal_note: string;
+}
+
+/**
+ * Previous/next sections within an act, by sort_key — powers sequential
+ * reading (the way people actually study). Two tiny indexed lookups, not a
+ * full-list scan, so it stays cheap on 500-section acts.
+ */
+export async function getAdjacentSections(
+  actId: string,
+  sortKey: number,
+): Promise<{ prev: AdjacentSection | null; next: AdjacentSection | null }> {
+  if (!isContentConfigured) return { prev: null, next: null };
+  const db = getServerClient();
+  const [prevRes, nextRes] = await Promise.all([
+    db
+      .from("act_sections")
+      .select("number, marginal_note")
+      .eq("act_id", actId)
+      .lt("sort_key", sortKey)
+      .order("sort_key", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    db
+      .from("act_sections")
+      .select("number, marginal_note")
+      .eq("act_id", actId)
+      .gt("sort_key", sortKey)
+      .order("sort_key", { ascending: true })
+      .limit(1)
+      .maybeSingle(),
+  ]);
+  return { prev: prevRes.data ?? null, next: nextRes.data ?? null };
+}
+
 export async function getMappingsForSection(sectionId: string): Promise<MappingRow[]> {
   if (!isContentConfigured) return [];
   const { data, error } = await getServerClient()

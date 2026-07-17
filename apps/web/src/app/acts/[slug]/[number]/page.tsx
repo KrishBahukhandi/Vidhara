@@ -8,9 +8,14 @@ import { FeedbackWidget } from "@/components/feedback-widget";
 import { MarkdownLite } from "@/components/markdown-lite";
 import { MappingPanel } from "@/components/mapping-panel";
 import { RecordRecent } from "@/components/record-recent";
+import { SectionNav } from "@/components/section-nav";
 import { SectionShare } from "@/components/section-share";
 import { PageShell } from "@/components/site-chrome";
-import { getMappingsForSection, getSectionWithAct } from "@/features/acts/queries";
+import {
+  getAdjacentSections,
+  getMappingsForSection,
+  getSectionWithAct,
+} from "@/features/acts/queries";
 import { TrackEvent } from "@/lib/analytics";
 import { SITE_URL } from "@/lib/site";
 
@@ -62,7 +67,10 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
   const section = await getSectionWithAct(slug, decodeURIComponent(number));
   if (!section) notFound();
 
-  const mappings = await getMappingsForSection(section.id);
+  const [mappings, adjacent] = await Promise.all([
+    getMappingsForSection(section.id),
+    getAdjacentSections(section.act_id, section.sort_key),
+  ]);
   const isSample = section.provenance?.startsWith("dev-sample");
 
   const jsonLd = {
@@ -152,6 +160,8 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
           ))}
         </section>
       ) : null}
+
+      <SectionNav slug={slug} prev={adjacent.prev} next={adjacent.next} />
 
       <div className="mt-8">
         <FakeDoor

@@ -14,6 +14,7 @@ export type EventName =
   | "mapping_lookup"
   | "search_performed"
   | "search_result_clicked"
+  | "share_clicked"
   | "bookmark_added"
   | "bookmark_removed"
   | "recents_resumed"

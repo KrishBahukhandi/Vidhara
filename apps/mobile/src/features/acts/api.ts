@@ -90,6 +90,40 @@ export async function getSection(
   return ok(data as SectionWithAct);
 }
 
+export interface AdjacentSection {
+  number: string;
+  marginal_note: string;
+}
+
+/**
+ * Previous/next sections within an act, by sort_key — sequential reading.
+ * Two tiny indexed lookups, cheap even on 500-section acts.
+ */
+export async function getAdjacentSections(
+  actId: string,
+  sortKey: number,
+): Promise<{ prev: AdjacentSection | null; next: AdjacentSection | null }> {
+  const [prevRes, nextRes] = await Promise.all([
+    supabase
+      .from("act_sections")
+      .select("number, marginal_note")
+      .eq("act_id", actId)
+      .lt("sort_key", sortKey)
+      .order("sort_key", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    supabase
+      .from("act_sections")
+      .select("number, marginal_note")
+      .eq("act_id", actId)
+      .gt("sort_key", sortKey)
+      .order("sort_key", { ascending: true })
+      .limit(1)
+      .maybeSingle(),
+  ]);
+  return { prev: prevRes.data ?? null, next: nextRes.data ?? null };
+}
+
 /** All mappings touching a section, either direction. */
 export async function getMappings(sectionId: string): Promise<Result<MappingRow[]>> {
   const { data, error } = await supabase
