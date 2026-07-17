@@ -6,7 +6,7 @@ export function SiteHeader() {
     <header className="border-b border-border bg-surface">
       <div className="mx-auto flex h-14 max-w-content items-center justify-between px-6">
         <Link href="/" className="font-serif text-h3 font-semibold text-text">
-          NexLex
+          Vidhara
         </Link>
         <nav className="flex items-center gap-6" aria-label="Primary">
           <Link href="/acts" className="text-small font-medium text-text-muted hover:text-text">
@@ -32,7 +32,7 @@ export function SiteFooter() {
           ⚖️ Reference only — verify against the official Gazette of India. Not legal advice.
         </p>
         <p className="text-small text-text-faint">
-          {new Date().getFullYear()} NexLex ·{" "}
+          {new Date().getFullYear()} Vidhara ·{" "}
           <Link href="/privacy" className="hover:text-text">
             Privacy
           </Link>

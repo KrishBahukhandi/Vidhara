@@ -4,7 +4,7 @@ import { PageShell } from "@/components/site-chrome";
 
 export const metadata: Metadata = {
   title: "Privacy",
-  description: "What NexLex collects (very little) and why — in plain language.",
+  description: "What Vidhara collects (very little) and why — in plain language.",
   alternates: { canonical: "/privacy" },
 };
 
@@ -23,7 +23,7 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-h3 font-semibold">The short version</h2>
           <p className="mt-2 text-text-muted">
-            NexLex works without an account. We don&rsquo;t know who you are, and we don&rsquo;t
+            Vidhara works without an account. We don&rsquo;t know who you are, and we don&rsquo;t
             want to. We count anonymous usage so we can tell which parts of the product help and
             which don&rsquo;t.
           </p>
@@ -64,7 +64,7 @@ export default function PrivacyPage() {
           <p className="mt-2 text-text-muted">
             Bare-act texts are reproduced from official Government of India sources (the Gazette
             of India and India Code), which are in the public domain under s.52(1)(q) of the
-            Copyright Act, 1957. Every act records its source. NexLex is a study reference, not
+            Copyright Act, 1957. Every act records its source. Vidhara is a study reference, not
             legal advice — for anything that matters, verify against the official Gazette.
           </p>
         </section>

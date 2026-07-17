@@ -49,7 +49,7 @@ export default async function MappingPage() {
       </h1>
       <p className="mt-2 max-w-measure text-body text-text-muted">
         India&rsquo;s criminal law was recodified from 1 July 2024. Every mapping below is
-        bidirectional and human-reviewed, with notes on exactly what changed. In the NexLex app,
+        bidirectional and human-reviewed, with notes on exactly what changed. In the Vidhara app,
         any section reference resolves instantly — try &ldquo;302 IPC&rdquo;.
       </p>
 

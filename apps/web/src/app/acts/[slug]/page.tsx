@@ -27,7 +27,7 @@ export async function generateMetadata({
   if (!act) return {};
   return {
     title: `${act.title} — full text, section-wise`,
-    description: `${act.title} (${act.abbreviation}, ${act.year}): read section by section with marginal notes${act.status === "replaced" ? " and mappings to the law that replaced it" : ""}. Free on NexLex.`,
+    description: `${act.title} (${act.abbreviation}, ${act.year}): read section by section with marginal notes${act.status === "replaced" ? " and mappings to the law that replaced it" : ""}. Free on Vidhara.`,
     alternates: { canonical: `/acts/${act.slug}` },
   };
 }

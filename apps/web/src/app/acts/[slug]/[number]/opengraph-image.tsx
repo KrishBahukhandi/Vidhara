@@ -21,7 +21,7 @@ export default async function OgImage({
 
   const title = section
     ? `${section.acts.abbreviation} §${section.number}`
-    : "NexLex — Bare Acts";
+    : "Vidhara — Bare Acts";
   const note = section?.marginal_note ?? "Indian bare acts, structured and free";
 
   let counterpart = "";
@@ -76,7 +76,7 @@ export default async function OgImage({
           ) : null}
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 32, opacity: 0.85 }}>
-          <div>NexLex — bare acts + old⇄new mapping</div>
+          <div>Vidhara — bare acts + old⇄new mapping</div>
           <div>free · no sign-up</div>
         </div>
       </div>

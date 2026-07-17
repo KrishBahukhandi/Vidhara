@@ -6,7 +6,7 @@
 export function GET() {
   return Response.json({
     ok: true,
-    service: "nexlex-web",
+    service: "vidhara-web",
     version: "0.1.0",
     minSupportedAppVersion: "0.1.0",
   });
