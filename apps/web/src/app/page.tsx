@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { ContinueReading } from "@/components/continue-reading";
+import { FakeDoor } from "@/components/fake-door";
 import { LandingLookup } from "@/components/landing-lookup";
 
 const FEATURES = [
@@ -46,6 +48,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      <ContinueReading />
+
       <section className="grid gap-6 py-12 md:grid-cols-3">
         {FEATURES.map((feature) => (
           <article
@@ -57,6 +61,13 @@ export default function HomePage() {
         ))}
       </section>
 
+      <section className="max-w-xl pb-16">
+        <FakeDoor
+          feature="daily_mcq"
+          title="Daily MCQ"
+          description="One exam-style question a day, from the bare acts, with the section explained"
+        />
+      </section>
     </main>
   );
 }

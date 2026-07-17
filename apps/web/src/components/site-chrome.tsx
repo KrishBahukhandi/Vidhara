@@ -15,6 +15,9 @@ export function SiteHeader() {
           <Link href="/mapping" className="text-small font-medium text-text-muted hover:text-text">
             IPC ⇄ BNS Mapping
           </Link>
+          <Link href="/saved" className="text-small font-medium text-text-muted hover:text-text">
+            Saved
+          </Link>
           <span className="hidden rounded-md bg-brand px-3 py-1.5 text-small font-medium text-on-brand sm:inline">
             Coming to Google Play
           </span>
