@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 
 import { track } from "@/lib/analytics";
 import { getBrowserClient } from "@/lib/supabase-browser";
@@ -8,12 +9,24 @@ import { getBrowserClient } from "@/lib/supabase-browser";
 const TOPICS = ["Website", "Android app", "Content / acts", "New feature"] as const;
 
 /**
- * Free-text improvement suggestions → public.feedback (kind='suggestion',
- * anon INSERT-only RLS). Text goes to the database, never to analytics —
- * PostHog only sees {kind, topic} (docs/analytics-plan.md §Privacy).
+ * Free-text improvement suggestions → public.feedback (anon INSERT-only RLS).
+ * With ?about=IPC §302 (the per-section "report an issue" link) it becomes a
+ * scoped error REPORT (kind='report' — Sev-0 intake). Text goes to the
+ * database, never to analytics (docs/analytics-plan.md §Privacy).
  */
 export function SuggestionForm() {
-  const [topic, setTopic] = useState<(typeof TOPICS)[number]>("Website");
+  return (
+    <Suspense fallback={null}>
+      <SuggestionFormInner />
+    </Suspense>
+  );
+}
+
+function SuggestionFormInner() {
+  const about = useSearchParams().get("about");
+  const [topic, setTopic] = useState<(typeof TOPICS)[number]>(
+    about ? "Content / acts" : "Website",
+  );
   const [message, setMessage] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
 
@@ -43,10 +56,12 @@ export function SuggestionForm() {
     if (!trimmed || state === "sending") return;
     setState("sending");
     const client = getBrowserClient();
+    const kind = about ? "report" : "suggestion";
+    const prefix = about ? `[Report: ${about}]` : `[${topic}]`;
     const { error } = client
       ? await client.from("feedback").insert({
-          kind: "suggestion",
-          message: `[${topic}] ${trimmed}`.slice(0, 2000),
+          kind,
+          message: `${prefix} ${trimmed}`.slice(0, 2000),
           path: window.location.pathname,
           platform: "web",
         })
@@ -55,7 +70,7 @@ export function SuggestionForm() {
       setState("error");
       return;
     }
-    track("feedback_submitted", { kind: "suggestion", topic });
+    track("feedback_submitted", { kind, topic });
     setState("done");
   };
 
@@ -66,6 +81,12 @@ export function SuggestionForm() {
         e.preventDefault();
         void submit();
       }}>
+      {about ? (
+        <p className="inline-flex items-center gap-2 self-start rounded-md border border-warning px-3 py-1.5 text-small text-text">
+          ⚠️ Reporting an issue with <span className="font-mono font-bold">{about}</span>
+        </p>
+      ) : null}
+
       <div>
         <p className="mb-2 text-small font-medium text-text">What is it about?</p>
         <div className="flex flex-wrap gap-2">
