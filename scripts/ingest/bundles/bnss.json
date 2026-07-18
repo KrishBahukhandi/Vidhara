@@ -13,197 +13,197 @@
   "chapters": [
     {
       "number": "I",
-      "title": "P RELIMINARY",
+      "title": "PRELIMINARY",
       "sortOrder": 1
     },
     {
       "number": "II",
-      "title": "C ONSTITUTION OF C RIMINAL C OURTS AND OFFICES",
+      "title": "CONSTITUTION OF CRIMINAL COURTS AND OFFICES",
       "sortOrder": 2
     },
     {
       "number": "III",
-      "title": "P OWER OF C OURTS",
+      "title": "POWER OF COURTS",
       "sortOrder": 3
     },
     {
       "number": "IV",
-      "title": "P OWERS OF SUPERIOR OFFICERS OF POLICE AND AID TO THE M AGISTRATES AND THE POLICE",
+      "title": "POWERS OF SUPERIOR OFFICERS OF POLICE AND AID TO THE MAGISTRATES AND THE POLICE",
       "sortOrder": 4
     },
     {
       "number": "V",
-      "title": "A RREST OF PERSONS",
+      "title": "ARREST OF PERSONS",
       "sortOrder": 5
     },
     {
       "number": "VI",
-      "title": "P ROCESSES TO COMPEL APPEARANCE",
+      "title": "PROCESSES TO COMPEL APPEARANCE",
       "sortOrder": 6
     },
     {
       "number": "VII",
-      "title": "P ROCESSES TO COMPEL THE PRODUCTION OF THINGS",
+      "title": "PROCESSES TO COMPEL THE PRODUCTION OF THINGS",
       "sortOrder": 7
     },
     {
       "number": "VIII",
-      "title": "R ECIPROCAL ARRANGEMENTS FOR ASSISTANCE IN CERTAIN MATTERS AND PROCEDURE FOR ATTACHMENT AND FORFEITURE OF PROPERTY",
+      "title": "RECIPROCAL ARRANGEMENTS FOR ASSISTANCE IN CERTAIN MATTERS AND PROCEDURE FOR ATTACHMENT AND FORFEITURE OF PROPERTY",
       "sortOrder": 8
     },
     {
       "number": "IX",
-      "title": "S ECURITY FOR KEEPING THE PEACE AND FOR GOOD BEHAVIOUR",
+      "title": "SECURITY FOR KEEPING THE PEACE AND FOR GOOD BEHAVIOUR",
       "sortOrder": 9
     },
     {
       "number": "X",
-      "title": "O RDER FOR MAINTENANCE OF WIVES , CHILDREN AND PARENTS",
+      "title": "ORDER FOR MAINTENANCE OF WIVES, CHILDREN AND PARENTS",
       "sortOrder": 10
     },
     {
       "number": "XI",
-      "title": "M AINTENANCE OF PUBLIC ORDER AND TRANQUILLITY",
+      "title": "MAINTENANCE OF PUBLIC ORDER AND TRANQUILLITY",
       "sortOrder": 11
     },
     {
       "number": "XII",
-      "title": "P REVENTIVE ACTION OF THE POLICE",
+      "title": "PREVENTIVE ACTION OF THE POLICE",
       "sortOrder": 12
     },
     {
       "number": "XIII",
-      "title": "I NFORMATION TO THE POLICE AND THEIR POWERS TO INVESTIGATE",
+      "title": "INFORMATION TO THE POLICE AND THEIR POWERS TO INVESTIGATE",
       "sortOrder": 13
     },
     {
       "number": "XIV",
-      "title": "J URISDICTION OF THE CRIMINAL COURTS IN INQUIRIES AND TRIALS",
+      "title": "JURISDICTION OF THE CRIMINAL COURTS IN INQUIRIES AND TRIALS",
       "sortOrder": 14
     },
     {
       "number": "XV",
-      "title": "C ONDITIONS REQUISITE FOR INITIATION OF PROCEEDINGS",
+      "title": "CONDITIONS REQUISITE FOR INITIATION OF PROCEEDINGS",
       "sortOrder": 15
     },
     {
       "number": "XVI",
-      "title": "C OMPLAINTS TO M AGISTRATES",
+      "title": "COMPLAINTS TO MAGISTRATES",
       "sortOrder": 16
     },
     {
       "number": "XVII",
-      "title": "C OMMENCEMENT OF PROCEEDINGS BEFORE M AGISTRATES",
+      "title": "COMMENCEMENT OF PROCEEDINGS BEFORE MAGISTRATES",
       "sortOrder": 17
     },
     {
       "number": "XVIII",
-      "title": "T HE CHARGE",
+      "title": "THE CHARGE",
       "sortOrder": 18
     },
     {
       "number": "XIX",
-      "title": "T RIAL BEFORE A C OURT OF S ESSION",
+      "title": "TRIAL BEFORE A COURT OF SESSION",
       "sortOrder": 19
     },
     {
       "number": "XX",
-      "title": "T RIAL OF WARRANT - CASES BY M AGISTRATES",
+      "title": "TRIAL OF WARRANT-CASES BY MAGISTRATES",
       "sortOrder": 20
     },
     {
       "number": "XXI",
-      "title": "T RIAL OF SUMMONS - CASES BY M AGISTRATES",
+      "title": "TRIAL OF SUMMONS-CASES BY MAGISTRATES",
       "sortOrder": 21
     },
     {
       "number": "XXII",
-      "title": "S UMMARY TRIALS",
+      "title": "SUMMARY TRIALS",
       "sortOrder": 22
     },
     {
       "number": "XXIII",
-      "title": "P LEA BARGAINING",
+      "title": "PLEA BARGAINING",
       "sortOrder": 23
     },
     {
       "number": "XXIV",
-      "title": "A TTENDANCE OF PERSONS CONFINED OR DETAINED IN PRISONS",
+      "title": "ATTENDANCE OF PERSONS CONFINED OR DETAINED IN PRISONS",
       "sortOrder": 24
     },
     {
       "number": "XXV",
-      "title": "E VIDENCE IN INQUIRIES AND TRIALS",
+      "title": "EVIDENCE IN INQUIRIES AND TRIALS",
       "sortOrder": 25
     },
     {
       "number": "XXVI",
-      "title": "G ENERAL PROVISIONS AS TO INQUIRIES AND TRIALS",
+      "title": "GENERAL PROVISIONS AS TO INQUIRIES AND TRIALS",
       "sortOrder": 26
     },
     {
       "number": "XXVII",
-      "title": "P ROVISIONS AS TO ACCUSED PERSONS OF UNSOUND MIND",
+      "title": "PROVISIONS AS TO ACCUSED PERSONS OF UNSOUND MIND",
       "sortOrder": 27
     },
     {
       "number": "XXVIII",
-      "title": "P ROVISIONS AS TO OFFENCES AFFECTING THE ADMINISTRATION OF JUSTICE",
+      "title": "PROVISIONS AS TO OFFENCES AFFECTING THE ADMINISTRATION OF JUSTICE",
       "sortOrder": 28
     },
     {
       "number": "XXIX",
-      "title": "T HE JUDGMENT",
+      "title": "THE JUDGMENT",
       "sortOrder": 29
     },
     {
       "number": "XXX",
-      "title": "S UBMISSION OF DEATH SENTENCES FOR CONFIRMATION",
+      "title": "SUBMISSION OF DEATH SENTENCES FOR CONFIRMATION",
       "sortOrder": 30
     },
     {
       "number": "XXXI",
-      "title": "A PPEALS",
+      "title": "APPEALS",
       "sortOrder": 31
     },
     {
       "number": "XXXII",
-      "title": "R EFERENCE AND REVISION",
+      "title": "REFERENCE AND REVISION",
       "sortOrder": 32
     },
     {
       "number": "XXXIII",
-      "title": "T RANSFER OF CRIMINAL CASES",
+      "title": "TRANSFER OF CRIMINAL CASES",
       "sortOrder": 33
     },
     {
       "number": "XXXIV",
-      "title": "E XECUTION , SUSPENSION , REMISSION AND COMMUTATION OF SENTENCES",
+      "title": "EXECUTION, SUSPENSION, REMISSION AND COMMUTATION OF SENTENCES",
       "sortOrder": 34
     },
     {
       "number": "XXXV",
-      "title": "P ROVISIONS AS TO BAIL AND BONDS",
+      "title": "PROVISIONS AS TO BAIL AND BONDS",
       "sortOrder": 35
     },
     {
       "number": "XXXVI",
-      "title": "D ISPOSAL OF PROPERTY",
+      "title": "DISPOSAL OF PROPERTY",
       "sortOrder": 36
     },
     {
       "number": "XXXVII",
-      "title": "I RREGULAR PROCEEDINGS",
+      "title": "IRREGULAR PROCEEDINGS",
       "sortOrder": 37
     },
     {
       "number": "XXXVIII",
-      "title": "L IMITATION FOR TAKING COGNIZANCE OF CERTAIN OFFENCES",
+      "title": "LIMITATION FOR TAKING COGNIZANCE OF CERTAIN OFFENCES",
       "sortOrder": 38
     },
     {
       "number": "XXXIX",
-      "title": "M ISCELLANEOUS",
+      "title": "MISCELLANEOUS",
       "sortOrder": 39
     }
   ],

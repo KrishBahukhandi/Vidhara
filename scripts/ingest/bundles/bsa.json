@@ -13,62 +13,62 @@
   "chapters": [
     {
       "number": "I",
-      "title": "P RELIMINARY",
+      "title": "PRELIMINARY",
       "sortOrder": 1
     },
     {
       "number": "II",
-      "title": "R ELEVANCY OF FACTS",
+      "title": "RELEVANCY OF FACTS",
       "sortOrder": 2
     },
     {
       "number": "III",
-      "title": "F ACTS WHICH NEED NOT BE PROVED",
+      "title": "FACTS WHICH NEED NOT BE PROVED",
       "sortOrder": 3
     },
     {
       "number": "IV",
-      "title": "O F ORAL EVIDENCE",
+      "title": "OF ORAL EVIDENCE",
       "sortOrder": 4
     },
     {
       "number": "V",
-      "title": "O F DOCUMENTARY EVIDENCE",
+      "title": "OF DOCUMENTARY EVIDENCE",
       "sortOrder": 5
     },
     {
       "number": "VI",
-      "title": "O F THE EXCLUSION OF ORAL EVIDENCE BY DOCUMENTARY EVIDENCE",
+      "title": "OF THE EXCLUSION OF ORAL EVIDENCE BY DOCUMENTARY EVIDENCE",
       "sortOrder": 6
     },
     {
       "number": "VII",
-      "title": "O F THE BURDEN OF PROOF",
+      "title": "OF THE BURDEN OF PROOF",
       "sortOrder": 7
     },
     {
       "number": "VIII",
-      "title": "E STOPPEL",
+      "title": "ESTOPPEL",
       "sortOrder": 8
     },
     {
       "number": "IX",
-      "title": "O F WITNESSES",
+      "title": "OF WITNESSES",
       "sortOrder": 9
     },
     {
       "number": "X",
-      "title": "O F EXAMINATION OF WITNESSES",
+      "title": "OF EXAMINATION OF WITNESSES",
       "sortOrder": 10
     },
     {
       "number": "XI",
-      "title": "O F IMPROPER ADMISSION AND REJECTION OF EVIDENCE",
+      "title": "OF IMPROPER ADMISSION AND REJECTION OF EVIDENCE",
       "sortOrder": 11
     },
     {
       "number": "XII",
-      "title": "R EPEAL AND SAVINGS",
+      "title": "REPEAL AND SAVINGS",
       "sortOrder": 12
     }
   ],

@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import * as Clipboard from "expo-clipboard";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Pressable, Share, StyleSheet, View } from "react-native";
@@ -62,6 +63,21 @@ export default function SectionReaderScreen() {
   }, [slug, number]);
 
   const isSample = section?.provenance?.startsWith("dev-sample");
+  const [copiedText, setCopiedText] = useState(false);
+
+  const onCopyText = async () => {
+    if (!section) return;
+    track("share_clicked", {
+      act: section.acts.abbreviation,
+      number: section.number,
+      channel: "copy_text",
+    });
+    await Clipboard.setStringAsync(
+      `${section.acts.abbreviation} §${section.number} — ${section.marginal_note}\n\n${section.body_plain}`,
+    );
+    setCopiedText(true);
+    setTimeout(() => setCopiedText(false), 2000);
+  };
 
   const onShare = async () => {
     if (!section) return;
@@ -127,6 +143,23 @@ export default function SectionReaderScreen() {
                 <Ionicons name="share-outline" size={16} color={colors.textMuted} />
                 <AppText variant="small" tone="muted" style={styles.shareLabel}>
                   Share
+                </AppText>
+              </Pressable>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Copy section text"
+                onPress={onCopyText}
+                style={({ pressed }) => [
+                  styles.shareBtn,
+                  { borderColor: colors.border, backgroundColor: colors.surface, opacity: pressed ? 0.85 : 1 },
+                ]}>
+                <Ionicons
+                  name={copiedText ? "checkmark-outline" : "copy-outline"}
+                  size={16}
+                  color={colors.textMuted}
+                />
+                <AppText variant="small" tone="muted" style={styles.shareLabel}>
+                  {copiedText ? "Copied" : "Copy"}
                 </AppText>
               </Pressable>
             </View>

@@ -15,6 +15,7 @@ export type EventName =
   | "search_performed"
   | "search_result_clicked"
   | "share_clicked"
+  | "feedback_submitted"
   | "bookmark_added"
   | "bookmark_removed"
   | "recents_resumed"

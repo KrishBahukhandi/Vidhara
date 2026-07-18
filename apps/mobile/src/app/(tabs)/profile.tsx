@@ -2,6 +2,7 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 
+import { SuggestionForm } from "@/components/suggestion-form";
 import { AppText } from "@/components/ui/app-text";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
@@ -76,6 +77,8 @@ export default function ProfileScreen() {
         </View>
       )}
 
+      <SuggestionForm />
+
       <View style={styles.footer}>
         <Button label="Sign out" variant="secondary" onPress={signOut} />
         <AppText variant="micro" tone="faint" style={styles.legal}>
@@ -101,6 +104,7 @@ function SignedOutProfile() {
         </AppText>
         <Button label="Sign in" onPress={() => router.push("/(auth)/sign-in")} />
       </View>
+      <SuggestionForm />
       <View style={styles.footer}>
         <AppText variant="micro" tone="faint" style={styles.legal}>
           Vidhara explains law for learning — it isn't legal advice.

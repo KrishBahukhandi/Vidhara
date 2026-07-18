@@ -22,6 +22,13 @@ export interface SectionListItem {
   id: string;
   number: string;
   marginal_note: string;
+  chapter_id: string | null;
+}
+
+export interface ChapterListItem {
+  id: string;
+  number: string;
+  title: string;
 }
 
 export interface SectionWithAct extends Section {
@@ -64,12 +71,30 @@ export async function getAct(slug: string): Promise<Result<Act>> {
 export async function listSections(actSlug: string): Promise<Result<SectionListItem[]>> {
   const { data, error } = await supabase
     .from("act_sections")
-    .select("id, number, marginal_note, acts!inner(slug)")
+    .select("id, number, marginal_note, chapter_id, acts!inner(slug)")
     .eq("acts.slug", actSlug)
     .order("sort_key", { ascending: true });
 
   if (error) return err(ERROR_CODES.INTERNAL, LOAD_ERROR);
-  return ok(data.map(({ id, number, marginal_note }) => ({ id, number, marginal_note })));
+  return ok(
+    data.map(({ id, number, marginal_note, chapter_id }) => ({
+      id,
+      number,
+      marginal_note,
+      chapter_id,
+    })),
+  );
+}
+
+export async function listChapters(actSlug: string): Promise<Result<ChapterListItem[]>> {
+  const { data, error } = await supabase
+    .from("act_chapters")
+    .select("id, number, title, acts!inner(slug)")
+    .eq("acts.slug", actSlug)
+    .order("sort_order", { ascending: true });
+
+  if (error) return err(ERROR_CODES.INTERNAL, LOAD_ERROR);
+  return ok(data.map(({ id, number, title }) => ({ id, number, title })));
 }
 
 export async function getSection(

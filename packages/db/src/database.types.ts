@@ -1,6 +1,6 @@
 /**
  * Database types — GENERATED from the live NexLex Supabase project
- * (ref eubyvglzkbzfeznocilg, migrations 0001–0005).
+ * (ref eubyvglzkbzfeznocilg, migrations 0001–0006).
  * Regenerate after schema changes: pnpm --filter @nexlex/db gen:types
  */
 export type Json =
@@ -198,26 +198,29 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          kind: string
           message: string | null
           path: string | null
           platform: string
-          score: number
+          score: number | null
         }
         Insert: {
           created_at?: string
           id?: string
+          kind?: string
           message?: string | null
           path?: string | null
           platform?: string
-          score: number
+          score?: number | null
         }
         Update: {
           created_at?: string
           id?: string
+          kind?: string
           message?: string | null
           path?: string | null
           platform?: string
-          score?: number
+          score?: number | null
         }
         Relationships: []
       }
