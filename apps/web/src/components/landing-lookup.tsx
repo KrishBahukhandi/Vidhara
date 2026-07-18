@@ -20,21 +20,25 @@ export function LandingLookup() {
   const [hint, setHint] = useState<string | null>(null);
 
   const submit = (raw: string) => {
-    const parsed = parseSectionRef(raw);
+    const trimmed = raw.trim();
+    if (!trimmed) return;
+    const parsed = parseSectionRef(trimmed);
     const found = Boolean(parsed?.act);
     track("landing_lookup_submitted", { found });
-    if (!parsed) {
-      setHint("Try a section reference — e.g. “420 IPC” or “BNS 103”.");
+    if (parsed?.act) {
+      setHint(null);
+      router.push(
+        `/acts/${parsed.act.toLowerCase()}/${encodeURIComponent(parsed.section)}?via=mapping`,
+      );
       return;
     }
-    if (!parsed.act) {
+    if (parsed && !parsed.act) {
       setHint(`Which act is §${parsed.section} from? Add it — e.g. “${parsed.section} IPC”.`);
       return;
     }
+    // Not a section reference — fall through to full-text search.
     setHint(null);
-    router.push(
-      `/acts/${parsed.act.toLowerCase()}/${encodeURIComponent(parsed.section)}?via=mapping`,
-    );
+    router.push(`/search?q=${encodeURIComponent(trimmed)}`);
   };
 
   return (

@@ -26,7 +26,7 @@ export interface ChapterListItem {
 }
 
 export interface SectionWithAct extends Section {
-  acts: Pick<Act, "slug" | "abbreviation" | "title" | "year">;
+  acts: Pick<Act, "slug" | "abbreviation" | "title" | "year" | "source_url" | "status">;
 }
 
 export async function listActs(): Promise<Act[]> {
@@ -85,7 +85,7 @@ export async function getSectionWithAct(
   if (!isContentConfigured) return null;
   const { data, error } = await getServerClient()
     .from("act_sections")
-    .select("*, acts!inner(slug, abbreviation, title, year)")
+    .select("*, acts!inner(slug, abbreviation, title, year, source_url, status)")
     .eq("acts.slug", slug)
     .eq("number", number)
     .maybeSingle();
@@ -128,6 +128,24 @@ export async function getAdjacentSections(
       .maybeSingle(),
   ]);
   return { prev: prevRes.data ?? null, next: nextRes.data ?? null };
+}
+
+export interface SearchHit {
+  section_id: string;
+  act_abbreviation: string;
+  act_slug: string;
+  number: string;
+  marginal_note: string;
+  rank: number;
+  snippet: string;
+}
+
+/** Full-text search over all sections (search_sections RPC: FTS + trigram). */
+export async function searchSections(q: string): Promise<SearchHit[]> {
+  if (!isContentConfigured || !q.trim()) return [];
+  const { data, error } = await getServerClient().rpc("search_sections", { q: q.trim() });
+  if (error) throw new Error(`searchSections: ${error.message}`);
+  return data;
 }
 
 export async function getMappingsForSection(sectionId: string): Promise<MappingRow[]> {

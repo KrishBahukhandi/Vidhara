@@ -9,6 +9,7 @@ import { MarkdownLite } from "@/components/markdown-lite";
 import { MappingPanel } from "@/components/mapping-panel";
 import { RecordRecent } from "@/components/record-recent";
 import { SectionNav } from "@/components/section-nav";
+import { SectionProvenance } from "@/components/section-provenance";
 import { SectionShare } from "@/components/section-share";
 import { PageShell } from "@/components/site-chrome";
 import {
@@ -188,6 +189,13 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
         })()}
         url={`${SITE_URL}/acts/${slug}/${encodeURIComponent(section.number)}`}
         bodyText={section.body_plain}
+      />
+
+      <SectionProvenance
+        act={section.acts.abbreviation}
+        number={section.number}
+        sourceUrl={section.acts.source_url}
+        provenance={section.provenance}
       />
 
       <FeedbackWidget />

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { LandingLookup } from "@/components/landing-lookup";
 import { MappingPanel } from "@/components/mapping-panel";
 import { PageShell } from "@/components/site-chrome";
 import { getMappingPairPreview } from "@/features/acts/queries";
@@ -48,10 +49,14 @@ export default async function MappingPage() {
         Old criminal law ⇄ new criminal law
       </h1>
       <p className="mt-2 max-w-measure text-body text-text-muted">
-        India&rsquo;s criminal law was recodified from 1 July 2024. Every mapping below is
-        bidirectional and human-reviewed, with notes on exactly what changed. In the Vidhara app,
-        any section reference resolves instantly — try &ldquo;302 IPC&rdquo;.
+        India&rsquo;s criminal law was recodified from 1 July 2024. Every mapping below comes from
+        the official NCRB concordance, with notes on exactly what changed. Type any section —
+        old or new — to jump straight to it:
       </p>
+
+      <div className="mt-6">
+        <LandingLookup />
+      </div>
 
       {previews.map(({ key, heading, actSlug, rows, total }) => {
         if (total === 0) return null;
