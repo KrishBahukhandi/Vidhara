@@ -15,6 +15,7 @@ export function SectionShare({
   note,
   counterpart,
   url,
+  bodyText,
 }: {
   act: string;
   number: string;
@@ -22,8 +23,11 @@ export function SectionShare({
   /** e.g. "BNS §318" — empty string when the section has no counterpart. */
   counterpart: string;
   url: string;
+  /** Plain statute text for "Copy text" — students paste sections into notes daily. */
+  bodyText: string;
 }) {
   const [copied, setCopied] = useState(false);
+  const [copiedText, setCopiedText] = useState(false);
 
   const shareUrl = `${url}?via=share`;
   const text =
@@ -31,7 +35,7 @@ export function SectionShare({
     (counterpart ? ` (now ${counterpart})` : "") +
     ` · full text: ${shareUrl}`;
 
-  const fire = (channel: "whatsapp" | "telegram" | "copy") =>
+  const fire = (channel: "whatsapp" | "telegram" | "copy" | "copy_text") =>
     track("share_clicked", { act, number, channel });
 
   const copy = async () => {
@@ -42,6 +46,19 @@ export function SectionShare({
       setTimeout(() => setCopied(false), 2000);
     } catch {
       // clipboard unavailable (http / permissions) — nothing to do
+    }
+  };
+
+  const copyText = async () => {
+    fire("copy_text");
+    try {
+      await navigator.clipboard.writeText(
+        `${act} §${number} — ${note}\n\n${bodyText}\n\n(${shareUrl})`,
+      );
+      setCopiedText(true);
+      setTimeout(() => setCopiedText(false), 2000);
+    } catch {
+      // clipboard unavailable — nothing to do
     }
   };
 
@@ -71,6 +88,9 @@ export function SectionShare({
       </a>
       <button type="button" className={linkClass} onClick={copy}>
         {copied ? "Copied ✓" : "Copy link"}
+      </button>
+      <button type="button" className={linkClass} onClick={copyText}>
+        {copiedText ? "Copied ✓" : "Copy text"}
       </button>
     </div>
   );

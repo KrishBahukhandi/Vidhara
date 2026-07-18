@@ -187,6 +187,7 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
               : "";
         })()}
         url={`${SITE_URL}/acts/${slug}/${encodeURIComponent(section.number)}`}
+        bodyText={section.body_plain}
       />
 
       <FeedbackWidget />

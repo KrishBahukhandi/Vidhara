@@ -15,6 +15,14 @@ export interface SectionListItem {
   id: string;
   number: string;
   marginal_note: string;
+  chapter_id: string | null;
+}
+
+export interface ChapterListItem {
+  id: string;
+  number: string;
+  title: string;
+  sort_order: number;
 }
 
 export interface SectionWithAct extends Section {
@@ -47,11 +55,27 @@ export async function listSectionsByAct(slug: string): Promise<SectionListItem[]
   if (!isContentConfigured) return [];
   const { data, error } = await getServerClient()
     .from("act_sections")
-    .select("id, number, marginal_note, acts!inner(slug)")
+    .select("id, number, marginal_note, chapter_id, acts!inner(slug)")
     .eq("acts.slug", slug)
     .order("sort_key", { ascending: true });
   if (error) throw new Error(`listSectionsByAct: ${error.message}`);
-  return data.map(({ id, number, marginal_note }) => ({ id, number, marginal_note }));
+  return data.map(({ id, number, marginal_note, chapter_id }) => ({
+    id,
+    number,
+    marginal_note,
+    chapter_id,
+  }));
+}
+
+export async function listChaptersByAct(slug: string): Promise<ChapterListItem[]> {
+  if (!isContentConfigured) return [];
+  const { data, error } = await getServerClient()
+    .from("act_chapters")
+    .select("id, number, title, sort_order, acts!inner(slug)")
+    .eq("acts.slug", slug)
+    .order("sort_order", { ascending: true });
+  if (error) throw new Error(`listChaptersByAct: ${error.message}`);
+  return data.map(({ id, number, title, sort_order }) => ({ id, number, title, sort_order }));
 }
 
 export async function getSectionWithAct(

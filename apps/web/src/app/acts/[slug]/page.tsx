@@ -4,7 +4,12 @@ import { notFound } from "next/navigation";
 
 import { ActSectionList } from "@/components/act-section-list";
 import { PageShell } from "@/components/site-chrome";
-import { getActBySlug, listActs, listSectionsByAct } from "@/features/acts/queries";
+import {
+  getActBySlug,
+  listActs,
+  listChaptersByAct,
+  listSectionsByAct,
+} from "@/features/acts/queries";
 import { TrackEvent } from "@/lib/analytics";
 
 export const revalidate = 3600;
@@ -38,7 +43,10 @@ export default async function ActPage({ params }: { params: Promise<Params> }) {
   const act = await getActBySlug(slug);
   if (!act) notFound();
 
-  const sections = await listSectionsByAct(slug);
+  const [sections, chapters] = await Promise.all([
+    listSectionsByAct(slug),
+    listChaptersByAct(slug),
+  ]);
 
   return (
     <PageShell>
@@ -61,7 +69,7 @@ export default async function ActPage({ params }: { params: Promise<Params> }) {
           Sections for this act are still being ingested.
         </p>
       ) : (
-        <ActSectionList slug={slug} sections={sections} />
+        <ActSectionList slug={slug} sections={sections} chapters={chapters} />
       )}
     </PageShell>
   );

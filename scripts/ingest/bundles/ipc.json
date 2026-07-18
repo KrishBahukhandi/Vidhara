@@ -12,27 +12,27 @@
   "chapters": [
     {
       "number": "II",
-      "title": "G E",
+      "title": "GENERAL EXPLANATIONS",
       "sortOrder": 1
     },
     {
       "number": "III",
-      "title": "O P",
+      "title": "OF PUNISHMENTS",
       "sortOrder": 2
     },
     {
       "number": "IV",
-      "title": "G E",
+      "title": "GENERAL EXCEPTIONS",
       "sortOrder": 3
     },
     {
       "number": "V",
-      "title": "O A",
+      "title": "OF ABETMENT",
       "sortOrder": 4
     },
     {
       "number": "VI",
-      "title": "O O A S",
+      "title": "OF OFFENCES AGAINST THE STATE",
       "sortOrder": 5
     },
     {
@@ -42,52 +42,52 @@
     },
     {
       "number": "VIII",
-      "title": "O P T",
+      "title": "OF OFFENCES AGAINST THE PUBLIC TRANQUILLITY",
       "sortOrder": 7
     },
     {
       "number": "IX",
-      "title": "O P S",
+      "title": "OF OFFENCES BY OR RELATING TO PUBLIC SERVANTS",
       "sortOrder": 8
     },
     {
       "number": "X",
-      "title": "O C L A P S",
+      "title": "OF CONTEMPTS OF THE LAWFUL AUTHORITY OF PUBLIC SERVANTS",
       "sortOrder": 9
     },
     {
       "number": "XI",
-      "title": "O F E O A P J",
+      "title": "OF FALSE EVIDENCE AND OFFENCES AGAINST PUBLIC JUSTICE",
       "sortOrder": 10
     },
     {
       "number": "XII",
-      "title": "O O R C G S",
+      "title": "OF OFFENCES RELATING TO COIN AND GOVERNMENT STAMPS",
       "sortOrder": 11
     },
     {
       "number": "XIII",
-      "title": "O O W M",
+      "title": "OF OFFENCES RELATING TO WEIGHTS AND MEASURES",
       "sortOrder": 12
     },
     {
       "number": "XIV",
-      "title": "O O P H , S , C , D M",
+      "title": "OF OFFENCES AFFECTING THE PUBLIC HEALTH, SAFETY, CONVENIENCE, DECENCY AND MORALS",
       "sortOrder": 13
     },
     {
       "number": "XV",
-      "title": "O O R",
+      "title": "OF OFFENCES RELATING TO RELIGION",
       "sortOrder": 14
     },
     {
       "number": "XVI",
-      "title": "O O H B",
+      "title": "OF OFFENCES AFFECTING THE HUMAN BODY",
       "sortOrder": 15
     },
     {
       "number": "XVII",
-      "title": "O O P",
+      "title": "OF OFFENCES AGAINST PROPERTY",
       "sortOrder": 16
     },
     {
@@ -97,27 +97,27 @@
     },
     {
       "number": "XIX",
-      "title": "O C B C S",
+      "title": "OF THE CRIMINAL BREACH OF CONTRACTS OF SERVICE",
       "sortOrder": 18
     },
     {
       "number": "XX",
-      "title": "O M",
+      "title": "OF OFFENCES RELATING TO MARRIAGE",
       "sortOrder": 19
     },
     {
       "number": "XXI",
-      "title": "O D",
+      "title": "OF DEFAMATION",
       "sortOrder": 20
     },
     {
       "number": "XXII",
-      "title": "O C I , I A",
+      "title": "OF CRIMINAL INTIMIDATION, INSULT AND ANNOYANCE",
       "sortOrder": 21
     },
     {
       "number": "XXIII",
-      "title": "O A C O",
+      "title": "OF ATTEMPTS TO COMMIT OFFENCES",
       "sortOrder": 22
     }
   ],

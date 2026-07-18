@@ -55,6 +55,11 @@ export function SiteFooter() {
               {link.label}
             </Link>
           ))}
+          <Link
+            href="/feedback"
+            className="text-small text-text-muted transition-colors hover:text-text">
+            Suggest an improvement
+          </Link>
           <Link href="/privacy" className="text-small text-text-muted transition-colors hover:text-text">
             Privacy
           </Link>

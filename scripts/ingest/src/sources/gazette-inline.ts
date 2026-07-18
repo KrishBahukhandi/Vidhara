@@ -15,7 +15,7 @@
  *   guard rejects any footnote number that survives.
  */
 import type { GazetteParseResult, ParsedChapter, ParsedSection } from "./gazette-common";
-import { END_SENTINELS, FURNITURE } from "./gazette-common";
+import { END_SENTINELS, FURNITURE, normalizeChapterTitle } from "./gazette-common";
 import { deriveSortKey } from "../sort-key";
 
 interface Word {
@@ -130,7 +130,7 @@ export function parseInlineAct(xhtml: string): GazetteParseResult {
   };
   const flushChapter = () => {
     if (pendingChapterNumber === null) return;
-    const title = pendingChapterTitle.join(" ").replace(/\s+/g, " ").trim();
+    const title = normalizeChapterTitle(pendingChapterTitle.join(" "));
     chapters.push({
       number: pendingChapterNumber,
       title: title || `Chapter ${pendingChapterNumber}`,

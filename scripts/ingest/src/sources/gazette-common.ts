@@ -70,6 +70,51 @@ export const FURNITURE = [
 /** "B E it enacted…": the ornamental drop-cap splits into separate words. */
 export const ENACTMENT = /B\s?E\s+it\s+enacted\s+by\s+Parliament/i;
 
+/**
+ * Chapter titles are set in SMALL CAPS with an enlarged first letter on every
+ * source-capitalized word; pdftotext emits that letter as its own token
+ * ("A RREST OF PERSONS", "T RIAL BEFORE A C OURT OF S ESSION"). Lowercase
+ * source words ("before", "a", "of") render intact — so a genuine article "A"
+ * is followed by another SOLITARY capital (the next word's drop cap), never
+ * by a full word, which makes the text-only repair unambiguous on this corpus:
+ *   pass 1: adjacent solitary "O" + "F" → "OF" (the one drop-capped 2-letter word)
+ *   pass 2: solitary capital + following ≥2-char capital token → join
+ * Then tidy PDF spacing around punctuation. Known theoretical edge (a
+ * capitalized 1-letter word followed by an intact lowercase-source word, e.g.
+ * "A NEW TRIAL") does not occur in the ingested corpus — audit new acts'
+ * chapter diffs on ingest.
+ */
+export function normalizeChapterTitle(raw: string): string {
+  const tokens = raw.replace(/\s+/g, " ").trim().split(" ");
+
+  const afterOf: string[] = [];
+  for (let i = 0; i < tokens.length; i++) {
+    if (tokens[i] === "O" && tokens[i + 1] === "F") {
+      afterOf.push("OF");
+      i++;
+    } else {
+      afterOf.push(tokens[i]!);
+    }
+  }
+
+  const joined: string[] = [];
+  for (let i = 0; i < afterOf.length; i++) {
+    const cur = afterOf[i]!;
+    const next = afterOf[i + 1];
+    if (/^[A-Z]$/.test(cur) && next && /^[A-Z]{2,}[A-Z'’-]*$/.test(next)) {
+      joined.push(cur + next);
+      i++;
+    } else {
+      joined.push(cur);
+    }
+  }
+
+  return joined
+    .join(" ")
+    .replace(/\s+([,.;:])/g, "$1")
+    .replace(/\s+-\s+/g, "-");
+}
+
 /** Schedules/forms follow the last section ("THE SCHEDULE [See section…]",
  * "THE FIRST SCHEDULE") — statute text ends there. Case-sensitive: body
  * sentences say "the Schedule". */
@@ -158,7 +203,7 @@ export function assembleSections(lines: Iterable<LineParts>): GazetteParseResult
     if (pendingChapterNumber === null) return;
     chapters.push({
       number: pendingChapterNumber,
-      title: pendingChapterTitle.join(" ").replace(/\s+/g, " ").trim(),
+      title: normalizeChapterTitle(pendingChapterTitle.join(" ")),
       sortOrder: chapters.length + 1,
     });
     currentChapter = pendingChapterNumber;
