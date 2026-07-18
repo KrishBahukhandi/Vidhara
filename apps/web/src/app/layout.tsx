@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Source_Serif_4 } from "next/font/google";
 import type { ReactNode } from "react";
 
+import { FeedbackFab } from "@/components/feedback-fab";
 import { SiteFooter, SiteHeader } from "@/components/site-chrome";
 import { AnalyticsProvider } from "@/lib/analytics";
 import { SITE_URL } from "@/lib/site";
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <SiteHeader />
         {children}
         <SiteFooter />
+        <FeedbackFab />
       </body>
     </html>
   );
