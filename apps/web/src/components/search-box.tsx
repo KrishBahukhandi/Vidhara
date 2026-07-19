@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { parseSectionRef } from "@nexlex/shared";
+import { ACT_SLUG, parseSectionRef } from "@nexlex/shared";
 
 /**
  * One search box, two behaviours (architecture.md §8): a confident section
@@ -18,7 +18,7 @@ export function SearchBox({ initialQuery = "", autoFocus = false }: { initialQue
     if (!trimmed) return;
     const ref = parseSectionRef(trimmed);
     if (ref?.act) {
-      router.push(`/acts/${ref.act.toLowerCase()}/${encodeURIComponent(ref.section)}?via=search`);
+      router.push(`/acts/${ACT_SLUG[ref.act]}/${encodeURIComponent(ref.section)}?via=search`);
       return;
     }
     router.push(`/search?q=${encodeURIComponent(trimmed)}`);

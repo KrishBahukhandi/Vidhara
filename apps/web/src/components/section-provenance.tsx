@@ -17,12 +17,21 @@ export function SectionProvenance({
   sourceUrl: string | null;
   provenance: string | null;
 }) {
+  // A malformed source_url must never crash the section page (server render).
+  const hostname = (() => {
+    if (!sourceUrl) return null;
+    try {
+      return new URL(sourceUrl).hostname;
+    } catch {
+      return "official source";
+    }
+  })();
   const sourceLabel = sourceUrl
     ? sourceUrl.includes("indiacode")
       ? "India Code (official)"
       : sourceUrl.includes("mha.gov.in")
         ? "Gazette of India via MHA (official)"
-        : new URL(sourceUrl).hostname
+        : hostname
     : null;
 
   return (
