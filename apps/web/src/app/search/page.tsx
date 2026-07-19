@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { parseSectionRef } from "@nexlex/shared";
+import { ACT_SLUG, parseSectionRef } from "@nexlex/shared";
 
 import { MissingContentForm } from "@/components/missing-content-form";
 import { SearchBox } from "@/components/search-box";
@@ -26,7 +26,7 @@ export default async function SearchPage({
   // Confident section refs skip results entirely (architecture.md §8).
   const ref = query ? parseSectionRef(query) : null;
   if (ref?.act) {
-    redirect(`/acts/${ref.act.toLowerCase()}/${encodeURIComponent(ref.section)}?via=search`);
+    redirect(`/acts/${ACT_SLUG[ref.act]}/${encodeURIComponent(ref.section)}?via=search`);
   }
 
   const hits = query ? await searchSections(query) : [];

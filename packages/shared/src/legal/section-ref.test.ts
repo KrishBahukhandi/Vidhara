@@ -1,6 +1,20 @@
 import { describe, expect, it } from "vitest";
 
-import { parseSectionRef } from "./section-ref";
+import { ACT_ABBREVIATIONS, ACT_SLUG, parseSectionRef } from "./section-ref";
+
+describe("ACT_SLUG", () => {
+  it("has a slug for every abbreviation", () => {
+    for (const abbr of ACT_ABBREVIATIONS) {
+      expect(ACT_SLUG[abbr]).toBeTruthy();
+    }
+  });
+
+  it("maps COI to 'constitution', NOT 'coi' (the slug≠abbreviation case)", () => {
+    // Regression: parseSectionRef returns "COI"; the section route is
+    // /acts/constitution/… — a lowercased abbreviation would 404.
+    expect(ACT_SLUG.COI).toBe("constitution");
+  });
+});
 
 describe("parseSectionRef", () => {
   it("parses '302 IPC' (number-first)", () => {

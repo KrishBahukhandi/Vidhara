@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { parseSectionRef } from "@nexlex/shared";
+import { ACT_SLUG, parseSectionRef } from "@nexlex/shared";
 
 import { track } from "@/lib/analytics";
 
@@ -28,7 +28,7 @@ export function LandingLookup() {
     if (parsed?.act) {
       setHint(null);
       router.push(
-        `/acts/${parsed.act.toLowerCase()}/${encodeURIComponent(parsed.section)}?via=mapping`,
+        `/acts/${ACT_SLUG[parsed.act]}/${encodeURIComponent(parsed.section)}?via=mapping`,
       );
       return;
     }

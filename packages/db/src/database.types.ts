@@ -1,6 +1,6 @@
 /**
  * Database types — GENERATED from the live NexLex Supabase project
- * (ref eubyvglzkbzfeznocilg, migrations 0001–0006).
+ * (ref eubyvglzkbzfeznocilg, migrations 0001–0008).
  * Regenerate after schema changes: pnpm --filter @nexlex/db gen:types
  */
 export type Json =

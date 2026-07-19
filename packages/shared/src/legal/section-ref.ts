@@ -18,6 +18,23 @@ export const ACT_ABBREVIATIONS = [
 ] as const;
 export type ActAbbreviation = (typeof ACT_ABBREVIATIONS)[number];
 
+/**
+ * Canonical abbreviation → URL slug (must match acts.slug in the DB). Mostly
+ * the lowercased abbreviation, but NOT always — the Constitution's slug is
+ * "constitution", not "coi". Never derive a section URL from an abbreviation
+ * with toLowerCase(); use this map. When a new act is ingested, add it here.
+ */
+export const ACT_SLUG: Record<ActAbbreviation, string> = {
+  IPC: "ipc",
+  BNS: "bns",
+  CRPC: "crpc",
+  BNSS: "bnss",
+  IEA: "iea",
+  BSA: "bsa",
+  COI: "constitution",
+  ICA: "ica",
+};
+
 /** Alias → canonical abbreviation. Keys must be lowercase, punctuation-free. */
 const ACT_ALIASES: Record<string, ActAbbreviation> = {
   ipc: "IPC",
