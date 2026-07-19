@@ -5,10 +5,19 @@
  * — so the note lives between the number and the em-dash, not in a margin.
  *
  * Consumes `pdftotext -bbox` XHTML (word coordinates + height). Design facts
- * verified on the India Code IPC/IEA PDFs:
- * - Amendment FOOTNOTES ("1. Subs. by Act 4 of 1898…") and superscript
- *   reference markers are set in SMALLER type (~8pt vs ~10pt body) at page
- *   bottoms; dropping sub-body-height words removes both cleanly.
+ * verified on the India Code IPC/ICA/CrPC PDFs:
+ * - Amendment FOOTNOTES ("1. Subs. by Act 4 of 1898…") sit at page bottoms in
+ *   ~8.2pt type; superscript reference markers are ~6.3pt; body is ~10pt.
+ * - ILLUSTRATIONS are set in the SAME ~8.1–8.2pt type as footnotes, but
+ *   inline: they follow an "Illustration(s)" heading line and end at the next
+ *   body-height line. Height alone cannot separate the two — position and
+ *   shape can. Small text is therefore kept only inside an illustration block
+ *   (heading seen, no body line yet), and a page-scoped latch drops
+ *   footnote-shaped small lines ("1. Subs. by Act …") plus everything small
+ *   after them on that page. Blocks span page breaks (IPC §108, ICA §74,
+ *   CrPC §300 wrap pages), so the mode survives page boundaries; bare
+ *   page-number lines are neutral. IEA sets illustrations at body height and
+ *   is unaffected either way.
  * - The table of contents ("ARRANGEMENT OF SECTIONS") repeats every section
  *   number; real text begins after the "…enacted as follows" formula.
  * - Section numbers still increase monotonically, so the strictly-increasing
@@ -28,10 +37,33 @@ interface Word {
 
 const WORD_TAG =
   /<word xMin="([\d.]+)" yMin="([\d.]+)" xMax="([\d.]+)" yMax="([\d.]+)">([^<]*)<\/word>/g;
-/** Body type is 9–10pt; footnotes/superscript markers ~8.2pt. Threshold sits
- * between so borderline body pages (≈9.0pt) survive while footnotes drop. */
+/** Body type is 9–10pt; footnotes/illustrations ~8.2pt. Threshold sits
+ * between so borderline body pages (≈9.0pt) survive while small type routes
+ * through the illustration/footnote logic below. */
 const MIN_BODY_HEIGHT = 8.6;
+/** Superscript reference markers are ~6.3pt — below every real text tier.
+ * Words under this height are dropped unconditionally. */
+const MIN_WORD_HEIGHT = 7;
 const LINE_Y_TOLERANCE = 4;
+/** Footnote first lines: "1. Subs. by Act 22 of 2018, s. 7, …". Verified
+ * against all 182 footnote blocks in the IPC/ICA/CrPC PDFs, including the 11
+ * that directly follow an illustration block with no body line between. */
+const FOOTNOTE_START =
+  /^\d{1,2}\s*\.\s+.*(Subs\.|Ins\.|[Oo]mitted|Rep\.|[Aa]dded|by Act|by s\.|by A\.?\s?O\.|w\.e\.f\.|Vide |Cl\.|Sch\.)/;
+/** "Illustrations" / "Illustration" as the whole line, tolerating the PDF's
+ * glyph confusions ("IIIustrations") and one stray ≤2-char artifact token
+ * ("Illustrations z"). Normalizes a leading l/1 run to i before matching. */
+const ILLUSTRATION_WORD = /^i+l*ustrations?$/;
+function isIllustrationHeading(text: string): boolean {
+  const tokens = text.split(" ");
+  if (tokens.length === 0 || tokens.length > 2) return false;
+  const head = (tokens[0] ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "")
+    .replace(/^[l1]+/, (m) => "i".repeat(m.length));
+  if (!ILLUSTRATION_WORD.test(head)) return false;
+  return tokens.length === 1 || (tokens[1] ?? "").replace(/[^A-Za-z0-9]/g, "").length <= 2;
+}
 // "It is enacted as follows:—" (IPC) / "BE it enacted by Parliament in the
 // twenty-fourth Year…" (CrPC) / "…ADOPT, ENACT AND GIVE TO OURSELVES THIS
 // CONSTITUTION" (COI preamble). A SECOND occurrence mid-document marks an
@@ -92,13 +124,28 @@ function groupIntoLines(words: Word[]): Word[][] {
   return lines;
 }
 
-export function parseInlineAct(xhtml: string): GazetteParseResult {
+export interface InlineParseOptions {
+  /** Keep small-font illustration text (the default). `false` replicates the
+   * legacy behavior that dropped illustrations along with footnotes — used by
+   * the regression parity check when re-ingesting an already-published act. */
+  keepIllustrations?: boolean;
+}
+
+export function parseInlineAct(
+  xhtml: string,
+  options: InlineParseOptions = {},
+): GazetteParseResult {
+  const keepIllustrations = options.keepIllustrations ?? true;
   const diagnostics: string[] = [];
   const sections: ParsedSection[] = [];
   const chapters: ParsedChapter[] = [];
 
   let started = false;
   let ended = false;
+  /** Inside an illustration block: heading seen, no body-height line since.
+   * Survives page breaks — blocks wrap pages (IPC §108, CrPC §300). */
+  let illustrationMode = false;
+  let illustrationLines = 0;
   let currentChapter: string | undefined;
   let pendingChapterNumber: string | null = null;
   let pendingChapterTitle: string[] = [];
@@ -143,17 +190,51 @@ export function parseInlineAct(xhtml: string): GazetteParseResult {
 
   for (const pageXml of xhtml.split(/<page /).slice(1)) {
     if (ended) break;
+    /** Footnotes claim the rest of the page's small text once they start. */
+    let footnotesStarted = false;
     const words: Word[] = [];
     for (const m of pageXml.matchAll(WORD_TAG)) {
       const yMin = Number(m[2]);
       const yMax = Number(m[4]);
-      if (yMax - yMin < MIN_BODY_HEIGHT) continue; // drop footnotes + superscripts
+      if (yMax - yMin < MIN_WORD_HEIGHT) continue; // drop superscript markers
       words.push({ xMin: Number(m[1]), yMin, baseline: yMax, height: yMax - yMin, text: decodeEntities(m[5] ?? "") });
     }
 
     for (const line of groupIntoLines(words)) {
-      const flat = line.map((w) => w.text).join(" ").replace(/\s+/g, " ").trim();
-      if (!flat) continue;
+      // Legacy view: body-height words only — everything below routes through
+      // the illustration/footnote branch and NEVER reaches the pipeline.
+      const flat = line
+        .filter((w) => w.height >= MIN_BODY_HEIGHT)
+        .map((w) => w.text)
+        .join(" ")
+        .replace(/\s+/g, " ")
+        .trim();
+      const isSmallLine = !flat;
+      if (isSmallLine) {
+        const full = line.map((w) => w.text).join(" ").replace(/\s+/g, " ").trim();
+        if (!full || !started) continue;
+        // A small-type "Illustrations" heading opens a block too (ICA prints
+        // one at 7.2pt); body-height headings are handled below.
+        if (isIllustrationHeading(full)) {
+          illustrationMode = true;
+          if (keepIllustrations && currentNumber !== null) rawParts.push(full);
+          continue;
+        }
+        if (footnotesStarted) continue;
+        if (FOOTNOTE_START.test(full)) {
+          footnotesStarted = true; // block mode survives for the next page
+          continue;
+        }
+        // Letterless small lines are markers, never prose: superscript
+        // footnote references rendered ≥7pt (ICA §74's "1" above the
+        // amendment bracket, 7.2pt), stray bracket digits, asterisk rows.
+        if (!/[A-Za-z]/.test(full)) continue;
+        if (illustrationMode && keepIllustrations && currentNumber !== null) {
+          rawParts.push(full);
+          illustrationLines++;
+        }
+        continue;
+      }
       if (!started) {
         if (ENACTED.test(flat)) started = true;
         continue;
@@ -173,6 +254,11 @@ export function parseInlineAct(xhtml: string): GazetteParseResult {
         break;
       }
       if (FURNITURE.some((re) => re.test(flat))) continue;
+
+      // Any body-height content line closes an illustration block; the
+      // heading (re)opens one. Furniture above stays neutral so a block can
+      // continue past a page-number line onto the next page.
+      illustrationMode = isIllustrationHeading(flat);
 
       const chapterMatch = CHAPTER_HEADING.exec(flat);
       if (chapterMatch) {
@@ -219,5 +305,8 @@ export function parseInlineAct(xhtml: string): GazetteParseResult {
 
   flush();
   flushChapter();
+  if (keepIllustrations && illustrationLines > 0) {
+    diagnostics.push(`kept ${illustrationLines} illustration line(s)`);
+  }
   return { sections, chapters, diagnostics };
 }
