@@ -4,10 +4,10 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Pressable, Share, StyleSheet, View } from "react-native";
 
+import { AiExplain } from "@/components/acts/ai-explain";
 import { BookmarkButton } from "@/components/acts/bookmark-button";
 import { MappingCard } from "@/components/acts/mapping-card";
 import { SectionNav } from "@/components/acts/section-nav";
-import { FakeDoor } from "@/components/fake-door";
 import { AppText } from "@/components/ui/app-text";
 import { MarkdownLite } from "@/components/ui/markdown-lite";
 import { Screen } from "@/components/ui/screen";
@@ -193,11 +193,10 @@ export default function SectionReaderScreen() {
 
           <SectionNav slug={section.acts.slug} prev={adjacent.prev} next={adjacent.next} />
 
-          <FakeDoor
-            feature="ai_explain"
-            icon="sparkles-outline"
-            title="Explain this section with AI"
-            description="Plain-language breakdown, grounded in this section's own text"
+          <AiExplain
+            slug={section.acts.slug}
+            number={section.number}
+            act={section.acts.abbreviation}
           />
         </View>
       ) : null}
