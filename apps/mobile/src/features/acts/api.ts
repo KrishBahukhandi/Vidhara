@@ -12,6 +12,7 @@ import {
 } from "@nexlex/shared";
 import type { Tables } from "@nexlex/db";
 
+import { env } from "@/lib/env";
 import { supabase } from "@/lib/supabase";
 
 export type Act = Tables<"acts">;
@@ -237,4 +238,31 @@ export async function searchLibrary(query: string): Promise<Result<LibrarySearch
   const { data, error } = await supabase.rpc("search_sections", { q: trimmed });
   if (error) return err(ERROR_CODES.INTERNAL, LOAD_ERROR);
   return ok({ kind: "results", results: data });
+}
+
+/**
+ * "Explain this section" — the explain-section Edge Function grounds the model
+ * strictly in this section's own official text (fetched server-side; the client
+ * can't inject text). err() messages are user-facing: the function returns a
+ * friendly line for "being set up" (no key yet) and the daily cap. Uses fetch
+ * rather than functions.invoke so those non-2xx bodies reach the UI intact.
+ */
+export async function explainSection(slug: string, number: string): Promise<Result<string>> {
+  try {
+    const res = await fetch(`${env.supabaseUrl}/functions/v1/explain-section`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", apikey: env.supabaseAnonKey },
+      body: JSON.stringify({ slug, number }),
+    });
+    const data = (await res.json().catch(() => ({}))) as { explanation?: string; error?: string };
+    if (!res.ok || !data.explanation) {
+      return err(
+        ERROR_CODES.INTERNAL,
+        data.error ?? "Couldn't generate an explanation. Please try again.",
+      );
+    }
+    return ok(data.explanation);
+  } catch {
+    return err(ERROR_CODES.INTERNAL, "Couldn't reach the explainer. Check your connection and retry.");
+  }
 }

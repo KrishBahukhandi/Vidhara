@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { AiExplain } from "@/components/ai-explain";
 import { BookmarkButton } from "@/components/bookmark-button";
-import { FakeDoor } from "@/components/fake-door";
 import { FeedbackWidget } from "@/components/feedback-widget";
 import { MarkdownLite } from "@/components/markdown-lite";
 import { MappingPanel } from "@/components/mapping-panel";
@@ -164,13 +164,7 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
 
       <SectionNav slug={slug} prev={adjacent.prev} next={adjacent.next} />
 
-      <div className="mt-8">
-        <FakeDoor
-          feature="ai_explain"
-          title="Explain this section with AI"
-          description="Plain-language breakdown, grounded in this section's own text"
-        />
-      </div>
+      <AiExplain slug={slug} number={section.number} act={section.acts.abbreviation} />
 
       <SectionShare
         act={section.acts.abbreviation}
