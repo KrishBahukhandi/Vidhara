@@ -9,9 +9,10 @@
 // FREE AT SCALE via a cache: a section's text never changes, so it's explained
 // once (first viewer) and served from ai_explanations to everyone after. A
 // global per-day cap (ai_usage) protects the free-tier quota from runaway
-// generation. Provider (Gemini) is isolated in callLLM() for a one-function
-// swap (ADR-5). GEMINI_API_KEY is a Supabase secret — never in git/clients;
-// until it's set the function returns 503 and the UI shows "being set up".
+// generation. Provider (Groq, OpenAI-compatible chat API) is isolated in
+// callLLM() for a one-function swap (ADR-5). GROQ_API_KEY is a Supabase secret
+// — never in git/clients; until it's set the function returns 503 ("being set
+// up") and the UI shows that message.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const CORS = {
@@ -20,8 +21,8 @@ const CORS = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const GEMINI_KEY = Deno.env.get("GEMINI_API_KEY");
-const MODEL = Deno.env.get("GEMINI_MODEL") ?? "gemini-2.0-flash";
+const GROQ_KEY = Deno.env.get("GROQ_API_KEY");
+const MODEL = Deno.env.get("GROQ_MODEL") ?? "llama-3.3-70b-versatile";
 /** Global per-day generation cap — protects the free quota. Cache hits are free. */
 const DAILY_CAP = Number(Deno.env.get("AI_DAILY_CAP") ?? "800");
 
@@ -63,15 +64,21 @@ class ProviderError extends Error {
 }
 
 async function callLLM(user: string): Promise<string> {
-  const url =
-    `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_KEY}`;
-  const res = await fetch(url, {
+  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${GROQ_KEY}`,
+    },
     body: JSON.stringify({
-      systemInstruction: { parts: [{ text: SYSTEM }] },
-      contents: [{ role: "user", parts: [{ text: user }] }],
-      generationConfig: { temperature: 0.2, maxOutputTokens: 700, topP: 0.9 },
+      model: MODEL,
+      messages: [
+        { role: "system", content: SYSTEM },
+        { role: "user", content: user },
+      ],
+      temperature: 0.2,
+      max_tokens: 700,
+      top_p: 0.9,
     }),
   });
   if (!res.ok) {
@@ -87,9 +94,9 @@ async function callLLM(user: string): Promise<string> {
     throw new ProviderError("Couldn’t generate an explanation right now. Please try again.", 502);
   }
   const data = await res.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  const text = data?.choices?.[0]?.message?.content;
   if (!text || typeof text !== "string") {
-    const reason = data?.candidates?.[0]?.finishReason ?? "empty";
+    const reason = data?.choices?.[0]?.finish_reason ?? "empty";
     console.error(`LLM returned no text (${reason})`);
     throw new ProviderError("Couldn’t generate an explanation right now. Please try again.", 502);
   }
@@ -137,7 +144,7 @@ Deno.serve(async (req: Request) => {
     if (cached?.explanation) return json({ explanation: cached.explanation, cached: true });
 
     // Not cached → needs a generation.
-    if (!GEMINI_KEY) return json({ error: "AI explanations are being set up." }, 503);
+    if (!GROQ_KEY) return json({ error: "AI explanations are being set up." }, 503);
 
     const today = new Date().toISOString().slice(0, 10);
     const { data: usage } = await db.from("ai_usage").select("count").eq("day", today).maybeSingle();
