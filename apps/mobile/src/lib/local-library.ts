@@ -110,3 +110,86 @@ export function useBookmarks(): {
 
   return { bookmarks: items, loading, isBookmarked, toggle };
 }
+
+// —— Daily MCQ streak (local-first; mobile twin of apps/web) ——
+const MCQ_KEY = "vidhara_mcq";
+
+interface McqState {
+  streak: number;
+  lastDate: string | null; // IST date (YYYY-MM-DD) of the last answered day
+  choice: number | null;
+  correct: boolean | null;
+}
+const EMPTY_MCQ: McqState = { streak: 0, lastDate: null, choice: null, correct: null };
+
+/** IST calendar date, matching the daily-mcq function's day boundary. */
+export function istToday(): string {
+  return new Date(Date.now() + 5.5 * 3600 * 1000).toISOString().slice(0, 10);
+}
+const mcqDayNum = (d: string) => Math.floor(Date.parse(`${d}T00:00:00Z`) / 86_400_000);
+
+async function readMcq(): Promise<McqState> {
+  try {
+    const raw = await AsyncStorage.getItem(MCQ_KEY);
+    const p = raw ? (JSON.parse(raw) as McqState) : null;
+    if (p && typeof p.streak === "number") return p;
+  } catch {
+    /* corrupt/disabled storage */
+  }
+  return EMPTY_MCQ;
+}
+
+/**
+ * Daily-MCQ local state: running streak + today's answer (so re-opening shows
+ * the result — one question per day). `today` is the IST date; pass null until
+ * known.
+ */
+export function useDailyMcq(today: string | null): {
+  streak: number;
+  answeredToday: boolean;
+  todayChoice: number | null;
+  todayCorrect: boolean | null;
+  submit: (choice: number, correct: boolean) => Promise<void>;
+} {
+  const [state, setState] = useState<McqState>(EMPTY_MCQ);
+  useEffect(() => {
+    let alive = true;
+    const refresh = () => readMcq().then((v) => alive && setState(v));
+    refresh();
+    listeners.add(refresh);
+    return () => {
+      alive = false;
+      listeners.delete(refresh);
+    };
+  }, []);
+
+  const answeredToday = today != null && state.lastDate === today;
+  const gap = today && state.lastDate ? mcqDayNum(today) - mcqDayNum(state.lastDate) : Infinity;
+  const liveStreak = gap <= 1 ? state.streak : 0;
+
+  const submit = useCallback(
+    async (choice: number, correct: boolean) => {
+      if (!today) return;
+      const prev = await readMcq();
+      if (prev.lastDate === today) return; // already answered today
+      const prevGap = prev.lastDate ? mcqDayNum(today) - mcqDayNum(prev.lastDate) : Infinity;
+      const streak = prevGap === 1 ? prev.streak + 1 : 1;
+      const next: McqState = { streak, lastDate: today, choice, correct };
+      try {
+        await AsyncStorage.setItem(MCQ_KEY, JSON.stringify(next));
+        emit();
+      } catch {
+        /* storage disabled → streak just won't persist */
+      }
+    },
+    [today],
+  );
+
+  return {
+    streak: liveStreak,
+    answeredToday,
+    todayChoice: answeredToday ? state.choice : null,
+    todayCorrect: answeredToday ? state.correct : null,
+    submit,
+  };
+}

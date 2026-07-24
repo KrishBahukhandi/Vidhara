@@ -240,6 +240,40 @@ export async function searchLibrary(query: string): Promise<Result<LibrarySearch
   return ok({ kind: "results", results: data });
 }
 
+export interface DailyMcq {
+  date: string;
+  prompt: string;
+  oldRef: string;
+  oldNote: string;
+  options: string[];
+  answerIndex: number;
+  answer: string;
+  explanation: string;
+  sourceSlug: string;
+  sourceNumber: string;
+  mappingType: string;
+}
+
+/**
+ * Today's Daily MCQ — built server-side from the authoritative old↔new mapping
+ * (daily-mcq function), deterministic per IST day so everyone gets the same one.
+ */
+export async function getDailyMcq(): Promise<Result<DailyMcq>> {
+  try {
+    const res = await fetch(`${env.supabaseUrl}/functions/v1/daily-mcq`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", apikey: env.supabaseAnonKey },
+    });
+    const data = (await res.json().catch(() => ({}))) as Partial<DailyMcq>;
+    if (!res.ok || !data.options) {
+      return err(ERROR_CODES.INTERNAL, "Couldn't load today's question. Please try again.");
+    }
+    return ok(data as DailyMcq);
+  } catch {
+    return err(ERROR_CODES.INTERNAL, "Couldn't reach the quiz. Check your connection and retry.");
+  }
+}
+
 /**
  * "Explain this section" — the explain-section Edge Function grounds the model
  * strictly in this section's own official text (fetched server-side; the client

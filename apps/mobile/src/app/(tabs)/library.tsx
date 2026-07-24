@@ -2,7 +2,7 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 
-import { FakeDoor } from "@/components/fake-door";
+import { DailyMcqCard } from "@/components/acts/daily-mcq-card";
 import { SectionMiniCard } from "@/components/acts/section-mini-card";
 import { AppText } from "@/components/ui/app-text";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -105,12 +105,7 @@ function LibraryHeader() {
           </View>
         </View>
       ) : null}
-      <FakeDoor
-        feature="daily_mcq"
-        icon="help-circle-outline"
-        title="Daily MCQ"
-        description="One exam-style question a day, from the bare acts"
-      />
+      <DailyMcqCard />
       <AppText variant="h3">All acts</AppText>
     </View>
   );

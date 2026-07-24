@@ -77,6 +77,81 @@ export function useRecents(): LibraryItem[] {
   return useLibrary(RECENTS_KEY);
 }
 
+// —— Daily MCQ streak (local-first, same posture as recents/bookmarks) ——
+const MCQ_KEY = "vidhara_mcq";
+
+interface McqState {
+  streak: number;
+  /** IST date string (YYYY-MM-DD) of the last answered day. */
+  lastDate: string | null;
+  choice: number | null;
+  correct: boolean | null;
+}
+
+const EMPTY_MCQ: McqState = { streak: 0, lastDate: null, choice: null, correct: null };
+
+function readMcq(): McqState {
+  if (typeof window === "undefined") return EMPTY_MCQ;
+  try {
+    const raw = window.localStorage.getItem(MCQ_KEY);
+    const p = raw ? (JSON.parse(raw) as McqState) : null;
+    if (p && typeof p.streak === "number") return p;
+  } catch {
+    /* corrupt/disabled storage → empty */
+  }
+  return EMPTY_MCQ;
+}
+
+const dayNum = (dateStr: string) => Math.floor(Date.parse(`${dateStr}T00:00:00Z`) / 86_400_000);
+
+/**
+ * Daily-MCQ local state: the running streak plus today's answer (so re-opening
+ * the page shows the result, not a fresh question — it's one per day). `today`
+ * is the IST date string from the daily-mcq function; pass null until loaded.
+ */
+export function useDailyMcq(today: string | null): {
+  streak: number;
+  answeredToday: boolean;
+  todayChoice: number | null;
+  todayCorrect: boolean | null;
+  submit: (choice: number, correct: boolean) => void;
+} {
+  const [state, setState] = useState<McqState>(EMPTY_MCQ);
+  useEffect(() => setState(readMcq()), []);
+
+  const answeredToday = today != null && state.lastDate === today;
+  // A streak is only "live" if the last answer was today or yesterday.
+  const gap = today && state.lastDate ? dayNum(today) - dayNum(state.lastDate) : Infinity;
+  const liveStreak = gap <= 1 ? state.streak : 0;
+
+  const submit = useCallback(
+    (choice: number, correct: boolean) => {
+      if (!today) return;
+      setState((prev) => {
+        if (prev.lastDate === today) return prev; // already answered today
+        const prevGap = prev.lastDate ? dayNum(today) - dayNum(prev.lastDate) : Infinity;
+        const streak = prevGap === 1 ? prev.streak + 1 : 1;
+        const next: McqState = { streak, lastDate: today, choice, correct };
+        try {
+          window.localStorage.setItem(MCQ_KEY, JSON.stringify(next));
+        } catch {
+          /* storage disabled → streak just won't persist */
+        }
+        return next;
+      });
+    },
+    [today],
+  );
+
+  return {
+    streak: liveStreak,
+    answeredToday,
+    todayChoice: answeredToday ? state.choice : null,
+    todayCorrect: answeredToday ? state.correct : null,
+    submit,
+  };
+}
+
 export function useBookmarks(): {
   bookmarks: LibraryItem[];
   isBookmarked: (slug: string, number: string) => boolean;
