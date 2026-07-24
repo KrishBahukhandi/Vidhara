@@ -11,8 +11,8 @@
  *
  * Usage (from repo root):
  *   SUPABASE_URL=… SUPABASE_ANON_KEY=… pnpm --filter @nexlex/ingest ai-eval
- * The GEMINI_API_KEY must already be set on the Edge Function or every call
- * returns the "being set up" 503 (which this script reports as SKIPPED).
+ * The provider key (GROQ_API_KEY) must already be set on the Edge Function or
+ * every call returns the "being set up" 503 (reported here as SKIPPED).
  */
 import { createClient } from "@supabase/supabase-js";
 
@@ -124,7 +124,7 @@ async function main() {
 
     if (r.status === 503) {
       skipped++;
-      console.log("  SKIPPED — explainer not configured yet (GEMINI_API_KEY unset).");
+      console.log("  SKIPPED — explainer not configured yet (GROQ_API_KEY unset).");
       continue;
     }
     if (r.status !== 200 || !r.explanation) {
@@ -148,7 +148,7 @@ async function main() {
     `\nDone: ${ok} explained, ${flagged} with red-flag hints, ${failed} failed, ${skipped} skipped.`,
   );
   if (skipped === rows.length) {
-    console.log("All skipped → set GEMINI_API_KEY on the Edge Function, then re-run.");
+    console.log("All skipped → set GROQ_API_KEY on the Edge Function, then re-run.");
   }
   process.exit(failed > 0 ? 1 : 0);
 }
