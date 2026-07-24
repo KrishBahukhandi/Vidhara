@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Field } from "@/components/ui/field";
 import { Screen } from "@/components/ui/screen";
 import {
+  askSections,
   listActs,
   searchLibrary,
   type Act,
@@ -116,6 +117,7 @@ export default function LibraryScreen() {
   const [acts, setActs] = useState<Act[] | null>(null);
   const [query, setQuery] = useState("");
   const [hits, setHits] = useState<SearchHit[] | null>(null);
+  const [interpretedAs, setInterpretedAs] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -128,6 +130,7 @@ export default function LibraryScreen() {
   const onSearch = async () => {
     if (!query.trim()) {
       setHits(null);
+      setInterpretedAs(null);
       return;
     }
     setError(null);
@@ -138,10 +141,24 @@ export default function LibraryScreen() {
     }
     if (result.data.kind === "section") {
       setHits(null);
+      setInterpretedAs(null);
       router.push(`/acts/${result.data.actSlug}/${encodeURIComponent(result.data.number)}`);
       return;
     }
-    setHits(result.data.results);
+    // Plain search found nothing → the grounded AI librarian interprets the
+    // question and re-searches the real corpus (results are always real).
+    let finalHits = result.data.results;
+    let phrase: string | null = null;
+    if (finalHits.length === 0) {
+      const ai = await askSections(query);
+      if (ai.ok && ai.data.results.length > 0) {
+        finalHits = ai.data.results;
+        phrase = ai.data.interpretedAs?.[0] ?? null;
+      }
+      track("ask_ai_assisted", { found: finalHits.length });
+    }
+    setInterpretedAs(phrase);
+    setHits(finalHits);
   };
 
   const showingSearch = hits !== null;
@@ -150,12 +167,15 @@ export default function LibraryScreen() {
     <Screen scroll={false}>
       <AppText variant="h1">Library</AppText>
       <Field
-        label="Search"
-        placeholder='Try "302 IPC", "BNS 103" or "murder punishment"'
+        label="Ask or search"
+        placeholder='Ask or search — "anticipatory bail", "302 IPC"…'
         value={query}
         onChangeText={(text) => {
           setQuery(text);
-          if (!text.trim()) setHits(null);
+          if (!text.trim()) {
+            setHits(null);
+            setInterpretedAs(null);
+          }
         }}
         onSubmitEditing={onSearch}
         returnKeyType="search"
@@ -175,6 +195,13 @@ export default function LibraryScreen() {
             data={hits}
             keyExtractor={(hit) => hit.section_id}
             contentContainerStyle={styles.list}
+            ListHeaderComponent={
+              interpretedAs ? (
+                <AppText variant="small" tone="muted" style={styles.interpretedNote}>
+                  No exact match — showing the closest law to read (read as “{interpretedAs}”).
+                </AppText>
+              ) : null
+            }
             renderItem={({ item }) => (
               <HitRow
                 hit={item}
@@ -210,6 +237,7 @@ export default function LibraryScreen() {
 
 const styles = StyleSheet.create({
   list: { gap: sp(2), paddingBottom: sp(6) },
+  interpretedNote: { paddingBottom: sp(2) },
   header: { gap: sp(3), paddingBottom: sp(1) },
   headerBlock: { gap: sp(2) },
   recents: { gap: sp(2) },

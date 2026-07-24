@@ -7,7 +7,7 @@ import { ACT_SLUG, parseSectionRef } from "@nexlex/shared";
 import { track } from "@/lib/analytics";
 
 /** Act abbreviation → act slug (slugs are the lowercased abbreviations). */
-const EXAMPLES = ["420 IPC", "154 CrPC", "65B Evidence Act", "BNS 103"] as const;
+const EXAMPLES = ["420 IPC", "BNS 103", "anticipatory bail", "punishment for cheating"] as const;
 
 /**
  * The wedge, front and center: type any old/new section reference and land on
@@ -57,7 +57,7 @@ export function LandingLookup() {
           type="text"
           inputMode="text"
           autoComplete="off"
-          placeholder="Type any section — “420 IPC”, “BNS 103”, “u/s 154 CrPC”…"
+          placeholder="Type a section or ask — “420 IPC”, “anticipatory bail”…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="h-12 flex-1 rounded-md border border-border bg-surface px-4 text-body text-text placeholder:text-text-faint focus:border-brand focus:outline-none"

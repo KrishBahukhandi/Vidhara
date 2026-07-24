@@ -40,7 +40,7 @@ export function SearchBox({ initialQuery = "", autoFocus = false }: { initialQue
         inputMode="search"
         autoComplete="off"
         autoFocus={autoFocus}
-        placeholder='Search — "cheating", "dowry death", "65B IEA"…'
+        placeholder='Ask or search — "anticipatory bail", "420 IPC", "cheating"…'
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         className="h-11 flex-1 rounded-md border border-border bg-surface px-4 text-body text-text placeholder:text-text-faint focus:border-brand focus:outline-none"

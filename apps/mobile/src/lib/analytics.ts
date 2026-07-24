@@ -19,6 +19,7 @@ export type EventName =
   | "ai_explain_requested"
   | "daily_mcq_viewed"
   | "daily_mcq_answered"
+  | "ask_ai_assisted"
   | "bookmark_added"
   | "bookmark_removed"
   | "recents_resumed"

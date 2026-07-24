@@ -148,6 +148,43 @@ export async function searchSections(q: string): Promise<SearchHit[]> {
   return data;
 }
 
+export interface AskResult {
+  results: SearchHit[];
+  /** Statutory phrases the AI mapped the question to (null if AI didn't run). */
+  interpretedAs: string[] | null;
+  ai: boolean;
+}
+
+/**
+ * Grounded AI-assisted retrieval (the `ask` Edge Function): a natural-language
+ * question → real sections. The model only rewrites the query into statutory
+ * wording; every result is an actual section (decision D-004). Used as a
+ * fallback when plain FTS finds nothing.
+ */
+export async function askSections(q: string): Promise<AskResult> {
+  const empty: AskResult = { results: [], interpretedAs: null, ai: false };
+  if (!isContentConfigured || !q.trim()) return empty;
+  try {
+    const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const res = await fetch(`${base}/functions/v1/ask`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", apikey: key ?? "" },
+      body: JSON.stringify({ query: q.trim() }),
+      cache: "no-store",
+    });
+    if (!res.ok) return empty;
+    const data = (await res.json()) as Partial<AskResult>;
+    return {
+      results: data.results ?? [],
+      interpretedAs: data.interpretedAs ?? null,
+      ai: Boolean(data.ai),
+    };
+  } catch {
+    return empty;
+  }
+}
+
 export async function getMappingsForSection(sectionId: string): Promise<MappingRow[]> {
   if (!isContentConfigured) return [];
   const { data, error } = await getServerClient()

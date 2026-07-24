@@ -240,6 +240,35 @@ export async function searchLibrary(query: string): Promise<Result<LibrarySearch
   return ok({ kind: "results", results: data });
 }
 
+export interface AskOutcome {
+  results: SearchHit[];
+  /** Statutory phrases the AI mapped the question to (null if AI didn't run). */
+  interpretedAs: string[] | null;
+}
+
+/**
+ * Grounded AI-assisted retrieval (ask function): a plain-language question →
+ * real sections. The model only rewrites the query into statutory wording; every
+ * result is an actual section (decision D-004). Used when plain search finds none.
+ */
+export async function askSections(query: string): Promise<Result<AskOutcome>> {
+  try {
+    const res = await fetch(`${env.supabaseUrl}/functions/v1/ask`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", apikey: env.supabaseAnonKey },
+      body: JSON.stringify({ query }),
+    });
+    const data = (await res.json().catch(() => ({}))) as {
+      results?: SearchHit[];
+      interpretedAs?: string[] | null;
+    };
+    if (!res.ok) return err(ERROR_CODES.INTERNAL, "Couldn't search right now. Please try again.");
+    return ok({ results: data.results ?? [], interpretedAs: data.interpretedAs ?? null });
+  } catch {
+    return err(ERROR_CODES.INTERNAL, "Couldn't reach search. Check your connection and retry.");
+  }
+}
+
 export interface DailyMcq {
   date: string;
   prompt: string;
