@@ -10,10 +10,14 @@ interface ScreenProps {
   scroll?: boolean;
   /** Extra bottom inset for screens without the tab bar (auth flow). */
   padBottom?: boolean;
+  /** Floating layer pinned over the content (e.g. a FAB) — stays put while the
+   * content scrolls. `box-none` lets touches pass through everywhere except the
+   * overlay's own children. */
+  overlay?: ReactNode;
 }
 
 /** Base screen wrapper: themed background, safe areas, keyboard avoidance. */
-export function Screen({ children, scroll = true, padBottom = false }: ScreenProps) {
+export function Screen({ children, scroll = true, padBottom = false, overlay }: ScreenProps) {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
 
@@ -40,6 +44,11 @@ export function Screen({ children, scroll = true, padBottom = false }: ScreenPro
       ) : (
         inner
       )}
+      {overlay ? (
+        <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
+          {overlay}
+        </View>
+      ) : null}
     </KeyboardAvoidingView>
   );
 }

@@ -146,8 +146,6 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
           </p>
         ) : null}
 
-        <AiExplain slug={slug} number={section.number} act={section.acts.abbreviation} />
-
         <div className="mt-6">
           <MarkdownLite>{section.body_md}</MarkdownLite>
         </div>
@@ -193,6 +191,8 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
       />
 
       <FeedbackWidget />
+
+      <AiExplain slug={slug} number={section.number} act={section.acts.abbreviation} />
     </PageShell>
   );
 }

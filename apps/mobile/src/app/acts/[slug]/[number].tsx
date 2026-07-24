@@ -104,7 +104,17 @@ export default function SectionReaderScreen() {
   };
 
   return (
-    <Screen padBottom>
+    <Screen
+      padBottom
+      overlay={
+        section ? (
+          <AiExplain
+            slug={section.acts.slug}
+            number={section.number}
+            act={section.acts.abbreviation}
+          />
+        ) : null
+      }>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Go back"
@@ -173,12 +183,6 @@ export default function SectionReaderScreen() {
               </AppText>
             </View>
           ) : null}
-
-          <AiExplain
-            slug={section.acts.slug}
-            number={section.number}
-            act={section.acts.abbreviation}
-          />
 
           <View style={styles.reading}>
             <MarkdownLite>{section.body_md}</MarkdownLite>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { track } from "@/lib/analytics";
 
@@ -37,13 +37,15 @@ function ExplanationText({ text }: { text: string }) {
 }
 
 /**
- * "Explain this section" — calls the explain-section Edge Function (grounded
- * strictly in this section's own text, server-side). The statute text stays
- * visible above; the explanation carries a verify-it disclaimer (decision
- * D-004). Uses fetch so 503 ("being set up") / 429 (daily cap) surface with
- * their friendly messages.
+ * "Explain this section" — a floating pill (always visible, pinned above the
+ * Feedback pill) that opens the plain-language explanation in a dismissible
+ * modal. Grounding is server-side (decision D-004): the client sends only
+ * {slug, number}; the model sees only this section's own official text, which
+ * stays on the page behind the modal for verification. Fetches on first open,
+ * then keeps the result for re-opens.
  */
 export function AiExplain({ slug, number, act }: { slug: string; number: string; act: string }) {
+  const [open, setOpen] = useState(false);
   const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [text, setText] = useState("");
   const [message, setMessage] = useState("");
@@ -74,35 +76,90 @@ export function AiExplain({ slug, number, act }: { slug: string; number: string;
     }
   };
 
-  if (state === "done") {
-    return (
-      <section className="mt-8 rounded-md border border-border bg-surface p-5" aria-label="AI explanation">
-        <div className="flex items-center gap-2">
-          <span aria-hidden>✨</span>
-          <h2 className="text-h3 font-semibold text-text">In plain language</h2>
-        </div>
-        <div className="mt-3">
-          <ExplanationText text={text} />
-        </div>
-        <p className="mt-4 border-t border-border pt-3 text-micro text-text-faint">
-          AI-generated study aid, grounded only in this section’s official text below — always
-          verify against it. Not legal advice.
-        </p>
-      </section>
-    );
-  }
+  const onOpen = () => {
+    setOpen(true);
+    if (state === "idle" || state === "error") explain();
+  };
+
+  // Escape closes the modal.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
   return (
-    <div className="mt-8">
+    <>
       <button
         type="button"
-        onClick={explain}
-        disabled={state === "loading"}
-        className="lift inline-flex h-11 items-center gap-2 rounded-md border border-brand bg-surface px-5 font-medium text-brand transition-colors hover:bg-bg disabled:opacity-70">
-        <span aria-hidden>✨</span>
-        {state === "loading" ? "Explaining…" : "Explain this section in plain language"}
+        onClick={onOpen}
+        aria-label="Explain this section in plain language"
+        className="lift fixed bottom-20 right-4 z-40 inline-flex h-11 items-center gap-2 rounded-full bg-brand pl-4 pr-5 text-small font-medium text-on-brand shadow-lg hover:opacity-95 sm:bottom-24 sm:right-6"
+        style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
+        <span aria-hidden className="text-body leading-none">
+          ✨
+        </span>
+        Explain
       </button>
-      {state === "error" ? <p className="mt-2 text-small text-text-muted">{message}</p> : null}
-    </div>
+
+      {open ? (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="AI explanation of this section">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setOpen(false)} aria-hidden />
+          <div className="relative flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-t-2xl border border-border bg-surface shadow-xl sm:rounded-2xl">
+            <div className="flex items-center justify-between border-b border-border px-5 py-4">
+              <div className="flex items-center gap-2">
+                <span aria-hidden>✨</span>
+                <h2 className="text-h3 font-semibold text-text">In plain language</h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Close"
+                className="lift flex h-8 w-8 items-center justify-center rounded-full text-text-muted hover:bg-bg hover:text-text">
+                ✕
+              </button>
+            </div>
+
+            <div className="overflow-y-auto px-5 py-4">
+              {state === "loading" ? (
+                <p className="flex items-center gap-2 text-body text-text-muted">
+                  <span
+                    aria-hidden
+                    className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-brand border-t-transparent"
+                  />
+                  Explaining…
+                </p>
+              ) : null}
+              {state === "done" ? <ExplanationText text={text} /> : null}
+              {state === "error" ? (
+                <div className="space-y-3">
+                  <p className="text-body text-text-muted">{message}</p>
+                  <button
+                    type="button"
+                    onClick={explain}
+                    className="lift inline-flex h-10 items-center rounded-md border border-brand px-4 font-medium text-brand hover:bg-bg">
+                    Try again
+                  </button>
+                </div>
+              ) : null}
+            </div>
+
+            {state === "done" ? (
+              <p className="border-t border-border px-5 py-3 text-micro text-text-faint">
+                AI-generated study aid, grounded only in this section’s official text on this page —
+                always verify against it. Not legal advice.
+              </p>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }
