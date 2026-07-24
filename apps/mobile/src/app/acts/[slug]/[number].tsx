@@ -174,6 +174,12 @@ export default function SectionReaderScreen() {
             </View>
           ) : null}
 
+          <AiExplain
+            slug={section.acts.slug}
+            number={section.number}
+            act={section.acts.abbreviation}
+          />
+
           <View style={styles.reading}>
             <MarkdownLite>{section.body_md}</MarkdownLite>
           </View>
@@ -192,12 +198,6 @@ export default function SectionReaderScreen() {
           ) : null}
 
           <SectionNav slug={section.acts.slug} prev={adjacent.prev} next={adjacent.next} />
-
-          <AiExplain
-            slug={section.acts.slug}
-            number={section.number}
-            act={section.acts.abbreviation}
-          />
         </View>
       ) : null}
     </Screen>
