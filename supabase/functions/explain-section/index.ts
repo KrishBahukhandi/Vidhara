@@ -54,6 +54,14 @@ function buildUserPrompt(
   ].join("\n");
 }
 
+/** Provider failed (rate-limit, quota, outage). Carries a user-safe message +
+ * status; the handler surfaces it without leaking raw provider JSON. */
+class ProviderError extends Error {
+  constructor(public userMessage: string, public status: number) {
+    super(userMessage);
+  }
+}
+
 async function callLLM(user: string): Promise<string> {
   const url =
     `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_KEY}`;
@@ -66,12 +74,24 @@ async function callLLM(user: string): Promise<string> {
       generationConfig: { temperature: 0.2, maxOutputTokens: 700, topP: 0.9 },
     }),
   });
-  if (!res.ok) throw new Error(`LLM ${res.status}: ${(await res.text()).slice(0, 300)}`);
+  if (!res.ok) {
+    // Log the full provider error for us; never leak the raw body to clients.
+    const body = (await res.text()).slice(0, 1200);
+    console.error(`LLM ${res.status}: ${body}`);
+    if (res.status === 429) {
+      throw new ProviderError(
+        "The explainer is busy right now — please try again in a minute.",
+        503,
+      );
+    }
+    throw new ProviderError("Couldn’t generate an explanation right now. Please try again.", 502);
+  }
   const data = await res.json();
   const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
   if (!text || typeof text !== "string") {
     const reason = data?.candidates?.[0]?.finishReason ?? "empty";
-    throw new Error(`LLM returned no text (${reason})`);
+    console.error(`LLM returned no text (${reason})`);
+    throw new ProviderError("Couldn’t generate an explanation right now. Please try again.", 502);
   }
   return text.trim();
 }
@@ -163,6 +183,8 @@ Deno.serve(async (req: Request) => {
 
     return json({ explanation, cached: false });
   } catch (e) {
-    return json({ error: (e as Error).message ?? "unexpected error" }, 500);
+    if (e instanceof ProviderError) return json({ error: e.userMessage }, e.status);
+    console.error("explain-section error:", (e as Error).message);
+    return json({ error: "Something went wrong generating the explanation." }, 500);
   }
 });
