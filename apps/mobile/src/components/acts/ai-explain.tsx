@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Fragment, useState } from "react";
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { AppText } from "@/components/ui/app-text";
 import { explainSection } from "@/features/acts/api";
@@ -38,19 +39,23 @@ function Explanation({ text, color }: { text: string; color: string }) {
 }
 
 /**
- * "Explain this section" — calls the explain-section Edge Function (grounded
- * strictly in this section's own text, server-side; decision D-004). The
- * statute text stays visible above; the explanation carries a verify-it
- * disclaimer. Friendly "being set up" / daily-cap messages surface via the
- * api err() message.
+ * "Explain this section" — a floating pill (always visible, pinned bottom-right
+ * over the scrolling reader) that opens the plain-language explanation in a
+ * bottom-sheet modal. Grounding is server-side (decision D-004): the client
+ * sends only {slug, number}; the model sees only this section's own official
+ * text, which stays on the page behind the sheet for verification. Fetches on
+ * first open, then keeps the result for re-opens. Rendered via Screen's
+ * `overlay` layer so it floats above the ScrollView.
  */
 export function AiExplain({ slug, number, act }: { slug: string; number: string; act: string }) {
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
+  const [open, setOpen] = useState(false);
   const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [text, setText] = useState("");
   const [message, setMessage] = useState("");
 
-  const onExplain = async () => {
+  const run = async () => {
     setState("loading");
     setMessage("");
     track("ai_explain_requested", { act, number });
@@ -64,75 +69,138 @@ export function AiExplain({ slug, number, act }: { slug: string; number: string;
     setState("done");
   };
 
-  if (state === "done") {
-    return (
-      <View style={[styles.card, { borderColor: colors.border, backgroundColor: colors.surface }]}>
-        <View style={styles.titleRow}>
-          <Ionicons name="sparkles-outline" size={18} color={colors.brand} />
-          <AppText variant="h3">In plain language</AppText>
-        </View>
-        <Explanation text={text} color={colors.text} />
-        <AppText variant="micro" tone="muted" style={[styles.disclaimer, { borderTopColor: colors.border }]}>
-          AI-generated study aid, grounded only in this section&apos;s official text below — always
-          verify against it. Not legal advice.
-        </AppText>
-      </View>
-    );
-  }
+  const onOpen = () => {
+    setOpen(true);
+    if (state === "idle" || state === "error") run();
+  };
 
   return (
-    <View style={styles.actionWrap}>
+    <>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Explain this section in plain language"
-        disabled={state === "loading"}
-        onPress={onExplain}
+        onPress={onOpen}
         style={({ pressed }) => [
-          styles.button,
-          { borderColor: colors.brand, backgroundColor: colors.surface, opacity: pressed ? 0.85 : 1 },
+          styles.fab,
+          { backgroundColor: colors.brand, bottom: insets.bottom + sp(4), opacity: pressed ? 0.9 : 1 },
         ]}>
-        {state === "loading" ? (
-          <ActivityIndicator size="small" color={colors.brand} />
-        ) : (
-          <Ionicons name="sparkles-outline" size={18} color={colors.brand} />
-        )}
-        <AppText style={[styles.buttonLabel, { color: colors.brand }]}>
-          {state === "loading" ? "Explaining…" : "Explain this section in plain language"}
+        <Ionicons name="sparkles" size={16} color={colors.onBrand} />
+        <AppText tone="onBrand" style={styles.fabLabel}>
+          Explain
         </AppText>
       </Pressable>
-      {state === "error" ? (
-        <AppText variant="small" tone="muted" style={styles.errorText}>
-          {message}
-        </AppText>
-      ) : null}
-    </View>
+
+      <Modal visible={open} transparent animationType="slide" onRequestClose={() => setOpen(false)}>
+        <Pressable style={styles.backdrop} onPress={() => setOpen(false)}>
+          {/* Inner Pressable swallows taps so they don't close the sheet. */}
+          <Pressable
+            onPress={() => {}}
+            style={[styles.sheet, { backgroundColor: colors.surface, paddingBottom: insets.bottom + sp(4) }]}>
+            <View style={styles.sheetHeader}>
+              <View style={styles.titleRow}>
+                <Ionicons name="sparkles-outline" size={18} color={colors.brand} />
+                <AppText variant="h3">In plain language</AppText>
+              </View>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Close"
+                onPress={() => setOpen(false)}
+                hitSlop={8}>
+                <Ionicons name="close" size={22} color={colors.textMuted} />
+              </Pressable>
+            </View>
+
+            <ScrollView style={styles.sheetBody} contentContainerStyle={styles.sheetContent}>
+              {state === "loading" ? (
+                <View style={styles.loadingRow}>
+                  <ActivityIndicator color={colors.brand} />
+                  <AppText tone="muted">Explaining…</AppText>
+                </View>
+              ) : null}
+              {state === "done" ? <Explanation text={text} color={colors.text} /> : null}
+              {state === "error" ? (
+                <View style={styles.errorBox}>
+                  <AppText tone="muted">{message}</AppText>
+                  <Pressable
+                    accessibilityRole="button"
+                    onPress={run}
+                    style={({ pressed }) => [
+                      styles.retry,
+                      { borderColor: colors.brand, opacity: pressed ? 0.85 : 1 },
+                    ]}>
+                    <AppText style={{ color: colors.brand, fontWeight: "600" }}>Try again</AppText>
+                  </Pressable>
+                </View>
+              ) : null}
+            </ScrollView>
+
+            {state === "done" ? (
+              <AppText
+                variant="micro"
+                tone="muted"
+                style={[styles.disclaimer, { borderTopColor: colors.border }]}>
+                AI-generated study aid, grounded only in this section&apos;s official text on this
+                page — always verify against it. Not legal advice.
+              </AppText>
+            ) : null}
+          </Pressable>
+        </Pressable>
+      </Modal>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  actionWrap: { gap: sp(2) },
-  button: {
+  fab: {
+    position: "absolute",
+    right: sp(4),
     flexDirection: "row",
     alignItems: "center",
     gap: sp(2),
+    height: 44,
+    paddingHorizontal: sp(4),
+    borderRadius: 999,
+    // Soft shadow (design.md): Android elevation + iOS shadow.
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 3 },
+  },
+  fabLabel: { fontWeight: "600" },
+  backdrop: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0,0,0,0.4)",
+  },
+  sheet: {
+    maxHeight: "82%",
+    borderTopLeftRadius: radius.lg,
+    borderTopRightRadius: radius.lg,
+    paddingHorizontal: sp(5),
+    paddingTop: sp(4),
+  },
+  sheetHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingBottom: sp(3),
+  },
+  titleRow: { flexDirection: "row", alignItems: "center", gap: sp(2) },
+  sheetBody: { flexGrow: 0 },
+  sheetContent: { gap: sp(3), paddingBottom: sp(2) },
+  loadingRow: { flexDirection: "row", alignItems: "center", gap: sp(2), paddingVertical: sp(2) },
+  errorBox: { gap: sp(3) },
+  retry: {
+    alignSelf: "flex-start",
     borderWidth: 1,
     borderRadius: radius.md,
     paddingHorizontal: sp(4),
-    paddingVertical: sp(3),
-    alignSelf: "flex-start",
+    paddingVertical: sp(2),
   },
-  buttonLabel: { fontWeight: "600" },
-  errorText: {},
-  card: {
-    gap: sp(3),
-    borderWidth: 1,
-    borderRadius: radius.md,
-    padding: sp(4),
-  },
-  titleRow: { flexDirection: "row", alignItems: "center", gap: sp(2) },
   lines: { gap: sp(2) },
   bulletRow: { flexDirection: "row" },
   lineText: { flex: 1 },
   bold: { fontWeight: "700" },
-  disclaimer: { borderTopWidth: 1, paddingTop: sp(3) },
+  disclaimer: { borderTopWidth: 1, paddingTop: sp(3), marginTop: sp(2) },
 });
