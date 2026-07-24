@@ -85,8 +85,8 @@ export function AiExplain({ slug, number, act }: { slug: string; number: string;
           <ExplanationText text={text} />
         </div>
         <p className="mt-4 border-t border-border pt-3 text-micro text-text-faint">
-          AI-generated study aid, grounded in this section’s text above — always verify against the
-          official text. Not legal advice.
+          AI-generated study aid, grounded only in this section’s official text below — always
+          verify against it. Not legal advice.
         </p>
       </section>
     );

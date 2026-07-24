@@ -73,8 +73,8 @@ export function AiExplain({ slug, number, act }: { slug: string; number: string;
         </View>
         <Explanation text={text} color={colors.text} />
         <AppText variant="micro" tone="muted" style={[styles.disclaimer, { borderTopColor: colors.border }]}>
-          AI-generated study aid, grounded in this section&apos;s text above — always verify against
-          the official text. Not legal advice.
+          AI-generated study aid, grounded only in this section&apos;s official text below — always
+          verify against it. Not legal advice.
         </AppText>
       </View>
     );
