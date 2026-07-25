@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { DailyMcq } from "@/components/daily-mcq";
 import { PageShell } from "@/components/site-chrome";
@@ -17,6 +18,12 @@ export default function DailyPage() {
       <p className="mt-2 max-w-measure text-body text-text-muted">
         One question a day on the old⇄new law mapping — the cross-reference every judiciary aspirant
         needs by heart. Straight from the official NCRB mapping; come back tomorrow for the next.
+      </p>
+      <p className="mt-2 text-small text-text-muted">
+        Want more than one?{" "}
+        <Link href="/practice" className="text-brand hover:underline">
+          Unlimited practice →
+        </Link>
       </p>
       <DailyMcq />
     </PageShell>

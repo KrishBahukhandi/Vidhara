@@ -38,7 +38,7 @@ export function DailyMcqCard() {
         </View>
         <AppText variant="small" tone="muted">
           {answeredToday
-            ? "Done for today — back tomorrow for a new one"
+            ? "Done for today — tap to keep practising"
             : "One old → new law question a day"}
         </AppText>
       </View>

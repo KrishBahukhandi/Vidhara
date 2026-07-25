@@ -269,35 +269,45 @@ export async function askSections(query: string): Promise<Result<AskOutcome>> {
   }
 }
 
-export interface DailyMcq {
+export interface Mcq {
+  id: string;
+  type: "forward" | "reverse" | "subject";
   date: string;
   prompt: string;
-  oldRef: string;
-  oldNote: string;
+  /** The reference or topic the question is asked about. */
+  subject: string;
+  subjectNote: string;
   options: string[];
   answerIndex: number;
   answer: string;
   explanation: string;
-  sourceSlug: string;
-  sourceNumber: string;
+  /** Deep-link to the real provision behind the answer. */
+  readSlug: string;
+  readNumber: string;
+  readLabel: string;
   mappingType: string;
 }
 
 /**
- * Today's Daily MCQ — built server-side from the authoritative old↔new mapping
- * (daily-mcq function), deterministic per IST day so everyone gets the same one.
+ * A quiz question from the grounded engine (daily-mcq function).
+ * mode "daily" = the deterministic question of the day (same for everyone);
+ * mode "practice" = a fresh random one, `exclude` avoids repeats in a session.
  */
-export async function getDailyMcq(): Promise<Result<DailyMcq>> {
+export async function getMcq(
+  mode: "daily" | "practice" = "daily",
+  exclude: string[] = [],
+): Promise<Result<Mcq>> {
   try {
     const res = await fetch(`${env.supabaseUrl}/functions/v1/daily-mcq`, {
       method: "POST",
       headers: { "Content-Type": "application/json", apikey: env.supabaseAnonKey },
+      body: JSON.stringify({ mode, exclude: exclude.slice(-60) }),
     });
-    const data = (await res.json().catch(() => ({}))) as Partial<DailyMcq>;
+    const data = (await res.json().catch(() => ({}))) as Partial<Mcq>;
     if (!res.ok || !data.options) {
-      return err(ERROR_CODES.INTERNAL, "Couldn't load today's question. Please try again.");
+      return err(ERROR_CODES.INTERNAL, "Couldn't load the question. Please try again.");
     }
-    return ok(data as DailyMcq);
+    return ok(data as Mcq);
   } catch {
     return err(ERROR_CODES.INTERNAL, "Couldn't reach the quiz. Check your connection and retry.");
   }
