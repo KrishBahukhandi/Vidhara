@@ -76,7 +76,9 @@ export default async function OgImage({
           ) : null}
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 32, opacity: 0.85 }}>
-          <div>Vidhara — bare acts + old⇄new mapping</div>
+          {/* Plain ASCII only: the OG renderer has no glyph for ⇄/→ and draws
+              a tofu box instead (it shipped broken from V0.2 until D-026). */}
+          <div>Vidhara — bare acts + old-to-new mapping</div>
           <div>free · no sign-up</div>
         </div>
       </div>

@@ -23,7 +23,21 @@ export const metadata: Metadata = {
     template: "%s · Vidhara",
   },
   description:
-    "Bare acts, IPC⇄BNS · CrPC⇄BNSS · Evidence⇄BSA mapping, and an AI legal tutor — built for Indian law students, judiciary aspirants, and advocates.",
+    "Every section of the IPC, CrPC, Evidence Act, BNS, BNSS, BSA and the Constitution — free, with the official old⇄new mapping (IPC 302 → BNS 103), plain-language explanations and a daily quiz. For Indian law students and judiciary aspirants.",
+  keywords: [
+    "IPC to BNS",
+    "CrPC to BNSS",
+    "Indian Evidence Act to BSA",
+    "bare acts",
+    "new criminal laws India",
+    "judiciary exam preparation",
+  ],
+  openGraph: {
+    type: "website",
+    siteName: "Vidhara",
+    locale: "en_IN",
+  },
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
