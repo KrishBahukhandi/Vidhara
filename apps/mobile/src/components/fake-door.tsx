@@ -17,7 +17,9 @@ export function FakeDoor({
   title,
   description,
 }: {
-  feature: "ai_explain" | "daily_mcq" | "offline";
+  // ai_explain and daily_mcq graduated into real features (D-023, D-022) — the
+  // remaining doors test genuinely unbuilt candidates.
+  feature: "notes" | "offline";
   icon: keyof typeof Ionicons.glyphMap;
   title: string;
   description: string;

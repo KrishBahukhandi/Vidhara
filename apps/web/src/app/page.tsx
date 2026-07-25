@@ -172,6 +172,32 @@ export default function HomePage() {
       </Reveal>
 
       {/* ── Daily MCQ fake door ──────────────────────────────── */}
+      {/* ── Quiz (shipped) ───────────────────────────────────── */}
+      <Reveal as="section" className="border-t border-border py-14 sm:py-20">
+        <div className="max-w-xl">
+          <h2 className="font-serif text-h2 font-semibold text-text">
+            Test yourself, not just your notes
+          </h2>
+          <p className="mt-2 text-body text-text-muted">
+            Every question is built from the official mapping — never invented. One a day to build
+            the habit, or unlimited practice when you&rsquo;re revising.
+          </p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Link
+              href="/daily"
+              className="lift inline-flex h-11 items-center rounded-md bg-brand px-5 font-medium text-on-brand transition-opacity hover:opacity-90">
+              Today&rsquo;s question →
+            </Link>
+            <Link
+              href="/practice"
+              className="lift inline-flex h-11 items-center rounded-md border border-border px-5 font-medium text-text transition-colors hover:border-brand">
+              Unlimited practice
+            </Link>
+          </div>
+        </div>
+      </Reveal>
+
+      {/* ── Demand test for the next bet (D-010) ─────────────── */}
       <Reveal as="section" className="border-t border-border py-14 sm:py-20">
         <div className="max-w-xl">
           <h2 className="font-serif text-h2 font-semibold text-text">Coming next — you decide</h2>
@@ -179,9 +205,9 @@ export default function HomePage() {
             We build what students actually reach for. Tell us if this is it:
           </p>
           <FakeDoor
-            feature="daily_mcq"
-            title="Daily MCQ"
-            description="One exam-style question a day, from the bare acts, with the section explained"
+            feature="notes"
+            title="Notes & highlights"
+            description="Highlight a passage and keep your own notes against any section"
           />
         </div>
       </Reveal>
