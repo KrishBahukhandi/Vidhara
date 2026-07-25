@@ -7,9 +7,11 @@
   "scripts": {
     "ingest": "tsx src/cli.ts",
     "ai-eval": "tsx src/ai-eval.ts",
+    "content-qa": "tsx src/content-qa.ts",
     "typecheck": "tsc --noEmit",
     "lint": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "sync-bundle-fixes": "tsx src/sync-bundle-fixes.ts"
   },
   "dependencies": {
     "@nexlex/db": "workspace:*",
