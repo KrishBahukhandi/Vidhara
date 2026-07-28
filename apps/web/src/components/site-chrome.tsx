@@ -55,6 +55,11 @@ export function SiteFooter() {
               {link.label}
             </Link>
           ))}
+          {/* Advocate track (D-028): reachable, but deliberately out of the
+              primary nav so the student/aspirant message stays sharp. */}
+          <Link href="/cite" className="text-small text-text-muted transition-colors hover:text-text">
+            Quick cite — for advocates
+          </Link>
           <Link
             href="/feedback"
             className="text-small text-text-muted transition-colors hover:text-text">

@@ -29,6 +29,8 @@ export type EventName =
   | "practice_started"
   | "practice_answered"
   | "ask_ai_assisted"
+  | "quick_cite_lookup"
+  | "quick_cite_copied"
   | "bookmark_added"
   | "bookmark_removed"
   | "recents_resumed"

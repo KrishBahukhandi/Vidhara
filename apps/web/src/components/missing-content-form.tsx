@@ -10,7 +10,12 @@ import { getBrowserClient } from "@/lib/supabase-browser";
  * (kind='missing'). These rows literally decide which acts get ingested next
  * (docs/future-ideas.md — demand decides ingestion order).
  */
-export function MissingContentForm({ query }: { query: string }) {
+/**
+ * `path` records WHERE the request came from — /search (students) vs /cite
+ * (advocates). Without it every request looks like a student search and the
+ * "which act do we ingest next, and for whom" signal is lost.
+ */
+export function MissingContentForm({ query, path = "/search" }: { query: string; path?: string }) {
   const [message, setMessage] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
 
@@ -34,7 +39,7 @@ export function MissingContentForm({ query }: { query: string }) {
       ? await client.from("feedback").insert({
           kind: "missing",
           message: `[Missing] searched: "${query.slice(0, 200)}"${detail ? ` — ${detail}` : ""}`.slice(0, 2000),
-          path: "/search",
+          path,
           platform: "web",
         })
       : { error: new Error("not configured") };

@@ -13,6 +13,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Quiz surfaces: the daily question changes every day, practice is evergreen.
     { url: `${SITE_URL}/daily`, changeFrequency: "daily", priority: 0.8 },
     { url: `${SITE_URL}/practice`, changeFrequency: "weekly", priority: 0.7 },
+    // Advocate track — its own search intent ("quick section lookup in court").
+    { url: `${SITE_URL}/cite`, changeFrequency: "weekly", priority: 0.7 },
   ];
 
   const [acts, sectionPaths] = await Promise.all([listActs(), listAllSectionPaths()]);
