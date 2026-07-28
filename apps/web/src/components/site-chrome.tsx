@@ -60,6 +60,9 @@ export function SiteFooter() {
           <Link href="/cite" className="text-small text-text-muted transition-colors hover:text-text">
             Quick cite — for advocates
           </Link>
+          <Link href="/diary" className="text-small text-text-muted transition-colors hover:text-text">
+            Case diary
+          </Link>
           <Link
             href="/feedback"
             className="text-small text-text-muted transition-colors hover:text-text">
