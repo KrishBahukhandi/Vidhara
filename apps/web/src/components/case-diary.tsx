@@ -9,6 +9,7 @@ import {
   daysUntil,
   rememberedEmail,
   setRememberedEmail,
+  todayISO,
   useCaseDiary,
   type DiaryCase,
   type NewCase,
@@ -151,6 +152,136 @@ function AttachSection({ caseId, onAttach }: { caseId: string; onAttach: (id: st
         </button>
       </div>
       {state === "error" ? <p className="mt-1 text-small text-text-muted">{msg}</p> : null}
+    </div>
+  );
+}
+
+/**
+ * The order sheet + to-dos: the running record that makes this a case diary
+ * rather than a list of dates. Logging a hearing sets the next date in the same
+ * action, because that's how it's actually kept — you write up the date you
+ * just did, which is when the next one is known.
+ */
+function CaseWorkspace({ c, diary }: { c: DiaryCase; diary: ReturnType<typeof useCaseDiary> }) {
+  const [date, setDate] = useState(todayISO());
+  const [what, setWhat] = useState("");
+  const [next, setNext] = useState("");
+  const [todo, setTodo] = useState("");
+
+  const field =
+    "h-9 rounded-md border border-border bg-bg px-2 text-small text-text placeholder:text-text-faint focus:border-brand focus:outline-none";
+
+  return (
+    <div className="mt-4 space-y-4 border-t border-border pt-4">
+      {/* To-dos: what to carry or file before the next date */}
+      <div>
+        <p className="text-small font-medium text-text-muted">Before the next date</p>
+        {c.todos.length > 0 ? (
+          <ul className="mt-2 space-y-1">
+            {c.todos.map((t) => (
+              <li key={t.id} className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={t.done}
+                  onChange={() => diary.toggleTodo(c.id, t.id)}
+                  className="h-4 w-4 accent-current text-brand"
+                />
+                <span className={`flex-1 text-small ${t.done ? "text-text-faint line-through" : "text-text"}`}>
+                  {t.text}
+                </span>
+                <button
+                  type="button"
+                  aria-label="Remove item"
+                  onClick={() => diary.removeTodo(c.id, t.id)}
+                  className="text-micro text-text-faint hover:text-danger">
+                  ✕
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+        <div className="mt-2 flex gap-2">
+          <input
+            value={todo}
+            onChange={(e) => setTodo(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && todo.trim()) {
+                e.preventDefault();
+                diary.addTodo(c.id, todo.trim());
+                setTodo("");
+              }
+            }}
+            placeholder="File vakalatnama, carry surety papers…"
+            className={`${field} flex-1`}
+          />
+          <button
+            type="button"
+            onClick={() => {
+              if (!todo.trim()) return;
+              diary.addTodo(c.id, todo.trim());
+              setTodo("");
+            }}
+            className="h-9 rounded-md border border-border px-3 text-small text-text-muted hover:text-text">
+            Add
+          </button>
+        </div>
+      </div>
+
+      {/* Order sheet */}
+      <div>
+        <p className="text-small font-medium text-text-muted">Order sheet</p>
+        {c.hearings.length > 0 ? (
+          <ul className="mt-2 space-y-2">
+            {c.hearings.map((h) => (
+              <li key={h.id} className="border-l-2 border-border pl-3">
+                <p className="font-mono text-micro text-text-muted">
+                  {new Date(`${h.date}T00:00:00`).toLocaleDateString("en-IN", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </p>
+                <p className="whitespace-pre-wrap text-small text-text">{h.note}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-1 text-small text-text-faint">Nothing recorded yet.</p>
+        )}
+
+        <div className="mt-3 grid gap-2 sm:grid-cols-[auto_1fr_auto_auto]">
+          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={field} />
+          <input
+            value={what}
+            onChange={(e) => setWhat(e.target.value)}
+            placeholder="What happened — order, adjournment and why…"
+            className={field}
+          />
+          <input
+            type="date"
+            value={next}
+            onChange={(e) => setNext(e.target.value)}
+            title="Next date"
+            className={field}
+          />
+          <button
+            type="button"
+            onClick={() => {
+              if (!what.trim()) return;
+              diary.logHearing(c.id, { date, note: what.trim(), nextHearing: next });
+              track("diary_hearing_logged", {});
+              setWhat("");
+              setNext("");
+              setDate(todayISO());
+            }}
+            className="h-9 rounded-md border border-brand px-3 text-small font-medium text-brand hover:bg-bg">
+            Record
+          </button>
+        </div>
+        <p className="mt-1 text-micro text-text-faint">
+          Recording a date also sets the next one — leave it blank if none was given.
+        </p>
+      </div>
     </div>
   );
 }
@@ -303,6 +434,7 @@ function CaseCard({
           {c.notes ? (
             <p className="mt-3 whitespace-pre-wrap text-body text-text-muted">{c.notes}</p>
           ) : null}
+          <CaseWorkspace c={c} diary={diary} />
           <AttachSection caseId={c.id} onAttach={diary.attachSection} />
         </>
       ) : null}

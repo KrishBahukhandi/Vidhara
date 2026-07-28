@@ -25,6 +25,26 @@ export interface CaseSection {
   counterpart: string | null;
 }
 
+/**
+ * One line of the order sheet — what actually happened on a date. This is what
+ * a case diary *is* in Indian practice: the running record, not just the next
+ * date.
+ */
+export interface HearingEntry {
+  id: string;
+  /** ISO date the hearing took place. */
+  date: string;
+  /** What happened: order passed, adjourned and why, what to do next. */
+  note: string;
+}
+
+/** A thing to carry, file or check before the next date. */
+export interface TodoItem {
+  id: string;
+  text: string;
+  done: boolean;
+}
+
 export interface DiaryCase {
   id: string;
   /** Cause title, e.g. "State v. Kumar". */
@@ -37,13 +57,34 @@ export interface DiaryCase {
   stage: string;
   notes: string;
   sections: CaseSection[];
+  /** Order sheet, most recent first. */
+  hearings: HearingEntry[];
+  todos: TodoItem[];
+  status: "active" | "disposed";
   /** Set when an email reminder was requested for the CURRENT hearing date. */
   remindedFor?: string;
   createdAt: number;
   updatedAt: number;
 }
 
-export type NewCase = Omit<DiaryCase, "id" | "createdAt" | "updatedAt" | "sections">;
+/**
+ * Diaries written before the order sheet existed lack the newer fields, and a
+ * missing array would crash the list on render. Normalise on every read.
+ */
+function hydrate(c: DiaryCase): DiaryCase {
+  return {
+    ...c,
+    sections: c.sections ?? [],
+    hearings: c.hearings ?? [],
+    todos: c.todos ?? [],
+    status: c.status ?? "active",
+  };
+}
+
+export type NewCase = Omit<
+  DiaryCase,
+  "id" | "createdAt" | "updatedAt" | "sections" | "hearings" | "todos" | "status"
+>;
 
 const KEY = "vidhara_case_diary";
 const SYNC_EVENT = "vidhara:diary-change";
@@ -83,7 +124,7 @@ function read(): DiaryCase[] {
   try {
     const raw = window.localStorage.getItem(KEY);
     const parsed = raw ? (JSON.parse(raw) as unknown) : [];
-    return Array.isArray(parsed) ? (parsed as DiaryCase[]) : [];
+    return Array.isArray(parsed) ? (parsed as DiaryCase[]).map(hydrate) : [];
   } catch {
     return [];
   }
@@ -134,6 +175,10 @@ export function useCaseDiary(): {
   remove: (id: string) => void;
   attachSection: (id: string, s: CaseSection) => void;
   detachSection: (id: string, slug: string, number: string) => void;
+  logHearing: (id: string, entry: { date: string; note: string; nextHearing?: string }) => void;
+  addTodo: (id: string, text: string) => void;
+  toggleTodo: (id: string, todoId: string) => void;
+  removeTodo: (id: string, todoId: string) => void;
   exportJson: () => string;
   importJson: (raw: string) => { ok: boolean; added: number; error?: string };
 } {
@@ -153,7 +198,16 @@ export function useCaseDiary(): {
 
   const add = useCallback((c: NewCase): DiaryCase => {
     const now = Date.now();
-    const item: DiaryCase = { ...c, id: uid(), sections: [], createdAt: now, updatedAt: now };
+    const item: DiaryCase = {
+      ...c,
+      id: uid(),
+      sections: [],
+      hearings: [],
+      todos: [],
+      status: "active",
+      createdAt: now,
+      updatedAt: now,
+    };
     write([item, ...read()]);
     return item;
   }, []);
@@ -194,6 +248,65 @@ export function useCaseDiary(): {
     );
   }, []);
 
+  /**
+   * Record what happened on a date and, in the same action, set the next one —
+   * that's how the diary is actually kept: you come back from court and write
+   * up the date you just did, which is also when the next date is known.
+   * Clearing `remindedFor` matters: a reminder set for the old date must not
+   * count as covering the new one.
+   */
+  const logHearing = useCallback((id: string, entry: { date: string; note: string; nextHearing?: string }) => {
+    write(
+      read().map((c) => {
+        if (c.id !== id) return c;
+        const line: HearingEntry = { id: uid(), date: entry.date, note: entry.note };
+        const hearings = [line, ...c.hearings].sort((a, b) => b.date.localeCompare(a.date));
+        const nextHearing = entry.nextHearing ?? "";
+        return {
+          ...c,
+          hearings,
+          nextHearing,
+          remindedFor: nextHearing && nextHearing === c.remindedFor ? c.remindedFor : undefined,
+          updatedAt: Date.now(),
+        };
+      }),
+    );
+  }, []);
+
+  const addTodo = useCallback((id: string, text: string) => {
+    write(
+      read().map((c) =>
+        c.id === id
+          ? { ...c, todos: [...c.todos, { id: uid(), text, done: false }], updatedAt: Date.now() }
+          : c,
+      ),
+    );
+  }, []);
+
+  const toggleTodo = useCallback((id: string, todoId: string) => {
+    write(
+      read().map((c) =>
+        c.id === id
+          ? {
+              ...c,
+              todos: c.todos.map((t) => (t.id === todoId ? { ...t, done: !t.done } : t)),
+              updatedAt: Date.now(),
+            }
+          : c,
+      ),
+    );
+  }, []);
+
+  const removeTodo = useCallback((id: string, todoId: string) => {
+    write(
+      read().map((c) =>
+        c.id === id
+          ? { ...c, todos: c.todos.filter((t) => t.id !== todoId), updatedAt: Date.now() }
+          : c,
+      ),
+    );
+  }, []);
+
   const exportJson = useCallback(
     () => JSON.stringify({ kind: "vidhara-case-diary", version: 1, cases: read() }, null, 2),
     [],
@@ -215,5 +328,18 @@ export function useCaseDiary(): {
     }
   }, []);
 
-  return { cases, add, update, remove, attachSection, detachSection, exportJson, importJson };
+  return {
+    cases,
+    add,
+    update,
+    remove,
+    attachSection,
+    detachSection,
+    logHearing,
+    addTodo,
+    toggleTodo,
+    removeTodo,
+    exportJson,
+    importJson,
+  };
 }
