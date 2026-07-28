@@ -1,7 +1,9 @@
 /**
  * Database types — GENERATED from the live NexLex Supabase project
- * (ref eubyvglzkbzfeznocilg, migrations 0001–0008).
+ * (ref eubyvglzkbzfeznocilg, migrations 0001–0010).
  * Regenerate after schema changes: pnpm --filter @nexlex/db gen:types
+ * (needs a Supabase access token with project access; entries below were added
+ * by hand for 0009–0010 when the token lacked the types endpoint).
  */
 export type Json =
   | string
@@ -128,6 +130,92 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      ai_explanations: {
+        Row: {
+          created_at: string
+          explanation: string
+          model: string
+          section_id: string
+        }
+        Insert: {
+          created_at?: string
+          explanation: string
+          model: string
+          section_id: string
+        }
+        Update: {
+          created_at?: string
+          explanation?: string
+          model?: string
+          section_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_explanations_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: true
+            referencedRelation: "act_sections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_usage: {
+        Row: {
+          count: number
+          day: string
+        }
+        Insert: {
+          count?: number
+          day: string
+        }
+        Update: {
+          count?: number
+          day?: string
+        }
+        Relationships: []
+      }
+      hearing_reminders: {
+        Row: {
+          confirm_sent_at: string | null
+          confirm_token: string
+          confirmed_at: string | null
+          created_at: string
+          email: string
+          hearing_on: string
+          id: string
+          label: string
+          remind_on: string
+          sent_at: string | null
+          unsubscribe_token: string
+        }
+        Insert: {
+          confirm_sent_at?: string | null
+          confirm_token?: string
+          confirmed_at?: string | null
+          created_at?: string
+          email: string
+          hearing_on: string
+          id?: string
+          label: string
+          remind_on: string
+          sent_at?: string | null
+          unsubscribe_token?: string
+        }
+        Update: {
+          confirm_sent_at?: string | null
+          confirm_token?: string
+          confirmed_at?: string | null
+          created_at?: string
+          email?: string
+          hearing_on?: string
+          id?: string
+          label?: string
+          remind_on?: string
+          sent_at?: string | null
+          unsubscribe_token?: string
+        }
+        Relationships: []
       }
       acts: {
         Row: {

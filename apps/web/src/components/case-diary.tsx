@@ -5,7 +5,15 @@ import { useRef, useState } from "react";
 import { ACT_SLUG, parseSectionRef } from "@nexlex/shared";
 
 import { track } from "@/lib/analytics";
-import { daysUntil, useCaseDiary, type DiaryCase, type NewCase } from "@/lib/case-diary";
+import {
+  daysUntil,
+  rememberedEmail,
+  setRememberedEmail,
+  useCaseDiary,
+  type DiaryCase,
+  type NewCase,
+} from "@/lib/case-diary";
+import { requestReminder } from "@/lib/hearing-reminder";
 import { fetchSection } from "@/lib/section-lookup";
 
 const EMPTY: NewCase = { title: "", court: "", caseNumber: "", nextHearing: "", stage: "", notes: "" };
@@ -147,6 +155,82 @@ function AttachSection({ caseId, onAttach }: { caseId: string; onAttach: (id: st
   );
 }
 
+/**
+ * The only place case data leaves the device — so the form says exactly what
+ * is sent, and the label is editable precisely so a client's name need never
+ * be uploaded.
+ */
+function ReminderForm({
+  c,
+  onDone,
+}: {
+  c: DiaryCase;
+  onDone: (hearing: string) => void;
+}) {
+  const [email, setEmail] = useState(rememberedEmail());
+  const [label, setLabel] = useState(c.title);
+  const [state, setState] = useState<"idle" | "sending" | "error">("idle");
+  const [msg, setMsg] = useState("");
+
+  const field =
+    "h-10 w-full rounded-md border border-border bg-bg px-3 text-small text-text placeholder:text-text-faint focus:border-brand focus:outline-none";
+
+  const submit = async () => {
+    setState("sending");
+    const res = await requestReminder({ email, label, hearingOn: c.nextHearing });
+    if (!res.ok) {
+      setMsg(res.error);
+      setState("error");
+      return;
+    }
+    setRememberedEmail(email.trim());
+    track("reminder_requested", {});
+    onDone(c.nextHearing);
+  };
+
+  return (
+    <div className="mt-3 rounded-md border border-dashed border-border p-4">
+      <p className="text-small font-medium text-text">Email me the evening before</p>
+      <p className="mt-1 text-micro text-text-muted">
+        Only these two lines and the date leave your device — your notes, case number, court and
+        attached sections stay here. We&rsquo;ll send one confirmation email first.
+      </p>
+      <div className="mt-3 grid gap-2 sm:grid-cols-2">
+        <input
+          type="email"
+          className={field}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@example.com"
+        />
+        <input
+          className={field}
+          value={label}
+          onChange={(e) => setLabel(e.target.value)}
+          maxLength={120}
+          placeholder="What to call it in the email"
+        />
+      </div>
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={() => void submit()}
+          disabled={state === "sending"}
+          className="inline-flex h-9 items-center rounded-md bg-brand px-4 text-small font-medium text-on-brand hover:opacity-90 disabled:opacity-60">
+          {state === "sending" ? "Setting…" : "Set reminder"}
+        </button>
+        <button
+          type="button"
+          onClick={() => onDone("")}
+          className="text-small text-text-muted hover:text-text">
+          Cancel
+        </button>
+        {state === "error" ? <span className="text-small text-danger">{msg}</span> : null}
+      </div>
+    </div>
+  );
+}
+
 function CaseCard({
   c,
   diary,
@@ -156,7 +240,10 @@ function CaseCard({
 }) {
   const [editing, setEditing] = useState(false);
   const [open, setOpen] = useState(false);
+  const [reminding, setReminding] = useState(false);
   const label = hearingLabel(c.nextHearing);
+  // A reminder is stale if the hearing was moved after it was set.
+  const reminderSet = Boolean(c.nextHearing) && c.remindedFor === c.nextHearing;
 
   if (editing) {
     return (
@@ -220,10 +307,32 @@ function CaseCard({
         </>
       ) : null}
 
+      {reminding ? (
+        <ReminderForm
+          c={c}
+          onDone={(hearing) => {
+            if (hearing) diary.update(c.id, { remindedFor: hearing });
+            setReminding(false);
+          }}
+        />
+      ) : null}
+
       <div className="mt-4 flex flex-wrap gap-2 border-t border-border pt-3">
         <button type="button" onClick={() => setOpen((o) => !o)} className="text-small text-text-muted hover:text-text">
           {open ? "Hide" : "Open"}
         </button>
+        {c.nextHearing ? (
+          reminderSet ? (
+            <span className="text-small text-success">✓ Reminder set</span>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setReminding((r) => !r)}
+              className="text-small text-text-muted hover:text-text">
+              Remind me
+            </button>
+          )
+        ) : null}
         <button type="button" onClick={() => setEditing(true)} className="text-small text-text-muted hover:text-text">
           Edit
         </button>

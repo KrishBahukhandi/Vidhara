@@ -37,6 +37,8 @@ export interface DiaryCase {
   stage: string;
   notes: string;
   sections: CaseSection[];
+  /** Set when an email reminder was requested for the CURRENT hearing date. */
+  remindedFor?: string;
   createdAt: number;
   updatedAt: number;
 }
@@ -45,6 +47,36 @@ export type NewCase = Omit<DiaryCase, "id" | "createdAt" | "updatedAt" | "sectio
 
 const KEY = "vidhara_case_diary";
 const SYNC_EVENT = "vidhara:diary-change";
+/** The address is remembered locally so it's typed once, not per case. */
+const EMAIL_KEY = "vidhara_reminder_email";
+
+export function rememberedEmail(): string {
+  if (typeof window === "undefined") return "";
+  try {
+    return window.localStorage.getItem(EMAIL_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+export function setRememberedEmail(email: string): void {
+  try {
+    window.localStorage.setItem(EMAIL_KEY, email);
+  } catch {
+    /* storage disabled — the user just retypes it */
+  }
+}
+
+/**
+ * The day before the hearing (the evening-before nudge).
+ * Parsed as UTC on purpose: `T00:00:00` without a zone is LOCAL, and
+ * `toISOString()` then converts back to UTC — in IST (+5:30) that silently
+ * shifts the result a day earlier, so reminders would fire two days out.
+ */
+export function remindDateFor(hearingISO: string): string {
+  const t = Date.parse(`${hearingISO}T00:00:00Z`);
+  return new Date(t - 86_400_000).toISOString().slice(0, 10);
+}
 
 function read(): DiaryCase[] {
   if (typeof window === "undefined") return [];

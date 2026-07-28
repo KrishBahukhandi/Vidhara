@@ -34,6 +34,7 @@ export type EventName =
   | "diary_case_added"
   | "diary_section_attached"
   | "diary_exported"
+  | "reminder_requested"
   | "bookmark_added"
   | "bookmark_removed"
   | "recents_resumed"
