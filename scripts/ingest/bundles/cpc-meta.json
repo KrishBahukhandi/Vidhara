@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "cpc",
+    "title": "The Code of Civil Procedure, 1908",
+    "shortTitle": "CPC",
+    "abbreviation": "CPC",
+    "year": 1908,
+    "category": "civil",
+    "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/2191"
+  },
+  "provenance": "Official India Code text: The Code of Civil Procedure, 1908 (5 of 1908), English PDF (bitstream 123456789/2191/1/A190805.pdf, 3,275,360 bytes, sha256 8849fc32…) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-07-29. Extracted via pdftotext 26.07 -bbox and @nexlex/ingest inline parser. Automated parse; footnotes/amendment history excluded; Schedule I (Orders/Rules) not included in the section list; spot-verified; full clause-level proofread pending."
+}
