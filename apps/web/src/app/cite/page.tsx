@@ -22,8 +22,8 @@ export default function CitePage() {
       </p>
       <p className="mt-3 text-small text-text-faint">
         Covers the criminal codes (IPC, CrPC, Evidence and their BNS/BNSS/BSA successors), the
-        Constitution and the Contract Act. Looking for another act? Tell us on a miss — that&rsquo;s
-        how we pick what to add next.
+        Constitution, and the Contract, NI, CPC, NDPS, Motor Vehicles and Arbitration Acts. Looking
+        for another act? Tell us on a miss — that&rsquo;s how we pick what to add next.
       </p>
       <QuickCite />
     </PageShell>
