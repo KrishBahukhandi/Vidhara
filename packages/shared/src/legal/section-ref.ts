@@ -15,6 +15,10 @@ export const ACT_ABBREVIATIONS = [
   "BSA",
   "COI",
   "ICA",
+  "NI",
+  "CPC",
+  "NDPS",
+  "MV",
 ] as const;
 export type ActAbbreviation = (typeof ACT_ABBREVIATIONS)[number];
 
@@ -33,6 +37,10 @@ export const ACT_SLUG: Record<ActAbbreviation, string> = {
   BSA: "bsa",
   COI: "constitution",
   ICA: "ica",
+  NI: "ni",
+  CPC: "cpc",
+  NDPS: "ndps",
+  MV: "mv",
 };
 
 /** Alias → canonical abbreviation. Keys must be lowercase, punctuation-free. */
@@ -61,6 +69,23 @@ const ACT_ALIASES: Record<string, ActAbbreviation> = {
   ica: "ICA",
   "indian contract act": "ICA",
   "contract act": "ICA",
+  ni: "NI",
+  "negotiable instruments act": "NI",
+  "negotiable instruments": "NI",
+  negotiable: "NI",
+  "ni act": "NI",
+  cpc: "CPC",
+  "code of civil procedure": "CPC",
+  "civil procedure code": "CPC",
+  "civil procedure": "CPC",
+  ndps: "NDPS",
+  "narcotic drugs and psychotropic substances act": "NDPS",
+  "narcotic drugs": "NDPS",
+  narcotics: "NDPS",
+  mv: "MV",
+  "motor vehicles act": "MV",
+  "motor vehicles": "MV",
+  "mv act": "MV",
 };
 
 export interface ParsedSectionRef {
