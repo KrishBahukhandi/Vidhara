@@ -108,8 +108,8 @@
     {
       "number": "4",
       "chapterNumber": "II",
-      "marginalNote": "“Promissory note.”—A “Promissory note” is an instrument in writing (not being a",
-      "bodyMd": "“Promissory note.”—A “Promissory note” is an instrument in writing (not being a bank-note or a currency-note) containing an unconditional undertaking, signed by the maker, to pay a certain sum of money only to, or to the order of, a certain person, or to the bearer of the instrument. Illustrations A Signs instruments in the following terms: ) “I promise to pay B or order Rs. 500.” “I acknowledge myself to be indebted to B in Rs. 1,000, to be paid on demand, for value received.” “Mr. B, U Rs. 1,000.” “I promise to Pay B Rs. 500 and all other sums which shall be due to him.” “I promise to Pay B Rs. 500, first deducting thereout any money which he may owe me.” “I promise to Pay B Rs. 500 seven days after my marriage with C.” “I, promise to Pay B Rs. 500 on D's death, provided D leaves me enough to pay that sum.” 2. The words “except the State of Jammu and Kashmir”, which were subs. by Act 3 of 1951, for “except Part B States”, omitted 4. Definition of the word “India”, which was subs. by Act 3 of 1951, for the definition of the word “State”, omitted by Act 62 “banker”. “I promise to Pay B Rs. 500 and to deliver to him my black horse on 1st January next.”"
+      "marginalNote": "“Promissory note”",
+      "bodyMd": "A “Promissory note” is an instrument in writing (not being a bank-note or a currency-note) containing an unconditional undertaking, signed by the maker, to pay a certain sum of money only to, or to the order of, a certain person, or to the bearer of the instrument. Illustrations A Signs instruments in the following terms: ) “I promise to pay B or order Rs. 500.” “I acknowledge myself to be indebted to B in Rs. 1,000, to be paid on demand, for value received.” “Mr. B, U Rs. 1,000.” “I promise to Pay B Rs. 500 and all other sums which shall be due to him.” “I promise to Pay B Rs. 500, first deducting thereout any money which he may owe me.” “I promise to Pay B Rs. 500 seven days after my marriage with C.” “I, promise to Pay B Rs. 500 on D's death, provided D leaves me enough to pay that sum.” 2. The words “except the State of Jammu and Kashmir”, which were subs. by Act 3 of 1951, for “except Part B States”, omitted 4. Definition of the word “India”, which was subs. by Act 3 of 1951, for the definition of the word “State”, omitted by Act 62 “banker”. “I promise to Pay B Rs. 500 and to deliver to him my black horse on 1st January next.”"
     },
     {
       "number": "5",
@@ -408,8 +408,8 @@
     {
       "number": "53",
       "chapterNumber": "IV",
-      "marginalNote": "Holder deriving title from holder in due course A holder of a negotiable",
-      "bodyMd": "Holder deriving title from holder in due course A holder of a negotiable instrument who derives title from a holder in due course has the rights thereon of that holder in due course."
+      "marginalNote": "Holder deriving title from holder in due course",
+      "bodyMd": "A holder of a negotiable instrument who derives title from a holder in due course has the rights thereon of that holder in due course."
     },
     {
       "number": "54",
@@ -480,14 +480,14 @@
     {
       "number": "65",
       "chapterNumber": "IV",
-      "marginalNote": "Hours for presentment—Presentment for payment must be made during the usual",
-      "bodyMd": "Hours for presentment—Presentment for payment must be made during the usual hours of business and, if at a banker's within banking hours."
+      "marginalNote": "Hours for presentment",
+      "bodyMd": "Presentment for payment must be made during the usual hours of business and, if at a banker's within banking hours."
     },
     {
       "number": "66",
       "chapterNumber": "IV",
-      "marginalNote": "Presentment for payment of instrument payable after date or sight—A promissory",
-      "bodyMd": "Presentment for payment of instrument payable after date or sight—A promissory note or bill of exchange, made payable at a specified period after date or sight thereof, must be presented for payment at maturity."
+      "marginalNote": "Presentment for payment of instrument payable after date or sight",
+      "bodyMd": "A promissory note or bill of exchange, made payable at a specified period after date or sight thereof, must be presented for payment at maturity."
     },
     {
       "number": "67",
@@ -546,8 +546,8 @@
     {
       "number": "75A",
       "chapterNumber": "IV",
-      "marginalNote": "Excuse for delay in presentment for acceptance or payment—Delay in presentment",
-      "bodyMd": "Excuse for delay in presentment for acceptance or payment—Delay in presentment [for acceptance or payment] is excused if the delay is caused by circumstances beyond the control of the holder, and not imputable to his default, misconduct or negligence. When the cause of delay ceases to operate, presentment must be made within a reasonable time.]"
+      "marginalNote": "Excuse for delay in presentment for acceptance or payment",
+      "bodyMd": "Delay in presentment [for acceptance or payment] is excused if the delay is caused by circumstances beyond the control of the holder, and not imputable to his default, misconduct or negligence. When the cause of delay ceases to operate, presentment must be made within a reasonable time.]"
     },
     {
       "number": "76",
@@ -900,8 +900,8 @@
     {
       "number": "133",
       "chapterNumber": "XV",
-      "marginalNote": "Holder of first acquired part entitled to all—As between holders in due course",
-      "bodyMd": "Holder of first acquired part entitled to all—As between holders in due course of different parts of the same set, he who first acquired title to his part is entitled to the other parts and the money represented by the bill."
+      "marginalNote": "Holder of first acquired part entitled to all",
+      "bodyMd": "As between holders in due course of different parts of the same set, he who first acquired title to his part is entitled to the other parts and the money represented by the bill."
     },
     {
       "number": "134",
