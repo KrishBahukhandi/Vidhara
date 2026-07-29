@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "ni",
+    "title": "The Negotiable Instruments Act, 1881",
+    "shortTitle": "NI Act",
+    "abbreviation": "NI",
+    "year": 1881,
+    "category": "civil",
+    "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/15327"
+  },
+  "provenance": "Official India Code text: The Negotiable Instruments Act, 1881 (26 of 1881), English PDF (bitstream 123456789/15327/1/negotiable_instruments_act,_1881.pdf, 681,124 bytes, sha256 50fe22a1…) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-07-29. Extracted via pdftotext 26.07 -bbox and @nexlex/ingest gazette parser. Automated parse; footnotes/amendment history excluded; spot-verified (s. 138 cheque dishonour); full clause-level proofread pending."
+}
