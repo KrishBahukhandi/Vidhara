@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "mv",
+    "title": "The Motor Vehicles Act, 1988",
+    "shortTitle": "MV Act",
+    "abbreviation": "MV",
+    "year": 1988,
+    "category": "civil",
+    "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/1798"
+  },
+  "provenance": "Official India Code text: The Motor Vehicles Act, 1988 (59 of 1988), English PDF (bitstream 123456789/1798/1/aA1988-59.pdf, 3,740,289 bytes, sha256 be5bac90…) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-07-30. The same handle also carries a Hindi edition (Hh198859.pdf) — the English 'aA'-prefixed file is the one ingested. Extracted via pdftotext 26.07 -bbox and @nexlex/ingest inline parser. Automated parse; footnotes/amendment history and the Schedules excluded; spot-verified; full clause-level proofread pending."
+}
