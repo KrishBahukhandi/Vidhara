@@ -69,9 +69,30 @@ function isIllustrationHeading(text: string): boolean {
 // CONSTITUTION" (COI preamble). A SECOND occurrence mid-document marks an
 // appended amendment act — parsing stops there.
 const ENACTED = /enacted\s+(?:as\s+follows|by\s+Parliament)|ENACT\s+AND\s+GIVE\s+TO\s+OURSELVES/i;
-/** Schedules follow the last article of the Constitution — parsing ends. */
+/**
+ * Schedules follow the last section — parsing ends. Ordinal form ("THE FIRST
+ * SCHEDULE") and the unnumbered form ("THE SCHEDULE") both count: NDPS prints
+ * only "THE SCHEDULE", and because that wasn't matched its entries — a numbered
+ * list of psychotropic substances — were read as sections 84…110ZN (D-031).
+ * Upper-case and anchored on purpose: body prose says "the Schedule" in mixed
+ * case ("specified in the Schedule") and must not end the parse.
+ */
 const SCHEDULE_START =
-  /^(FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH|EIGHTH|NINTH|TENTH|ELEVENTH|TWELFTH)\s+SCHEDULE/;
+  /^(?:THE\s+)?(?:(FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH|EIGHTH|NINTH|TENTH|ELEVENTH|TWELFTH)\s+)?SCHEDULES?\b/;
+/**
+ * India Code prints State amendments inline, after the central section they
+ * modify: a "STATE AMENDMENT" banner, the amending text (often quoting whole
+ * inserted sections), then a "[Vide <State> Act …]" citation. Everything in
+ * between is law in ONE State only.
+ *
+ * Left unguarded this produced two defects (D-032, and ~95 already-published
+ * sections): the amending text was appended to the central section's body, and
+ * quoted insertions (ARB §8B) became phantom central sections. So the block is
+ * SKIPPED — not stopped at, since the central Act resumes afterwards.
+ */
+const STATE_AMENDMENT_START = /^STATE\s+AMENDMENTS?\b/;
+/** Primary terminator: the citation that closes a State-amendment block. */
+const STATE_AMENDMENT_END = /^\[?\s*Vide\b/i;
 // Constitution uses PART headings; other acts CHAPTER. Both fold to chapters.
 const CHAPTER_HEADING = /^(?:CHAPTER|PART)\s*([IVXLCDM]+)([A-Z])?$/;
 const ALL_CAPS_LINE = /^[A-Z][A-Z0-9\s,.'()—–-]*$/;
@@ -146,6 +167,16 @@ export function parseInlineAct(
    * Survives page breaks — blocks wrap pages (IPC §108, CrPC §300). */
   let illustrationMode = false;
   let illustrationLines = 0;
+  // Inside a "STATE AMENDMENT" block: every line is skipped until the block
+  // closes, so neither its text nor its quoted insertions enter the Act.
+  let stateAmendmentMode = false;
+  // Section base in force when the block opened. The block's own quoted
+  // insertions are lettered variants of it ("8A"/"8B" after s.8), so the Act is
+  // taken to resume at the first base GREATER than this — the fallback for
+  // blocks that carry no "[Vide …]" citation (ARB's first block).
+  let stateAmendmentBase = 0;
+  let stateAmendmentBlocks = 0;
+  let stateAmendmentSkipped = 0;
   let currentChapter: string | undefined;
   let pendingChapterNumber: string | null = null;
   let pendingChapterTitle: string[] = [];
@@ -253,6 +284,43 @@ export function parseInlineAct(
         ended = true;
         break;
       }
+
+      // ── State amendments ────────────────────────────────────────────────
+      // Opening the block closes the section in progress, so no amending text
+      // reaches its body.
+      if (STATE_AMENDMENT_START.test(flat)) {
+        flush();
+        stateAmendmentMode = true;
+        stateAmendmentBase = lastBase;
+        stateAmendmentBlocks += 1;
+        continue;
+      }
+      if (stateAmendmentMode) {
+        // Primary exit: the "[Vide <State> Act …]" citation that closes it.
+        if (STATE_AMENDMENT_END.test(flat)) {
+          stateAmendmentMode = false;
+          continue;
+        }
+        // Fallback exit: the central Act resuming at a higher section base, or
+        // a new chapter — for blocks printed without a closing citation.
+        const resume = SECTION_START.exec(flat);
+        if (resume) {
+          const base = Number.parseInt(resume[1] ?? "0", 10);
+          if (base > stateAmendmentBase) {
+            stateAmendmentMode = false;
+            // fall through: this line is a real section start
+          } else {
+            stateAmendmentSkipped += 1;
+            continue;
+          }
+        } else if (CHAPTER_HEADING.test(flat)) {
+          stateAmendmentMode = false;
+          // fall through: real chapter heading
+        } else {
+          continue; // amending prose — drop it
+        }
+      }
+
       if (FURNITURE.some((re) => re.test(flat))) continue;
 
       // Any body-height content line closes an illustration block; the
@@ -307,6 +375,22 @@ export function parseInlineAct(
   flushChapter();
   if (keepIllustrations && illustrationLines > 0) {
     diagnostics.push(`kept ${illustrationLines} illustration line(s)`);
+  }
+  // Must sit OUTSIDE the illustration branch: State amendments are unrelated to
+  // illustrations, and nesting these here meant they only reported for acts
+  // that happened to have illustrations (silent on MV, which has six blocks).
+  if (stateAmendmentBlocks > 0) {
+    diagnostics.push(
+      `skipped ${stateAmendmentBlocks} State-amendment block(s)` +
+        (stateAmendmentSkipped > 0
+          ? `, incl. ${stateAmendmentSkipped} State-inserted section(s) — verify none belong to the central Act`
+          : ""),
+    );
+  }
+  if (stateAmendmentMode) {
+    diagnostics.push(
+      "document ended inside a State-amendment block — check the tail was meant to be skipped",
+    );
   }
   return { sections, chapters, diagnostics };
 }

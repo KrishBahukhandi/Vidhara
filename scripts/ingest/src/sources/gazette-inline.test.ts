@@ -141,3 +141,117 @@ describe("parseInlineAct illustrations", () => {
     );
   });
 });
+
+describe("schedule guard (D-031)", () => {
+  it('ends the act at an unnumbered "THE SCHEDULE" so its entries are not sections', () => {
+    // NDPS prints only "THE SCHEDULE"; the ordinal-only pattern missed it and
+    // the substance list was read as sections 84…110ZN.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "2. Power to make rules.—The Central Government may make rules." },
+        { h: 10, text: "3. Power to remove difficulties.—If any difficulty arises." },
+        { h: 10, text: "THE SCHEDULE" },
+        { h: 10, text: "4. AMINOREX (2-amino-5-phenyl-2-oxazoline)" },
+        { h: 10, text: "5. ETRYPTAMINE (3-(2-aminobutyl) indole)" },
+      ]),
+    );
+    const { sections, diagnostics } = parseInlineAct(xml, {});
+    expect(sections.map((s) => s.number)).toEqual(["2", "3"]);
+    expect(diagnostics.some((d) => /stopped at schedules/.test(d))).toBe(true);
+  });
+
+  it('still ends at an ordinal schedule, with or without a leading "THE"', () => {
+    for (const heading of ["THE FIRST SCHEDULE", "FIRST SCHEDULE"]) {
+      const xml = doc(
+        lines([
+          { h: 10, text: "WHEREAS it is enacted as follows:—" },
+          { h: 10, text: "7. Effect of proceedings.—Nothing in this Act." },
+          { h: 10, text: heading },
+          { h: 10, text: "1. Entry one of the schedule." },
+        ]),
+      );
+      expect(parseInlineAct(xml, {}).sections.map((s) => s.number)).toEqual(["7"]);
+    }
+  });
+
+  it("does not end the act when body prose merely mentions the Schedule", () => {
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "5. Fees.—Fees shall be as specified in the Schedule to this Act." },
+        { h: 10, text: "6. Appeals.—An appeal shall lie to the High Court." },
+      ]),
+    );
+    expect(parseInlineAct(xml, {}).sections.map((s) => s.number)).toEqual(["5", "6"]);
+  });
+});
+
+describe("State-amendment guard (D-032)", () => {
+  it("skips a block closed by a [Vide …] citation, keeping the central section clean", () => {
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "4. Registration.—An application shall be made in such form." },
+        { h: 10, text: "STATE AMENDMENT" },
+        { h: 10, text: "Rajasthan.—Amendment of section 4.—In sub-section (1), insert words." },
+        { h: 10, text: "[Vide Rajasthan Act 1 of 2002, s. 2]" },
+        { h: 10, text: "5. Special provision.—Nothing in section 4 applies." },
+      ]),
+    );
+    const { sections, diagnostics } = parseInlineAct(xml, {});
+    expect(sections.map((s) => s.number)).toEqual(["4", "5"]);
+    // The amending text must not reach the central section's body.
+    expect(sections[0]?.bodyMd).not.toMatch(/Rajasthan|STATE AMENDMENT|Vide/);
+    expect(sections[0]?.bodyMd).toContain("such form");
+    expect(diagnostics.some((d) => /skipped 1 State-amendment block/.test(d))).toBe(true);
+  });
+
+  it("drops sections a State inserted, and resumes at the next central section", () => {
+    // ARB: J&K inserted 8A/8B after s.8 with no closing citation — the Act
+    // resumes at s.9, so the higher base is the exit.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "8. Power to refer parties.—A judicial authority shall refer." },
+        { h: 10, text: "STATE AMENDMENT" },
+        { h: 10, text: "Jammu and Kashmir.—After section 8, insert the following:—" },
+        { h: 10, text: "8B. Power of the court to refer.—If during the pendency of a petition." },
+        { h: 10, text: "9. Interim measures.—A party may apply to a court." },
+      ]),
+    );
+    const { sections, diagnostics } = parseInlineAct(xml, {});
+    expect(sections.map((s) => s.number)).toEqual(["8", "9"]);
+    expect(sections.some((s) => s.number === "8B")).toBe(false);
+    expect(diagnostics.some((d) => /State-inserted section/.test(d))).toBe(true);
+  });
+
+  it("keeps a genuine lettered section that follows the block", () => {
+    // Bihar's block sits before §43A, which IS central law (2019 amendment).
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "3. Limitations.—The Limitation Act shall apply." },
+        { h: 10, text: "STATE AMENDMENT" },
+        { h: 10, text: "Bihar.—Omission of sub-section (3) of Section 3." },
+        { h: 10, text: "[Vide Bihar Act 20 of 2002, s. 2]" },
+        { h: 10, text: "3A. Definitions.—In this Part, unless the context otherwise requires." },
+      ]),
+    );
+    expect(parseInlineAct(xml, {}).sections.map((s) => s.number)).toEqual(["3", "3A"]);
+  });
+
+  it("warns when the document ends inside an unterminated block", () => {
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "10. Duties.—Every officer shall perform such duties." },
+        { h: 10, text: "STATE AMENDMENTS" },
+        { h: 10, text: "Karnataka.—Amendment of section 10.—Substitute the words." },
+      ]),
+    );
+    const { sections, diagnostics } = parseInlineAct(xml, {});
+    expect(sections.map((s) => s.number)).toEqual(["10"]);
+    expect(diagnostics.some((d) => /ended inside a State-amendment block/.test(d))).toBe(true);
+  });
+});
