@@ -255,3 +255,63 @@ describe("State-amendment guard (D-032)", () => {
     expect(diagnostics.some((d) => /ended inside a State-amendment block/.test(d))).toBe(true);
   });
 });
+
+describe("bracketed chapter heading guard (D-033)", () => {
+  it("recognises an inserted chapter whose bracket and title share the line", () => {
+    // NDPS §68 ended with "[CHAPTER VA [F ORFEITURE OF ILLEGALLY ACQUIRED
+    // PROPERTY]" glued to its body because the anchored pattern missed it.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "CHAPTER V" },
+        { h: 10, text: "PROCEDURE" },
+        { h: 10, text: "7. Officers.—The Central Government may appoint officers." },
+        { h: 10, text: "[CHAPTER VA [F ORFEITURE OF ILLEGALLY ACQUIRED PROPERTY]" },
+        { h: 10, text: "8. Application.—This Chapter applies to every person." },
+      ]),
+    );
+    const { sections, chapters } = parseInlineAct(xml, {});
+    expect(sections.map((s) => s.number)).toEqual(["7", "8"]);
+    // The heading must not trail the previous section's body.
+    expect(sections[0]?.bodyMd).not.toMatch(/CHAPTER|FORFEITURE|ORFEITURE/);
+    expect(chapters.map((c) => c.number)).toEqual(["V", "VA"]);
+    // …and the chapter it opens keeps its name rather than going untitled.
+    expect(chapters[1]?.title.toUpperCase()).toContain("FORFEITURE");
+    // The following section belongs to the new chapter.
+    expect(sections[1]?.chapterNumber).toBe("VA");
+  });
+
+  it("still handles a bare bracketed heading with the title on the next line", () => {
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "[CHAPTER IIA" },
+        { h: 10, text: "NATIONAL FUND FOR CONTROL OF DRUG ABUSE" },
+        { h: 10, text: "5. Constitution of Fund.—The Central Government shall constitute a Fund." },
+      ]),
+    );
+    const { sections, chapters } = parseInlineAct(xml, {});
+    expect(chapters.map((c) => c.number)).toEqual(["IIA"]);
+    expect(sections.map((s) => s.number)).toEqual(["5"]);
+    expect(sections[0]?.bodyMd).not.toMatch(/CHAPTER/);
+  });
+
+  it("does not treat mixed-case body prose mentioning a Part as a heading", () => {
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "3. Application.—Nothing in this section shall apply to a person." },
+        { h: 10, text: "PART II of the Schedule shall be read with this section." },
+        { h: 10, text: "4. Savings.—This Act shall not affect any right." },
+      ]),
+    );
+    const { sections, chapters } = parseInlineAct(xml, {});
+    expect(sections.map((s) => s.number)).toEqual(["3", "4"]);
+    // The point of this guard: a mixed-case line must not open a chapter, and
+    // must not swallow the sections around it. (How the parser otherwise treats
+    // a prose line beginning "PART II …" is pre-existing behaviour and is
+    // deliberately not asserted here.)
+    expect(chapters).toHaveLength(0);
+    expect(sections[1]?.marginalNote).toContain("Savings");
+  });
+});

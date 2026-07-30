@@ -95,6 +95,19 @@ const STATE_AMENDMENT_START = /^STATE\s+AMENDMENTS?\b/;
 const STATE_AMENDMENT_END = /^\[?\s*Vide\b/i;
 // Constitution uses PART headings; other acts CHAPTER. Both fold to chapters.
 const CHAPTER_HEADING = /^(?:CHAPTER|PART)\s*([IVXLCDM]+)([A-Z])?$/;
+/**
+ * The same heading with its TITLE run onto the same line, usually because an
+ * amendment inserted the chapter and the bracket swallowed the line break:
+ * "[CHAPTER VA [F ORFEITURE OF ILLEGALLY ACQUIRED PROPERTY]". The bare pattern
+ * above is anchored, so it missed these and the whole heading was appended to
+ * the previous section's body (D-033 — NDPS §7/§68, NI §137, MV §144).
+ *
+ * The title must be upper-case to match, which is what keeps body prose out:
+ * "…as specified in Part II of the Schedule" is mixed case and never matches.
+ * Drop-capped titles ("F ORFEITURE") are covered by allowing single letters.
+ */
+const CHAPTER_HEADING_INLINE =
+  /^(?:CHAPTER|PART)\s*([IVXLCDM]+)([A-Z])?\s*[[—–-]?\s*([A-Z][A-Z\s,.'()—–-]{5,}?)\s*\]?(?:\s|$)/;
 const ALL_CAPS_LINE = /^[A-Z][A-Z0-9\s,.'()—–-]*$/;
 // Section start: "302. <rest…>" — the run-in title may wrap onto later lines,
 // so the title/body split happens after the whole section is accumulated.
@@ -328,11 +341,24 @@ export function parseInlineAct(
       // continue past a page-number line onto the next page.
       illustrationMode = isIllustrationHeading(flat);
 
-      const chapterMatch = CHAPTER_HEADING.exec(flat);
+      // An inserted chapter carries a leading amendment bracket ("[CHAPTER VA"),
+      // so strip markers before matching — otherwise the heading is not
+      // recognised and lands in the previous section's body (D-033).
+      const chapterLine = flat.replace(LEADING_MARKERS, "");
+      const chapterMatch = CHAPTER_HEADING.exec(chapterLine);
       if (chapterMatch) {
         flush();
         flushChapter();
         pendingChapterNumber = `${chapterMatch[1]}${chapterMatch[2] ?? ""}`;
+        continue;
+      }
+      const chapterInline = CHAPTER_HEADING_INLINE.exec(chapterLine);
+      if (chapterInline) {
+        flush();
+        flushChapter();
+        pendingChapterNumber = `${chapterInline[1]}${chapterInline[2] ?? ""}`;
+        // The title shared the line; keep it so the chapter is not left unnamed.
+        if (chapterInline[3]) pendingChapterTitle.push(chapterInline[3]);
         continue;
       }
       // Section heading, ignoring any leading amendment bracket/marker.
