@@ -20,6 +20,7 @@ export const ACT_ABBREVIATIONS = [
   "NDPS",
   "MV",
   "ARB",
+  "LIM",
 ] as const;
 export type ActAbbreviation = (typeof ACT_ABBREVIATIONS)[number];
 
@@ -43,6 +44,7 @@ export const ACT_SLUG: Record<ActAbbreviation, string> = {
   NDPS: "ndps",
   MV: "mv",
   ARB: "arb",
+  LIM: "lim",
 };
 
 /** Alias → canonical abbreviation. Keys must be lowercase, punctuation-free. */
@@ -93,6 +95,9 @@ const ACT_ALIASES: Record<string, ActAbbreviation> = {
   "arbitration and conciliation": "ARB",
   "arbitration act": "ARB",
   arbitration: "ARB",
+  lim: "LIM",
+  "limitation act": "LIM",
+  limitation: "LIM",
 };
 
 export interface ParsedSectionRef {

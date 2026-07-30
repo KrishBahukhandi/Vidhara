@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "lim",
+    "title": "The Limitation Act, 1963",
+    "shortTitle": "Limitation Act",
+    "abbreviation": "LIM",
+    "year": 1963,
+    "category": "civil",
+    "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/12884"
+  },
+  "provenance": "Official India Code text: The Limitation Act, 1963 (36 of 1963), English PDF (bitstream 123456789/1565/5/A1963-36.pdf, 353,329 bytes, sha256 1ad1f296…) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-07-30. The same handle also carries a Hindi edition (H1963-36.pdf) — the English 'A'-prefixed file is the one ingested. Extracted via pdftotext 26.07 -bbox and @nexlex/ingest inline parser. Automated parse; footnotes/amendment history excluded. THE SCHEDULE (the periods-of-limitation table, Articles 1-137) is NOT ingested as sections — it is a tabular schedule, not sectional text; cite it from the official PDF. Spot-verified; full clause-level proofread pending."
+}
