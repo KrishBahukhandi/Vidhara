@@ -315,3 +315,84 @@ describe("bracketed chapter heading guard (D-033)", () => {
     expect(sections[1]?.marginalNote).toContain("Savings");
   });
 });
+
+/**
+ * A line whose words are set at different sizes — a small-caps heading, where
+ * the enlarged first letter is body height and the rest is footnote height.
+ */
+function mixedLine(y: number, parts: Array<{ h: number; text: string }>): string {
+  let x = 200;
+  const out: string[] = [];
+  for (const { h, text } of parts) {
+    for (const token of text.split(" ")) {
+      out.push(word(x, y, h, token));
+      x += token.length * 5 + 5;
+    }
+  }
+  return out.join("\n");
+}
+
+describe("parseInlineAct chapter headings", () => {
+  it("reads a bare PART II as a division, not the Gazette masthead", () => {
+    // "PART II" was furniture because the Gazette masthead says "[PART II—SEC.
+    // 3(i)]". That dropped the Constitution's PART II (Citizenship) and the
+    // Limitation Act's PART II, and left their sections under the wrong part.
+    const xhtml = doc(
+      [
+        lines([PREAMBLE, { h: 10, text: "1. Short title.—This Act may be called X." }]),
+        mixedLine(100, [{ h: 10, text: "PART II" }]),
+        mixedLine(114, [
+          { h: 10, text: "L" },
+          { h: 8.1, text: "IMITATION OF SUITS" },
+        ]),
+        lines([{ h: 10, text: "3. Bar of limitation.—Every suit shall be dismissed." }], 130),
+      ].join("\n"),
+    );
+
+    const { sections, chapters } = parseInlineAct(xhtml, {});
+    expect(chapters.map((c) => c.number)).toContain("II");
+    // The small type after the heading is the title, not a footnote.
+    expect(chapters.find((c) => c.number === "II")?.title).toBe("LIMITATION OF SUITS");
+    expect(sections.find((s) => s.number === "3")?.chapterNumber).toBe("II");
+    // …and none of the heading leaked into a section body.
+    expect(sections.find((s) => s.number === "1")?.bodyMd).not.toContain("L");
+  });
+
+  it("still drops the Gazette masthead in both its printed forms", () => {
+    const xhtml = doc(
+      lines([
+        PREAMBLE,
+        { h: 10, text: "1. Short title.—This Act may be called X." },
+        { h: 10, text: "[PART II—SEC. 3(i)]" },
+        { h: 10, text: "Part II, sec. 3(ii)." },
+        { h: 10, text: "2. Definitions.—In this Act, unless the context otherwise requires." },
+      ]),
+    );
+
+    const { sections, chapters } = parseInlineAct(xhtml, {});
+    expect(chapters).toHaveLength(0);
+    for (const section of sections) {
+      expect(section.bodyMd).not.toContain("SEC. 3(i)");
+      expect(section.bodyMd).not.toContain("sec. 3(ii)");
+    }
+  });
+
+  it("keeps a part title that legitimately begins with SEC", () => {
+    // The masthead is identified by its numbered section reference; a title
+    // like "SECURITY FOR COSTS" has no digit and must survive.
+    const xhtml = doc(
+      [
+        lines([PREAMBLE, { h: 10, text: "1. Short title.—This Act may be called X." }]),
+        mixedLine(100, [{ h: 10, text: "PART III" }]),
+        mixedLine(114, [
+          { h: 10, text: "S" },
+          { h: 8.1, text: "ECURITY FOR COSTS" },
+        ]),
+        lines([{ h: 10, text: "3. Deposit.—The court may order security." }], 130),
+      ].join("\n"),
+    );
+
+    const { chapters } = parseInlineAct(xhtml, {});
+    expect(chapters.find((c) => c.number === "III")?.title).toBe("SECURITY FOR COSTS");
+  });
+});

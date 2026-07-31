@@ -59,6 +59,118 @@ export type Database = {
           },
         ]
       }
+      act_schedule_articles: {
+        Row: {
+          commencement: string
+          created_at: string
+          description: string
+          division: string | null
+          fts: unknown
+          id: string
+          number: string
+          part_number: string | null
+          part_title: string | null
+          period: string
+          rows: Json
+          schedule_id: string
+          sort_key: number
+          updated_at: string
+        }
+        Insert: {
+          commencement: string
+          created_at?: string
+          description: string
+          division?: string | null
+          fts?: unknown
+          id?: string
+          number: string
+          part_number?: string | null
+          part_title?: string | null
+          period: string
+          rows: Json
+          schedule_id: string
+          sort_key: number
+          updated_at?: string
+        }
+        Update: {
+          commencement?: string
+          created_at?: string
+          description?: string
+          division?: string | null
+          fts?: unknown
+          id?: string
+          number?: string
+          part_number?: string | null
+          part_title?: string | null
+          period?: string
+          rows?: Json
+          schedule_id?: string
+          sort_key?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "act_schedule_articles_schedule_id_fkey"
+            columns: ["schedule_id"]
+            isOneToOne: false
+            referencedRelation: "act_schedules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      act_schedules: {
+        Row: {
+          act_id: string
+          authority_note: string | null
+          column_labels: string[]
+          created_at: string
+          id: string
+          provenance: string | null
+          review_status: string
+          slug: string
+          sort_order: number
+          subtitle: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          act_id: string
+          authority_note?: string | null
+          column_labels: string[]
+          created_at?: string
+          id?: string
+          provenance?: string | null
+          review_status?: string
+          slug: string
+          sort_order?: number
+          subtitle?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          act_id?: string
+          authority_note?: string | null
+          column_labels?: string[]
+          created_at?: string
+          id?: string
+          provenance?: string | null
+          review_status?: string
+          slug?: string
+          sort_order?: number
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "act_schedules_act_id_fkey"
+            columns: ["act_id"]
+            isOneToOne: false
+            referencedRelation: "acts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       act_sections: {
         Row: {
           act_id: string

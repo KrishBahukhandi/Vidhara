@@ -15,6 +15,7 @@ import { Suspense, useEffect, useRef } from "react";
 
 export type EventName =
   | "act_opened"
+  | "schedule_opened"
   | "section_viewed"
   | "mapping_card_viewed"
   | "mapping_lookup"

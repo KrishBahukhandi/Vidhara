@@ -58,7 +58,18 @@ export const FURNITURE = [
   // "notification in the Gazette of India" (an /i here ate IEA §113 whole).
   /THE GAZETTE OF INDIA/,
   /^\s*EXTRAORDINARY\s*$/i,
-  /^\s*\[?PART\s+II\b/i,
+  // The Gazette masthead reads "[PART II—SEC. 3(i)]" — that is the *Gazette's*
+  // part, not the act's. Matching "PART II" alone also ate real divisions:
+  // the Constitution's PART II (Citizenship, arts. 5-11) and the Limitation
+  // Act's PART II were both dropped, taking their sections' chapter with them.
+  // The masthead is identified by its bracket or its SEC reference instead; a
+  // bare "PART II" line is an act division and must reach the chapter matcher.
+  // The masthead always cites a numbered Gazette section — "[PART II—SEC.
+  // 3(i)]", "Part II, sec. 3(ii)." — so require that shape (or the bracket).
+  // A title merely starting with "SEC" ("PART III—SECURITY FOR COSTS") has no
+  // digit after it and is left alone.
+  /^\s*\[\s*PART\s+[IVXLCDM]+\b/i,
+  /^\s*PART\s+[IVXLCDM]+\b.{0,12}\bSEC(?:TION)?\.?\s*\d/i,
   /^\s*SEC\.?\s*\d+\]/i,
   /^[\s_]+$/,
   /^\s*\d+\s*$/, // bare page numbers
@@ -84,6 +95,12 @@ export const ENACTMENT = /B\s?E\s+it\s+enacted\s+by\s+Parliament/i;
  * "A NEW TRIAL") does not occur in the ingested corpus — audit new acts'
  * chapter diffs on ingest.
  */
+/** Two-letter capitals that are words, not drop-cap fragments — these must
+ * never be glued to the token that follows them. */
+const STANDALONE_CAPS = new Set([
+  "OF", "TO", "IN", "ON", "BY", "OR", "AT", "AS", "IS", "IT", "AN", "NO", "IF", "UP", "BE", "DO", "SO", "US", "WE", "MY",
+]);
+
 export function normalizeChapterTitle(raw: string): string {
   const tokens = raw.replace(/\s+/g, " ").trim().split(" ");
 
@@ -101,7 +118,13 @@ export function normalizeChapterTitle(raw: string): string {
   for (let i = 0; i < afterOf.length; i++) {
     const cur = afterOf[i]!;
     const next = afterOf[i + 1];
-    if (/^[A-Z]$/.test(cur) && next && /^[A-Z]{2,}[A-Z'’-]*$/.test(next)) {
+    // A fragment is 1-2 capitals that are not a word in their own right: the
+    // Limitation Act prints "CO MPUTATION" (pdftotext kept the drop cap with
+    // the letter after it), while "OF PERIOD" must stay two words. `next` may
+    // carry the source's punctuation ("B ILLS" → "N OTES," in the NI Act), so
+    // a trailing comma or period must not defeat the join.
+    const isFragment = /^[A-Z]{1,2}$/.test(cur) && !STANDALONE_CAPS.has(cur);
+    if (isFragment && next && /^[A-Z]{2,}[A-Z'’-]*[,.;:]?$/.test(next)) {
       joined.push(cur + next);
       i++;
     } else {

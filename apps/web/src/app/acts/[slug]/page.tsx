@@ -8,6 +8,7 @@ import {
   getActBySlug,
   listActs,
   listChaptersByAct,
+  listSchedulesByAct,
   listSectionsByAct,
 } from "@/features/acts/queries";
 import { TrackEvent } from "@/lib/analytics";
@@ -43,9 +44,10 @@ export default async function ActPage({ params }: { params: Promise<Params> }) {
   const act = await getActBySlug(slug);
   if (!act) notFound();
 
-  const [sections, chapters] = await Promise.all([
+  const [sections, chapters, schedules] = await Promise.all([
     listSectionsByAct(slug),
     listChaptersByAct(slug),
+    listSchedulesByAct(slug),
   ]);
 
   return (
@@ -63,6 +65,28 @@ export default async function ActPage({ params }: { params: Promise<Params> }) {
         {act.abbreviation} · {act.year}
         {act.status !== "active" ? " · no longer in force" : ""}
       </p>
+
+      {schedules.length > 0 ? (
+        <nav className="mt-6 rounded-md border border-border bg-surface p-4" aria-label="Schedules">
+          <p className="text-small font-semibold uppercase tracking-wide text-text-muted">
+            Schedules
+          </p>
+          <ul className="mt-2 space-y-1">
+            {schedules.map((schedule) => (
+              <li key={schedule.id}>
+                <Link
+                  href={`/acts/${slug}/schedule/${schedule.slug}`}
+                  className="text-body font-medium text-brand hover:underline">
+                  {schedule.title}
+                  {schedule.subtitle ? (
+                    <span className="font-normal text-text-muted"> — {schedule.subtitle}</span>
+                  ) : null}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ) : null}
 
       {sections.length === 0 ? (
         <p className="mt-8 text-body text-text-muted">

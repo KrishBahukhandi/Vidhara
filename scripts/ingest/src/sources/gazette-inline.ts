@@ -247,15 +247,27 @@ export function parseInlineAct(
     for (const line of groupIntoLines(words)) {
       // Legacy view: body-height words only — everything below routes through
       // the illustration/footnote branch and NEVER reaches the pipeline.
-      const flat = line
+      const bodyHeight = line
         .filter((w) => w.height >= MIN_BODY_HEIGHT)
         .map((w) => w.text)
         .join(" ")
         .replace(/\s+/g, " ")
         .trim();
+      const fullLine = line.map((w) => w.text).join(" ").replace(/\s+/g, " ").trim();
+      // A chapter title is set in small caps with an enlarged first letter, so
+      // the height filter alone truncated the Limitation Act's part titles to
+      // "P", "CO", "A", "M" — and dropped its PART II heading's title outright.
+      // Recovering the small type is only safe while a title is actually being
+      // collected: applied to every all-caps line it also drags in the
+      // letter-spaced cross-headings that sit between sections ("P R E S E N T
+      // M E N T" above NI §60), which belong to no section's body.
+      const flat =
+        bodyHeight && pendingChapterNumber !== null && ALL_CAPS_LINE.test(fullLine)
+          ? fullLine
+          : bodyHeight;
       const isSmallLine = !flat;
       if (isSmallLine) {
-        const full = line.map((w) => w.text).join(" ").replace(/\s+/g, " ").trim();
+        const full = fullLine;
         if (!full || !started) continue;
         // A small-type "Illustrations" heading opens a block too (ICA prints
         // one at 7.2pt); body-height headings are handled below.

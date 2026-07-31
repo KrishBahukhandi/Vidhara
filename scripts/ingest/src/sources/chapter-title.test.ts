@@ -38,4 +38,25 @@ describe("normalizeChapterTitle", () => {
     expect(normalizeChapterTitle("PRELIMINARY")).toBe("PRELIMINARY");
     expect(normalizeChapterTitle("OF PUNISHMENTS")).toBe("OF PUNISHMENTS");
   });
+
+  it("re-joins a two-letter drop-cap fragment", () => {
+    // The Limitation Act's Part III: pdftotext kept the enlarged "C" with the
+    // letter after it, so the single-letter rule left "CO MPUTATION".
+    expect(normalizeChapterTitle("CO MPUTATION OF PERIOD OF LIMITATION")).toBe(
+      "COMPUTATION OF PERIOD OF LIMITATION",
+    );
+  });
+
+  it("re-joins across the source's own punctuation", () => {
+    // NI Act: "N OTES," carries a comma, which defeated the join and left the
+    // drop cap stranded as its own word.
+    expect(normalizeChapterTitle("O F N OTES, B ILLS AND C HEQUES")).toBe(
+      "OF NOTES, BILLS AND CHEQUES",
+    );
+  });
+
+  it("never glues a two-letter word to what follows it", () => {
+    expect(normalizeChapterTitle("OF PERIOD OF LIMITATION")).toBe("OF PERIOD OF LIMITATION");
+    expect(normalizeChapterTitle("AN ACT TO CONSOLIDATE")).toBe("AN ACT TO CONSOLIDATE");
+  });
 });

@@ -1,0 +1,16 @@
+{
+  "actSlug": "lim",
+  "schedule": {
+    "slug": "schedule",
+    "title": "The Schedule",
+    "subtitle": "Periods of Limitation",
+    "authorityNote": "See sections 2(j) and 3",
+    "columnLabels": [
+      "Description of suit",
+      "Period of limitation",
+      "Time from which period begins to run"
+    ],
+    "sortOrder": 0
+  },
+  "provenance": "Official India Code text: THE SCHEDULE (Periods of Limitation) to the Limitation Act, 1963 (36 of 1963), Articles 1-137, from the English PDF (bitstream 123456789/1565/5/A1963-36.pdf, 353,329 bytes, sha256 1ad1f296...) fetched from indiacode.nic.in on 2026-07-30. Extracted with pdftotext 26.07 -bbox and the @nexlex/ingest schedule-table parser (geometric column split, boundaries self-calibrated at x=268/x=325). Verified lossless against the source: word-token multisets of the parsed cells and the PDF's schedule region match exactly (4,581 tokens each). Superscript amendment markers (the '1' of '1[Sixty days]') are footnote references, not statutory text, and are not carried over; the bracketed text they annotate is. One repair: Article 40 reads 'bynon-' in the PDF's own text layer (a kerning artefact, as in s.28) and is set to 'by non-acceptance'. Automated parse; footnotes and amendment history excluded. Spot-verified; full article-level proofread pending."
+}

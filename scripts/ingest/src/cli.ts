@@ -17,11 +17,13 @@ import { readFileSync, writeFileSync } from "node:fs";
 import process from "node:process";
 
 import { emitSqlFromRaw } from "./emit-sql";
-import { publishBundle, type PublishOptions } from "./publish";
+import { publishBundle, publishSchedule, type PublishOptions } from "./publish";
+import { scheduleBundleSchema } from "./schema";
 import { parseGazetteBBox } from "./sources/gazette-bbox";
 import { parseInlineAct } from "./sources/gazette-inline";
 import { parseGazetteLayoutText } from "./sources/gazette-pdf";
 import { parseNcrbTable } from "./sources/ncrb-table";
+import { parseScheduleTable } from "./sources/schedule-table";
 import { validateBundle } from "./validate";
 
 function loadBundle(path: string): unknown {
@@ -103,10 +105,12 @@ async function main(): Promise<void> {
   if (
     !command ||
     !bundlePath ||
-    !["validate", "publish", "parse-gazette", "parse-ncrb", "emit-sql"].includes(command)
+    !["validate", "publish", "parse-gazette", "parse-ncrb", "parse-schedule", "publish-schedule", "emit-sql"].includes(
+      command,
+    )
   ) {
     console.error(
-      "Usage: ingest <parse-gazette|validate|publish|emit-sql> <file> [--meta m.json] [--out f] [--status s] [--publish-act]",
+      "Usage: ingest <parse-gazette|parse-schedule|validate|publish|publish-schedule|emit-sql> <file> [--meta m.json] [--out f] [--status s] [--publish-act]",
     );
     process.exit(1);
   }
@@ -138,6 +142,64 @@ async function main(): Promise<void> {
     writeFileSync(outPath, `${JSON.stringify({ oldAct, newAct, provenance, entries }, null, 2)}\n`);
     console.log(`Parsed ${entries.length} mapping entries → ${outPath}`);
     console.log(`  by type: ${JSON.stringify(byType)}`);
+    return;
+  }
+
+  if (command === "parse-schedule") {
+    const metaIndex = flags.indexOf("--meta");
+    const outIndex = flags.indexOf("--out");
+    const startIndex = flags.indexOf("--start-at");
+    const metaPath = metaIndex >= 0 ? flags[metaIndex + 1] : undefined;
+    const outPath = outIndex >= 0 ? flags[outIndex + 1] : undefined;
+    if (!metaPath || !outPath) {
+      console.error(
+        "Usage: ingest parse-schedule <bbox.xhtml> --meta <schedule-meta.json> --out <bundle.json> [--start-at 'THE SCHEDULE']",
+      );
+      process.exit(1);
+    }
+
+    const meta = JSON.parse(readFileSync(metaPath, "utf8")) as Record<string, unknown>;
+    const result = parseScheduleTable(
+      readFileSync(bundlePath, "utf8"),
+      startIndex >= 0 ? flags[startIndex + 1] : undefined,
+    );
+    for (const diagnostic of result.diagnostics) console.warn(`  ⚠ ${diagnostic}`);
+
+    writeFileSync(outPath, `${JSON.stringify({ ...meta, articles: result.articles }, null, 2)}\n`);
+    const rows = result.articles.reduce((total, article) => total + article.rows.length, 0);
+    console.log(
+      `Parsed ${result.articles.length} article(s), ${rows} row(s), ${result.divisions.length} division(s) → ${outPath}`,
+    );
+    console.log("Next: ingest publish-schedule, after spot-checking against the PDF.");
+    return;
+  }
+
+  if (command === "publish-schedule") {
+    const parsed = scheduleBundleSchema.safeParse(loadBundle(bundlePath));
+    if (!parsed.success) {
+      for (const issue of parsed.error.issues) {
+        console.error(`  ✖ ${issue.path.join(".") || "(root)"}: ${issue.message}`);
+      }
+      console.error(`\nValidation FAILED (${parsed.error.issues.length} error(s)).`);
+      process.exit(1);
+    }
+
+    const statusFlag = flags.indexOf("--status");
+    const reviewStatus = (statusFlag >= 0 ? flags[statusFlag + 1] : "draft") as
+      PublishOptions["reviewStatus"];
+    if (!["draft", "reviewed", "published"].includes(reviewStatus)) {
+      console.error(`Invalid --status "${reviewStatus}"`);
+      process.exit(1);
+    }
+
+    const rows = parsed.data.articles.reduce((total, article) => total + article.rows.length, 0);
+    console.log(
+      `Validation OK: ${parsed.data.actSlug}/${parsed.data.schedule.slug} — ${parsed.data.articles.length} article(s), ${rows} row(s).`,
+    );
+    const result = await publishSchedule(parsed.data, { reviewStatus, publishAct: false });
+    console.log(
+      `Published: schedule ${result.scheduleId} · ${result.articles} article(s) · review_status=${reviewStatus}`,
+    );
     return;
   }
 

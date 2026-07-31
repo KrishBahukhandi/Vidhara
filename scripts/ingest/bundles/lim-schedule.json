@@ -1,0 +1,1972 @@
+{
+  "actSlug": "lim",
+  "schedule": {
+    "slug": "schedule",
+    "title": "The Schedule",
+    "subtitle": "Periods of Limitation",
+    "authorityNote": "See sections 2(j) and 3",
+    "columnLabels": [
+      "Description of suit",
+      "Period of limitation",
+      "Time from which period begins to run"
+    ],
+    "sortOrder": 0
+  },
+  "provenance": "Official India Code text: THE SCHEDULE (Periods of Limitation) to the Limitation Act, 1963 (36 of 1963), Articles 1-137, from the English PDF (bitstream 123456789/1565/5/A1963-36.pdf, 353,329 bytes, sha256 1ad1f296...) fetched from indiacode.nic.in on 2026-07-30. Extracted with pdftotext 26.07 -bbox and the @nexlex/ingest schedule-table parser (geometric column split, boundaries self-calibrated at x=268/x=325). Verified lossless against the source: word-token multisets of the parsed cells and the PDF's schedule region match exactly (4,581 tokens each). Superscript amendment markers (the '1' of '1[Sixty days]') are footnote references, not statutory text, and are not carried over; the bracketed text they annotate is. One repair: Article 40 reads 'bynon-' in the PDF's own text layer (a kerning artefact, as in s.28) and is set to 'by non-acceptance'. Automated parse; footnotes and amendment history excluded. Spot-verified; full article-level proofread pending.",
+  "articles": [
+    {
+      "number": "1",
+      "division": "First Division — Suits",
+      "partNumber": "I",
+      "partTitle": "Suits Relating to Accounts",
+      "rows": [
+        {
+          "description": "For the balance due on a mutual, open and current account, where there have been reciprocal demands between the parties.",
+          "period": "Three years.",
+          "commencement": "The close of the year in which the last item admitted or proved is entered in the account; such year to be computed as in the account."
+        }
+      ]
+    },
+    {
+      "number": "2",
+      "division": "First Division — Suits",
+      "partNumber": "I",
+      "partTitle": "Suits Relating to Accounts",
+      "rows": [
+        {
+          "description": "Against a factor for an account.",
+          "period": "Three years.",
+          "commencement": "When the account is, during the continuance of the agency, demanded and refused or, where no such demand is made, when the agency terminates."
+        }
+      ]
+    },
+    {
+      "number": "3",
+      "division": "First Division — Suits",
+      "partNumber": "I",
+      "partTitle": "Suits Relating to Accounts",
+      "rows": [
+        {
+          "description": "By a principal against his agent for movable property received by the latter and not accounted for.",
+          "period": "Three years.",
+          "commencement": "When the account is, during the continuance of the agency, demanded and refused or, where no such demand is made, when the agency terminates."
+        }
+      ]
+    },
+    {
+      "number": "4",
+      "division": "First Division — Suits",
+      "partNumber": "I",
+      "partTitle": "Suits Relating to Accounts",
+      "rows": [
+        {
+          "description": "Other suits by principals against agents for neglect or misconduct.",
+          "period": "Three years.",
+          "commencement": "When the neglect or misconduct becomes known to the plaintiff."
+        }
+      ]
+    },
+    {
+      "number": "5",
+      "division": "First Division — Suits",
+      "partNumber": "I",
+      "partTitle": "Suits Relating to Accounts",
+      "rows": [
+        {
+          "description": "For an account and a share of the profits of a dissolved partnership.",
+          "period": "Three years.",
+          "commencement": "The date of the dissolution."
+        }
+      ]
+    },
+    {
+      "number": "6",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For a seaman’s wages",
+          "period": "Three years.",
+          "commencement": "The end of the voyage during which the wages are earned."
+        }
+      ]
+    },
+    {
+      "number": "7",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For wages in the case of any other person.",
+          "period": "Three years.",
+          "commencement": "When the wages accrue due."
+        }
+      ]
+    },
+    {
+      "number": "8",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For the price of food or drink sold by the keeper of a hotel, tavern or lodging-house.",
+          "period": "Three years.",
+          "commencement": "When the food or drink is delivered."
+        }
+      ]
+    },
+    {
+      "number": "9",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For the price of lodging.",
+          "period": "Three years.",
+          "commencement": "When the price becomes payable."
+        }
+      ]
+    },
+    {
+      "number": "10",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "Against a carrier for compensation for losing or injuring goods.",
+          "period": "Three years.",
+          "commencement": "When the loss or injury occurs."
+        }
+      ]
+    },
+    {
+      "number": "11",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "Against a carrier for compensation for non-delivery of, or delay in delivering, goods.",
+          "period": "Three years.",
+          "commencement": "When the goods ought to be delivered."
+        }
+      ]
+    },
+    {
+      "number": "12",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For the hire of animals, vehicles, boats or household furniture.",
+          "period": "Three years.",
+          "commencement": "When the hire becomes payable."
+        }
+      ]
+    },
+    {
+      "number": "13",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For the balance of money advanced in payment of goods to be delivered.",
+          "period": "Three years.",
+          "commencement": "When the goods ought to be delivered."
+        }
+      ]
+    },
+    {
+      "number": "14",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For the price of goods sold and delivered where no fixed period of credit is agreed upon.",
+          "period": "Three years.",
+          "commencement": "The date of the delivery of the goods."
+        }
+      ]
+    },
+    {
+      "number": "15",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For the price of goods sold and delivered to be paid for after the expiry of a fixed period of credit.",
+          "period": "Three years.",
+          "commencement": "When the period of credit expires."
+        }
+      ]
+    },
+    {
+      "number": "16",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For the price of goods sold and delivered to be paid for by a bill of exchange, no such bill being given.",
+          "period": "Three years.",
+          "commencement": "When the period of the proposed bill elapses."
+        }
+      ]
+    },
+    {
+      "number": "17",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For the price of trees or growing crops sold by the plaintiff to the defendant where no fixed period of credit is agreed upon.",
+          "period": "Three years.",
+          "commencement": "The date of the sale."
+        }
+      ]
+    },
+    {
+      "number": "18",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For the price of work done by the plaintiff for the defendant at his request, where no time has been fixed for payment.",
+          "period": "Three years.",
+          "commencement": "When the work is done."
+        }
+      ]
+    },
+    {
+      "number": "19",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For money payable for money lent.",
+          "period": "Three years.",
+          "commencement": "When the loan is made."
+        }
+      ]
+    },
+    {
+      "number": "20",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "Like suit when the lender has given a cheque for the money.",
+          "period": "Three years.",
+          "commencement": "When the cheque is paid."
+        }
+      ]
+    },
+    {
+      "number": "21",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For money lent under an agreement that it shall be payable on demand.",
+          "period": "Three years.",
+          "commencement": "When the loan is made."
+        }
+      ]
+    },
+    {
+      "number": "22",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For money deposited under an agreement that it shall be payable on demand, including money of a customer in the hands of his banker so payable.",
+          "period": "Three years.",
+          "commencement": "When the demand is made."
+        }
+      ]
+    },
+    {
+      "number": "23",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For money payable to the plaintiff for money paid for the defendant.",
+          "period": "Three years.",
+          "commencement": "When the money is paid."
+        }
+      ]
+    },
+    {
+      "number": "24",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For money payable by the defendant to the plaintiff for money received by the defendant, for the plaintiff's use.",
+          "period": "Three years.",
+          "commencement": "When the money is received."
+        }
+      ]
+    },
+    {
+      "number": "25",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For money payable for interest upon money due from the defendant to the plaintiff.",
+          "period": "Three years.",
+          "commencement": "When the interest becomes due."
+        }
+      ]
+    },
+    {
+      "number": "26",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For money payable to the plaintiff for money found to be due from the defendant to the plaintiff on accounts stated between them.",
+          "period": "Three years.",
+          "commencement": "When the accounts are stated in writing signed by the defendant or his agent duly authorised in this behalf, unless where the debt is, by a simultaneous agreement in writing signed as aforesaid, made payable at a future time, and then when that time arrives."
+        }
+      ]
+    },
+    {
+      "number": "27",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For compensation for breach of a promise to do anything at a specified time, or upon the happening of a specified contingency.",
+          "period": "Three years.",
+          "commencement": "When the time specified arrives or the contingency happens."
+        }
+      ]
+    },
+    {
+      "number": "28",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "On a single bond, where a day is specified for payment.",
+          "period": "Three years.",
+          "commencement": "The day so specified."
+        }
+      ]
+    },
+    {
+      "number": "29",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "On a single bond, where no such day is specified.",
+          "period": "Three years.",
+          "commencement": "The date of executing the bond."
+        }
+      ]
+    },
+    {
+      "number": "30",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "On a bond subject to a condition.",
+          "period": "Three years.",
+          "commencement": "When the condition is broken."
+        }
+      ]
+    },
+    {
+      "number": "31",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "On a bill of exchange or promissory note payable at a fixed time after date.",
+          "period": "Three years.",
+          "commencement": "When the bill or note falls due."
+        }
+      ]
+    },
+    {
+      "number": "32",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "On a bill of exchange payable at sight, or after sight, but not at a fixed time.",
+          "period": "Three years.",
+          "commencement": "When the bill is presented."
+        }
+      ]
+    },
+    {
+      "number": "33",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "On a bill of exchange accepted payable at a particular place.",
+          "period": "Three years.",
+          "commencement": "When the bill is presented at that place."
+        }
+      ]
+    },
+    {
+      "number": "34",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "On a bill of exchange or promissory note payable at a fixed time after sight or after demand.",
+          "period": "Three years.",
+          "commencement": "When the fixed time expires."
+        }
+      ]
+    },
+    {
+      "number": "35",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "On a bill of exchange or promissory note payable on demand and not accompanied by any writing restraining or postponing the right to sue.",
+          "period": "Three years.",
+          "commencement": "The date of the bill or note."
+        }
+      ]
+    },
+    {
+      "number": "36",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "On a promissory note or bond payable by instalments.",
+          "period": "Three years.",
+          "commencement": "The expiration of the first term of payment as to the part then payable; and for the other parts, the expiration of the respective terms of payment."
+        }
+      ]
+    },
+    {
+      "number": "37",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "On a promissory note or bond payable by instalments, which provides that, if default be made in payment of one or more instalments, the whole shall be due.",
+          "period": "Three years.",
+          "commencement": "When the default is made, unless where the payee or obligee waives the benefit of the provision and then when fresh default is made in respect of which there is no such waiver."
+        }
+      ]
+    },
+    {
+      "number": "38",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "On a promissory note given by the maker to a third person to be delivered to the payee after a certain event should happen.",
+          "period": "Three years.",
+          "commencement": "The date of the delivery to the payee."
+        }
+      ]
+    },
+    {
+      "number": "39",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "On a dishonoured foreign bill where protest has been made and notice given.",
+          "period": "Three years.",
+          "commencement": "When the notice is given."
+        }
+      ]
+    },
+    {
+      "number": "40",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "By the payee against the drawer of a bill of exchange, which has been dishonoured by non-acceptance.",
+          "period": "Three years.",
+          "commencement": "The date of the refusal to accept."
+        }
+      ]
+    },
+    {
+      "number": "41",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "By the acceptor of an accommodation-bill against the drawer.",
+          "period": "Three years.",
+          "commencement": "When the acceptor pays the amount of the bill."
+        }
+      ]
+    },
+    {
+      "number": "42",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "By a surety against the principal debtor.",
+          "period": "Three years.",
+          "commencement": "When the surety pays the creditor."
+        }
+      ]
+    },
+    {
+      "number": "43",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "By a surety against a co-surety.",
+          "period": "Three years.",
+          "commencement": "When the surety pays anything in excess of his own share."
+        }
+      ]
+    },
+    {
+      "number": "44",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "label": "(a)",
+          "description": "(a) On a policy of insurance when the sum insured is payable after proof of the death has been given to or received by the insurers.",
+          "period": "Three years.",
+          "commencement": "The date of the death of the deceased, or where the claim on the policy is denied, either partly or wholly, the date of such denial."
+        },
+        {
+          "label": "(b)",
+          "description": "(b) On a policy of insurance when the sum insured is payable after proof of the loss has been given to or received by the insurers.",
+          "period": "Three years.",
+          "commencement": "The date of the occurrence causing the loss, or where the claim on the policy is denied, either partly or wholly, the date of such denial."
+        }
+      ]
+    },
+    {
+      "number": "45",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "By the assured to recover premia paid under a policy voidable at the election of the insurers.",
+          "period": "Three years.",
+          "commencement": "When the insurers elect to avoid the policy."
+        }
+      ]
+    },
+    {
+      "number": "46",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "Under the Indian Succession Act, 1925 (39 of 1925), section 360 or section 361, to compel a refund by a person to whom an executor or administrator has paid a legacy or distributed assets.",
+          "period": "Three years.",
+          "commencement": "The date of the payment or distribution."
+        }
+      ]
+    },
+    {
+      "number": "47",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For money paid upon an existing consideration which afterwards fails.",
+          "period": "Three years.",
+          "commencement": "The date of the failure."
+        }
+      ]
+    },
+    {
+      "number": "48",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For contribution by a party who has paid the whole or more than his share of the amount due under a joint decree, or by a sharer in a joint estate who has paid the whole or more than his share of the amount of revenue due from himself and his co-sharers.",
+          "period": "Three years.",
+          "commencement": "The date of the payment in excess of the plaintiff’s own share."
+        }
+      ]
+    },
+    {
+      "number": "49",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "By a co-trustee to enforce against the estate of a deceased trustee a claim for contribution.",
+          "period": "Three years.",
+          "commencement": "When the right to contribution accrues."
+        }
+      ]
+    },
+    {
+      "number": "50",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "By the manager of a joint estate of an undivided family for contribution, in respect of a payment made by him on account of the estate.",
+          "period": "Three years.",
+          "commencement": "The date of the payment."
+        }
+      ]
+    },
+    {
+      "number": "51",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For the profits of immovable property belonging to the plaintiff which have been wrongfully received by the defendant.",
+          "period": "Three years.",
+          "commencement": "When the profits are received."
+        }
+      ]
+    },
+    {
+      "number": "52",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For arrears of rent.",
+          "period": "Three years.",
+          "commencement": "When the arrears become due."
+        }
+      ]
+    },
+    {
+      "number": "53",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "By a vendor of immovable property for personal payment of unpaid purchase-money.",
+          "period": "Three years.",
+          "commencement": "The time fixed for completing the sale, or (where the title is accepted after the time fixed for completion) the date of the acceptance."
+        }
+      ]
+    },
+    {
+      "number": "54",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For specific performance of a contract.",
+          "period": "Three years.",
+          "commencement": "The date fixed for the performance, or, if no such date is fixed, when the plaintiff has notice that performance is refused."
+        }
+      ]
+    },
+    {
+      "number": "55",
+      "division": "First Division — Suits",
+      "partNumber": "II",
+      "partTitle": "Suits Relating to Contracts",
+      "rows": [
+        {
+          "description": "For compensation for the breach of any contract, express or implied not herein specially provided for.",
+          "period": "Three years.",
+          "commencement": "When the contract is broken or (where there are successive breaches) when the breach in respect of which the suit is instituted occurs or (where the breach is continuing) when it ceases."
+        }
+      ]
+    },
+    {
+      "number": "56",
+      "division": "First Division — Suits",
+      "partNumber": "III",
+      "partTitle": "Suits Relating to Declarations",
+      "rows": [
+        {
+          "description": "To declare the forgery of an instrument issued or registered.",
+          "period": "Three years.",
+          "commencement": "When the issue or registration becomes known to the plaintiff."
+        }
+      ]
+    },
+    {
+      "number": "57",
+      "division": "First Division — Suits",
+      "partNumber": "III",
+      "partTitle": "Suits Relating to Declarations",
+      "rows": [
+        {
+          "description": "To obtain a declaration that an alleged adoption is invalid, or never, in fact, took place.",
+          "period": "Three years.",
+          "commencement": "When the alleged adoption becomes known to the plaintiff."
+        }
+      ]
+    },
+    {
+      "number": "58",
+      "division": "First Division — Suits",
+      "partNumber": "III",
+      "partTitle": "Suits Relating to Declarations",
+      "rows": [
+        {
+          "description": "To obtain any other declaration.",
+          "period": "Three years.",
+          "commencement": "When the right to sue first accrues."
+        }
+      ]
+    },
+    {
+      "number": "59",
+      "division": "First Division — Suits",
+      "partNumber": "IV",
+      "partTitle": "Suits Relating to Decrees and Instruments",
+      "rows": [
+        {
+          "description": "To cancel or set aside an instrument or decree or for the rescission of a contract.",
+          "period": "Three years.",
+          "commencement": "When the facts entitling the plaintiff to have the instrument or decree cancelled or set aside or the contract rescinded first become known to him."
+        }
+      ]
+    },
+    {
+      "number": "60",
+      "division": "First Division — Suits",
+      "partNumber": "IV",
+      "partTitle": "Suits Relating to Decrees and Instruments",
+      "rows": [
+        {
+          "description": "To set aside a transfer of property made by the guardian of a ward—",
+          "period": "",
+          "commencement": ""
+        },
+        {
+          "label": "(a)",
+          "description": "(a) by the ward who has attained majority;",
+          "period": "Three years.",
+          "commencement": "When the ward attains majority."
+        },
+        {
+          "label": "(b)",
+          "description": "(b) by the ward’s legal representative—",
+          "period": "",
+          "commencement": ""
+        },
+        {
+          "label": "(i)",
+          "description": "(i) when the ward dies within three years from the date of attaining majority.",
+          "period": "Three years.",
+          "commencement": "When the ward attains majority."
+        },
+        {
+          "label": "(ii)",
+          "description": "(ii) when the ward dies before attaining majority.",
+          "period": "Three years.",
+          "commencement": "When the ward dies."
+        }
+      ]
+    },
+    {
+      "number": "61",
+      "division": "First Division — Suits",
+      "partNumber": "V",
+      "partTitle": "Suits Relating to Immovable Property",
+      "rows": [
+        {
+          "description": "By a mortgagor—",
+          "period": "",
+          "commencement": ""
+        },
+        {
+          "label": "(a)",
+          "description": "(a) to redeem or recover possession of immovable property mortgaged;",
+          "period": "Thirty years.",
+          "commencement": "When the right to redeem or to recover possession accrues."
+        },
+        {
+          "label": "(b)",
+          "description": "(b) to recover possession of immovable property mortgaged and afterwards transferred by the mortgagee for a valuable consideration;",
+          "period": "Twelve years.",
+          "commencement": "When the transfer becomes known to the plaintiff."
+        },
+        {
+          "label": "(c)",
+          "description": "(c) to recover surplus collections received by the mortgagee after the mortgage has been satisfied.",
+          "period": "Three years.",
+          "commencement": "When the mortgagor re-enters on the mortgaged property."
+        }
+      ]
+    },
+    {
+      "number": "62",
+      "division": "First Division — Suits",
+      "partNumber": "V",
+      "partTitle": "Suits Relating to Immovable Property",
+      "rows": [
+        {
+          "description": "To enforce payment of money secured by a mortgage or otherwise charged upon immovable property.",
+          "period": "Twelve years.",
+          "commencement": "When the money sued for becomes due."
+        }
+      ]
+    },
+    {
+      "number": "63",
+      "division": "First Division — Suits",
+      "partNumber": "V",
+      "partTitle": "Suits Relating to Immovable Property",
+      "rows": [
+        {
+          "description": "By a mortgagee—",
+          "period": "",
+          "commencement": ""
+        },
+        {
+          "label": "(a)",
+          "description": "(a) for foreclosure;",
+          "period": "Thirty years.",
+          "commencement": "When the money secured by the mortgage becomes due."
+        },
+        {
+          "label": "(b)",
+          "description": "(b) for possession of immovable property mortgaged.",
+          "period": "Twelve years.",
+          "commencement": "When the mortgagee becomes entitled to possession."
+        }
+      ]
+    },
+    {
+      "number": "64",
+      "division": "First Division — Suits",
+      "partNumber": "V",
+      "partTitle": "Suits Relating to Immovable Property",
+      "rows": [
+        {
+          "description": "For possession of immovable property based on previous possession and not on title, when the plaintiff while in possession of the property has been dispossessed.",
+          "period": "Twelve years.",
+          "commencement": "The date of dispossession."
+        }
+      ]
+    },
+    {
+      "number": "65",
+      "division": "First Division — Suits",
+      "partNumber": "V",
+      "partTitle": "Suits Relating to Immovable Property",
+      "rows": [
+        {
+          "description": "For possession of immovable property or any interest therein based on title. Explanation.—For the purposes of this article—",
+          "period": "Twelve years.",
+          "commencement": "When the possession of the defendant becomes adverse to the plaintiff."
+        },
+        {
+          "label": "(a)",
+          "description": "(a) where the suit is by a remainderman, a reversioner (other than a landlord) or a devisee, the possession of the defendant shall be deemed to become adverse only when the estate of the remainderman, reversioner or devisee, as the case may be, falls into possession;",
+          "period": "",
+          "commencement": ""
+        },
+        {
+          "label": "(b)",
+          "description": "(b) where the suit is by a Hindu or Muslim entitled to the possession of immovable property on the death of a Hindu or Muslim female, the possession of the defendant shall be deemed to become adverse only when the female dies;",
+          "period": "",
+          "commencement": ""
+        },
+        {
+          "label": "(c)",
+          "description": "(c) where the suit is by a purchaser at a sale in execution of a decree when the judgment-debtor was out of possession at the date of the sale, the purchaser shall be deemed to be a representative of the judgment-debtor who was out of possession.",
+          "period": "",
+          "commencement": ""
+        }
+      ]
+    },
+    {
+      "number": "66",
+      "division": "First Division — Suits",
+      "partNumber": "V",
+      "partTitle": "Suits Relating to Immovable Property",
+      "rows": [
+        {
+          "description": "For possession of immovable property when the plaintiff has become entitled to possession by reason of any forfeiture or breach of condition.",
+          "period": "Twelve years.",
+          "commencement": "When the forfeiture is incurred or the condition is broken."
+        }
+      ]
+    },
+    {
+      "number": "67",
+      "division": "First Division — Suits",
+      "partNumber": "V",
+      "partTitle": "Suits Relating to Immovable Property",
+      "rows": [
+        {
+          "description": "By a landlord to recover possession from a tenant.",
+          "period": "Twelve years.",
+          "commencement": "When the tenancy is determined."
+        }
+      ]
+    },
+    {
+      "number": "68",
+      "division": "First Division — Suits",
+      "partNumber": "VI",
+      "partTitle": "Suits Relating to Movable Property",
+      "rows": [
+        {
+          "description": "For specific movable property lost, or acquired by theft, or dishonest misappropriation or conversion.",
+          "period": "Three years.",
+          "commencement": "When the person having the right to the possession of the property first learns in whose possession it is."
+        }
+      ]
+    },
+    {
+      "number": "69",
+      "division": "First Division — Suits",
+      "partNumber": "VI",
+      "partTitle": "Suits Relating to Movable Property",
+      "rows": [
+        {
+          "description": "For other specific movable property.",
+          "period": "Three years.",
+          "commencement": "When the property is wrongfully taken."
+        }
+      ]
+    },
+    {
+      "number": "70",
+      "division": "First Division — Suits",
+      "partNumber": "VI",
+      "partTitle": "Suits Relating to Movable Property",
+      "rows": [
+        {
+          "description": "To recover movable property deposited or pawned from a depositary or pawnee.",
+          "period": "Three years.",
+          "commencement": "The date of refusal after demand."
+        }
+      ]
+    },
+    {
+      "number": "71",
+      "division": "First Division — Suits",
+      "partNumber": "VI",
+      "partTitle": "Suits Relating to Movable Property",
+      "rows": [
+        {
+          "description": "To recover movable property deposited or pawned, and afterwards bought from the depository or pawnee for a valuable consideration.",
+          "period": "Three years.",
+          "commencement": "When the sale becomes known to the plaintiff."
+        }
+      ]
+    },
+    {
+      "number": "72",
+      "division": "First Division — Suits",
+      "partNumber": "VII",
+      "partTitle": "Suits Relating to Tort",
+      "rows": [
+        {
+          "description": "For compensation for doing or for omitting to do an act alleged to be in pursuance of any enactment in force for the time being in the territories to which this Act extends.",
+          "period": "One year.",
+          "commencement": "When the act or omission takes place."
+        }
+      ]
+    },
+    {
+      "number": "73",
+      "division": "First Division — Suits",
+      "partNumber": "VII",
+      "partTitle": "Suits Relating to Tort",
+      "rows": [
+        {
+          "description": "For compensation for false imprisonment.",
+          "period": "One year.",
+          "commencement": "When the imprisonment ends."
+        }
+      ]
+    },
+    {
+      "number": "74",
+      "division": "First Division — Suits",
+      "partNumber": "VII",
+      "partTitle": "Suits Relating to Tort",
+      "rows": [
+        {
+          "description": "For compensation for a malicious prosecution.",
+          "period": "One year.",
+          "commencement": "When the plaintiff is acquitted or the prosecution is otherwise terminated."
+        }
+      ]
+    },
+    {
+      "number": "75",
+      "division": "First Division — Suits",
+      "partNumber": "VII",
+      "partTitle": "Suits Relating to Tort",
+      "rows": [
+        {
+          "description": "For compensation for libel.",
+          "period": "One year.",
+          "commencement": "When the libel is published."
+        }
+      ]
+    },
+    {
+      "number": "76",
+      "division": "First Division — Suits",
+      "partNumber": "VII",
+      "partTitle": "Suits Relating to Tort",
+      "rows": [
+        {
+          "description": "For compensation for slander.",
+          "period": "One year.",
+          "commencement": "When the words are spoken, or, if the words are not actionable in themselves, when the special damage complained of results."
+        }
+      ]
+    },
+    {
+      "number": "77",
+      "division": "First Division — Suits",
+      "partNumber": "VII",
+      "partTitle": "Suits Relating to Tort",
+      "rows": [
+        {
+          "description": "For compensation for loss of service occasioned by the seduction of the plaintiff’s servant or daughter.",
+          "period": "One year.",
+          "commencement": "When the loss occurs."
+        }
+      ]
+    },
+    {
+      "number": "78",
+      "division": "First Division — Suits",
+      "partNumber": "VII",
+      "partTitle": "Suits Relating to Tort",
+      "rows": [
+        {
+          "description": "For compensation for inducing a person to break a contract with the plaintiff.",
+          "period": "One year.",
+          "commencement": "The date of the breach."
+        }
+      ]
+    },
+    {
+      "number": "79",
+      "division": "First Division — Suits",
+      "partNumber": "VII",
+      "partTitle": "Suits Relating to Tort",
+      "rows": [
+        {
+          "description": "For compensation for an illegal, irregular or excessive distress.",
+          "period": "One year.",
+          "commencement": "The date of the distress."
+        }
+      ]
+    },
+    {
+      "number": "80",
+      "division": "First Division — Suits",
+      "partNumber": "VII",
+      "partTitle": "Suits Relating to Tort",
+      "rows": [
+        {
+          "description": "For compensation for wrongful seizure of movable property under legal process.",
+          "period": "One year.",
+          "commencement": "The date of the seizure."
+        }
+      ]
+    },
+    {
+      "number": "81",
+      "division": "First Division — Suits",
+      "partNumber": "VII",
+      "partTitle": "Suits Relating to Tort",
+      "rows": [
+        {
+          "description": "By executors, administrators or representatives under the Legal Representatives’ Suits Act, 1855 (12 of 1855).",
+          "period": "One year.",
+          "commencement": "The date of the death of the person wronged."
+        }
+      ]
+    },
+    {
+      "number": "82",
+      "division": "First Division — Suits",
+      "partNumber": "VII",
+      "partTitle": "Suits Relating to Tort",
+      "rows": [
+        {
+          "description": "By executors, administrators or representatives under the Indian Fatal Accidents Act, 1855 (13 of 1855).",
+          "period": "Two years.",
+          "commencement": "The date of the death of the person killed."
+        }
+      ]
+    },
+    {
+      "number": "83",
+      "division": "First Division — Suits",
+      "partNumber": "VII",
+      "partTitle": "Suits Relating to Tort",
+      "rows": [
+        {
+          "description": "Under the Legal Representatives’ Suits Act, 1855 (12 of 1855), against an executor, an administrator or any other representative.",
+          "period": "Two years.",
+          "commencement": "When the wrong complained of is done."
+        }
+      ]
+    },
+    {
+      "number": "84",
+      "division": "First Division — Suits",
+      "partNumber": "VII",
+      "partTitle": "Suits Relating to Tort",
+      "rows": [
+        {
+          "description": "Against one who, having a right to use property for specific purposes, perverts it to other purposes.",
+          "period": "Two years.",
+          "commencement": "When the perversion first becomes known to the person injured thereby."
+        }
+      ]
+    },
+    {
+      "number": "85",
+      "division": "First Division — Suits",
+      "partNumber": "VII",
+      "partTitle": "Suits Relating to Tort",
+      "rows": [
+        {
+          "description": "For compensation for obstructing a way or a water-course.",
+          "period": "Three years.",
+          "commencement": "The date of the obstruction."
+        }
+      ]
+    },
+    {
+      "number": "86",
+      "division": "First Division — Suits",
+      "partNumber": "VII",
+      "partTitle": "Suits Relating to Tort",
+      "rows": [
+        {
+          "description": "For compensation for diverting a water-course.",
+          "period": "Three years.",
+          "commencement": "The date of the diversion."
+        }
+      ]
+    },
+    {
+      "number": "87",
+      "division": "First Division — Suits",
+      "partNumber": "VII",
+      "partTitle": "Suits Relating to Tort",
+      "rows": [
+        {
+          "description": "For compensation for trespass upon immovable property.",
+          "period": "Three years.",
+          "commencement": "The date of the trespass."
+        }
+      ]
+    },
+    {
+      "number": "88",
+      "division": "First Division — Suits",
+      "partNumber": "VII",
+      "partTitle": "Suits Relating to Tort",
+      "rows": [
+        {
+          "description": "For compensation for infringing copyright or any other exclusive privilege.",
+          "period": "Three years.",
+          "commencement": "The date of the infringement."
+        }
+      ]
+    },
+    {
+      "number": "89",
+      "division": "First Division — Suits",
+      "partNumber": "VII",
+      "partTitle": "Suits Relating to Tort",
+      "rows": [
+        {
+          "description": "To restrain waste.",
+          "period": "Three years.",
+          "commencement": "When the waste begins."
+        }
+      ]
+    },
+    {
+      "number": "90",
+      "division": "First Division — Suits",
+      "partNumber": "VII",
+      "partTitle": "Suits Relating to Tort",
+      "rows": [
+        {
+          "description": "For compensation for injury caused by an injunction wrongfully obtained.",
+          "period": "Three years.",
+          "commencement": "When the injunction ceases."
+        }
+      ]
+    },
+    {
+      "number": "91",
+      "division": "First Division — Suits",
+      "partNumber": "VII",
+      "partTitle": "Suits Relating to Tort",
+      "rows": [
+        {
+          "description": "For compensation,—",
+          "period": "",
+          "commencement": ""
+        },
+        {
+          "label": "(a)",
+          "description": "(a) for wrongfully taking or detaining any specific movable property lost, oracquired by theft, or dishonest misappropriation, or conversion;",
+          "period": "Three years.",
+          "commencement": "When the person having the right to the possession of the property first learns in whose possession it is."
+        },
+        {
+          "label": "(b)",
+          "description": "(b) for wrongfully taking or injuring or wrongfully detaining any other specific movable property.",
+          "period": "Three years.",
+          "commencement": "When the property is wrongfully taken or injured, or when the detainer’s possession becomes unlawful."
+        }
+      ]
+    },
+    {
+      "number": "92",
+      "division": "First Division — Suits",
+      "partNumber": "VIII",
+      "partTitle": "Suits Relating to Trusts and Trust Property",
+      "rows": [
+        {
+          "description": "To recover possession of immovable property conveyed or bequeathed in trust and afterwards transferred by the trustee for a valuable consideration.",
+          "period": "Twelve years.",
+          "commencement": "When the transfer becomes known to the plaintiff."
+        }
+      ]
+    },
+    {
+      "number": "93",
+      "division": "First Division — Suits",
+      "partNumber": "VIII",
+      "partTitle": "Suits Relating to Trusts and Trust Property",
+      "rows": [
+        {
+          "description": "To recover possession of movable property conveyed or bequeathed in trust and afterwards transferred by the trustee for a valuable consideration.",
+          "period": "Three years.",
+          "commencement": "When the transfer becomes known to the plaintiff."
+        }
+      ]
+    },
+    {
+      "number": "94",
+      "division": "First Division — Suits",
+      "partNumber": "VIII",
+      "partTitle": "Suits Relating to Trusts and Trust Property",
+      "rows": [
+        {
+          "description": "To set aside a transfer of immovable property comprised in a Hindu, Muslim or Buddhist religious or charitable endowment, made by a manager thereof for a valuable consideration.",
+          "period": "Twelve years.",
+          "commencement": "When the transfer becomes known to the plaintiff."
+        }
+      ]
+    },
+    {
+      "number": "95",
+      "division": "First Division — Suits",
+      "partNumber": "VIII",
+      "partTitle": "Suits Relating to Trusts and Trust Property",
+      "rows": [
+        {
+          "description": "To set aside a transfer of movable property comprised in a Hindu, Muslim or Buddhist religious or charitable endowment, made by a manager thereof for a valuable consideration.",
+          "period": "Three years.",
+          "commencement": "When the transfer becomes known to the plaintiff."
+        }
+      ]
+    },
+    {
+      "number": "96",
+      "division": "First Division — Suits",
+      "partNumber": "VIII",
+      "partTitle": "Suits Relating to Trusts and Trust Property",
+      "rows": [
+        {
+          "description": "By the manager of Hindu, Muslim or Buddhist religious or charitable endowment to recover possession of movable or immovable properly comprised in the endowment which has been transferred by a previous manager for a valuable consideration.",
+          "period": "Twelve years.",
+          "commencement": "The date of death, resignation or removal of the transferor or the date of appointment of the plaintiff as manager of the endowment, whichever is later."
+        }
+      ]
+    },
+    {
+      "number": "97",
+      "division": "First Division — Suits",
+      "partNumber": "IX",
+      "partTitle": "Suits Relating to Miscellaneous Matters",
+      "rows": [
+        {
+          "description": "To enforce a right of pre-emption whether the right is founded on law or general usage or on special contract.",
+          "period": "One year.",
+          "commencement": "When the purchaser take under the sale sought to be impeached, physical possession of the whole or part of the property sold, or, where the subject matter of the sale does not admit of physical possession of the whole or part of the property, when the instrument of sale is registered."
+        }
+      ]
+    },
+    {
+      "number": "98",
+      "division": "First Division — Suits",
+      "partNumber": "IX",
+      "partTitle": "Suits Relating to Miscellaneous Matters",
+      "rows": [
+        {
+          "description": "By a person against whom [an order referred to in rule 63 or in rule 103] of Order XXI of the Code of Civil Procedure, 1908 (5 of 1908), or an order under section 28 of thePresidency Small Cause Courts Act, 1882 (15 of 1882), has been made, to establish the right which he claims to the property comprised in the order.",
+          "period": "One year.",
+          "commencement": "The date of the final order."
+        }
+      ]
+    },
+    {
+      "number": "99",
+      "division": "First Division — Suits",
+      "partNumber": "IX",
+      "partTitle": "Suits Relating to Miscellaneous Matters",
+      "rows": [
+        {
+          "description": "To set aside a sale by a civil or revenue court or a sale for arrears of Government revenue or for any demand recoverable as such arrears.",
+          "period": "One year.",
+          "commencement": "When the sale is confirmed or would otherwise have become final and conclusive had no such suit been brought."
+        }
+      ]
+    },
+    {
+      "number": "100",
+      "division": "First Division — Suits",
+      "partNumber": "IX",
+      "partTitle": "Suits Relating to Miscellaneous Matters",
+      "rows": [
+        {
+          "description": "To alter or set aside any decision or order of a civil court in any proceeding other than a suit or any act or order of an officer of Government in his official capacity.",
+          "period": "One year.",
+          "commencement": "The date of the final decision or order by the court or the date of the act or order of the officer, as the case may be."
+        }
+      ]
+    },
+    {
+      "number": "101",
+      "division": "First Division — Suits",
+      "partNumber": "IX",
+      "partTitle": "Suits Relating to Miscellaneous Matters",
+      "rows": [
+        {
+          "description": "Upon a judgment, including a foreign judgment, or a recognisance.",
+          "period": "Three years.",
+          "commencement": "The date of the judgment or recognisance."
+        }
+      ]
+    },
+    {
+      "number": "102",
+      "division": "First Division — Suits",
+      "partNumber": "IX",
+      "partTitle": "Suits Relating to Miscellaneous Matters",
+      "rows": [
+        {
+          "description": "For property which the plaintiff has conveyed while insane.",
+          "period": "Three years.",
+          "commencement": "When the plaintiff is restored to sanity and has knowledge of the conveyance."
+        }
+      ]
+    },
+    {
+      "number": "103",
+      "division": "First Division — Suits",
+      "partNumber": "IX",
+      "partTitle": "Suits Relating to Miscellaneous Matters",
+      "rows": [
+        {
+          "description": "To make good out of the general estate of a deceased trustee the loss occasioned by a breach of trust.",
+          "period": "Three years.",
+          "commencement": "The date of the trustee's death or if the loss has not then resulted, the date of the loss."
+        }
+      ]
+    },
+    {
+      "number": "104",
+      "division": "First Division — Suits",
+      "partNumber": "IX",
+      "partTitle": "Suits Relating to Miscellaneous Matters",
+      "rows": [
+        {
+          "description": "To establish a periodically recurring right.",
+          "period": "Three years.",
+          "commencement": "When the plaintiff is first refused the enjoyment of the right."
+        }
+      ]
+    },
+    {
+      "number": "105",
+      "division": "First Division — Suits",
+      "partNumber": "IX",
+      "partTitle": "Suits Relating to Miscellaneous Matters",
+      "rows": [
+        {
+          "description": "By a Hindu for arrears of maintenance.",
+          "period": "Three years.",
+          "commencement": "When the arrears are payable."
+        }
+      ]
+    },
+    {
+      "number": "106",
+      "division": "First Division — Suits",
+      "partNumber": "IX",
+      "partTitle": "Suits Relating to Miscellaneous Matters",
+      "rows": [
+        {
+          "description": "For a legacy or for a share of a residur bequeathed by a testator or for a distributive share of the property of an intestate against an executor or an administrator or some other person legally charged with the duty of distributing the estate.",
+          "period": "Twelve years.",
+          "commencement": "When the legacy or share becomes payable or deliverable."
+        }
+      ]
+    },
+    {
+      "number": "107",
+      "division": "First Division — Suits",
+      "partNumber": "IX",
+      "partTitle": "Suits Relating to Miscellaneous Matters",
+      "rows": [
+        {
+          "description": "For possession of a hereditary office. Explanation.— A hereditary office is possessed when the properties thereof are usually received, or (if there are no properties) when the duties thereof are usually performed.",
+          "period": "Twelve years.",
+          "commencement": "When the defendant takes possession of the office adversely to the plaintiff."
+        }
+      ]
+    },
+    {
+      "number": "108",
+      "division": "First Division — Suits",
+      "partNumber": "IX",
+      "partTitle": "Suits Relating to Miscellaneous Matters",
+      "rows": [
+        {
+          "description": "Suit during the life of a Hindu or Muslim female by a Hindu or Muslim who, if the female died at the date of instituting the suit, would be entitled to the possession of land, to have an alienation of such land made by the female declared to be void except for her life or until her re-marriage.",
+          "period": "Twelve years.",
+          "commencement": "The date of the alienation."
+        }
+      ]
+    },
+    {
+      "number": "109",
+      "division": "First Division — Suits",
+      "partNumber": "IX",
+      "partTitle": "Suits Relating to Miscellaneous Matters",
+      "rows": [
+        {
+          "description": "By a Hindu governed by Mitakshara law to set aside his father’s alienation of ancestral property.",
+          "period": "Twelve years.",
+          "commencement": "When the alienee takes possession of the property."
+        }
+      ]
+    },
+    {
+      "number": "110",
+      "division": "First Division — Suits",
+      "partNumber": "IX",
+      "partTitle": "Suits Relating to Miscellaneous Matters",
+      "rows": [
+        {
+          "description": "By a person excluded from a joint family property to enforce a right to share therein.",
+          "period": "Twelve years.",
+          "commencement": "When the exclusion becomes known to the plaintiff."
+        }
+      ]
+    },
+    {
+      "number": "111",
+      "division": "First Division — Suits",
+      "partNumber": "IX",
+      "partTitle": "Suits Relating to Miscellaneous Matters",
+      "rows": [
+        {
+          "description": "By or on behalf of any local authority for possession of any public street or road or any part thereof from which it has been dispossessed or of which it has discontinued the possession.",
+          "period": "Thirty years.",
+          "commencement": "The date of the dispossession or discontinuance."
+        }
+      ]
+    },
+    {
+      "number": "112",
+      "division": "First Division — Suits",
+      "partNumber": "IX",
+      "partTitle": "Suits Relating to Miscellaneous Matters",
+      "rows": [
+        {
+          "description": "Any suit (except a suit before the Supreme Court in the exercise of its original jurisdiction) by or on behalf of the Central Government or any State Government, including the Government of the State of Jammu and Kashmir.",
+          "period": "Thirty years.",
+          "commencement": "When the period of limitation would begin to run under this Act against a like suit by a private person."
+        }
+      ]
+    },
+    {
+      "number": "113",
+      "division": "First Division — Suits",
+      "partNumber": "X",
+      "partTitle": "Suits for which there is no Prescribed Period",
+      "rows": [
+        {
+          "description": "Any suit for which no period of limitation is provided elsewhere in this Schedule.",
+          "period": "Three years.",
+          "commencement": "When the right to sue accrues."
+        }
+      ]
+    },
+    {
+      "number": "114",
+      "division": "Second Division — Appeals",
+      "rows": [
+        {
+          "description": "Appeal from an order of acquittal,—",
+          "period": "",
+          "commencement": ""
+        },
+        {
+          "label": "(a)",
+          "description": "(a) under sub-section (1) or sub-section (2) of section 417 of the Code of Criminal Procedure, 1898 (5 of 1898);",
+          "period": "Ninety days.",
+          "commencement": "The date of the order appealed from."
+        },
+        {
+          "label": "(b)",
+          "description": "(b) under sub-section (3) of section 417 of that Code.",
+          "period": "Thirty days.",
+          "commencement": "The date of the grant of special leave."
+        }
+      ]
+    },
+    {
+      "number": "115",
+      "division": "Second Division — Appeals",
+      "rows": [
+        {
+          "description": "Under the Code of Criminal Procedure, 1898 (5 of 1898)—",
+          "period": "",
+          "commencement": ""
+        },
+        {
+          "label": "(a)",
+          "description": "(a) from a sentence of death passed by a court of session or by a High Court in the exercise of its original criminal jurisdiction;",
+          "period": "Thirty days.",
+          "commencement": "The date of the sentence."
+        },
+        {
+          "label": "(b)",
+          "description": "(b) from any other sentence or any order not being an order of acquittal—",
+          "period": "",
+          "commencement": ""
+        },
+        {
+          "label": "(i)",
+          "description": "(i) to the High Court",
+          "period": "Sixty days.",
+          "commencement": "The date of the sentence or order."
+        },
+        {
+          "label": "(ii)",
+          "description": "(ii) to any other court",
+          "period": "Thirty days.",
+          "commencement": "The date of the sentence or order."
+        }
+      ]
+    },
+    {
+      "number": "116",
+      "division": "Second Division — Appeals",
+      "rows": [
+        {
+          "description": "Under the Code of Civil Procedure, 1908 (5 of 1908)—",
+          "period": "",
+          "commencement": ""
+        },
+        {
+          "label": "(a)",
+          "description": "(a) to a High Court from any decree or order.",
+          "period": "Ninety days.",
+          "commencement": "The date of the decree or order."
+        },
+        {
+          "label": "(b)",
+          "description": "(b) to any other court from any decree or order.",
+          "period": "Thirty days.",
+          "commencement": "The date of the decree or order."
+        }
+      ]
+    },
+    {
+      "number": "117",
+      "division": "Second Division — Appeals",
+      "rows": [
+        {
+          "description": "From a decree or order of any High Court to the same Court.",
+          "period": "Thirty days.",
+          "commencement": "The date of the decree or order."
+        }
+      ]
+    },
+    {
+      "number": "118",
+      "division": "Third Division — Applications",
+      "partNumber": "I",
+      "partTitle": "Applications in Specified Cases",
+      "rows": [
+        {
+          "description": "For leave to appear and defend a suit under summary procedure.",
+          "period": "Ten days.",
+          "commencement": "When the summons is served."
+        }
+      ]
+    },
+    {
+      "number": "119",
+      "division": "Third Division — Applications",
+      "partNumber": "I",
+      "partTitle": "Applications in Specified Cases",
+      "rows": [
+        {
+          "description": "Under the Arbitration Act, 1940 (10 of 1940),—",
+          "period": "",
+          "commencement": ""
+        },
+        {
+          "label": "(a)",
+          "description": "(a) for the filing in court of an award;",
+          "period": "Thirty days.",
+          "commencement": "The date of service of the notice of the making of the award;"
+        },
+        {
+          "label": "(b)",
+          "description": "(b) for setting aside an award or getting an award remitted for reconsideration.",
+          "period": "Thirty days.",
+          "commencement": "The date of service of the notice of the filing of the award."
+        }
+      ]
+    },
+    {
+      "number": "120",
+      "division": "Third Division — Applications",
+      "partNumber": "I",
+      "partTitle": "Applications in Specified Cases",
+      "rows": [
+        {
+          "description": "Under the Code of Civil Procedure, 1908 (5 of 1908), to have the legalrepresentative of a deceased plaintiff or appellant or of a deceased defendant or respondent, made a party.",
+          "period": "Ninety days.",
+          "commencement": "The date of death of the plaintiff, appellant, defendant or respondent, as the case may be."
+        }
+      ]
+    },
+    {
+      "number": "121",
+      "division": "Third Division — Applications",
+      "partNumber": "I",
+      "partTitle": "Applications in Specified Cases",
+      "rows": [
+        {
+          "description": "Under the same Code for an order to set aside an abatement.",
+          "period": "Sixty days.",
+          "commencement": "The date of abatement."
+        }
+      ]
+    },
+    {
+      "number": "122",
+      "division": "Third Division — Applications",
+      "partNumber": "I",
+      "partTitle": "Applications in Specified Cases",
+      "rows": [
+        {
+          "description": "To restore a suit or appeal or application for review or revision dismissed for default of appearance or for want of prosecution or for failure to pay costs of service of process or to furnish security for costs.",
+          "period": "Thirty days.",
+          "commencement": "The date of dismissal."
+        }
+      ]
+    },
+    {
+      "number": "123",
+      "division": "Third Division — Applications",
+      "partNumber": "I",
+      "partTitle": "Applications in Specified Cases",
+      "rows": [
+        {
+          "description": "To set aside a decree passed ex parte or to rehear an appeal decreed or heard ex parte. Explanation.—For the purpose of this article, substituted service under rule 20 of Order V of the Code of Civil Procedure, 1908 (5 of 1908) shall not be deemed to be due service.",
+          "period": "Thirty days.",
+          "commencement": "The date of the decree or where the summons or notice was not duly served, when the applicant had knowledge of the decree."
+        }
+      ]
+    },
+    {
+      "number": "124",
+      "division": "Third Division — Applications",
+      "partNumber": "I",
+      "partTitle": "Applications in Specified Cases",
+      "rows": [
+        {
+          "description": "For a review of judgment by a court other than the Supreme Court.",
+          "period": "Thirty days.",
+          "commencement": "The date of the decree or order."
+        }
+      ]
+    },
+    {
+      "number": "125",
+      "division": "Third Division — Applications",
+      "partNumber": "I",
+      "partTitle": "Applications in Specified Cases",
+      "rows": [
+        {
+          "description": "To record an adjustment or satisfaction of a decree.",
+          "period": "Thirty days.",
+          "commencement": "When the payment or adjustment is made."
+        }
+      ]
+    },
+    {
+      "number": "126",
+      "division": "Third Division — Applications",
+      "partNumber": "I",
+      "partTitle": "Applications in Specified Cases",
+      "rows": [
+        {
+          "description": "For the payment of the amount of a decree by instalments.",
+          "period": "Thirty days.",
+          "commencement": "The date of the decree."
+        }
+      ]
+    },
+    {
+      "number": "127",
+      "division": "Third Division — Applications",
+      "partNumber": "I",
+      "partTitle": "Applications in Specified Cases",
+      "rows": [
+        {
+          "description": "To set aside a sale in execution of a decree, including any such application by a judgment-debtor.",
+          "period": "[Sixty days].",
+          "commencement": "The date of the sale."
+        }
+      ]
+    },
+    {
+      "number": "128",
+      "division": "Third Division — Applications",
+      "partNumber": "I",
+      "partTitle": "Applications in Specified Cases",
+      "rows": [
+        {
+          "description": "For possession by one dispossessed of immovable property and disputing the right of the decree-holder or purchaser at a sale in execution of a decree.",
+          "period": "Thirty days.",
+          "commencement": "The date of the dispossession."
+        }
+      ]
+    },
+    {
+      "number": "129",
+      "division": "Third Division — Applications",
+      "partNumber": "I",
+      "partTitle": "Applications in Specified Cases",
+      "rows": [
+        {
+          "description": "For possession after removing resistance or obstruction to delivery of possession of immovable property decreed or sold in execution of a decree.",
+          "period": "Thirty days.",
+          "commencement": "The date of resistance or obstruction."
+        }
+      ]
+    },
+    {
+      "number": "130",
+      "division": "Third Division — Applications",
+      "partNumber": "I",
+      "partTitle": "Applications in Specified Cases",
+      "rows": [
+        {
+          "description": "For leave to appeal as a pauper—",
+          "period": "",
+          "commencement": ""
+        },
+        {
+          "label": "(a)",
+          "description": "(a) to the High Court;",
+          "period": "Sixty days.",
+          "commencement": "The date of decree appealed from."
+        },
+        {
+          "label": "(b)",
+          "description": "(b) to any other court.",
+          "period": "Thirty days.",
+          "commencement": "The date of decree appealed from."
+        }
+      ]
+    },
+    {
+      "number": "131",
+      "division": "Third Division — Applications",
+      "partNumber": "I",
+      "partTitle": "Applications in Specified Cases",
+      "rows": [
+        {
+          "description": "To any court for the exercise of its powers of revision under the Code of Civil Procedure, 1908 (5 of 1908), or the Code of Criminal Procedure, 1898 (5 of 1898).",
+          "period": "Ninety days.",
+          "commencement": "The date of the decree or order or sentence sought to be revised."
+        }
+      ]
+    },
+    {
+      "number": "132",
+      "division": "Third Division — Applications",
+      "partNumber": "I",
+      "partTitle": "Applications in Specified Cases",
+      "rows": [
+        {
+          "description": "To the High Court for a certificate of fitness to appeal to the Supreme Court under clause (1) of article 132, article 133 or sub-clause (c) of clause (1) of article 134 of the Constitution or under any other law for the time being in force.",
+          "period": "Sixty days.",
+          "commencement": "The date of the decree, order or sentence."
+        }
+      ]
+    },
+    {
+      "number": "133",
+      "division": "Third Division — Applications",
+      "partNumber": "I",
+      "partTitle": "Applications in Specified Cases",
+      "rows": [
+        {
+          "description": "To the Supreme Court for special leave to appeal,—",
+          "period": "",
+          "commencement": ""
+        },
+        {
+          "label": "(a)",
+          "description": "(a) in a case involving death sentence;",
+          "period": "Sixty days.",
+          "commencement": "The date of the judgment final order or sentence."
+        },
+        {
+          "label": "(b)",
+          "description": "(b) in a case where leave to appeal was refused by the High Court;",
+          "period": "Sixty days.",
+          "commencement": "The date of the order of refusal."
+        },
+        {
+          "label": "(c)",
+          "description": "(c) in any other case.",
+          "period": "Ninety days.",
+          "commencement": "The date of the judgment or order."
+        }
+      ]
+    },
+    {
+      "number": "134",
+      "division": "Third Division — Applications",
+      "partNumber": "I",
+      "partTitle": "Applications in Specified Cases",
+      "rows": [
+        {
+          "description": "For delivery of possession by a purchaser of immovable property at a sale in execution of a decree.",
+          "period": "One year.",
+          "commencement": "When the sale becomes absolute."
+        }
+      ]
+    },
+    {
+      "number": "135",
+      "division": "Third Division — Applications",
+      "partNumber": "I",
+      "partTitle": "Applications in Specified Cases",
+      "rows": [
+        {
+          "description": "For the enforcement of a decree granting a mandatory injunction.",
+          "period": "Three years.",
+          "commencement": "The date of the decree or where a date is fixed for performance, such date."
+        }
+      ]
+    },
+    {
+      "number": "136",
+      "division": "Third Division — Applications",
+      "partNumber": "I",
+      "partTitle": "Applications in Specified Cases",
+      "rows": [
+        {
+          "description": "For the execution of any decree (other than a decree granting a mandatory injunction) or order of any civil court.",
+          "period": "Twelve years.",
+          "commencement": "[When] the decree or order becomes enforceable or where the decree or any subsequent order directs any payment of money or the delivery of any property to be made at a certain date or at recurring periods, when default in making the payment or delivery in respect of which execution is sought, takes place: Provided that an application for the enforcement or execution of a decree granting a perpetual injunction shall not be subject to any period of limitation."
+        }
+      ]
+    },
+    {
+      "number": "137",
+      "division": "Third Division — Applications",
+      "partNumber": "II",
+      "partTitle": "Other Application",
+      "rows": [
+        {
+          "description": "Any other application for which no period of limitation is provided elsewhere in this Division.",
+          "period": "Three years.",
+          "commencement": "When the right to apply accrues."
+        }
+      ]
+    }
+  ]
+}

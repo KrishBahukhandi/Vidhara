@@ -216,6 +216,68 @@ export async function getMappingPairPreview(
   return { rows: data, total: count ?? data.length };
 }
 
+export type ActSchedule = Tables<"act_schedules">;
+
+/** One limb of an article. Articles 114-116 of the Limitation Act carry
+ * several, each with its own period; single-limb articles have exactly one. */
+export interface ScheduleRow {
+  label?: string;
+  description: string;
+  period: string;
+  commencement: string;
+}
+
+export interface ScheduleArticle {
+  id: string;
+  number: string;
+  division: string | null;
+  part_number: string | null;
+  part_title: string | null;
+  rows: ScheduleRow[];
+}
+
+export async function listSchedulesByAct(slug: string): Promise<ActSchedule[]> {
+  if (!isContentConfigured) return [];
+  const { data, error } = await getServerClient()
+    .from("act_schedules")
+    .select("*, acts!inner(slug)")
+    .eq("acts.slug", slug)
+    .order("sort_order", { ascending: true });
+  if (error) throw new Error(`listSchedulesByAct(${slug}): ${error.message}`);
+  return data;
+}
+
+export async function getSchedule(
+  actSlug: string,
+  scheduleSlug: string,
+): Promise<{ schedule: ActSchedule; articles: ScheduleArticle[] } | null> {
+  if (!isContentConfigured) return null;
+  const client = getServerClient();
+  const { data: schedule, error } = await client
+    .from("act_schedules")
+    .select("*, acts!inner(slug)")
+    .eq("acts.slug", actSlug)
+    .eq("slug", scheduleSlug)
+    .maybeSingle();
+  if (error) throw new Error(`getSchedule(${actSlug}/${scheduleSlug}): ${error.message}`);
+  if (!schedule) return null;
+
+  const { data: articles, error: articlesError } = await client
+    .from("act_schedule_articles")
+    .select("id, number, division, part_number, part_title, rows")
+    .eq("schedule_id", schedule.id)
+    .order("sort_key", { ascending: true });
+  if (articlesError) throw new Error(`getSchedule articles: ${articlesError.message}`);
+
+  return {
+    schedule,
+    articles: articles.map((article) => ({
+      ...article,
+      rows: article.rows as unknown as ScheduleRow[],
+    })),
+  };
+}
+
 /** For sitemap generation: every published section's canonical path parts.
  * Paged in 1,000-row ranges — PostgREST's default cap was silently truncating
  * the sitemap to 1,000 of 3,118 URLs. */

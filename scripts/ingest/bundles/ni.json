@@ -12,82 +12,82 @@
   "chapters": [
     {
       "number": "I",
-      "title": "P",
+      "title": "PRELIMINARY",
       "sortOrder": 1
     },
     {
       "number": "II",
-      "title": "O N, B C H",
+      "title": "OF NOTES, BILLSAND C HEQUES",
       "sortOrder": 2
     },
     {
       "number": "III",
-      "title": "P N, B C",
+      "title": "PARTIES TO NOTES, BILLS AND CHEQUES.",
       "sortOrder": 3
     },
     {
       "number": "IV",
-      "title": "O N",
+      "title": "OF NEGOTIATION",
       "sortOrder": 4
     },
     {
       "number": "VI",
-      "title": "O P I",
+      "title": "OF PAYMENTAND INTEREST",
       "sortOrder": 5
     },
     {
       "number": "VII",
-      "title": "O D L B C",
+      "title": "OF DISCHARGE FROM LIABILITY ON NOTES, BILLS AND CHEQUES",
       "sortOrder": 6
     },
     {
       "number": "VIII",
-      "title": "O N D",
+      "title": "OF NOTICE OF DISHONOUR",
       "sortOrder": 7
     },
     {
       "number": "IX",
-      "title": "O N P",
+      "title": "OF N O T ING A N D P R O T E S T",
       "sortOrder": 8
     },
     {
       "number": "X",
-      "title": "O R",
+      "title": "OF R E A S O N A B L E T I M E",
       "sortOrder": 9
     },
     {
       "number": "XI",
-      "title": "O A P H R",
+      "title": "OF ACCEPTANCE AND PAYMENT FOR HONOUR AND REFERENCE IN CASE OF NEED",
       "sortOrder": 10
     },
     {
       "number": "XII",
-      "title": "O C",
+      "title": "OF C O M P E N S A T I O N",
       "sortOrder": 11
     },
     {
       "number": "XIII",
-      "title": "S R E",
+      "title": "S P E C I A L R U L E SOF E V I D E N C E",
       "sortOrder": 12
     },
     {
       "number": "XIV",
-      "title": "O C C",
+      "title": "OF CROSSED C H E Q U E S",
       "sortOrder": 13
     },
     {
       "number": "XV",
-      "title": "O B S",
+      "title": "OF B I L L S I N S E T S",
       "sortOrder": 14
     },
     {
       "number": "XVI",
-      "title": "O I L",
+      "title": "OF I N T E R N A T I O N A L L A W",
       "sortOrder": 15
     },
     {
       "number": "XVII",
-      "title": "O P C D C I F A",
+      "title": "OF PENALTIES IN CASE OF DISHONOUR OF CERTAIN CHEQUES FOR INSUFFICIENCY OF FUNDS IN THE ACCOUNTS",
       "sortOrder": 16
     }
   ],
