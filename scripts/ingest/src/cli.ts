@@ -87,6 +87,8 @@ function parseGazetteCommand(inputPath: string, flags: string[]): void {
     sections: sections.map((section) => ({
       number: section.number,
       chapterNumber: section.chapterNumber,
+      // Present only for a Chapter nested in a Part; the pair is the division key.
+      ...(section.partNumber ? { partNumber: section.partNumber } : {}),
       marginalNote: section.marginalNote,
       bodyMd: section.bodyMd,
     })),

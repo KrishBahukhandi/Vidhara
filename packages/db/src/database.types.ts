@@ -27,7 +27,7 @@ export type Database = {
           id: string
           kind: string
           number: string
-          part_number: string | null
+          part_number: string
           part_title: string | null
           sort_order: number
           title: string

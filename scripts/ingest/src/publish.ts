@@ -53,6 +53,10 @@ export async function publishBundle(
     .single();
   if (actError) throw new Error(`acts upsert failed: ${actError.message}`);
 
+  // A division is identified by kind + number + parent Part, because Chapter
+  // numbering restarts inside each Part (ARB: CHAPTER I in PART I and again in
+  // PART II). Keyed the same way here so a section resolves to the right one.
+  const divisionKey = (number: string, partNumber?: string) => `${number}|${partNumber ?? ""}`;
   const chapterIds = new Map<string, string>();
   for (const chapter of bundle.chapters) {
     const { data, error } = await db
@@ -63,21 +67,23 @@ export async function publishBundle(
           number: chapter.number,
           title: chapter.title,
           kind: chapter.kind,
-          part_number: chapter.partNumber ?? null,
+          part_number: chapter.partNumber ?? "",
           part_title: chapter.partTitle ?? null,
           sort_order: chapter.sortOrder,
         },
-        { onConflict: "act_id,number" },
+        { onConflict: "act_id,kind,number,part_number" },
       )
       .select("id")
       .single();
     if (error) throw new Error(`chapter ${chapter.number} upsert failed: ${error.message}`);
-    chapterIds.set(chapter.number, data.id);
+    chapterIds.set(divisionKey(chapter.number, chapter.partNumber), data.id);
   }
 
   const rows = bundle.sections.map((section) => ({
     act_id: act.id,
-    chapter_id: section.chapterNumber ? (chapterIds.get(section.chapterNumber) ?? null) : null,
+    chapter_id: section.chapterNumber
+      ? (chapterIds.get(divisionKey(section.chapterNumber, section.partNumber)) ?? null)
+      : null,
     number: section.number,
     sort_key: deriveSortKey(section.number),
     marginal_note: section.marginalNote,
@@ -93,6 +99,22 @@ export async function publishBundle(
     .from("act_sections")
     .upsert(rows, { onConflict: "act_id,number" });
   if (sectionsError) throw new Error(`sections upsert failed: ${sectionsError.message}`);
+
+  // Upsert alone leaves divisions the bundle no longer produces. That is not
+  // hypothetical: changing the division key left ARB with 28 rows for 17
+  // divisions, the extras being its pre-two-level "Chapter V", "C", "S". They
+  // were invisible on the act page — sections had already moved to the new
+  // rows — which is exactly what makes stale content dangerous. Runs after the
+  // sections upsert, so nothing is pointing at a row when it is removed.
+  const keptIds = [...chapterIds.values()];
+  if (keptIds.length > 0) {
+    const { error: staleError } = await db
+      .from("act_chapters")
+      .delete()
+      .eq("act_id", act.id)
+      .not("id", "in", `(${keptIds.join(",")})`);
+    if (staleError) throw new Error(`stale chapter cleanup failed: ${staleError.message}`);
+  }
 
   return { actId: act.id, sections: rows.length, chapters: bundle.chapters.length };
 }

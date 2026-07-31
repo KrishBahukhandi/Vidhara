@@ -8,6 +8,10 @@
 export interface ParsedSection {
   number: string;
   chapterNumber?: string;
+  /** Enclosing Part, set only when `chapterNumber` names a Chapter nested in
+   * one — that pair is what identifies the division (ARB has a CHAPTER I in
+   * both PART I and PART II). */
+  partNumber?: string;
   marginalNote: string;
   bodyMd: string;
 }
@@ -21,6 +25,9 @@ export interface ParsedChapter {
    * Citizenship), the IPC has Chapters. Rendering "Ch. II" for a Part is a
    * miscitation, so the parser records what the source actually printed. */
   kind: "chapter" | "part";
+  /** The Part this Chapter was printed under, when there is one. */
+  partNumber?: string;
+  partTitle?: string;
 }
 
 export interface GazetteParseResult {
@@ -131,7 +138,15 @@ export function normalizeChapterTitle(raw: string): string {
     // carry the source's punctuation ("B ILLS" → "N OTES," in the NI Act), so
     // a trailing comma or period must not defeat the join.
     const isFragment = /^[A-Z]{1,2}$/.test(cur) && !STANDALONE_CAPS.has(cur);
+    // Sentence-case titles drop-cap too: the Arbitration Act prints "G eneva
+    // Convention Awards". A lone capital before a lowercase word is that same
+    // artefact — except "A" and "I", which are words, so they are excluded.
+    const beforeLowercase =
+      /^[A-Z]$/.test(cur) && cur !== "A" && cur !== "I" && Boolean(next && /^[a-z]/.test(next));
     if (isFragment && next && /^[A-Z]{2,}[A-Z'’-]*[,.;:]?$/.test(next)) {
+      joined.push(cur + next);
+      i++;
+    } else if (beforeLowercase && next) {
       joined.push(cur + next);
       i++;
     } else {

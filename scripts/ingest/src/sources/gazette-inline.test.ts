@@ -453,6 +453,68 @@ describe("parseInlineAct chapter headings", () => {
     expect(chapters.find((c) => c.number === "V")?.title).toBe("THE UNION");
   });
 
+  it("nests Chapters under their Part, and keeps repeated numbers apart", () => {
+    // The Arbitration Act prints CHAPTER I inside PART I and again inside
+    // PART II. One namespace made them the same division, which would have
+    // labelled Part I's sections with Part II's title — the reason ARB stayed
+    // unpublished. The parent Part is part of a division's identity.
+    const xhtml = doc(
+      [
+        lines([PREAMBLE, { h: 10, text: "1. Short title.—This Act may be called X." }]),
+        mixedLine(100, [{ h: 10, text: "PART I" }]),
+        mixedLine(114, [{ h: 10, text: "ARBITRATION" }]),
+        mixedLine(128, [{ h: 10, text: "CHAPTER I" }]),
+        // ARB sets its chapter titles in sentence case, not caps.
+        mixedLine(142, [{ h: 10, text: "General provisions" }]),
+        lines([{ h: 10, text: "2. Definitions.—In this Part, unless the context requires." }], 158),
+        mixedLine(190, [{ h: 10, text: "PART II" }]),
+        mixedLine(204, [{ h: 10, text: "ENFORCEMENT OF FOREIGN AWARDS" }]),
+        mixedLine(218, [{ h: 10, text: "CHAPTER I" }]),
+        mixedLine(232, [{ h: 10, text: "New York Convention Awards" }]),
+        lines([{ h: 10, text: "3. Definition.—In this Chapter, foreign award means an award." }], 248),
+      ].join("\n"),
+    );
+
+    const { sections, chapters } = parseInlineAct(xhtml, {});
+
+    const parts = chapters.filter((c) => c.kind === "part");
+    expect(parts.map((c) => c.number)).toEqual(["I", "II"]);
+
+    const firstChapter = chapters.find((c) => c.kind === "chapter" && c.partNumber === "I");
+    const secondChapter = chapters.find((c) => c.kind === "chapter" && c.partNumber === "II");
+    expect(firstChapter?.number).toBe("I");
+    expect(firstChapter?.title).toBe("General provisions");
+    expect(secondChapter?.number).toBe("I");
+    expect(secondChapter?.title).toBe("New York Convention Awards");
+
+    // Each section names both halves of its division's identity.
+    expect(sections.find((s) => s.number === "2")).toMatchObject({
+      chapterNumber: "I",
+      partNumber: "I",
+    });
+    expect(sections.find((s) => s.number === "3")).toMatchObject({
+      chapterNumber: "I",
+      partNumber: "II",
+    });
+  });
+
+  it("does not read a centred cross-heading as part of the title above it", () => {
+    // Cross-headings are centred too and sit below the title: an unrestricted
+    // rule gave CPC Part II the name "EXECUTION General".
+    const xhtml = doc(
+      [
+        lines([PREAMBLE, { h: 10, text: "1. Short title.—This Act may be called X." }]),
+        mixedLine(100, [{ h: 10, text: "PART II" }]),
+        mixedLine(114, [{ h: 10, text: "EXECUTION" }]),
+        mixedLine(128, [{ h: 10, text: "General" }]),
+        lines([{ h: 10, text: "3. Courts.—The court executing a decree shall proceed." }], 145),
+      ].join("\n"),
+    );
+
+    const { chapters } = parseInlineAct(xhtml, {});
+    expect(chapters.find((c) => c.number === "II")?.title).toBe("EXECUTION");
+  });
+
   it("keeps a part title that legitimately begins with SEC", () => {
     // The masthead is identified by its numbered section reference; a title
     // like "SECURITY FOR COSTS" has no digit and must survive.

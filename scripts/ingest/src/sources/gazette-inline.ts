@@ -132,6 +132,23 @@ const ALL_CAPS_LINE = /^[A-Z][A-Z0-9\s,.'()—–-]*$/;
  * B L E T I M E"), which have no two adjacent capitals at all.
  */
 const CHAPTER_TITLE_LINE = /^(?=[^a-z]*$)(?:[^A-Za-z]*[A-Z]){3}/;
+/**
+ * Not every act shouts its titles. The Arbitration Act sets its Part names in
+ * caps ("ARBITRATION") but its Chapter names in sentence case ("General
+ * provisions", "Composition of arbitral tribunal"), which the upper-case test
+ * rejects — leaving every ARB chapter named "Chapter I". Those lines are
+ * *centred*, and body text never is: sections start at the left margin (x≈72)
+ * and continuation lines only reach x≈104, while a centred heading starts past
+ * x≈200. So a mixed-case line may be a title when it is centred, which is a
+ * property of the printed page rather than of the words.
+ *
+ * Only the FIRST line after the heading, though: cross-headings are centred
+ * too and sit below the title, so an unrestricted rule appended them to it —
+ * "EXECUTION General" for CPC Part II, "FUNDAMENTAL RIGHTS General" for
+ * Constitution Part III. An upper-case title may still run to several lines,
+ * since that path is unaffected.
+ */
+const CENTRED_HEADING_MIN_X = 150;
 /** A title stops at the next structural heading. Without this, the Constitution's
  * "PART V" swallowed the "CHAPTER I.—THE EXECUTIVE" line below it. The line is
  * tested after small-caps repair, because the print sets it as "C HAPTER I.—T
@@ -222,12 +239,17 @@ export function parseInlineAct(
   let stateAmendmentBlocks = 0;
   let stateAmendmentSkipped = 0;
   let currentChapter: string | undefined;
+  /** The Part currently in force, so Chapters printed under it can name it. */
+  let currentPart: { number: string; title: string } | undefined;
+  /** Parent Part of `currentChapter`, when that is a nested Chapter. */
+  let currentChapterPart: string | undefined;
   let pendingChapterNumber: string | null = null;
   let pendingChapterKind: "chapter" | "part" = "chapter";
   let pendingChapterTitle: string[] = [];
 
   let currentNumber: string | null = null;
   let currentChapterForSection: string | undefined;
+  let currentPartForSection: string | undefined;
   let rawParts: string[] = [];
   let lastBase = 0;
   /** Sort key (base + letter fraction) — "120A" must sort after "120". */
@@ -247,20 +269,39 @@ export function parseInlineAct(
         raw.replace(/[[\]]/g, "").slice(0, 80).replace(/\s+\S*$/, "").trim() ||
         `Section ${currentNumber}`;
     }
-    sections.push({ number: currentNumber, chapterNumber: currentChapterForSection, marginalNote, bodyMd });
+    sections.push({
+      number: currentNumber,
+      chapterNumber: currentChapterForSection,
+      partNumber: currentPartForSection,
+      marginalNote,
+      bodyMd,
+    });
     currentNumber = null;
     rawParts = [];
   };
   const flushChapter = () => {
     if (pendingChapterNumber === null) return;
-    const title = normalizeChapterTitle(pendingChapterTitle.join(" "));
+    const title =
+      normalizeChapterTitle(pendingChapterTitle.join(" ")) ||
+      `${pendingChapterKind === "part" ? "Part" : "Chapter"} ${pendingChapterNumber}`;
+    const isPart = pendingChapterKind === "part";
     chapters.push({
       number: pendingChapterNumber,
-      title: title || `${pendingChapterKind === "part" ? "Part" : "Chapter"} ${pendingChapterNumber}`,
+      title,
       sortOrder: chapters.length + 1,
       kind: pendingChapterKind,
+      // A Chapter belongs to the Part it was printed under. ARB repeats
+      // "CHAPTER I" inside both PART I and PART II, so the parent is what
+      // tells the two apart.
+      ...(isPart ? {} : currentPart ? { partNumber: currentPart.number, partTitle: currentPart.title } : {}),
     });
+    if (isPart) {
+      currentPart = { number: pendingChapterNumber, title };
+    }
     currentChapter = pendingChapterNumber;
+    // Only a nested Chapter needs its Part recorded on the section; a section
+    // sitting directly under a Part is identified by the Part alone.
+    currentChapterPart = isPart ? undefined : currentPart?.number;
     pendingChapterNumber = null;
     pendingChapterKind = "chapter";
     pendingChapterTitle = [];
@@ -411,9 +452,10 @@ export function parseInlineAct(
       }
       // Section heading, ignoring any leading amendment bracket/marker.
       const headline = flat.replace(LEADING_MARKERS, "");
+      const centred = (line[0]?.xMin ?? 0) >= CENTRED_HEADING_MIN_X;
       if (
         pendingChapterNumber !== null &&
-        CHAPTER_TITLE_LINE.test(flat) &&
+        (CHAPTER_TITLE_LINE.test(flat) || (centred && pendingChapterTitle.length === 0)) &&
         !NEXT_HEADING.test(normalizeChapterTitle(headline)) &&
         !SECTION_START.test(headline)
       ) {
@@ -440,6 +482,7 @@ export function parseInlineAct(
           lastKey = key;
           currentNumber = match[1];
           currentChapterForSection = currentChapter;
+          currentPartForSection = currentChapterPart;
           rawParts = [match[2] ?? ""];
           continue;
         }

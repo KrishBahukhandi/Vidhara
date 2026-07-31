@@ -10,6 +10,10 @@ import { z } from "zod";
 export const sectionSchema = z.object({
   number: z.string().trim().regex(/^\d{1,4}[A-Z]{0,2}$/, "Section number like 302, 34A, 65B"),
   chapterNumber: z.string().trim().min(1).optional(),
+  /** Enclosing Part, present only when `chapterNumber` names a Chapter nested
+   * inside one. The pair identifies the division: ARB prints a CHAPTER I under
+   * both PART I and PART II. */
+  partNumber: z.string().trim().min(1).optional(),
   marginalNote: z.string().trim().min(1, "Marginal note (section title) is required"),
   bodyMd: z.string().trim().min(1, "Section body is required"),
   /** Plain text for FTS; derived from bodyMd when omitted. */

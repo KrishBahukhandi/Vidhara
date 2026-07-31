@@ -1,15 +1,35 @@
 "use client";
 
 import Link from "next/link";
+import type React from "react";
 import { useMemo, useState } from "react";
 
 import type { ChapterListItem, SectionListItem } from "@/features/acts/queries";
+
+/** Heading whose level follows the division's depth, so the document outline
+ * matches the act's structure rather than the rendering order: every Part is an
+ * h2 whether or not it contains Chapters, and a Chapter is always an h3. */
+function Heading({
+  level,
+  className,
+  children,
+}: {
+  level: 2 | 3;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const Tag = level === 2 ? "h2" : "h3";
+  return <Tag className={className}>{children}</Tag>;
+}
 
 /**
  * Section list for an act page: grouped under chapter headings when browsing,
  * flat when filtering (matches jump across chapters). Filter matches section
  * number OR marginal note — "420" and "cheating" both work. A 500-section act
  * (BNSS: 531) is a punishing scroll otherwise.
+ *
+ * Divisions can nest: the Arbitration Act puts Chapters inside Parts, so a
+ * group's Part is announced once, above the first Chapter that belongs to it.
  */
 export function ActSectionList({
   slug,
@@ -88,20 +108,40 @@ export function ActSectionList({
         )
       ) : groups.length > 1 ? (
         <div className="space-y-8">
-          {groups.map(({ chapter, sections: secs }) => (
-            <section key={chapter?.id ?? "prelim"}>
-              {chapter ? (
-                <h2 className="mb-3 text-small font-semibold uppercase tracking-wide text-text-muted">
-                  <span className="font-mono text-brand">
-                    {chapter.kind === "part" ? "Part" : "Ch."} {chapter.number}
-                  </span>{" "}
-                  ·{" "}
-                  {chapter.title}
-                </h2>
-              ) : null}
-              {rows(secs)}
-            </section>
-          ))}
+          {groups.map(({ chapter, sections: secs }, index) => {
+            // A Chapter nested in a Part repeats that Part for each of its
+            // chapters, so the Part is announced only when it changes — the
+            // Arbitration Act would otherwise print "Part I" ten times.
+            const parent = chapter?.part_number ? chapter.part_number : null;
+            const previous = groups[index - 1]?.chapter;
+            const showParent =
+              parent !== null && (previous?.part_number || null) !== parent;
+            return (
+              <section key={chapter?.id ?? "prelim"}>
+                {showParent && chapter ? (
+                  <h2 className="mb-1 text-small font-semibold uppercase tracking-wide text-text-faint">
+                    <span className="font-mono">Part {chapter.part_number}</span>
+                    {chapter.part_title ? ` · ${chapter.part_title}` : ""}
+                  </h2>
+                ) : null}
+                {chapter ? (
+                  // A nested Chapter sits a level below its Part, so it is an
+                  // h3; every Part is an h2 whether or not it has chapters.
+                  <Heading
+                    level={parent ? 3 : 2}
+                    className={`mb-3 text-small font-semibold uppercase tracking-wide text-text-muted${
+                      parent ? " pl-3" : ""
+                    }`}>
+                    <span className="font-mono text-brand">
+                      {chapter.kind === "part" ? "Part" : "Ch."} {chapter.number}
+                    </span>{" "}
+                    · {chapter.title}
+                  </Heading>
+                ) : null}
+                {rows(secs)}
+              </section>
+            );
+          })}
         </div>
       ) : (
         rows(sections)
