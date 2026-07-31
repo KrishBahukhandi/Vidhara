@@ -84,7 +84,9 @@ describe("splitLine", () => {
 describe("parseGazetteLayoutText", () => {
   it("parses left-margin sections with chapters and multi-line notes", () => {
     const { sections, chapters } = parseGazetteLayoutText(LEFT_MARGIN_SLICE);
-    expect(chapters).toEqual([{ number: "II", title: "OF PUNISHMENTS", sortOrder: 1 }]);
+    expect(chapters).toEqual([
+      { number: "II", title: "OF PUNISHMENTS", sortOrder: 1, kind: "chapter" },
+    ]);
     expect(sections).toHaveLength(2);
 
     expect(sections[0]).toMatchObject({
@@ -137,7 +139,9 @@ describe("parseGazetteLayoutText", () => {
       "giving                provocation to any person.",
     ].join("\n");
     const { sections, chapters } = parseGazetteLayoutText(text);
-    expect(chapters).toEqual([{ number: "I", title: "PRELIMINARY", sortOrder: 1 }]);
+    expect(chapters).toEqual([
+      { number: "I", title: "PRELIMINARY", sortOrder: 1, kind: "chapter" },
+    ]);
     expect(sections).toHaveLength(2);
     expect(sections[1]).toMatchObject({ number: "2", marginalNote: "Wantonly giving" });
     expect(sections[1]!.bodyMd).toContain("Whoever malignantly");

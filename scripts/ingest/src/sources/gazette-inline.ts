@@ -105,7 +105,7 @@ const STATE_AMENDMENT_START = /^STATE\s+AMENDMENTS?\b/;
 /** Primary terminator: the citation that closes a State-amendment block. */
 const STATE_AMENDMENT_END = /^\[?\s*Vide\b/i;
 // Constitution uses PART headings; other acts CHAPTER. Both fold to chapters.
-const CHAPTER_HEADING = /^(?:CHAPTER|PART)\s*([IVXLCDM]+)([A-Z])?$/;
+const CHAPTER_HEADING = /^(CHAPTER|PART)\s*([IVXLCDM]+)([A-Z])?$/;
 /**
  * The same heading with its TITLE run onto the same line, usually because an
  * amendment inserted the chapter and the bracket swallowed the line break:
@@ -118,7 +118,7 @@ const CHAPTER_HEADING = /^(?:CHAPTER|PART)\s*([IVXLCDM]+)([A-Z])?$/;
  * Drop-capped titles ("F ORFEITURE") are covered by allowing single letters.
  */
 const CHAPTER_HEADING_INLINE =
-  /^(?:CHAPTER|PART)\s*([IVXLCDM]+)([A-Z])?\s*[[—–-]?\s*([A-Z][A-Z\s,.'()—–-]{5,}?)\s*\]?(?:\s|$)/;
+  /^(CHAPTER|PART)\s*([IVXLCDM]+)([A-Z])?\s*[[—–-]?\s*([A-Z][A-Z\s,.'()—–-]{5,}?)\s*\]?(?:\s|$)/;
 const ALL_CAPS_LINE = /^[A-Z][A-Z0-9\s,.'()—–-]*$/;
 /**
  * A title line for the heading just seen. Looser than ALL_CAPS_LINE because a
@@ -223,6 +223,7 @@ export function parseInlineAct(
   let stateAmendmentSkipped = 0;
   let currentChapter: string | undefined;
   let pendingChapterNumber: string | null = null;
+  let pendingChapterKind: "chapter" | "part" = "chapter";
   let pendingChapterTitle: string[] = [];
 
   let currentNumber: string | null = null;
@@ -255,11 +256,13 @@ export function parseInlineAct(
     const title = normalizeChapterTitle(pendingChapterTitle.join(" "));
     chapters.push({
       number: pendingChapterNumber,
-      title: title || `Chapter ${pendingChapterNumber}`,
+      title: title || `${pendingChapterKind === "part" ? "Part" : "Chapter"} ${pendingChapterNumber}`,
       sortOrder: chapters.length + 1,
+      kind: pendingChapterKind,
     });
     currentChapter = pendingChapterNumber;
     pendingChapterNumber = null;
+    pendingChapterKind = "chapter";
     pendingChapterTitle = [];
   };
 
@@ -392,16 +395,18 @@ export function parseInlineAct(
       if (chapterMatch) {
         flush();
         flushChapter();
-        pendingChapterNumber = `${chapterMatch[1]}${chapterMatch[2] ?? ""}`;
+        pendingChapterNumber = `${chapterMatch[2]}${chapterMatch[3] ?? ""}`;
+        pendingChapterKind = chapterMatch[1] === "PART" ? "part" : "chapter";
         continue;
       }
       const chapterInline = CHAPTER_HEADING_INLINE.exec(chapterLine);
       if (chapterInline) {
         flush();
         flushChapter();
-        pendingChapterNumber = `${chapterInline[1]}${chapterInline[2] ?? ""}`;
+        pendingChapterNumber = `${chapterInline[2]}${chapterInline[3] ?? ""}`;
+        pendingChapterKind = chapterInline[1] === "PART" ? "part" : "chapter";
         // The title shared the line; keep it so the chapter is not left unnamed.
-        if (chapterInline[3]) pendingChapterTitle.push(chapterInline[3]);
+        if (chapterInline[4]) pendingChapterTitle.push(chapterInline[4]);
         continue;
       }
       // Section heading, ignoring any leading amendment bracket/marker.

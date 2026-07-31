@@ -13,82 +13,98 @@
     {
       "number": "I",
       "title": "PRELIMINARY",
-      "sortOrder": 1
+      "sortOrder": 1,
+      "kind": "chapter"
     },
     {
       "number": "II",
       "title": "OF NOTES, BILLSAND C HEQUES",
-      "sortOrder": 2
+      "sortOrder": 2,
+      "kind": "chapter"
     },
     {
       "number": "III",
       "title": "PARTIES TO NOTES, BILLS AND CHEQUES.",
-      "sortOrder": 3
+      "sortOrder": 3,
+      "kind": "chapter"
     },
     {
       "number": "IV",
       "title": "OF NEGOTIATION",
-      "sortOrder": 4
+      "sortOrder": 4,
+      "kind": "chapter"
     },
     {
       "number": "VI",
       "title": "OF PAYMENTAND INTEREST",
-      "sortOrder": 5
+      "sortOrder": 5,
+      "kind": "chapter"
     },
     {
       "number": "VII",
       "title": "OF DISCHARGE FROM LIABILITY ON NOTES, BILLS AND CHEQUES",
-      "sortOrder": 6
+      "sortOrder": 6,
+      "kind": "chapter"
     },
     {
       "number": "VIII",
       "title": "OF NOTICE OF DISHONOUR",
-      "sortOrder": 7
+      "sortOrder": 7,
+      "kind": "chapter"
     },
     {
       "number": "IX",
       "title": "OF N O T ING A N D P R O T E S T",
-      "sortOrder": 8
+      "sortOrder": 8,
+      "kind": "chapter"
     },
     {
       "number": "X",
       "title": "OF R E A S O N A B L E T I M E",
-      "sortOrder": 9
+      "sortOrder": 9,
+      "kind": "chapter"
     },
     {
       "number": "XI",
       "title": "OF ACCEPTANCE AND PAYMENT FOR HONOUR AND REFERENCE IN CASE OF NEED",
-      "sortOrder": 10
+      "sortOrder": 10,
+      "kind": "chapter"
     },
     {
       "number": "XII",
       "title": "OF C O M P E N S A T I O N",
-      "sortOrder": 11
+      "sortOrder": 11,
+      "kind": "chapter"
     },
     {
       "number": "XIII",
       "title": "S P E C I A L R U L E SOF E V I D E N C E",
-      "sortOrder": 12
+      "sortOrder": 12,
+      "kind": "chapter"
     },
     {
       "number": "XIV",
       "title": "OF CROSSED C H E Q U E S",
-      "sortOrder": 13
+      "sortOrder": 13,
+      "kind": "chapter"
     },
     {
       "number": "XV",
       "title": "OF B I L L S I N S E T S",
-      "sortOrder": 14
+      "sortOrder": 14,
+      "kind": "chapter"
     },
     {
       "number": "XVI",
       "title": "OF I N T E R N A T I O N A L L A W",
-      "sortOrder": 15
+      "sortOrder": 15,
+      "kind": "chapter"
     },
     {
       "number": "XVII",
       "title": "OF PENALTIES IN CASE OF DISHONOUR OF CERTAIN CHEQUES FOR INSUFFICIENCY OF FUNDS IN THE ACCOUNTS",
-      "sortOrder": 16
+      "sortOrder": 16,
+      "kind": "chapter"
     }
   ],
   "sections": [

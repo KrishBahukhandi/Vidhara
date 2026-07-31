@@ -92,7 +92,10 @@ export function ActSectionList({
             <section key={chapter?.id ?? "prelim"}>
               {chapter ? (
                 <h2 className="mb-3 text-small font-semibold uppercase tracking-wide text-text-muted">
-                  <span className="font-mono text-brand">Ch. {chapter.number}</span> ·{" "}
+                  <span className="font-mono text-brand">
+                    {chapter.kind === "part" ? "Part" : "Ch."} {chapter.number}
+                  </span>{" "}
+                  ·{" "}
                   {chapter.title}
                 </h2>
               ) : null}

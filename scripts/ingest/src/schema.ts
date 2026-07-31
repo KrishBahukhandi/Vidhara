@@ -21,6 +21,10 @@ export const sectionSchema = z.object({
 export const chapterSchema = z.object({
   number: z.string().trim().min(1),
   title: z.string().trim().min(1),
+  /** Which keyword the source printed. Defaults to chapter: the acts ingested
+   * before this field existed (IPC, CrPC, Evidence, Contract, the 2023 codes)
+   * all divide into Chapters. */
+  kind: z.enum(["chapter", "part"]).default("chapter"),
   partNumber: z.string().trim().min(1).optional(),
   partTitle: z.string().trim().min(1).optional(),
   sortOrder: z.number().int().nonnegative(),

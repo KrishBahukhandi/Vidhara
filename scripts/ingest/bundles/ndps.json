@@ -13,42 +13,50 @@
     {
       "number": "I",
       "title": "PRELIMINARY",
-      "sortOrder": 1
+      "sortOrder": 1,
+      "kind": "chapter"
     },
     {
       "number": "II",
       "title": "AUTHORITIES AND OFFICERS",
-      "sortOrder": 2
+      "sortOrder": 2,
+      "kind": "chapter"
     },
     {
       "number": "IIA",
       "title": "NATIONAL FUND FOR CONTROL OF DRUG ABUSE",
-      "sortOrder": 3
+      "sortOrder": 3,
+      "kind": "chapter"
     },
     {
       "number": "III",
       "title": "PROHIBITION, CONTROL AND REGULATION",
-      "sortOrder": 4
+      "sortOrder": 4,
+      "kind": "chapter"
     },
     {
       "number": "IV",
       "title": "OFFENCES AND PENALTIES",
-      "sortOrder": 5
+      "sortOrder": 5,
+      "kind": "chapter"
     },
     {
       "number": "V",
       "title": "PROCEDURE",
-      "sortOrder": 6
+      "sortOrder": 6,
+      "kind": "chapter"
     },
     {
       "number": "VA",
       "title": "Chapter VA",
-      "sortOrder": 7
+      "sortOrder": 7,
+      "kind": "chapter"
     },
     {
       "number": "VI",
       "title": "MISCELLANEOUS",
-      "sortOrder": 8
+      "sortOrder": 8,
+      "kind": "chapter"
     }
   ],
   "sections": [

@@ -14,127 +14,152 @@
     {
       "number": "I",
       "title": "THE UNION AND ITS TERRITORY",
-      "sortOrder": 1
+      "sortOrder": 1,
+      "kind": "part"
     },
     {
       "number": "II",
       "title": "CITIZENSHIP",
-      "sortOrder": 2
+      "sortOrder": 2,
+      "kind": "part"
     },
     {
       "number": "III",
       "title": "FUNDAMENTAL RIGHTS",
-      "sortOrder": 3
+      "sortOrder": 3,
+      "kind": "part"
     },
     {
       "number": "IV",
       "title": "DIRECTIVE PRINCIPLES OF STATE POLICY",
-      "sortOrder": 4
+      "sortOrder": 4,
+      "kind": "part"
     },
     {
       "number": "IVA",
       "title": "FUNDAMENTAL DUTIES",
-      "sortOrder": 5
+      "sortOrder": 5,
+      "kind": "part"
     },
     {
       "number": "V",
       "title": "THE UNION",
-      "sortOrder": 6
+      "sortOrder": 6,
+      "kind": "part"
     },
     {
       "number": "VI",
       "title": "THE STATES",
-      "sortOrder": 7
+      "sortOrder": 7,
+      "kind": "part"
     },
     {
       "number": "VIII",
       "title": "THE UNION TERRITORIES",
-      "sortOrder": 8
+      "sortOrder": 8,
+      "kind": "part"
     },
     {
       "number": "IX",
       "title": "THE PANCHAYATS",
-      "sortOrder": 9
+      "sortOrder": 9,
+      "kind": "part"
     },
     {
       "number": "IXA",
       "title": "THE MUNICIPALITIES",
-      "sortOrder": 10
+      "sortOrder": 10,
+      "kind": "part"
     },
     {
       "number": "IXB",
       "title": "THE CO-OPERATIVE SOCIETIES",
-      "sortOrder": 11
+      "sortOrder": 11,
+      "kind": "part"
     },
     {
       "number": "X",
       "title": "THE SCHEDULED AND TRIBAL AREAS",
-      "sortOrder": 12
+      "sortOrder": 12,
+      "kind": "part"
     },
     {
       "number": "XI",
       "title": "RELATIONS BETWEEN THE UNION AND THE STATES",
-      "sortOrder": 13
+      "sortOrder": 13,
+      "kind": "part"
     },
     {
       "number": "XII",
       "title": "FINANCE, PROPERTY, CONTRACTS AND SUITS",
-      "sortOrder": 14
+      "sortOrder": 14,
+      "kind": "part"
     },
     {
       "number": "XIII",
       "title": "TRADE, COMMERCE AND INTERCOURSE WITHIN THE TERRITORY OF INDIA",
-      "sortOrder": 15
+      "sortOrder": 15,
+      "kind": "part"
     },
     {
       "number": "XIV",
       "title": "SERVICES UNDER THE UNION AND THE STATES",
-      "sortOrder": 16
+      "sortOrder": 16,
+      "kind": "part"
     },
     {
       "number": "XIVA",
       "title": "TRIBUNALS",
-      "sortOrder": 17
+      "sortOrder": 17,
+      "kind": "part"
     },
     {
       "number": "XV",
       "title": "ELECTIONS",
-      "sortOrder": 18
+      "sortOrder": 18,
+      "kind": "part"
     },
     {
       "number": "XVI",
       "title": "SPECIAL PROVISIONS RELATING TO CERTAIN CLASSES",
-      "sortOrder": 19
+      "sortOrder": 19,
+      "kind": "part"
     },
     {
       "number": "XVII",
       "title": "OFFICIAL LANGUAGE",
-      "sortOrder": 20
+      "sortOrder": 20,
+      "kind": "part"
     },
     {
       "number": "XVIII",
       "title": "EMERGENCY PROVISIONS",
-      "sortOrder": 21
+      "sortOrder": 21,
+      "kind": "part"
     },
     {
       "number": "XIX",
       "title": "MISCELLANEOUS",
-      "sortOrder": 22
+      "sortOrder": 22,
+      "kind": "part"
     },
     {
       "number": "XX",
       "title": "AMENDMENT OF THE CONSTITUTION",
-      "sortOrder": 23
+      "sortOrder": 23,
+      "kind": "part"
     },
     {
       "number": "XXI",
       "title": "TEMPORARY, TRANSITIONAL AND SPECIAL PROVISIONS",
-      "sortOrder": 24
+      "sortOrder": 24,
+      "kind": "part"
     },
     {
       "number": "XXII",
       "title": "SHORT TITLE, COMMENCEMENT, AUTHORITATIVE TEXT IN HINDI AND REPEALS",
-      "sortOrder": 25
+      "sortOrder": 25,
+      "kind": "part"
     }
   ],
   "sections": [

@@ -16,6 +16,11 @@ export interface ParsedChapter {
   number: string;
   title: string;
   sortOrder: number;
+  /** Which keyword the heading used. Acts divide themselves differently and
+   * cite themselves accordingly: the Constitution has Parts (Part II —
+   * Citizenship), the IPC has Chapters. Rendering "Ch. II" for a Part is a
+   * miscitation, so the parser records what the source actually printed. */
+  kind: "chapter" | "part";
 }
 
 export interface GazetteParseResult {
@@ -59,20 +64,17 @@ export const FURNITURE = [
   /THE GAZETTE OF INDIA/,
   /^\s*EXTRAORDINARY\s*$/i,
   // The Gazette masthead reads "[PART II—SEC. 3(i)]" — that is the *Gazette's*
-  // part, not the act's. Matching "PART II" alone also ate real divisions:
-  // the Constitution's PART II (Citizenship, arts. 5-11) and the Limitation
-  // Act's PART II were both dropped, taking their sections' chapter with them.
-  // The masthead is identified by its bracket or its SEC reference instead; a
-  // bare "PART II" line is an act division and must reach the chapter matcher.
-  // The masthead always cites a numbered Gazette section — "[PART II—SEC.
-  // 3(i)]", "Part II, sec. 3(ii)." — so require that shape (or the bracket).
-  // A title merely starting with "SEC" ("PART III—SECURITY FOR COSTS") has no
-  // digit after it and is left alone.
-  // The bracket rule is deliberately limited to Part II — the Gazette
-
-  // publishes acts in Part II, so that is the only number its masthead uses,
-  // while a bracketed heading elsewhere is an amendment-inserted Part of the
-  // act itself ("[PART IX" — the Panchayats, inserted in 1992).
+  // part, not the act's. Matching "PART II" alone also ate real divisions: the
+  // Constitution's PART II (Citizenship, arts. 5-11), the CPC's PART II and the
+  // Limitation Act's were all dropped, and their sections filed under the
+  // preceding part. The masthead is recognised two ways instead, and a bare
+  // "PART II" line reaches the chapter matcher:
+  //  - by its bracket, but only for Part II: the Gazette publishes acts in its
+  //    Part II, so that is the only number its masthead carries, while a
+  //    bracketed heading elsewhere belongs to the act ("[PART IX" — the
+  //    Panchayats, inserted by the 73rd Amendment);
+  //  - by its numbered section reference ("Part II, sec. 3(ii)."), which a
+  //    title merely beginning with SEC ("PART III—SECURITY FOR COSTS") lacks.
   /^\s*\[\s*PART\s+II\b/i,
   /^\s*PART\s+[IVXLCDM]+\b.{0,12}\bSEC(?:TION)?\.?\s*\d/i,
   /^\s*SEC\.?\s*\d+\]/i,
@@ -233,6 +235,9 @@ export function assembleSections(lines: Iterable<LineParts>): GazetteParseResult
       number: pendingChapterNumber,
       title: normalizeChapterTitle(pendingChapterTitle.join(" ")),
       sortOrder: chapters.length + 1,
+      // This frontend's CHAPTER_HEADING matches only "CHAPTER" — the 2023
+      // codes it serves have no Parts.
+      kind: "chapter",
     });
     currentChapter = pendingChapterNumber;
     pendingChapterNumber = null;

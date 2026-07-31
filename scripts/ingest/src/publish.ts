@@ -62,6 +62,7 @@ export async function publishBundle(
           act_id: act.id,
           number: chapter.number,
           title: chapter.title,
+          kind: chapter.kind,
           part_number: chapter.partNumber ?? null,
           part_title: chapter.partTitle ?? null,
           sort_order: chapter.sortOrder,

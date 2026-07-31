@@ -13,27 +13,32 @@
     {
       "number": "I",
       "title": "PRELIMINARY",
-      "sortOrder": 1
+      "sortOrder": 1,
+      "kind": "part"
     },
     {
       "number": "II",
       "title": "LIMITATION OF SUITS, APPEALS AND APPLICATIONS",
-      "sortOrder": 2
+      "sortOrder": 2,
+      "kind": "part"
     },
     {
       "number": "III",
       "title": "COMPUTATION OF PERIOD OF LIMITATION",
-      "sortOrder": 3
+      "sortOrder": 3,
+      "kind": "part"
     },
     {
       "number": "IV",
       "title": "ACQUISITION OF OWNERSHIP BY POSSESSION",
-      "sortOrder": 4
+      "sortOrder": 4,
+      "kind": "part"
     },
     {
       "number": "V",
       "title": "MISCELLANEOUS",
-      "sortOrder": 5
+      "sortOrder": 5,
+      "kind": "part"
     }
   ],
   "sections": [

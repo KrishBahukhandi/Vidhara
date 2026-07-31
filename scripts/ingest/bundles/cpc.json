@@ -13,57 +13,68 @@
     {
       "number": "I",
       "title": "SUITS IN GENERAL",
-      "sortOrder": 1
+      "sortOrder": 1,
+      "kind": "part"
     },
     {
       "number": "II",
       "title": "EXECUTION",
-      "sortOrder": 2
+      "sortOrder": 2,
+      "kind": "part"
     },
     {
       "number": "III",
       "title": "INCIDENTAL PROCEEDINGS",
-      "sortOrder": 3
+      "sortOrder": 3,
+      "kind": "part"
     },
     {
       "number": "IV",
       "title": "SUITS IN PARTICULAR CASES SUITS BY OR AGAINST THE GOVERNMENT OR PUBLIC OFFICERS IN THEIR OFFICIAL CAPACITY",
-      "sortOrder": 4
+      "sortOrder": 4,
+      "kind": "part"
     },
     {
       "number": "V",
       "title": "SPECIAL PROCEEDINGS",
-      "sortOrder": 5
+      "sortOrder": 5,
+      "kind": "part"
     },
     {
       "number": "VI",
       "title": "SUPPLEMENTAL PROCEEDINGS",
-      "sortOrder": 6
+      "sortOrder": 6,
+      "kind": "part"
     },
     {
       "number": "VII",
       "title": "APPEALS",
-      "sortOrder": 7
+      "sortOrder": 7,
+      "kind": "part"
     },
     {
       "number": "VIII",
       "title": "REFERENCE, REVIEW AND REVISION",
-      "sortOrder": 8
+      "sortOrder": 8,
+      "kind": "part"
     },
     {
       "number": "IX",
       "title": "Chapter IX",
-      "sortOrder": 9
+      "sortOrder": 9,
+      "kind": "part"
     },
     {
       "number": "X",
       "title": "RULES",
-      "sortOrder": 10
+      "sortOrder": 10,
+      "kind": "part"
     },
     {
       "number": "XI",
       "title": "MISCELLANEOUS",
-      "sortOrder": 11
+      "sortOrder": 11,
+      "kind": "part"
     }
   ],
   "sections": [

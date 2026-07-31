@@ -25,6 +25,7 @@ export type Database = {
         Row: {
           act_id: string
           id: string
+          kind: string
           number: string
           part_number: string | null
           part_title: string | null
@@ -34,6 +35,7 @@ export type Database = {
         Insert: {
           act_id: string
           id?: string
+          kind?: string
           number: string
           part_number?: string | null
           part_title?: string | null
@@ -43,6 +45,7 @@ export type Database = {
         Update: {
           act_id?: string
           id?: string
+          kind?: string
           number?: string
           part_number?: string | null
           part_title?: string | null

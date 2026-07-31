@@ -13,72 +13,86 @@
     {
       "number": "I",
       "title": "PRELIMINARY",
-      "sortOrder": 1
+      "sortOrder": 1,
+      "kind": "chapter"
     },
     {
       "number": "II",
       "title": "LICENSING OF DRIVERS OF MOTOR VEHICLES",
-      "sortOrder": 2
+      "sortOrder": 2,
+      "kind": "chapter"
     },
     {
       "number": "III",
       "title": "LICENSING OF CONDUCTORS OF STAGE CARRIAGES",
-      "sortOrder": 3
+      "sortOrder": 3,
+      "kind": "chapter"
     },
     {
       "number": "IV",
       "title": "REGISTRATION OF MOTOR VEHICLES",
-      "sortOrder": 4
+      "sortOrder": 4,
+      "kind": "chapter"
     },
     {
       "number": "V",
       "title": "CONTROL OF TRANSPORT VEHICLES",
-      "sortOrder": 5
+      "sortOrder": 5,
+      "kind": "chapter"
     },
     {
       "number": "VI",
       "title": "SPECIAL PROVISIONS RELATING TO STATE TRANSPORT UNDERTAKINGS",
-      "sortOrder": 6
+      "sortOrder": 6,
+      "kind": "chapter"
     },
     {
       "number": "VII",
       "title": "CONSTRUCTION, EQUIPMENT AND MAINTENANCE OF MOTOR VEHICLES",
-      "sortOrder": 7
+      "sortOrder": 7,
+      "kind": "chapter"
     },
     {
       "number": "VIII",
       "title": "CONTROL OF TRAFFIC",
-      "sortOrder": 8
+      "sortOrder": 8,
+      "kind": "chapter"
     },
     {
       "number": "IX",
       "title": "MOTOR VEHICLES TEMPORARILY LEAVING OR VISITING INDIA",
-      "sortOrder": 9
+      "sortOrder": 9,
+      "kind": "chapter"
     },
     {
       "number": "X",
       "title": "LIABILITY",
-      "sortOrder": 10
+      "sortOrder": 10,
+      "kind": "chapter"
     },
     {
       "number": "XI",
       "title": "INSURANCE OF MOTOR VEHICLES AGAINST THIRD PARTY RISKS",
-      "sortOrder": 11
+      "sortOrder": 11,
+      "kind": "chapter"
     },
     {
       "number": "XII",
       "title": "CLAIMS TRIBUNALS",
-      "sortOrder": 12
+      "sortOrder": 12,
+      "kind": "chapter"
     },
     {
       "number": "XIII",
       "title": "OFFENCES, PENALTIES AND PROCEDURE",
-      "sortOrder": 13
+      "sortOrder": 13,
+      "kind": "chapter"
     },
     {
       "number": "XIV",
       "title": "MISCELLANEOUS",
-      "sortOrder": 14
+      "sortOrder": 14,
+      "kind": "chapter"
     }
   ],
   "sections": [

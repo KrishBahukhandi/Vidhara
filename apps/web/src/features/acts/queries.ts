@@ -23,6 +23,9 @@ export interface ChapterListItem {
   number: string;
   title: string;
   sort_order: number;
+  /** "chapter" or "part" — the Constitution has Parts, the IPC has Chapters,
+   * and citing one as the other is wrong. */
+  kind: string;
 }
 
 export interface SectionWithAct extends Section {
@@ -71,11 +74,17 @@ export async function listChaptersByAct(slug: string): Promise<ChapterListItem[]
   if (!isContentConfigured) return [];
   const { data, error } = await getServerClient()
     .from("act_chapters")
-    .select("id, number, title, sort_order, acts!inner(slug)")
+    .select("id, number, title, sort_order, kind, acts!inner(slug)")
     .eq("acts.slug", slug)
     .order("sort_order", { ascending: true });
   if (error) throw new Error(`listChaptersByAct: ${error.message}`);
-  return data.map(({ id, number, title, sort_order }) => ({ id, number, title, sort_order }));
+  return data.map(({ id, number, title, sort_order, kind }) => ({
+    id,
+    number,
+    title,
+    sort_order,
+    kind,
+  }));
 }
 
 export async function getSectionWithAct(
