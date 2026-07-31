@@ -15,6 +15,19 @@ import {
 } from "@/features/acts/api";
 import { radius, sp, useTheme } from "@/theme";
 
+/**
+ * One SectionList group: a division of the act plus its sections. Divisions can
+ * nest — the Arbitration Act puts Chapters inside Parts — so a group carries
+ * the Part to announce above it (only on the first Chapter of that Part) and
+ * whether it should be indented beneath one.
+ */
+interface ActGroup {
+  title: string;
+  parentTitle?: string;
+  nested: boolean;
+  data: SectionListItem[];
+}
+
 export default function ActDetailScreen() {
   const router = useRouter();
   const { slug } = useLocalSearchParams<{ slug: string }>();
@@ -42,26 +55,42 @@ export default function ActDetailScreen() {
 
   // Grouped for browsing, flat single group when filtering (matches jump
   // across chapters).
-  const groups = useMemo(() => {
+  const groups = useMemo<ActGroup[] | null>(() => {
     if (!sections) return null;
     const q = filter.trim().toLowerCase();
     if (q) {
       const hits = sections.filter(
         (s) => s.number.toLowerCase().includes(q) || s.marginal_note.toLowerCase().includes(q),
       );
-      return [{ title: "", data: hits }];
+      return [{ title: "", nested: false, data: hits }];
     }
     const byChapter = new Map<string | null, SectionListItem[]>();
     for (const s of sections) {
       byChapter.set(s.chapter_id, [...(byChapter.get(s.chapter_id) ?? []), s]);
     }
-    const out: { title: string; data: SectionListItem[] }[] = [];
-    if (byChapter.has(null)) out.push({ title: "", data: byChapter.get(null)! });
+    const out: ActGroup[] = [];
+    if (byChapter.has(null)) out.push({ title: "", nested: false, data: byChapter.get(null)! });
+    // A Part is announced once, above the first Chapter that belongs to it —
+    // the Arbitration Act would otherwise repeat "Part I" ten times. Tracked
+    // across groups rather than per group, since a Part spans several.
+    let announcedPart: string | null = null;
     for (const ch of chapters) {
       const secs = byChapter.get(ch.id);
-      if (secs?.length) out.push({ title: `Ch. ${ch.number} · ${ch.title}`, data: secs });
+      if (!secs?.length) continue;
+      const parent = ch.part_number || null;
+      const parentTitle =
+        parent && parent !== announcedPart
+          ? `Part ${parent}${ch.part_title ? ` · ${ch.part_title}` : ""}`
+          : undefined;
+      if (parent) announcedPart = parent;
+      out.push({
+        title: `${ch.kind === "part" ? "Part" : "Ch."} ${ch.number} · ${ch.title}`,
+        parentTitle,
+        nested: Boolean(parent),
+        data: secs,
+      });
     }
-    return out.length > 1 ? out : [{ title: "", data: sections }];
+    return out.length > 1 ? out : [{ title: "", nested: false, data: sections }];
   }, [sections, chapters, filter]);
 
   return (
@@ -116,7 +145,15 @@ export default function ActDetailScreen() {
           renderSectionHeader={({ section: group }) =>
             group.title ? (
               <View style={styles.chapterHeader}>
-                <AppText variant="micro" tone="muted" style={styles.chapterText}>
+                {group.parentTitle ? (
+                  <AppText variant="micro" tone="faint" style={styles.partText}>
+                    {group.parentTitle}
+                  </AppText>
+                ) : null}
+                <AppText
+                  variant="micro"
+                  tone="muted"
+                  style={[styles.chapterText, group.nested ? styles.nested : null]}>
                   {group.title}
                 </AppText>
               </View>
@@ -163,6 +200,14 @@ const styles = StyleSheet.create({
   list: { paddingBottom: sp(6), paddingTop: sp(2), gap: sp(2) },
   chapterHeader: { paddingTop: sp(3), paddingBottom: sp(1) },
   chapterText: { fontWeight: "700", letterSpacing: 0.5, textTransform: "uppercase" },
+  partText: {
+    fontWeight: "700",
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
+    paddingBottom: sp(1),
+  },
+  /** Chapters sit a level in from the Part that contains them. */
+  nested: { paddingLeft: sp(2) },
   row: {
     flexDirection: "row",
     alignItems: "center",
