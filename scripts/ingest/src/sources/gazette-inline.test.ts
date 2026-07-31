@@ -377,6 +377,82 @@ describe("parseInlineAct chapter headings", () => {
     }
   });
 
+  it("does not end the act on a footnote that quotes a schedule heading", () => {
+    // The Constitution footnotes an amendment as "…for the heading ―THE STATES
+    // IN PART C OF THE FIRST / SCHEDULE‖ (w.e.f. 1-11-1956)." The wrapped
+    // line's lowercase tail is below body height and filtered away, leaving
+    // "SCHEDULE‖" — which truncated the parse at art. 239, losing 223 articles.
+    const xhtml = doc(
+      [
+        lines([
+          PREAMBLE,
+          { h: 10, text: "3. Administration.—Union territories shall be administered." },
+        ]),
+        mixedLine(100, [
+          { h: 10, text: "SCHEDULE‖" },
+          { h: 8.1, text: "(w.e.f. 1-11-1956)." },
+        ]),
+        lines([{ h: 10, text: "4. Definitions.—In this Part, unless the context requires." }], 120),
+      ].join("\n"),
+    );
+
+    const { sections } = parseInlineAct(xhtml, {});
+    expect(sections.map((s) => s.number)).toEqual(["3", "4"]);
+  });
+
+  it("still ends the act at a real schedule heading, plain or titled", () => {
+    for (const heading of ["THE SCHEDULE", "THE FIRST SCHEDULE", "SCHEDULE.—[Enactments repealed]"]) {
+      const xhtml = doc(
+        lines([
+          PREAMBLE,
+          { h: 10, text: "1. Short title.—This Act may be called X." },
+          { h: 10, text: heading },
+          { h: 10, text: "2. Ganja.—Any mixture with or without neutral materials." },
+        ]),
+      );
+      const { sections } = parseInlineAct(xhtml, {});
+      expect(sections.map((s) => s.number)).toEqual(["1"]);
+    }
+  });
+
+  it("names a Part whose title carries amendment apparatus", () => {
+    // The Constitution sets Part VIII's title as "[THE UNION TERRITORIES]" and
+    // Part VI's as "THE STATES4***"; the strict all-caps test rejected both and
+    // left them as the generic "Chapter VIII".
+    const xhtml = doc(
+      [
+        lines([PREAMBLE, { h: 10, text: "1. Short title.—This Act may be called X." }]),
+        mixedLine(100, [{ h: 10, text: "PART VIII" }]),
+        mixedLine(114, [{ h: 10, text: "[THE UNION TERRITORIES]" }]),
+        lines([{ h: 10, text: "3. Administration.—Union territories shall be administered." }], 130),
+      ].join("\n"),
+    );
+
+    const { chapters } = parseInlineAct(xhtml, {});
+    expect(chapters.find((c) => c.number === "VIII")?.title).toBe("THE UNION TERRITORIES");
+  });
+
+  it("stops a Part title at the CHAPTER heading beneath it", () => {
+    // "PART V / THE UNION / CHAPTER I.—THE EXECUTIVE" gave Part V the title
+    // "THE UNION CHAPTER I.—T HE EXECUTIVE". The drop cap splits the word, so
+    // the heading is only recognisable after small-caps repair.
+    const xhtml = doc(
+      [
+        lines([PREAMBLE, { h: 10, text: "1. Short title.—This Act may be called X." }]),
+        mixedLine(100, [{ h: 10, text: "PART V" }]),
+        mixedLine(114, [{ h: 10, text: "THE UNION" }]),
+        mixedLine(128, [
+          { h: 10, text: "C" },
+          { h: 8.1, text: "HAPTER I.—T HE E XECUTIVE" },
+        ]),
+        lines([{ h: 10, text: "52. The President.—There shall be a President of India." }], 145),
+      ].join("\n"),
+    );
+
+    const { chapters } = parseInlineAct(xhtml, {});
+    expect(chapters.find((c) => c.number === "V")?.title).toBe("THE UNION");
+  });
+
   it("keeps a part title that legitimately begins with SEC", () => {
     // The masthead is identified by its numbered section reference; a title
     // like "SECURITY FOR COSTS" has no digit and must survive.

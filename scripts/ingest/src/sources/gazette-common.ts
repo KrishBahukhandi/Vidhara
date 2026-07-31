@@ -68,7 +68,12 @@ export const FURNITURE = [
   // 3(i)]", "Part II, sec. 3(ii)." — so require that shape (or the bracket).
   // A title merely starting with "SEC" ("PART III—SECURITY FOR COSTS") has no
   // digit after it and is left alone.
-  /^\s*\[\s*PART\s+[IVXLCDM]+\b/i,
+  // The bracket rule is deliberately limited to Part II — the Gazette
+
+  // publishes acts in Part II, so that is the only number its masthead uses,
+  // while a bracketed heading elsewhere is an amendment-inserted Part of the
+  // act itself ("[PART IX" — the Panchayats, inserted in 1992).
+  /^\s*\[\s*PART\s+II\b/i,
   /^\s*PART\s+[IVXLCDM]+\b.{0,12}\bSEC(?:TION)?\.?\s*\d/i,
   /^\s*SEC\.?\s*\d+\]/i,
   /^[\s_]+$/,

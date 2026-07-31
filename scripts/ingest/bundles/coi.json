@@ -17,94 +17,124 @@
       "sortOrder": 1
     },
     {
+      "number": "II",
+      "title": "CITIZENSHIP",
+      "sortOrder": 2
+    },
+    {
       "number": "III",
       "title": "FUNDAMENTAL RIGHTS",
-      "sortOrder": 2
+      "sortOrder": 3
     },
     {
       "number": "IV",
       "title": "DIRECTIVE PRINCIPLES OF STATE POLICY",
-      "sortOrder": 3
+      "sortOrder": 4
+    },
+    {
+      "number": "IVA",
+      "title": "FUNDAMENTAL DUTIES",
+      "sortOrder": 5
     },
     {
       "number": "V",
       "title": "THE UNION",
-      "sortOrder": 4
+      "sortOrder": 6
     },
     {
       "number": "VI",
-      "title": "Chapter VI",
-      "sortOrder": 5
+      "title": "THE STATES",
+      "sortOrder": 7
     },
     {
       "number": "VIII",
-      "title": "Chapter VIII",
-      "sortOrder": 6
+      "title": "THE UNION TERRITORIES",
+      "sortOrder": 8
+    },
+    {
+      "number": "IX",
+      "title": "THE PANCHAYATS",
+      "sortOrder": 9
+    },
+    {
+      "number": "IXA",
+      "title": "THE MUNICIPALITIES",
+      "sortOrder": 10
+    },
+    {
+      "number": "IXB",
+      "title": "THE CO-OPERATIVE SOCIETIES",
+      "sortOrder": 11
     },
     {
       "number": "X",
       "title": "THE SCHEDULED AND TRIBAL AREAS",
-      "sortOrder": 7
+      "sortOrder": 12
     },
     {
       "number": "XI",
       "title": "RELATIONS BETWEEN THE UNION AND THE STATES",
-      "sortOrder": 8
+      "sortOrder": 13
     },
     {
       "number": "XII",
       "title": "FINANCE, PROPERTY, CONTRACTS AND SUITS",
-      "sortOrder": 9
+      "sortOrder": 14
     },
     {
       "number": "XIII",
       "title": "TRADE, COMMERCE AND INTERCOURSE WITHIN THE TERRITORY OF INDIA",
-      "sortOrder": 10
+      "sortOrder": 15
     },
     {
       "number": "XIV",
       "title": "SERVICES UNDER THE UNION AND THE STATES",
-      "sortOrder": 11
+      "sortOrder": 16
+    },
+    {
+      "number": "XIVA",
+      "title": "TRIBUNALS",
+      "sortOrder": 17
     },
     {
       "number": "XV",
       "title": "ELECTIONS",
-      "sortOrder": 12
+      "sortOrder": 18
     },
     {
       "number": "XVI",
       "title": "SPECIAL PROVISIONS RELATING TO CERTAIN CLASSES",
-      "sortOrder": 13
+      "sortOrder": 19
     },
     {
       "number": "XVII",
       "title": "OFFICIAL LANGUAGE",
-      "sortOrder": 14
+      "sortOrder": 20
     },
     {
       "number": "XVIII",
       "title": "EMERGENCY PROVISIONS",
-      "sortOrder": 15
+      "sortOrder": 21
     },
     {
       "number": "XIX",
       "title": "MISCELLANEOUS",
-      "sortOrder": 16
+      "sortOrder": 22
     },
     {
       "number": "XX",
       "title": "AMENDMENT OF THE CONSTITUTION",
-      "sortOrder": 17
+      "sortOrder": 23
     },
     {
       "number": "XXI",
-      "title": "Chapter XXI",
-      "sortOrder": 18
+      "title": "TEMPORARY, TRANSITIONAL AND SPECIAL PROVISIONS",
+      "sortOrder": 24
     },
     {
       "number": "XXII",
-      "title": "Chapter XXII",
-      "sortOrder": 19
+      "title": "SHORT TITLE, COMMENCEMENT, AUTHORITATIVE TEXT IN HINDI AND REPEALS",
+      "sortOrder": 25
     }
   ],
   "sections": [
@@ -140,43 +170,43 @@
     },
     {
       "number": "5",
-      "chapterNumber": "I",
+      "chapterNumber": "II",
       "marginalNote": "Citizenship at the commencement of the Constitution",
       "bodyMd": "At the commencement of this Constitution, every person who has his domicile in the territory of India and— (a) who was born in the territory of India; or (b) either of whose parents was born in the territory of India; or (c) who has been ordinarily resident in the territory of India for not less than five years immediately preceding such commencement, shall be a citizen of India."
     },
     {
       "number": "6",
-      "chapterNumber": "I",
+      "chapterNumber": "II",
       "marginalNote": "Rights of citizenship of certain persons who have migrated to India from Pakistan",
       "bodyMd": "Notwithstanding anything in article 5, a person who has migrated to the territory of India from the territory now included in Pakistan shall be deemed to be a citizen of India at the commencement of this Constitution if— (a) he or either of his parents or any of his grand-parents was born in India as defined in the Government of India Act, 1935 (as originally enacted); and (b) (i) in the case where such person has so migrated before the nineteenth day of July, 1948, he has been ordinarily resident in the territory of India since the date of his migration, or (ii) in the case where such person has so migrated on or after the nineteenth day of July, 1948, he has been registered as a citizen of India by an officer appointed in that behalf by the Government of the Dominion of India on an application made by him therefor to such officer before the commencement of this Constitution in the form and manner prescribed by that Government: Provided that no person shall be so registered unless he has been resident in the territory of India for at least six months immediately preceding the date of his application."
     },
     {
       "number": "7",
-      "chapterNumber": "I",
+      "chapterNumber": "II",
       "marginalNote": "Rights of citizenship of certain migrants to Pakistan",
       "bodyMd": "Notwithstanding anything in articles 5 and 6, a person who has after the first day of March, 1947, migrated from the territory of India to the territory now included in Pakistan shall not be deemed to be a citizen of India: Provided that nothing in this article shall apply to a person who, after having so migrated to the territory now included in Pakistan, has returned to the territory of India under a permit for resettlement or permanent return issued by or under the authority of any law and every such person shall for the purposes of clause (b) of article 6 be deemed to have migrated to the territory of India after the nineteenth day of July, 1948."
     },
     {
       "number": "8",
-      "chapterNumber": "I",
+      "chapterNumber": "II",
       "marginalNote": "Rights of citizenship of certain persons of Indian origin residing outside India",
       "bodyMd": "Notwithstanding anything in article 5, any person who or either of whose parents or any of whose grand-parents was born in India as defined in the Government of India Act, 1935 (as originally enacted), and who is ordinarily residing in any country outside India as so defined shall be deemed to be a citizen of India if he has been registered as a citizen of India by the diplomatic or consular representative of India in the country where he is for the time being residing on an application made by him therefor to such diplomatic or consular representative, whether before or after the commencement of this Constitution, in the form and manner prescribed by the Government of the Dominion of India or the Government of India."
     },
     {
       "number": "9",
-      "chapterNumber": "I",
+      "chapterNumber": "II",
       "marginalNote": "Persons voluntarily acquiring citizenship of a foreign State not to be citizens",
       "bodyMd": "No person shall be a citizen of India by virtue of article 5, or be deemed to be a citizen of India by virtue of article 6 or article 8, if he has voluntarily acquired the citizenship of any foreign State."
     },
     {
       "number": "10",
-      "chapterNumber": "I",
+      "chapterNumber": "II",
       "marginalNote": "Continuance of the rights of citizenship",
       "bodyMd": "Every person who is or is deemed to be a citizen of India under any of the foregoing provisions of this Part shall, subject to the provisions of any law that may be made by Parliament, continue to be such citizen."
     },
     {
       "number": "11",
-      "chapterNumber": "I",
+      "chapterNumber": "II",
       "marginalNote": "Parliament to regulate the right of citizenship by law",
       "bodyMd": "Nothing in the foregoing provisions of this Part shall derogate from the power of Parliament to make any provision with respect to the acquisition and termination of citizenship and all other matters relating to citizenship."
     },
@@ -482,7 +512,7 @@
     },
     {
       "number": "51A",
-      "chapterNumber": "IV",
+      "chapterNumber": "IVA",
       "marginalNote": "Fundamental duties",
       "bodyMd": "It shall be the duty of every citizen of India— (a) to abide by the Constitution and respect its ideals and institutions, the National Flag and the National Anthem; (b) to cherish and follow the noble ideals which inspired our national struggle for freedom; (c) to uphold and protect the sovereignty, unity and integrity of India; (d) to defend the country and render national service when called upon to do so; (e) to promote harmony and the spirit of common brotherhood amongst all the people of India transcending religious, linguistic and regional or sectional diversities; to renounce practices derogatory to the dignity of women; (f) to value and preserve the rich heritage of our composite culture; (g) to protect and improve the natural environment including forests, lakes, rivers and wild life, and to have compassion for living creatures; (h) to develop the scientific temper, humanism and the spirit of inquiry and reform; 2. Subs. by the Constitution (Seventh Amendment) Act, 1956, s. 27, for ―declared by parliament by law‖ (i) to safeguard public property and to abjure violence; (j) to strive towards excellence in all spheres of individual and collective activity so that the nation constantly rises to higher levels of endeavour and achievement; [(k) who is a parent or guardian to provide opportunities for education to his child or, as the case may be, ward between the age of six and fourteen years.]"
     },
@@ -1724,271 +1754,271 @@
     },
     {
       "number": "243",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IX",
       "marginalNote": "Definitions",
       "bodyMd": "In this Part, unless the context otherwise requires,— (a) ―district‖ means a district in a State; (b) ―Gram Sabha‖ means a body consisting of persons registered in the electoral rolls relating to a village comprised within the area of Panchayat at the village level; (c) ―intermediate level‖ means a level between the village and district levels specified by the Governor of a State by public notification to be the intermediate level for the purposes of this Part; (d) ―Panchayat‖ means an institution (by whatever name called) of self-government constituted under article 243B, for the rural areas; (e) ―Panchayat area‖ means the territorial area of a Panchayat; (f) ―Population‖ means the population as ascertained at the last preceding census of which the relevant figures have been published; (g) ―village‖ means a village specified by the Governor by public notification to be a village for the purposes of this Part and includes a group of villages so specified."
     },
     {
       "number": "243A",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IX",
       "marginalNote": "Gram Sabha",
       "bodyMd": "A Gram Sabha may exercise such powers and perform such functions at the village level as the Legislature of a State may, by law, provide."
     },
     {
       "number": "243B",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IX",
       "marginalNote": "Constitution of Panchayats",
       "bodyMd": "(1) There shall be constituted in every State, Panchayats at the village, intermediate and district levels in accordance with the provisions of this Part. (2) Notwithstanding anything in clause (1), Panchayats at the intermediate level may not be constituted in a State having a population not exceeding twenty lakhs."
     },
     {
       "number": "243C",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IX",
       "marginalNote": "Composition of Panchayats",
       "bodyMd": "(1) Subject to the provisions of this Part, the Legislature of a State may, by law, make provisions with respect to the composition of Panchayats: Provided that the ratio between the population of the territorial area of a Panchayat at any level and the number of seats in such Panchayat to be filled by election shall, so far as practicable, be the same throughout the State. (2) All the seats in a Panchayat shall be filled by persons chosen by direct election from territorial constituencies in the Panchayat area and, for this purpose, each Panchayat area shall be divided into territorial constituencies in such manner that the ratio between the population of each constituency and the number of seats allotted to it shall, so far as practicable, be the same throughout the Panchayat area. (3) The Legislature of a State may, by law, provide for the representation— (a) of the Chairpersons of the Panchayats at the village level, in the Panchayats at the intermediate level or, in the case of a State not having Panchayats at the intermediate level, in the Panchayats at the district level; (b) of the Chairpersons of the Panchayats at the intermediate level, in the Panchayats at the district level; (c) of the members of the House of the People and the members of the Legislative Assembly of the State representing constituencies which comprise wholly or partly a Panchayat area at a level other than the village level, in such Panchayat; (d) of the members of the Council of States and the members of the Legislative Council of the State, where they are registered as electors within— (i) a Panchayat area at the intermediate level, in Panchayat at the intermediate level; (ii) a Panchayat area at the district level, in Panchayat at the district level. (4) The Chairperson of a Panchayat and other members of a Panchayat whether or not chosen by direct election from territorial constituencies in the Panchayat area shall have the right to vote in the meetings of the Panchayats. (5) The Chairperson of— (a) a Panchayat at the village level shall be elected in such manner as the Legislature of a State may, by law, provide; and (b) a Panchayat at the intermediate level or district level shall be elected by, and from amongst, the elected members thereof."
     },
     {
       "number": "243D",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IX",
       "marginalNote": "Reservation of seats",
       "bodyMd": "(1) Seats shall be reserved for— (a) the Scheduled Castes; and (b) the Scheduled Tribes, in every Panchayat and the number of seats so reserved shall bear, as nearly as may be, the same proportion to the total number of seats to be filled by direct election in that Panchayat as the population of the Scheduled Castes in that Panchayat area or of the Scheduled Tribes in that Panchayat area bears to the total population of that area and such seats may be allotted by rotation to different constituencies in a Panchayat. (2) Not less than one-third of the total number of seats reserved under clause (1) shall be reserved for women belonging to the Scheduled Castes or, as the case may be, the Scheduled Tribes. (3) Not less than one-third (including the number of seats reserved for women belonging to the Scheduled Castes and the Scheduled Tribes) of the total number of seats to be filled by direct election in every Panchayat shall be reserved for women and such seats may be allotted by rotation to different constituencies in a Panchayat. (4) The offices of the Chairpersons in the Panchayats at the village or any other level shall be reserved for the Scheduled Castes, the Scheduled Tribes and women in such manner as the Legislature of a State may, by law, provide: Provided that the number of offices of Chairpersons reserved for the Scheduled Castes and the Scheduled Tribes in the Panchayats at each level in any State shall bear, as nearly as may be, the same proportion to the total number of such offices in the Panchayats at each level as the population of the Scheduled Castes in the State or of the Scheduled Tribes in the State bears to the total population of the State: Provided further that not less than one-third of the total number of offices of Chairpersons in the Panchayats at each level shall be reserved for women: Provided also that the number of offices reserved under this clause shall be allotted by rotation to different Panchayats at each level. (5) The reservation of seats under clauses (1) and (2) and the reservation of offices of Chairpersons (other than the reservation for women) under clause (4) shall cease to have effect on the expiration of the period specified in article 334. (6) Nothing in this Part shall prevent the Legislature of a State from making any provision for reservation of seats in any Panchayat or offices of Chairpersons in the Panchayats at any level in favour of backward class of citizens."
     },
     {
       "number": "243E",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IX",
       "marginalNote": "Duration of Panchayats, etc",
       "bodyMd": "(1) Every Panchayat, unless sooner dissolved under any law for the time being in force, shall continue for five years from the date appointed for its first meeting and no longer. (2) No amendment of any law for the time being in force shall have the effect of causing dissolution of a Panchayat at any level, which is functioning immediately before such amendment, till the expiration of its duration specified in clause (1). (3) An election to constitute a Panchayat shall be completed— (a) before the expiry of its duration specified in clause (1); (b) before the expiration of a period of six months from the date of its dissolution: Provided that where the remainder of the period for which the dissolved Panchayat would have continued is less than six months, it shall not be necessary to hold any election under this clause for constituting the Panchayat for such period. (4) A Panchayat constituted upon the dissolution of a Panchayat before the expiration of its duration shall continue only for the remainder of the period for which the dissolved Panchayat would have continued under clause (1) had it not been so dissolved."
     },
     {
       "number": "243F",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IX",
       "marginalNote": "Disqualifications for membership",
       "bodyMd": "(1) A person shall be disqualified for being chosen as, and for being, a member of a Panchayat— (a) if he is so disqualified by or under any law for the time being in force for the purposes of elections to the Legislature of the State concerned: Provided that no person shall be disqualified on the ground that he is less than twenty-five years of age, if he has attained the age of twenty-one years; (b) if he is so disqualified by or under any law made by the Legislature of the State. (2) If any question arises as to whether a member of a Panchayat has become subject to any of the disqualifications mentioned in clause (1), the question shall be referred for the decision of such authority and in such manner as the Legislature of a State may, by law, provide."
     },
     {
       "number": "243G",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IX",
       "marginalNote": "Powers, authority and responsibilities of Panchayats",
       "bodyMd": "Subject to the provisions of this Constitution, the Legislature of a State may, by law, endow the Panchayats with such powers and authority as may be necessary to enable them to function as institutions of self-government and such law may contain provisions for the devolution of powers and responsibilities upon Panchayats at the appropriate level, subject to such conditions as may be specified therein, with respect to— (a) the preparation of plans for economic development and social justice; (b) the implementation of schemes for economic development and social justice as may be entrusted to them including those in relation to the matters listed in the Eleventh Schedule."
     },
     {
       "number": "243H",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IX",
       "marginalNote": "Powers to impose taxes by, and Funds of, the Panchayats",
       "bodyMd": "The Legislature of a State may, by law,— (a) authorise a Panchayat to levy, collect and appropriate such taxes, duties, tolls and fees in accordance with such procedure and subject to such limits; (b) assign to a Panchayat such taxes, duties, tolls and fees levied and collected by the State Government for such purposes and subject to such conditions and limits; (c) provide for making such grants-in-aid to the Panchayats from the Consolidated Fund of the State; and (d) provide for constitution of such Funds for crediting all moneys received, respectively, by or on behalf of the Panchayats and also for the withdrawal of such moneys therefrom, as may be specified in the law. 243-I. Constitution of Finance Commission to review financial position.—(1) The Governor of a State shall, as soon as may be within one year from the commencement of the Constitution (Seventy-third Amendment) Act, 1992, and thereafter at the expiration of every fifth year, constitute a Finance Commission to review the financial position of the Panchayats and to make recommendations to the Governor as to— (a) the principles which should govern— (i) the distribution between the State and the Panchayats of the net proceeds of the taxes, duties, tolls and fees leviable by the State, which may be divided between them under this Part and the allocation between the Panchayats at all levels of their respective shares of such proceeds; (ii) the determination of the taxes, duties, tolls and fees which may be assigned to, or appropriated by, the Panchayats; (iii) the grants-in-aid to the Panchayats from the Consolidated Fund of the State; (b) the measures needed to improve the financial position of the Panchayats; (c) any other matter referred to the Finance Commission by the Governor in the interests of sound finance of the Panchayats. (2) The Legislature of a State may, by law, provide for the composition of the Commission, the qualifications which shall be requisite for appointment as members thereof and the manner in which they shall be selected. (3) The Commission shall determine their procedure and shall have such powers in the performance of their functions as the Legislature of the State may, by law, confer on them. (4) The Governor shall cause every recommendation made by the Commission under this article together with an explanatory memorandum as to the action taken thereon to be laid before the Legislature of the State."
     },
     {
       "number": "243J",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IX",
       "marginalNote": "Audit of accounts of Panchayats",
       "bodyMd": "The Legislature of a State may, by law, make provisions with respect to the maintenance of accounts by the Panchayats and the auditing of such accounts."
     },
     {
       "number": "243K",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IX",
       "marginalNote": "Elections to the Panchayats",
       "bodyMd": "(1) The superintendence, direction and control of the preparation of electoral rolls for, and the conduct of, all elections to the Panchayats shall be vested in a State Election Commission consisting of a State Election Commissioner to be appointed by the Governor. (2) Subject to the provisions of any law made by the Legislature of a State, the conditions of service and tenure of office of the State Election Commissioner shall be such as the Governor may by rule determine: Provided that the State Election Commissioner shall not be removed from his office except in like manner and on the like grounds as a Judge of a High Court and the conditions of service of the State Election Commissioner shall not be varied to his disadvantage after his appointment. (3) The Governor of a State shall, when so requested by the State Election Commission, make available to the State Election Commission such staff as may be necessary for the discharge of the functions conferred on the State Election Commission by clause (1). (4) Subject to the provisions of this Constitution, the Legislature of a State may, by law, make provision with respect to all matters relating to, or in connection with, elections to the Panchayats."
     },
     {
       "number": "243L",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IX",
       "marginalNote": "Application to Union territories",
       "bodyMd": "The provisions of this Part shall apply to the Union territories and shall, in their application to a Union territory, have effect as if the references to the Governor of a State were references to the Administrator of the Union territory appointed under article 239 and references to the Legislature or the legislative Assembly of a State were references, in relation to a Union territory having a Legislative Assembly, to that Legislative Assembly: Provided that the President may, by public notification, direct that the provisions of this Part shall apply to any Union territory or part thereof subject to such exceptions and modifications as he may specify in the notification."
     },
     {
       "number": "243M",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IX",
       "marginalNote": "Part not to apply to certain areas",
       "bodyMd": "(1) Nothing in this Part shall apply to the Scheduled Areas referred to in clause (1), and the tribal areas referred to in clause (2), of article 244. (2) Nothing in this Part shall apply to— (a) the States of Nagaland, Meghalaya and Mizoram; (b) the hill areas in the State of Manipur for which District Councils exist under any law for the time being in force. (3) Nothing in this Part— (a) relating to Panchayats at the district level shall apply to the hill areas of the District of Darjeeling in the State of West Bengal for which Darjeeling Gorkha Hill Council exists under any law for the time being in force; (b) shall be construed to affect the functions and powers of the Darjeeling Gorkha Hill Council constituted under such law. [(3A) Nothing in article 243D, relating to reservation of seats for the Scheduled Castes, shall apply to the State of Arunachal Pradesh.] (4) Notwithstanding anything in this Constitution,— (a) the Legislature of a State referred to in sub-clause (a) of clause (2) may, by law, extend this part to that State, except the areas, if any, referred to in clause (1), if the Legislative Assembly of that State passes a resolution to that effect by a majority of the total membership of that House and by a majority of not less than two-thirds of the members of that House present and voting; (b) Parliament may, by law, extend the provisions of this Part to the Scheduled Areas and the tribal areas referred to in clause (1) subject to such exceptions and modifications as may be specified in such law, and no such law shall be deemed to be an amendment of this Constitution for the purposes of article 368."
     },
     {
       "number": "243N",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IX",
       "marginalNote": "Continuance of existing laws and Panchayats",
       "bodyMd": "Notwithstanding anything in this Part, any provision of any law relating to Panchayats in force in a State immediately before the commencement of the Constitution (Seventy-third Amendment) Act, 1992, which is inconsistent with the provisions of this Part, shall continue to be in force until amended or repealed by a competent Legislature or other competent authority or until the expiration of one year from such commencement, whichever is earlier: Provided that all the Panchayats existing immediately before such commencement shall continue till the expiration of their duration, unless sooner dissolved by a resolution passed to that effect by the Legislative Assembly of that State or, in the case of a State having a Legislative Council, by each House of the Legislature of that State. 243-O. Bar to interference by courts in electoral matters.—Notwithstanding anything in this Constitution,— (a) the validity of any law relating to the delimitation of constituencies or the allotment of seats to such constituencies, made or purporting to be made under article 243K, shall not be called in question in any court; (b) no election to any Panchayat shall be called in question except by an election petition presented to such authority and in such manner as is provided for by or under any law made by the Legislature of a State.]"
     },
     {
       "number": "243P",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXA",
       "marginalNote": "Definitions",
       "bodyMd": "In this Part, unless the context otherwise requires,— (a) ―Committee‖ means a Committee constituted under article 243S; (b) ―district‖ means a district in a State; (c) ―Metropolitan area‖ means an area having a population of ten lakhs or more, comprised in one or more districts and consisting of two or more Municipalities or Panchayats or other contiguous areas, specified by the Governor by public notification to be a Metropolitan area for the purposes of this Part; (d) ―Municipal area‖ means the territorial area of a Municipality as is notified by the Governor; (e) ―Municipality‖ means an institution of self-government constituted under article 243Q; (f) ―Panchayat‖ means a Panchayat constituted under article 243B; (g) ―population‖ means the population as ascertained at the last preceding census of which the relevant figures have been published."
     },
     {
       "number": "243Q",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXA",
       "marginalNote": "Constitution of Municipalities",
       "bodyMd": "(1) There shall be constituted in every State,— (a) a Nagar Panchayat (by whatever name called) for a transitional area, that is to say, an area in transition from a rural area to an urban area; (b) a Municipal Council for a smaller urban area; and (c) a Municipal Corporation for a larger urban area, in accordance with the provisions of this Part: Provided that a Municipality under this clause may not be constituted in such urban area or part thereof as the Governor may, having regard to the size of the area and the municipal services being provided or proposed to be provided by an industrial establishment in that area and such other factors as he may deem fit, by public notification, specify to be an industrial township. (2) In this article, ―a transitional area‖, ―a smaller urban area‖ or ―a larger urban area‖ means such area as the Governor may, having regard to the population of the area, the density of the population therein, the revenue generated for local administration, the percentage of employment in non-agricultural activities, the economic importance or such other factors as he may deem fit, specify by public notification for the purposes of this Part."
     },
     {
       "number": "243R",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXA",
       "marginalNote": "Composition of Municipalities",
       "bodyMd": "(1) Save as provided in clause (2), all the seats in a Municipality shall be filled by persons chosen by direct election from the territorial constituencies in the Municipal area and for this purpose each Municipal area shall be divided into territorial constituencies to be known as wards. (2) The Legislature of a State may, by law, provide— (a) for the representation in a Municipality of— (i) persons having special knowledge or experience in Municipal administration; (ii) the members of the House of the People and the members of the Legislative Assembly of the State representing constituencies which comprise wholly or partly the Municipal area; (iii) the members of the Council of States and the members of the Legislative Council of the State registered as electors within the Municipal area; (iv) the Chairpersons of the Committees constituted under clause (5) of article 243S: Provided that the persons referred to in paragraph (i) shall not have the right to vote in the meetings of the Municipality; (b) the manner of election of the Chairperson of a Municipality."
     },
     {
       "number": "243S",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXA",
       "marginalNote": "Constitution and composition of Wards Committees, etc",
       "bodyMd": "(1) There shall be constituted Wards Committees, consisting of one or more wards, within the territorial area of a Municipality having a population of three lakhs or more. (2) The Legislature of a State may, by law, make provision with respect to— (a) the composition and the territorial area of a Wards Committee; (b) the manner in which the seats in a Wards Committee shall be filled. (3) A member of a Municipality representing a ward within the territorial area of the Wards Committee shall be a member of that Committee. (4) Where a Wards Committee consists of— (a) one ward, the member representing that ward in the Municipality; or (b) two or more wards, one of the members representing such wards in the Municipality elected by the members of the Wards Committee, shall be the Chairperson of that Committee. (5) Nothing in this article shall be deemed to prevent the Legislature of a State from making any provision for the constitution of Committees in addition to the Wards Committees."
     },
     {
       "number": "243T",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXA",
       "marginalNote": "Reservation of seats",
       "bodyMd": "(1) Seats shall be reserved for the Scheduled Castes and the Scheduled Tribes in every Municipality and the number of seats so reserved shall bear, as nearly as may be, the same proportion to the total number of seats to be filled by direct election in that Municipality as the population of the Scheduled Castes in the Municipal area or of the Scheduled Tribes in the Municipal area bears to the total population of that area and such seats may be allotted by rotation to different constituencies in a Municipality. (2) Not less than one-third of the total number of seats reserved under clause (1) shall be reserved for women belonging to the Scheduled Castes or, as the case may be, the Scheduled Tribes. (3) Not less than one-third (including the number of seats reserved for women belonging to the Scheduled Castes and the Scheduled Tribes) of the total number of seats to be filled by direct election in every Municipality shall be reserved for women and such seats may be allotted by rotation to different constituencies in a Municipality. (4) The offices of Chairpersons in the Municipalities shall be reserved for the Scheduled Castes, the Scheduled Tribes and women in such manner as the Legislature of a State may, by law, provide. (5) The reservation of seats under clauses (1) and (2) and the reservation of offices of Chairpersons (other than the reservation for women) under clause (4) shall cease to have effect on the expiration of the period specified in article 334. (6) Nothing in this Part shall prevent the Legislature of a State from making any provision for reservation of seats in any Municipality or offices of Chairpersons in the Municipalities in favour of backward class of citizens."
     },
     {
       "number": "243U",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXA",
       "marginalNote": "Duration of Municipalities, etc",
       "bodyMd": "(1) Every Municipality, unless sooner dissolved under any law for the time being in force, shall continue for five years from the date appointed for its first meeting and no longer: Provided that a Municipality shall be given a reasonable opportunity of being heard before its dissolution. (2) No amendment of any law for the time being in force shall have the effect of causing dissolution of a Municipality at any level, which is functioning immediately before such amendment, till the expiration of its duration specified in clause (1). (3) An election to constitute a Municipality shall be completed,— (a) before the expiry of its duration specified in clause (1); (b) before the expiration of a period of six months from the date of its dissolution: Provided that where the remainder of the period for which the dissolved Municipality would have continued is less than six months, it shall not be necessary to hold any election under this clause for constituting the Municipality for such period. (4) A Municipality constituted upon the dissolution of a Municipality before the expiration of its duration shall continue only for the remainder of the period for which the dissolved Municipality would have continued under clause (1) had it not been so dissolved."
     },
     {
       "number": "243V",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXA",
       "marginalNote": "Disqualifications for membership",
       "bodyMd": "(1) A person shall be disqualified for being chosen as, and for being, a member of a Municipality— (a) if he is so disqualified by or under any law for the time being in force for the purposes of elections to the Legislature of the State concerned: Provided that no person shall be disqualified on the ground that he is less than twenty-five years of age, if he has attained the age of twenty-one years; (b) if he is so disqualified by or under any law made by the Legislature of the State. (2) If any question arises as to whether a member of a Municipality has become subject to any of the disqualifications mentioned in clause (1), the question shall be referred for the decision of such authority and in such manner as the Legislature of a State may, by law, provide."
     },
     {
       "number": "243W",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXA",
       "marginalNote": "Powers, authority and responsibilities of Municipalities, etc",
       "bodyMd": "Subject to the provisions of this Constitution, the Legislature of a State may, by law, endow— (a) the Municipalities with such powers and authority as may be necessary to enable them to function as institutions of self-government and such law may contain provisions for the devolution of powers and responsibilities upon Municipalities, subject to such conditions as may be specified therein, with respect to— (i) the preparation of plans for economic development and social justice; (ii) the performance of functions and the implementation of schemes as may be entrusted to them including those in relation to the matters listed in the Twelfth Schedule; (b) the Committees with such powers and authority as may be necessary to enable them to carry out the responsibilities conferred upon them including those in relation to the matters listed in the Twelfth Schedule."
     },
     {
       "number": "243X",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXA",
       "marginalNote": "Power to impose taxes by, and Funds of, the Municipalities",
       "bodyMd": "The Legislature of a State may, by law,— (a) authorise a Municipality to levy, collect and appropriate such taxes, duties, tolls and fees in accordance with such procedure and subject to such limits; (b) assign to a Municipality such taxes, duties, tolls and fees levied and collected by the State Government for such purposes and subject to such conditions and limits; (c) provide for making such grants-in-aid to the Municipalities from the Consolidated Fund of the State; and (d) provide for constitution of such Funds for crediting all moneys received, respectively, by or on behalf of the Municipalities and also for the withdrawal of such moneys therefrom, as may be specified in the law."
     },
     {
       "number": "243Y",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXA",
       "marginalNote": "Finance Commission",
       "bodyMd": "(1) The Finance Commission constituted under article 243-I shall also review the financial position of the Municipalities and make recommendations to the Governor as to— (a) the principles which should govern— (i) the distribution between the State and the Municipalities of the net proceeds of the taxes, duties, tolls and fees leviable by the State, which may be divided between them under this Part and the allocation between the Municipalities at all levels of their respective shares of such proceeds; (ii) the determination of the taxes, duties, tolls and fees which may be assigned to, or appropriated by, the Municipalities; (iii) the grants-in-aid to the Municipalities from the Consolidated Fund of the State; (b) the measures needed to improve the financial position of the Municipalities; (c) any other matter referred to the Finance Commission by the Governor in the interests of sound finance of the Municipalities. (2) The Governor shall cause every recommendation made by the Commission under this article together with an explanatory memorandum as to the action taken thereon to be laid before the Legislature of the State."
     },
     {
       "number": "243Z",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXA",
       "marginalNote": "Audit of accounts of Municipalities",
       "bodyMd": "The Legislature of a State may, by law, make provisions with respect to the maintenance of accounts by the Municipalities and the auditing of such accounts."
     },
     {
       "number": "243ZA",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXA",
       "marginalNote": "Elections to the Municipalities",
       "bodyMd": "(1) The superintendence, direction and control of the preparation of electoral rolls for, and the conduct of, all elections to the Municipalities shall be vested in the State Election Commission referred to in article 243K. (2) Subject to the provisions of this Constitution, the Legislature of a State may, by law, make provision with respect to all matters relating to, or in connection with, elections to the Municipalities."
     },
     {
       "number": "243ZB",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXA",
       "marginalNote": "Application to Union territories",
       "bodyMd": "The provisions of this Part shall apply to the Union territories and shall, in their application to a Union territory, have effect as if the references to the Governor of a State were references to the Administrator of the Union territory appointed under article 239 and references to the Legislature or the Legislative Assembly of a State were references in relation to a Union territory having a Legislative Assembly, to that Legislative Assembly: Provided that the President may, by public notification, direct that the provisions of this Part shall apply to any Union territory or part thereof subject to such exceptions and modifications as he may specify in the notification."
     },
     {
       "number": "243ZC",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXA",
       "marginalNote": "Part not to apply to certain areas",
       "bodyMd": "(1) Nothing in this Part shall apply to the Scheduled Areas referred to in clause (1), and the tribal areas referred to in clause (2) of article 244. (2) Nothing in this Part shall be construed to affect the functions and powers of the Darjeeling Gorkha Hill Council constituted under any law for the time being in force for the hill areas of the district of Darjeeling in the State of West Bengal. (3) Notwithstanding anything in this Constitution, Parliament may, by law, extend the provisions of this Part to the Scheduled Areas and the tribal areas referred to in clause (1) subject to such exceptions and modifications as may be specified in such law, and no such law shall be deemed to be an amendment of this Constitution for the purposes of article 368."
     },
     {
       "number": "243ZD",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXA",
       "marginalNote": "Committee for district planning",
       "bodyMd": "(1) There shall be constituted in every State at the district level a District Planning Committee to consolidate the plans prepared by the Panchayats and the Municipalities in the district and to prepare a draft development plan for the district as a whole. (2) The Legislature of a State may, by law, make provision with respect to— (a) the composition of the District Planning Committees; (b) the manner in which the seats in such Committees shall be filled: Provided that not less than four-fifths of the total number of members of such Committee shall be elected by, and from amongst, the elected members of the Panchayat at the district level and of the Municipalities in the district in proportion to the ratio between the population of the rural areas and of the urban areas in the district; (c) the functions relating to district planning which may be assigned to such Committees; (d) the manner in which the Chairpersons of such Committees shall be chosen. (3) Every District Planning Committee shall, in preparing the draft development plan,— (a) have regard to— (i) matters of common interest between the Panchayats and the Municipalities including spatial planning, sharing of water and other physical and natural resources, the integrated development of infrastructure and environmental conservation; (ii) the extent and type of available resources whether financial or otherwise; (b) consult such institutions and organisations as the Governor may, by order, specify. (4) The Chairperson of every District Planning Committee shall forward the development plan, as recommended by such Committee, to the Government of the State."
     },
     {
       "number": "243ZE",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXA",
       "marginalNote": "Committee for Metropolitan planning",
       "bodyMd": "(1) There shall be constituted in every Metropolitan area a Metropolitan Planning Committee to prepare a draft development plan for the Metropolitan area as a whole. (2) The Legislature of a State may, by law, make provision with respect to— (a) the composition of the Metropolitan Planning Committees; (b) the manner in which the seats in such Committees shall be filled: Provided that not less than two-thirds of the members of such Committee shall be elected by, and from amongst, the elected members of the Municipalities and Chairpersons of the Panchayats in the Metropolitan area in proportion to the ratio between the population of the Municipalities and of the Panchayats in that area; (c) the representation in such Committees of the Government of India and the Government of the State and of such organisations and institutions as may be deemed necessary for carrying out the functions assigned to such Committees; (d) the functions relating to planning and coordination for the Metropolitan area which may be assigned to such Committees; (e) the manner in which the Chairpersons of such Committees shall be chosen. (3) Every Metropolitan Planning Committee shall, in preparing the draft development plan,— (a) have regard to— (i) the plans prepared by the Municipalities and the Panchayats in the Metropolitan area; (ii) matters of common interest between the Municipalities and the Panchayats, including co- ordinated spatial planning of the area, sharing of water and other physical and natural resources, the integrated development of infrastructure and environmental conservation; (iii) the overall objectives and priorities set by the Government of India and the Government of the State; (iv) the extent and nature of investments likely to be made in the Metropolitan area by agencies of the Government of India and of the Government of the State and other available resources whether financial or otherwise; (b) consult such institutions and organisations as the Governor may, by order, specify. (4) The Chairperson of every Metropolitan Planning Committee shall forward the development plan, as recommended by such Committee, to the Government of the State."
     },
     {
       "number": "243ZF",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXA",
       "marginalNote": "Continuance of existing laws and Municipalities",
       "bodyMd": "Notwithstanding anything in this Part, any provision of any law relating to Municipalities in force in a State immediately before the commencement of the Constitution (Seventy-fourth Amendment) Act, 1992, which is inconsistent with the provisions of this Part, shall continue to be in force until amended or repealed by a competent Legislature or other competent authority or until the expiration of one year from such commencement, whichever is earlier: Provided that all the Municipalities existing immediately before such commencement shall continue till the expiration of their duration, unless sooner dissolved by a resolution passed to that effect by the Legislative Assembly of that State or, in the case of a State having a Legislative Council, by each House of the Legislature of that State."
     },
     {
       "number": "243ZG",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXA",
       "marginalNote": "Bar to interference by courts in electoral matters",
       "bodyMd": "Notwithstanding anything in this Constitution,— (a) the validity of any law relating to the delimitation of constituencies or the allotment of seats to such constituencies, made or purporting to be made under article 243ZA shall not be called in question in any court; (b) no election to any Municipality shall be called in question except by an election petition presented to such authority and in such manner as is provided for by or under any law made by the Legislature of a State.]"
     },
     {
       "number": "243ZH",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXB",
       "marginalNote": "Definitions",
       "bodyMd": "In this Part, unless the context otherwise requires,— (a) ―authorised person‖ means a person referred to as such in article 243ZQ; (b) ―board‖ means the board of directors or the governing body of a co-operative society, by whatever name called, to which the direction and control of the management of the affairs of a society is entrusted to; (c) ―co-operative society‖ means a society registered or deemed to be registered under any law relating to co-operative societies for the time being in force in any State; (d) ―multi-State co-operative society‖ means a society with objects not confined to one State and registered or deemed to be registered under any law for the time being in force relating to such co- operatives; (e) ―Office bearer‖ means a President, Vice-President, Chairperson, Vice-Chairperson, Secretary or Treasurer, of a co-operative society and includes any other person to be elected by the board of any co- operative society; (f) ―Registrar‖ means the Central Registrar appointed by the Central Government in relation to the multi-State co-operative societies and the Registrar for co-operative societies appointed by the State Government under the law made by the Legislature of a State in relation to co-operative societies; (g) ―State Act‖ means any law made by the Legislature of a State; (h) ―State level co-operative society‖ means a co-operative society having its area of operation extending to the whole of a State and defined as such in any law made by the Legislature of a State."
     },
     {
       "number": "243ZI",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXB",
       "marginalNote": "Incorporation of co-operative societies",
       "bodyMd": "Subject to the provisions of this Part, the Legislature of a State may, by law, make provisions with respect to the incorporation, regulation and winding up of co-operative societies based on the principles of voluntary formation, democratic member- control, member-economic participation and autonomous functioning."
     },
     {
       "number": "243ZJ",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXB",
       "marginalNote": "Number and term of members of board and its office bearers",
       "bodyMd": "(1) The board shall consist of such number of directors as may be provided by the Legislature of a State, by law: Provided that the maximum number of directors of a co-operative society shall not exceed twenty-one: Provided further that the Legislature of a State shall, by law, provide for the reservation of one seat for the Scheduled Castes or the Scheduled Tribes and two seats for women on board of every co-operative society consisting of individuals as members and having members from such class of category of persons. (2) The term of office of elected members of the board and its office bearers shall be five years from the date of election and the term of office bearers shall be coterminous with the term of the board: Provided that the board may fill a casual vacancy on the board by nomination out of the same class of members in respect of which the casual vacancy has arisen, if the term of office of the board is less than half of its original term. (3) The Legislature of a State shall, by law, make provisions for co-option of persons to be members of the board having experience in the field of banking, management, finance or specialisation in any other field relating to the objects and activities undertaken by the co-operative society, as members of the board of such society: Provided that the number of such co-opted members shall not exceed two in addition to twenty-one directors specified in the first proviso to clause (1): Provided further that such co-opted members shall not have the right to vote in any election of the co- operative society in their capacity as such member or to be eligible to be elected as office bearers of the board: Provided also that the functional directors of a co-operative society shall also be the members of the board and such members shall be excluded for the purpose of counting the total number of directors specified in the first proviso to clause (1)."
     },
     {
       "number": "243ZK",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXB",
       "marginalNote": "Election of members of board",
       "bodyMd": "(1) Notwithstanding anything contained in any law made by the Legislature of a State, the election of a board shall be conducted before the expiry of the term of the board so as to ensure that the newly elected members of the board assume office immediately on the expiry of the term of the office of members of the outgoing board. (2) The superintendence, direction and control of the preparation of electoral rolls for, and the conduct of, all elections to a co-operative society shall vest in such an authority or body, as may be provided by the Legislature of a State, by law: Provided that the Legislature of a State may, by law, provide for the procedure and guidelines for the conduct of such elections."
     },
     {
       "number": "243ZL",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXB",
       "marginalNote": "Supersession and suspension of board and interim management",
       "bodyMd": "(1) Notwithstanding anything contained in any law for the time being in force, no board shall be superseded or kept under supersession for a period exceeding six months: Provided that the board may be superseded or kept under suspension in a case— (i) of its persistent default; or (ii) of negligence in the performance of its duties; or (iii) the board has committed any act prejudicial to the interests of the co-operative society or its members; or (iv) there is stalemate in the constitution or functions of the board; or (v) the authority or body as provided by the Legislature of a State, by law, under clause (2) of article 243ZK, has failed to conduct elections in accordance with the provisions of the State Act: Provided further that the board of any such co-operative society shall not be superseded or kept under suspension where there is no Government shareholding or loan or financial assistance or any guarantee by the Government: Provided also that in case of a co-operative society carrying on the business of banking, the provisions of the Banking Regulation Act, 1949 shall also apply: Provided also that in case of a co-operative society, other than a multi- State co-operative society, carrying on the business of banking, the provisions of this clause shall have the effect as if for the words ―six months‖, the words ―one year‖ had been substituted. (2) In case of supersession of a board, the administrator appointed to manage the affairs of such co- operative society shall arrange for conduct of elections within the period specified in clause (1) and hand over the management to the elected board. (3) The Legislature of a State may, by law, make provisions for the conditions of service of the administrator."
     },
     {
       "number": "243ZM",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXB",
       "marginalNote": "Audit of accounts of co-operative societies",
       "bodyMd": "(1) The Legislature of a State may, by law, make provisions with respect to the maintenance of accounts by the co-operative societies and the auditing of such accounts at least once in each financial year. (2) The Legislature of a State shall, by law, lay down the minimum qualifications and experience of auditors and auditing firms that shall be eligible for auditing accounts of the co-operative societies. (3) Every co-operative society shall cause to be audited by an auditor or auditing firms referred to in clause (2) appointed by the general body of the co-operative society: Provided that such auditors or auditing firms shall be appointed from a panel approved by a State Government or an authority authorised by the State Government in this behalf. (4) The accounts of every co-operative society shall be audited within six months of the close of the financial year to which such accounts relate. (5) The audit report of the accounts of an apex co-operative society, as may be defined by the State Act, shall be laid before the State Legislature in the manner, as may be provided by the State Legislature, by law."
     },
     {
       "number": "243ZN",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXB",
       "marginalNote": "Convening of general body meetings",
       "bodyMd": "The Legislature of a State may, by law, make provisions that the annual general body meeting of every co-operative society shall be convened within a period of six months of close of the financial year to transact the business as may be provided in such law."
     },
     {
       "number": "243ZO",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXB",
       "marginalNote": "Right of a member to get information",
       "bodyMd": "(1) The Legislature of a State may, by law, provide for access to every member of a co-operative society to the books, information and accounts of the co- operative society kept in regular transaction of its business with such members. (2) The Legislature of a State may, by law, make provisions to ensure the participation of members of the management of the co-operative society providing minimum requirement of attending meetings by the members and utilising the minimum level of services as may be provided in such law. (3) The Legislature of a State may, by law, provide for co-operative education and training for its members."
     },
     {
       "number": "243ZP",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXB",
       "marginalNote": "Returns",
       "bodyMd": "(1) Every co-operative society shall file returns, within six months of the close of every financial year, to the authority designated by the State Government including the following matters, namely:— (a) annual report of its activities; (b) its audited statement of accounts; (c) plan for surplus disposal as approved by the general body of the co-operative society; (d) list of amendments to the bye-laws of the co-operative society, if any; (e) declaration regarding date of holding of its general body meeting and conduct of elections when due; and (f) any other information required by the Registrar in pursuance of any of the provisions of the State Act."
     },
     {
       "number": "243ZQ",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXB",
       "marginalNote": "Offences and penalties",
       "bodyMd": "(1) The Legislature of a State may, by law, make provisions for the offences relating to the co-operative societies and penalties for such offences. (2) A law made by the Legislature of a State under clause (1) shall include the commission of the following act or omission as offences, namely:— (a) a co-operative society or an officer or member thereof wilfully makes a false return or furnishes false information, or any person wilfully not furnishes any information required from him by a person authorised in this behalf under the provisions of the State Act; (b) any person wilfully or without any reasonable excuse disobeys any summons, requisition or lawful written order issued under the provisions of the State Act; (c) any employer who, without sufficient cause, fails to pay to a co-operative society amount deducted by him from its employee within a period of fourteen days from the date on which such deduction is made; (d) any officer or custodian who wilfully fails to handover custody of books, accounts, documents, records, cash, security and other property belonging to a co-operative society of which he is an officer or custodian, to an authorised person; and (e) whoever, before, during or after the election of members of the board or office bearers, adopts any corrupt practice."
     },
     {
       "number": "243ZR",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXB",
       "marginalNote": "Application to multi-State co-operative societies",
       "bodyMd": "The provisions of this Part shall apply to the multi-State co-operative societies subject to the modification that any reference to ―Legislature of a State‖, ―State Act‖ or State Government‖ shall be construed as a reference to ―Parliament‖, ―Central Act‖ or ―the Central Government‖ respectively."
     },
     {
       "number": "243ZS",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXB",
       "marginalNote": "Application to Union territories",
       "bodyMd": "The provisions of this Part shall apply to the Union territories and shall, in their application to a Union territory, having no Legislative Assembly as if the references to the Legislature of a State were a reference to the administrator thereof appointed under article 239 and, in relation to a Union territory having a Legislative Assembly, to that Legislative Assembly: Provided that the President may, by notification in the Official Gazette, direct that the provisions of this Part shall not apply to any Union territory or part thereof as he may specify in the notification."
     },
     {
       "number": "243ZT",
-      "chapterNumber": "VIII",
+      "chapterNumber": "IXB",
       "marginalNote": "Continuance of existing laws",
       "bodyMd": "Notwithstanding anything in this Part, any provision of any law relating to co-operative societies in force in a State immediately before the commencement of the Constitution (Ninety-seventh Amendment) Act, 2011, which is inconsistent with the provisions of this Part, shall continue to be in force until amended or repealed by a competent Legislature or other competent authority or until the expiration of one year from such commencement, whichever is less.]"
     },
@@ -2534,13 +2564,13 @@
     },
     {
       "number": "323A",
-      "chapterNumber": "XIV",
+      "chapterNumber": "XIVA",
       "marginalNote": "Administrative tribunals",
       "bodyMd": "(1) Parliament may, by law, provide for the adjudication or trial by administrative tribunals of disputes and complaints with respect to recruitment and conditions of service of 1. The words ―or Rajpramukh‖ omitted by the Constitution (Seventh Amendment) Act, 1956, s. 29 and Sch. The words ―or Rajpramukh, as the case may be‖ omitted persons appointed to public services and posts in connection with the affairs of the Union or of any State or of any local or other authority within the territory of India or under the control of the Government of India or of any corporation owned or controlled by the Government. (2) A law made under clause (1) may— (a) provide for the establishment of an administrative tribunal for the Union and a separate administrative tribunal for each State or for two or more States; (b) specify the jurisdiction, powers (including the power to punish for contempt) and authority which may be exercised by each of the said tribunals; (c) provide for the procedure (including provisions as to limitation and rules of evidence) to be followed by the said tribunals; (d) exclude the jurisdiction of all courts, except the jurisdiction of the Supreme Court under article 136, with respect to the disputes or complaints referred to in clause (1); (e) provide for the transfer to each such administrative tribunal of any cases pending before any court or other authority immediately before the establishment of such tribunal as would have been within the jurisdiction of such tribunal if the causes of action on which such suits or proceedings are based had arisen after such establishment; (f) repeal or amend any order made by the President under clause (3) of article 371D; (g) contain such supplemental, incidental and consequential provisions (including provisions as to fees) as Parliament may deem necessary for the effective functioning of, and for the speedy disposal of cases by, and the enforcement of the orders of, such tribunals. (3) The provisions of this article shall have effect notwithstanding anything in any other provision of this Constitution or in any other law for the time being in force."
     },
     {
       "number": "323B",
-      "chapterNumber": "XIV",
+      "chapterNumber": "XIVA",
       "marginalNote": "Tribunals for other matters",
       "bodyMd": "(1) The appropriate Legislature may, by law, provide for the adjudication or trial by tribunals of any disputes, complaints, or offences with respect to all or any of the matters specified in clause (2) with respect to which such Legislature has power to make laws. (2) The matters referred to in clause (1) are the following, namely:— (a) levy, assessment, collection and enforcement of any tax; (b) foreign exchange, import and export across customs frontiers; (c) industrial and labour disputes; (d) land reforms by way of acquisition by the State of any estate as defined in article 31A or of any rights therein or the extinguishment or modification of any such rights or by way of ceiling on agricultural land or in any other way; (e) ceiling on urban property; (f) elections to either House of Parliament or the House or either House of the Legislature of a State, but excluding the matters referred to in article 329 and article 329A; (g) production, procurement, supply and distribution of food-stuffs (including edible oilseeds and oils) and such other goods as the President may, by public notification, declare to be essential goods for the purpose of this article and control of prices of such goods; [(h) rent, its regulation and control and tenancy issues including the right, title and interest of landlords and tenants;] [(i)] offences against laws with respect to any of the matters specified in sub-clauses (a) to [(h)] and fees in respect of any of those matters; [(j)] any matter incidental to any of the matters specified in sub-clauses (a) to [(i)]. (3) A law made under clause (1) may— (a) provide for the establishment of a hierarchy of tribunals; (b) specify the jurisdiction, powers (including the power to punish for contempt) and authority which may be exercised by each of the said tribunals; (c) provide for the procedure (including provisions as to limitation and rules of evidence) to be followed by the said tribunals; (d) exclude the jurisdiction of all courts, except the jurisdiction of the Supreme Court under article 136, with respect to all or any of the matters falling within the jurisdiction of the said tribunals; (e) provide for the transfer to each such tribunal of any cases pending before any court or any other authority immediately before the establishment of such tribunal as would have been within the jurisdiction of such tribunal if the causes of action on which such suits or proceedings are based had arisen after such establishment; (f) contain such supplemental, incidental and consequential provisions (including provisions as to fees) as the appropriate Legislature may deem necessary for the effective functioning of, and for the speedy disposal of cases by, and the enforcement of the orders of, such tribunals. (4) The provisions of this article shall have effect notwithstanding anything in any other provision of this Constitution or in any other law for the time being in force. Explanation.—In this article, ―appropriate Legislature‖, in relation to any matter, means Parliament or, as the case may be, a State Legislature competent to make laws with respect to such matter in accordance with the provisions of Part XI.]"
     },

@@ -76,9 +76,20 @@ const ENACTED = /enacted\s+(?:as\s+follows|by\s+Parliament)|ENACT\s+AND\s+GIVE\s
  * list of psychotropic substances — were read as sections 84…110ZN (D-031).
  * Upper-case and anchored on purpose: body prose says "the Schedule" in mixed
  * case ("specified in the Schedule") and must not end the parse.
+ *
+ * What follows the word is what separates a heading from a quotation of one.
+ * A heading either ends the line ("THE FIRST SCHEDULE") or continues into its
+ * own title after a dash ("SCHEDULE.—[Enactments repealed].—Rep. by …", the
+ * NI Act's repealed schedule). The Constitution instead footnotes an amendment
+ * as `…for the heading ―THE STATES IN PART C OF THE FIRST` / `SCHEDULE‖
+ * (w.e.f. 1-11-1956).` — that continuation line's lowercase tail sits below
+ * body height and is filtered away, leaving exactly `SCHEDULE‖`, which a bare
+ * prefix match read as the schedules beginning: it truncated the parse at
+ * art. 239 and lost 223 articles. The ‖ is a closing quote mark, so requiring
+ * end-of-line or a dash excludes it.
  */
 const SCHEDULE_START =
-  /^(?:THE\s+)?(?:(FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH|EIGHTH|NINTH|TENTH|ELEVENTH|TWELFTH)\s+)?SCHEDULES?\b/;
+  /^(?:THE\s+)?(?:(FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH|EIGHTH|NINTH|TENTH|ELEVENTH|TWELFTH)\s+)?SCHEDULES?(?:\s+[IVXLC]+)?\s*(?:$|\.\s*$|\.?\s*[—–])/;
 /**
  * India Code prints State amendments inline, after the central section they
  * modify: a "STATE AMENDMENT" banner, the amending text (often quoting whole
@@ -109,6 +120,26 @@ const CHAPTER_HEADING = /^(?:CHAPTER|PART)\s*([IVXLCDM]+)([A-Z])?$/;
 const CHAPTER_HEADING_INLINE =
   /^(?:CHAPTER|PART)\s*([IVXLCDM]+)([A-Z])?\s*[[—–-]?\s*([A-Z][A-Z\s,.'()—–-]{5,}?)\s*\]?(?:\s|$)/;
 const ALL_CAPS_LINE = /^[A-Z][A-Z0-9\s,.'()—–-]*$/;
+/**
+ * A title line for the heading just seen. Looser than ALL_CAPS_LINE because a
+ * title carries the print's amendment apparatus: the Constitution sets Part
+ * VIII's as "[THE UNION TERRITORIES]", Part VI's as "THE STATES4***" and Part
+ * XXII's across two lines around a "2[…]" insertion — all of which the strict
+ * pattern rejected, leaving those Parts with the generic "Chapter VIII" name.
+ * The test is therefore "no lowercase, and at least three letters", which
+ * rejects the lone marker digits and asterisk rows printed between headings
+ * while still accepting the NI Act's letter-spaced titles ("OF R E A S O N A
+ * B L E T I M E"), which have no two adjacent capitals at all.
+ */
+const CHAPTER_TITLE_LINE = /^(?=[^a-z]*$)(?:[^A-Za-z]*[A-Z]){3}/;
+/** A title stops at the next structural heading. Without this, the Constitution's
+ * "PART V" swallowed the "CHAPTER I.—THE EXECUTIVE" line below it. The line is
+ * tested after small-caps repair, because the print sets it as "C HAPTER I.—T
+ * HE E XECUTIVE" and the raw form matches nothing. */
+const NEXT_HEADING = /^(?:CHAPTER|PART)\b/;
+/** Amendment apparatus inside a title: bracket pairs, asterisk elisions and
+ * superscript marker digits are printer's marks, not words in the title. */
+const TITLE_APPARATUS = /[[\]*\d]+/g;
 // Section start: "302. <rest…>" — the run-in title may wrap onto later lines,
 // so the title/body split happens after the whole section is accumulated.
 // \s* not \s+: some PDFs drop the space after the number ("16.“Undue…").
@@ -375,8 +406,13 @@ export function parseInlineAct(
       }
       // Section heading, ignoring any leading amendment bracket/marker.
       const headline = flat.replace(LEADING_MARKERS, "");
-      if (pendingChapterNumber !== null && ALL_CAPS_LINE.test(flat) && !SECTION_START.test(headline)) {
-        pendingChapterTitle.push(flat);
+      if (
+        pendingChapterNumber !== null &&
+        CHAPTER_TITLE_LINE.test(flat) &&
+        !NEXT_HEADING.test(normalizeChapterTitle(headline)) &&
+        !SECTION_START.test(headline)
+      ) {
+        pendingChapterTitle.push(flat.replace(TITLE_APPARATUS, " "));
         continue;
       }
       flushChapter();
