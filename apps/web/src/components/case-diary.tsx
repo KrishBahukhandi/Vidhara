@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ACT_SLUG, parseSectionRef } from "@nexlex/shared";
 
 import { track } from "@/lib/analytics";
@@ -14,7 +14,7 @@ import {
   type DiaryCase,
   type NewCase,
 } from "@/lib/case-diary";
-import { requestReminder } from "@/lib/hearing-reminder";
+import { remindersConfigured, requestReminder } from "@/lib/hearing-reminder";
 import { fetchSection } from "@/lib/section-lookup";
 
 const EMPTY: NewCase = { title: "", court: "", caseNumber: "", nextHearing: "", stage: "", notes: "" };
@@ -372,6 +372,18 @@ function CaseCard({
   const [editing, setEditing] = useState(false);
   const [open, setOpen] = useState(false);
   const [reminding, setReminding] = useState(false);
+  // undefined until the mailer answers — the control stays hidden meanwhile
+  // rather than appearing and then vanishing.
+  const [canRemind, setCanRemind] = useState<boolean | undefined>(undefined);
+  useEffect(() => {
+    let alive = true;
+    void remindersConfigured().then((ok) => {
+      if (alive) setCanRemind(ok);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
   const label = hearingLabel(c.nextHearing);
   // A reminder is stale if the hearing was moved after it was set.
   const reminderSet = Boolean(c.nextHearing) && c.remindedFor === c.nextHearing;
@@ -439,7 +451,7 @@ function CaseCard({
         </>
       ) : null}
 
-      {reminding ? (
+      {reminding && canRemind ? (
         <ReminderForm
           c={c}
           onDone={(hearing) => {
@@ -453,7 +465,7 @@ function CaseCard({
         <button type="button" onClick={() => setOpen((o) => !o)} className="text-small text-text-muted hover:text-text">
           {open ? "Hide" : "Open"}
         </button>
-        {c.nextHearing ? (
+        {c.nextHearing && canRemind ? (
           reminderSet ? (
             <span className="text-small text-success">✓ Reminder set</span>
           ) : (

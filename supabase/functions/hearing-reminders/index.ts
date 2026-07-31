@@ -3,6 +3,7 @@
 // THREE ENTRY POINTS
 //   POST (secret-gated)            run the daily job: send confirmations, then
 //                                  send whatever reminders are due.
+//   GET  ?action=status            can this function actually send? (public)
 //   GET  ?action=confirm&token=…   double opt-in: activate an address.
 //   GET  ?action=unsubscribe&token=…  stop all mail to that address.
 //
@@ -112,6 +113,15 @@ Deno.serve(async (req: Request) => {
       const url = new URL(req.url);
       const action = url.searchParams.get("action");
       const token = url.searchParams.get("token");
+
+      // Can this function actually deliver mail? The UI asks before offering a
+      // reminder, because a form that succeeds and then sends nothing is worse
+      // than no form: an advocate who trusts it misses a hearing. Reveals only
+      // a boolean about our own configuration — no token, no data.
+      if (action === "status") {
+        return json({ configured: smtpConfigured });
+      }
+
       if (!action || !token) return html("Invalid link", "That link is missing information.", 400);
 
       if (action === "confirm") {
