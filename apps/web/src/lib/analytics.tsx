@@ -30,6 +30,8 @@ export type EventName =
   | "practice_started"
   | "practice_answered"
   | "ask_ai_assisted"
+  | "limitation_opened"
+  | "limitation_computed"
   | "quick_cite_lookup"
   | "quick_cite_copied"
   | "diary_case_added"

@@ -62,6 +62,16 @@ export default async function SchedulePage({ params }: { params: Promise<Params>
         {schedule.authority_note ? ` · [${schedule.authority_note}]` : ""}
       </p>
 
+      {act.slug === "lim" ? (
+        <p className="mt-3 text-small text-text-muted">
+          Counting a period from one of these?{" "}
+          <Link href="/limitation" className="text-brand hover:underline">
+            Limitation worksheet
+          </Link>{" "}
+          — it applies s.12(1) and lists what would move the date.
+        </p>
+      ) : null}
+
       {articles.length === 0 ? (
         <p className="mt-8 text-body text-text-muted">
           This schedule is still being ingested.

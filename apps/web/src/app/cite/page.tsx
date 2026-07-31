@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { QuickCite } from "@/components/quick-cite";
 import { PageShell } from "@/components/site-chrome";
@@ -25,6 +26,13 @@ export default function CitePage() {
         Constitution, and the Contract, NI, CPC, NDPS, Motor Vehicles, Arbitration and Limitation
         Acts. Looking
         for another act? Tell us on a miss — that&rsquo;s how we pick what to add next.
+      </p>
+      <p className="mt-3 text-small text-text-muted">
+        Working out a period instead?{" "}
+        <Link href="/limitation" className="text-brand hover:underline">
+          Limitation worksheet
+        </Link>{" "}
+        — find the Article, see what it runs from, count it out.
       </p>
       <QuickCite />
     </PageShell>

@@ -64,6 +64,11 @@ export function SiteFooter() {
             Case diary
           </Link>
           <Link
+            href="/limitation"
+            className="text-small text-text-muted transition-colors hover:text-text">
+            Limitation worksheet
+          </Link>
+          <Link
             href="/feedback"
             className="text-small text-text-muted transition-colors hover:text-text">
             Suggest an improvement
