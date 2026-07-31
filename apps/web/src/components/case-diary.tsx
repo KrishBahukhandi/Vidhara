@@ -11,6 +11,7 @@ import {
   setRememberedEmail,
   todayISO,
   useCaseDiary,
+  type CaseLimitation,
   type DiaryCase,
   type NewCase,
 } from "@/lib/case-diary";
@@ -291,6 +292,54 @@ function CaseWorkspace({ c, diary }: { c: DiaryCase; diary: ReturnType<typeof us
  * is sent, and the label is editable precisely so a client's name need never
  * be uploaded.
  */
+/**
+ * A saved limitation period on a case. Shows the working, not just the date:
+ * months after it was computed, "Article 35, three years from the date of the
+ * note" is what lets an advocate check it against the file, and a bare date is
+ * not. Deliberately styled as information rather than an alarm — the diary must
+ * not imply this is a monitored deadline when nothing here monitors it.
+ */
+function LimitationLine({ limitation }: { limitation: CaseLimitation }) {
+  const left = daysUntil(limitation.expiresOn);
+  const long = new Date(`${limitation.expiresOn}T00:00:00Z`).toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+  return (
+    <div className="mt-3 rounded-md border border-dashed border-border p-3">
+      <p className="text-small">
+        <span className="font-medium text-text">Limitation</span>{" "}
+        <span className="text-text-muted">
+          · Article {limitation.article} · {limitation.period}
+        </span>
+      </p>
+      <p className="mt-1 text-body text-text">
+        Ends <strong>{long}</strong>
+        {left !== null && left >= 0 ? (
+          <span className="text-text-muted"> · {left} day{left === 1 ? "" : "s"} left</span>
+        ) : left !== null ? (
+          <span className="text-danger"> · period has run</span>
+        ) : null}
+      </p>
+      <p className="mt-1 text-micro text-text-muted">
+        From {limitation.runsFrom.toLowerCase().replace(/\.$/, "")} —{" "}
+        {new Date(`${limitation.startOn}T00:00:00Z`).toLocaleDateString("en-IN", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          timeZone: "UTC",
+        })}
+        .{" "}
+        <Link href="/limitation" className="text-brand hover:underline">
+          Recheck
+        </Link>
+      </p>
+    </div>
+  );
+}
+
 function ReminderForm({
   c,
   onDone,
@@ -414,6 +463,8 @@ function CaseCard({
         </div>
         <span className={`shrink-0 text-small font-medium ${TONE[label.tone]}`}>{label.text}</span>
       </div>
+
+      {c.limitation ? <LimitationLine limitation={c.limitation} /> : null}
 
       {c.sections.length > 0 ? (
         <ul className="mt-3 flex flex-wrap gap-2">

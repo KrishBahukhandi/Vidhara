@@ -38,6 +38,31 @@ export interface HearingEntry {
   note: string;
 }
 
+/**
+ * A limitation period worked out for this matter, saved from the worksheet.
+ *
+ * The whole computation is kept, not just the date — the Article, the period in
+ * the Schedule's words and the event it ran from. A bare date months later is
+ * unusable: the advocate has to be able to see WHY it is that date, and check
+ * the working against the file without recomputing from scratch.
+ */
+export interface CaseLimitation {
+  /** Schedule Article number, e.g. "35". */
+  article: string;
+  /** The limb's description, as printed. */
+  description: string;
+  /** Period as printed, e.g. "Three years." */
+  period: string;
+  /** What the period runs from, in the Schedule's words. */
+  runsFrom: string;
+  /** ISO date of that event, as entered. */
+  startOn: string;
+  /** ISO date the period ends, per s.12(1). */
+  expiresOn: string;
+  /** When it was worked out — a stale computation should look stale. */
+  savedAt: number;
+}
+
 /** A thing to carry, file or check before the next date. */
 export interface TodoItem {
   id: string;
@@ -63,6 +88,8 @@ export interface DiaryCase {
   status: "active" | "disposed";
   /** Set when an email reminder was requested for the CURRENT hearing date. */
   remindedFor?: string;
+  /** Limitation period saved from the worksheet, if one was worked out. */
+  limitation?: CaseLimitation;
   createdAt: number;
   updatedAt: number;
 }
@@ -78,6 +105,8 @@ function hydrate(c: DiaryCase): DiaryCase {
     hearings: c.hearings ?? [],
     todos: c.todos ?? [],
     status: c.status ?? "active",
+    // `limitation` is intentionally not defaulted — absent means "never worked
+    // out", which is different from "worked out and empty".
   };
 }
 

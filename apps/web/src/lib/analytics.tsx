@@ -32,6 +32,7 @@ export type EventName =
   | "ask_ai_assisted"
   | "limitation_opened"
   | "limitation_computed"
+  | "limitation_saved_to_case"
   | "quick_cite_lookup"
   | "quick_cite_copied"
   | "diary_case_added"

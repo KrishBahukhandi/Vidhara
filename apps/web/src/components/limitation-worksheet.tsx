@@ -11,6 +11,7 @@ import {
 } from "@nexlex/shared";
 
 import { track } from "@/lib/analytics";
+import { useCaseDiary } from "@/lib/case-diary";
 import type { ScheduleArticle } from "@/features/acts/queries";
 
 /**
@@ -31,6 +32,9 @@ export function LimitationWorksheet({ articles }: { articles: ScheduleArticle[] 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [limbIndex, setLimbIndex] = useState(0);
   const [startOn, setStartOn] = useState("");
+  const diary = useCaseDiary();
+  const [saveTo, setSaveTo] = useState("");
+  const [saved, setSaved] = useState<string | null>(null);
 
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -229,9 +233,76 @@ export function LimitationWorksheet({ articles }: { articles: ScheduleArticle[] 
             </section>
           ) : null}
 
+          {result && limb ? (
+            <section>
+              <h2 className="text-small font-semibold uppercase tracking-wide text-text-muted">
+                5 · Keep it on the file
+              </h2>
+              {diary.cases.length === 0 ? (
+                <p className="mt-1 text-small text-text-muted">
+                  Once you have a matter in your{" "}
+                  <Link href="/diary" className="text-brand hover:underline">
+                    case diary
+                  </Link>
+                  , you can save this computation against it.
+                </p>
+              ) : saved ? (
+                <p className="mt-1 text-small text-success">
+                  Saved to {saved}.{" "}
+                  <Link href="/diary" className="text-brand hover:underline">
+                    Open the diary →
+                  </Link>
+                </p>
+              ) : (
+                <>
+                  <p className="mt-1 text-small text-text-muted">
+                    Saves the Article, the period and what it ran from — not just the date, so the
+                    working is still there when you come back to it.
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <select
+                      value={saveTo}
+                      onChange={(event) => setSaveTo(event.target.value)}
+                      className="h-11 rounded-md border border-border bg-surface px-3 text-body text-text focus:border-brand focus:outline-none">
+                      <option value="">Choose a matter…</option>
+                      {diary.cases.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.title}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      disabled={!saveTo}
+                      onClick={() => {
+                        const target = diary.cases.find((c) => c.id === saveTo);
+                        if (!target) return;
+                        diary.update(target.id, {
+                          limitation: {
+                            article: selected.number,
+                            description: limb.description,
+                            period: limb.period,
+                            runsFrom: limb.commencement,
+                            startOn,
+                            expiresOn: result.expiresOn,
+                            savedAt: Date.now(),
+                          },
+                        });
+                        track("limitation_saved_to_case", { article: selected.number });
+                        setSaved(target.title);
+                      }}
+                      className="inline-flex h-11 items-center rounded-md bg-brand px-4 text-small font-medium text-on-brand disabled:opacity-50">
+                      Save to this matter
+                    </button>
+                  </div>
+                </>
+              )}
+            </section>
+          ) : null}
+
           <section>
             <h2 className="text-small font-semibold uppercase tracking-wide text-text-muted">
-              5 · What would move that date
+              6 · What would move that date
             </h2>
             <p className="mt-1 text-small text-text-muted">
               The date above is only right if none of these apply. Whether they do is a question of
