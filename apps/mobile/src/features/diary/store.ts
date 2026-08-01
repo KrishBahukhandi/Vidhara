@@ -20,10 +20,13 @@ import {
   diaryUid,
   hydrateCase,
   parseDiaryExport,
+  type CaseDocument,
   type CaseSection,
   type DiaryCase,
   type NewCase,
 } from "@nexlex/shared";
+
+import { deleteDocumentFile } from "./documents";
 
 const KEY = "vidhara_case_diary";
 
@@ -61,6 +64,8 @@ export interface DiaryApi {
   toggleTodo: (id: string, todoId: string) => Promise<void>;
   removeTodo: (id: string, todoId: string) => Promise<void>;
   detachSection: (id: string, slug: string, number: string) => Promise<void>;
+  attachDocument: (id: string, doc: CaseDocument) => Promise<void>;
+  removeDocument: (id: string, docId: string) => Promise<void>;
   exportJson: () => Promise<string>;
   importJson: (raw: string) => Promise<{ ok: boolean; added: number; error?: string }>;
 }
@@ -203,6 +208,33 @@ export function useCaseDiary(): DiaryApi {
     [mutate],
   );
 
+  const attachDocument = useCallback(
+    async (id: string, doc: CaseDocument) =>
+      mutate((list) =>
+        list.map((c) =>
+          c.id === id ? touch({ ...c, documents: [...(c.documents ?? []), doc] }) : c,
+        ),
+      ),
+    [mutate],
+  );
+
+  /** Drops the record AND the bytes — see deleteDocumentFile. */
+  const removeDocument = useCallback(
+    async (id: string, docId: string) => {
+      const list = await read();
+      const doc = list.find((c) => c.id === id)?.documents?.find((d) => d.id === docId);
+      if (doc) deleteDocumentFile(doc);
+      await write(
+        list.map((c) =>
+          c.id === id
+            ? touch({ ...c, documents: (c.documents ?? []).filter((d) => d.id !== docId) })
+            : c,
+        ),
+      );
+    },
+    [],
+  );
+
   const exportJson = useCallback(async () => JSON.stringify(await read(), null, 2), []);
 
   const importJson = useCallback(async (raw: string) => {
@@ -227,6 +259,8 @@ export function useCaseDiary(): DiaryApi {
     toggleTodo,
     removeTodo,
     detachSection,
+    attachDocument,
+    removeDocument,
     exportJson,
     importJson,
   };

@@ -1,12 +1,20 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
+import * as Sharing from "expo-sharing";
 import { Alert, Pressable, StyleSheet, TextInput, View } from "react-native";
 
-import { daysUntil, todayISO, type DiaryCase } from "@nexlex/shared";
+import { daysUntil, todayISO, type CaseDocument, type DiaryCase } from "@nexlex/shared";
 
 import { AppText } from "@/components/ui/app-text";
 import { Screen } from "@/components/ui/screen";
+import {
+  attachFromCamera,
+  attachFromFiles,
+  attachFromLibrary,
+  documentExists,
+  formatSize,
+} from "@/features/diary/documents";
 import { useCaseDiary } from "@/features/diary/store";
 import { track } from "@/lib/analytics";
 import { radius, sp, useTheme } from "@/theme";
@@ -65,6 +73,7 @@ export default function CaseDetailScreen() {
       {c.limitation ? <LimitationCard c={c} /> : null}
       <LogHearing c={c} onLog={diary.logHearing} />
       <Todos c={c} diary={diary} />
+      <Documents c={c} diary={diary} />
       {c.sections.length > 0 ? <Sections c={c} /> : null}
       {c.notes ? (
         <Card title="Notes">
@@ -306,6 +315,133 @@ function Todos({ c, diary }: { c: DiaryCase; diary: ReturnType<typeof useCaseDia
   );
 }
 
+/**
+ * Documents held for this matter. The files sit in the app's own sandbox and
+ * are never uploaded (D-047) — so the panel says where they are, once, rather
+ * than leaving an advocate to assume there is a copy in the cloud.
+ *
+ * A record whose file is missing is shown as missing rather than hidden or
+ * silently opened: that is what an imported diary from another phone looks
+ * like, and pretending otherwise would be worse than the gap itself.
+ */
+function Documents({ c, diary }: { c: DiaryCase; diary: ReturnType<typeof useCaseDiary> }) {
+  const { colors } = useTheme();
+  const [busy, setBusy] = useState(false);
+  const docs = c.documents ?? [];
+
+  const attach = async (pick: () => Promise<CaseDocument | null>) => {
+    setBusy(true);
+    try {
+      const doc = await pick();
+      if (doc) {
+        await diary.attachDocument(c.id, doc);
+        track("diary_document_attached", {});
+      }
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const confirmRemove = (doc: CaseDocument) =>
+    Alert.alert("Remove document", `Delete “${doc.name}” from this device?`, [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: () => void diary.removeDocument(c.id, doc.id),
+      },
+    ]);
+
+  return (
+    <Card title="Documents">
+      {docs.map((doc) => {
+        const present = documentExists(doc);
+        return (
+          <Pressable
+            key={doc.id}
+            accessibilityRole="button"
+            accessibilityLabel={`${doc.name}${present ? "" : ", file missing"}`}
+            onPress={() => {
+              if (!present) {
+                Alert.alert(
+                  "File not on this device",
+                  "This document was attached on another device. The diary entry travelled with your export, but the file itself did not.",
+                );
+                return;
+              }
+              void Sharing.isAvailableAsync().then((can) => {
+                if (can) void Sharing.shareAsync(doc.uri);
+              });
+            }}
+            onLongPress={() => confirmRemove(doc)}
+            style={styles.doc}>
+            <Ionicons
+              name={
+                present
+                  ? doc.mimeType?.startsWith("image/")
+                    ? "image-outline"
+                    : "document-text-outline"
+                  : "alert-circle-outline"
+              }
+              size={20}
+              color={present ? colors.brand : colors.danger}
+            />
+            <View style={styles.grow}>
+              <AppText numberOfLines={1}>{doc.name}</AppText>
+              <AppText variant="micro" tone={present ? "faint" : "danger"}>
+                {present
+                  ? [formatSize(doc.size), new Date(doc.addedAt).toLocaleDateString("en-IN")]
+                      .filter(Boolean)
+                      .join(" · ")
+                  : "Not on this device"}
+              </AppText>
+            </View>
+          </Pressable>
+        );
+      })}
+
+      <View style={styles.actions}>
+        <Pressable
+          accessibilityRole="button"
+          disabled={busy}
+          onPress={() => void attach(attachFromCamera)}
+          style={styles.docAction}>
+          <Ionicons name="camera-outline" size={18} color={colors.brand} />
+          <AppText variant="small" tone="brand">
+            Photo
+          </AppText>
+        </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          disabled={busy}
+          onPress={() => void attach(attachFromLibrary)}
+          style={styles.docAction}>
+          <Ionicons name="images-outline" size={18} color={colors.brand} />
+          <AppText variant="small" tone="brand">
+            Gallery
+          </AppText>
+        </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          disabled={busy}
+          onPress={() => void attach(attachFromFiles)}
+          style={styles.docAction}>
+          <Ionicons name="folder-outline" size={18} color={colors.brand} />
+          <AppText variant="small" tone="brand">
+            File
+          </AppText>
+        </Pressable>
+      </View>
+
+      <AppText variant="micro" tone="faint">
+        {docs.length > 0 ? "Tap to open · long-press to delete. " : ""}
+        Kept on this phone only, never uploaded. Export carries the list, not the files — on another
+        device they show as missing.
+      </AppText>
+    </Card>
+  );
+}
+
 function Sections({ c }: { c: DiaryCase }) {
   const router = useRouter();
   const { colors } = useTheme();
@@ -349,6 +485,8 @@ const styles = StyleSheet.create({
   primaryText: { fontWeight: "700" },
   ghost: { height: 48, paddingHorizontal: sp(3), alignItems: "center", justifyContent: "center" },
   todo: { flexDirection: "row", alignItems: "center", gap: sp(2), minHeight: 40 },
+  doc: { flexDirection: "row", alignItems: "center", gap: sp(2), minHeight: 48 },
+  docAction: { flexDirection: "row", alignItems: "center", gap: sp(1), minHeight: 44, paddingRight: sp(2) },
   done: { textDecorationLine: "line-through", opacity: 0.6 },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: sp(2) },
   chip: { borderWidth: 1, borderRadius: radius.md, paddingHorizontal: sp(2), paddingVertical: sp(1) },

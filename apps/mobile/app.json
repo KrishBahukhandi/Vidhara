@@ -30,6 +30,14 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
         }
+      ],
+      "expo-sharing",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Vidhara needs access to your photos so you can attach a scanned order or pleading to a matter in your case diary. Documents stay on this device.",
+          "cameraPermission": "Vidhara needs the camera so you can photograph an order sheet and attach it to a matter. Photos stay on this device."
+        }
       ]
     ],
     "experiments": {

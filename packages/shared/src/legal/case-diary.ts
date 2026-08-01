@@ -67,6 +67,30 @@ export interface CaseLimitation {
   savedAt: number;
 }
 
+/**
+ * A document attached to a matter — a scanned order, a copy certificate, a
+ * photographed order sheet.
+ *
+ * The FILE lives in the app's own private sandbox, not on our servers: a case
+ * document is privileged client material, and D-029's whole position is that we
+ * take no custody of it. Only this record travels, and `uri` is a path on the
+ * device that stored it — which means an imported diary carries references that
+ * resolve nowhere, so the app checks the file exists before offering to open it
+ * and shows the rest as missing rather than pretending.
+ */
+export interface CaseDocument {
+  id: string;
+  /** What the advocate called it, or the original filename. */
+  name: string;
+  /** MIME type when the picker reported one — used to choose an icon. */
+  mimeType?: string;
+  /** Absolute path inside the app's document directory. Device-local. */
+  uri: string;
+  /** Bytes at the time it was attached, for display. */
+  size?: number;
+  addedAt: number;
+}
+
 export interface DiaryCase {
   id: string;
   /** Cause title, e.g. "State v. Kumar". */
@@ -87,6 +111,8 @@ export interface DiaryCase {
   remindedFor?: string;
   /** Limitation period saved from the worksheet, if one was worked out. */
   limitation?: CaseLimitation;
+  /** Documents held in the app sandbox on the device that attached them. */
+  documents?: CaseDocument[];
   createdAt: number;
   updatedAt: number;
 }

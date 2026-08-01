@@ -24,6 +24,7 @@ export type EventName =
   | "ask_ai_assisted"
   | "limitation_computed"
   | "limitation_saved_to_case"
+  | "diary_document_attached"
   | "diary_case_added"
   | "diary_case_opened"
   | "diary_hearing_logged"
