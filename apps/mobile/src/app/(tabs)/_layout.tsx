@@ -13,6 +13,7 @@ const TABS: { name: string; title: string; icon: IconName; iconFocused: IconName
   { name: "library", title: "Library", icon: "book-outline", iconFocused: "book" },
   { name: "mapping", title: "Mapping", icon: "swap-horizontal-outline", iconFocused: "swap-horizontal" },
   { name: "quiz", title: "Quiz", icon: "school-outline", iconFocused: "school" },
+  { name: "diary", title: "Diary", icon: "briefcase-outline", iconFocused: "briefcase" },
   { name: "saved", title: "Saved", icon: "bookmark-outline", iconFocused: "bookmark" },
   { name: "profile", title: "Profile", icon: "person-outline", iconFocused: "person" },
 ];

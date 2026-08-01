@@ -16,104 +16,31 @@
  */
 import { useCallback, useEffect, useState } from "react";
 
-/** A section attached to a case, with its old⇄new counterpart resolved once. */
-export interface CaseSection {
-  slug: string;
-  number: string;
-  act: string;
-  note: string;
-  counterpart: string | null;
-}
+import {
+  byHearing,
+  diaryUid,
+  hydrateCase,
+  parseDiaryExport,
+  type DiaryCase,
+  type CaseSection,
+  type HearingEntry,
+  type NewCase,
+} from "@nexlex/shared";
 
-/**
- * One line of the order sheet — what actually happened on a date. This is what
- * a case diary *is* in Indian practice: the running record, not just the next
- * date.
- */
-export interface HearingEntry {
-  id: string;
-  /** ISO date the hearing took place. */
-  date: string;
-  /** What happened: order passed, adjourned and why, what to do next. */
-  note: string;
-}
+// Re-exported so existing imports from this module keep working; the shape and
+// the date rules themselves live in @nexlex/shared, shared with the app.
+export {
+  daysUntil,
+  remindDateFor,
+  todayISO,
+  type CaseLimitation,
+  type CaseSection,
+  type DiaryCase,
+  type HearingEntry,
+  type NewCase,
+  type TodoItem,
+} from "@nexlex/shared";
 
-/**
- * A limitation period worked out for this matter, saved from the worksheet.
- *
- * The whole computation is kept, not just the date — the Article, the period in
- * the Schedule's words and the event it ran from. A bare date months later is
- * unusable: the advocate has to be able to see WHY it is that date, and check
- * the working against the file without recomputing from scratch.
- */
-export interface CaseLimitation {
-  /** Schedule Article number, e.g. "35". */
-  article: string;
-  /** The limb's description, as printed. */
-  description: string;
-  /** Period as printed, e.g. "Three years." */
-  period: string;
-  /** What the period runs from, in the Schedule's words. */
-  runsFrom: string;
-  /** ISO date of that event, as entered. */
-  startOn: string;
-  /** ISO date the period ends, per s.12(1). */
-  expiresOn: string;
-  /** When it was worked out — a stale computation should look stale. */
-  savedAt: number;
-}
-
-/** A thing to carry, file or check before the next date. */
-export interface TodoItem {
-  id: string;
-  text: string;
-  done: boolean;
-}
-
-export interface DiaryCase {
-  id: string;
-  /** Cause title, e.g. "State v. Kumar". */
-  title: string;
-  court: string;
-  caseNumber: string;
-  /** ISO date (YYYY-MM-DD) of the next hearing; "" when not fixed. */
-  nextHearing: string;
-  /** Free text: stage of the matter, e.g. "Bail application", "Charges". */
-  stage: string;
-  notes: string;
-  sections: CaseSection[];
-  /** Order sheet, most recent first. */
-  hearings: HearingEntry[];
-  todos: TodoItem[];
-  status: "active" | "disposed";
-  /** Set when an email reminder was requested for the CURRENT hearing date. */
-  remindedFor?: string;
-  /** Limitation period saved from the worksheet, if one was worked out. */
-  limitation?: CaseLimitation;
-  createdAt: number;
-  updatedAt: number;
-}
-
-/**
- * Diaries written before the order sheet existed lack the newer fields, and a
- * missing array would crash the list on render. Normalise on every read.
- */
-function hydrate(c: DiaryCase): DiaryCase {
-  return {
-    ...c,
-    sections: c.sections ?? [],
-    hearings: c.hearings ?? [],
-    todos: c.todos ?? [],
-    status: c.status ?? "active",
-    // `limitation` is intentionally not defaulted — absent means "never worked
-    // out", which is different from "worked out and empty".
-  };
-}
-
-export type NewCase = Omit<
-  DiaryCase,
-  "id" | "createdAt" | "updatedAt" | "sections" | "hearings" | "todos" | "status"
->;
 
 const KEY = "vidhara_case_diary";
 const SYNC_EVENT = "vidhara:diary-change";
@@ -137,23 +64,12 @@ export function setRememberedEmail(email: string): void {
   }
 }
 
-/**
- * The day before the hearing (the evening-before nudge).
- * Parsed as UTC on purpose: `T00:00:00` without a zone is LOCAL, and
- * `toISOString()` then converts back to UTC — in IST (+5:30) that silently
- * shifts the result a day earlier, so reminders would fire two days out.
- */
-export function remindDateFor(hearingISO: string): string {
-  const t = Date.parse(`${hearingISO}T00:00:00Z`);
-  return new Date(t - 86_400_000).toISOString().slice(0, 10);
-}
-
 function read(): DiaryCase[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = window.localStorage.getItem(KEY);
     const parsed = raw ? (JSON.parse(raw) as unknown) : [];
-    return Array.isArray(parsed) ? (parsed as DiaryCase[]).map(hydrate) : [];
+    return Array.isArray(parsed) ? (parsed as DiaryCase[]).map(hydrateCase) : [];
   } catch {
     return [];
   }
@@ -166,35 +82,6 @@ function write(cases: DiaryCase[]): void {
   } catch {
     // storage full/disabled — the UI surfaces this via a failed re-read
   }
-}
-
-const uid = () =>
-  typeof crypto !== "undefined" && "randomUUID" in crypto
-    ? crypto.randomUUID()
-    : `c_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
-
-/** Today in the user's own timezone as YYYY-MM-DD (hearings are local dates). */
-export function todayISO(): string {
-  const d = new Date();
-  const off = d.getTimezoneOffset() * 60_000;
-  return new Date(d.getTime() - off).toISOString().slice(0, 10);
-}
-
-/** Days until a hearing: negative = past, 0 = today. null when no date set. */
-export function daysUntil(iso: string): number | null {
-  if (!iso) return null;
-  const a = Date.parse(`${iso}T00:00:00`);
-  const b = Date.parse(`${todayISO()}T00:00:00`);
-  if (Number.isNaN(a)) return null;
-  return Math.round((a - b) / 86_400_000);
-}
-
-/** Hearings first (soonest, including overdue), undated last. */
-function byHearing(a: DiaryCase, b: DiaryCase): number {
-  if (a.nextHearing && b.nextHearing) return a.nextHearing.localeCompare(b.nextHearing);
-  if (a.nextHearing) return -1;
-  if (b.nextHearing) return 1;
-  return b.updatedAt - a.updatedAt;
 }
 
 export function useCaseDiary(): {
@@ -229,7 +116,7 @@ export function useCaseDiary(): {
     const now = Date.now();
     const item: DiaryCase = {
       ...c,
-      id: uid(),
+      id: diaryUid(),
       sections: [],
       hearings: [],
       todos: [],
@@ -288,7 +175,7 @@ export function useCaseDiary(): {
     write(
       read().map((c) => {
         if (c.id !== id) return c;
-        const line: HearingEntry = { id: uid(), date: entry.date, note: entry.note };
+        const line: HearingEntry = { id: diaryUid(), date: entry.date, note: entry.note };
         const hearings = [line, ...c.hearings].sort((a, b) => b.date.localeCompare(a.date));
         const nextHearing = entry.nextHearing ?? "";
         return {
@@ -306,7 +193,7 @@ export function useCaseDiary(): {
     write(
       read().map((c) =>
         c.id === id
-          ? { ...c, todos: [...c.todos, { id: uid(), text, done: false }], updatedAt: Date.now() }
+          ? { ...c, todos: [...c.todos, { id: diaryUid(), text, done: false }], updatedAt: Date.now() }
           : c,
       ),
     );
