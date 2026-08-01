@@ -1,0 +1,8 @@
+{
+  "act": {
+    "slug": "hma", "title": "The Hindu Marriage Act, 1955", "shortTitle": "Hindu Marriage Act",
+    "abbreviation": "HMA", "year": 1955, "category": "family", "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/1560"
+  },
+  "provenance": "Official India Code text: The Hindu Marriage Act, 1955 (25 of 1955), English PDF (bitstream 123456789/1560/1/A1955-25Eng.pdf, 355,565 bytes, sha256 e0989d90e686ef3e...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-01. The same handle carries a Hindi edition (H1955-25Hi.pdf); the English 'Eng' file is the one ingested. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+}

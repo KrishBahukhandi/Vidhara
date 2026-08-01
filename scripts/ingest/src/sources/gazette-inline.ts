@@ -104,6 +104,20 @@ const SCHEDULE_START =
 const STATE_AMENDMENT_START = /^STATE\s+AMENDMENTS?\b/;
 /** Primary terminator: the citation that closes a State-amendment block. */
 const STATE_AMENDMENT_END = /^\[?\s*Vide\b/i;
+/**
+ * States and Union territories, including the pre-reorganisation names that
+ * old amendments still carry (Bombay, Madras, Mysore).
+ *
+ * The Registration Act stacks several States under ONE "STATE AMENDMENT"
+ * banner: each block ends with its "[Vide <State> Act …]" citation and the next
+ * begins with nothing but the State's name. Leaving the block at the citation
+ * therefore dropped straight into the next State's text as if it were central
+ * law — Uttar Pradesh's inserted section 18A became a central §18A, which is
+ * the D-032 defect exactly. A bare State name immediately after a citation
+ * re-opens the block.
+ */
+const STATE_OR_UT =
+  /^(Andhra Pradesh|Arunachal Pradesh|Assam|Bihar|Chhattisgarh|Goa|Gujarat|Haryana|Himachal Pradesh|Jharkhand|Karnataka|Kerala|Madhya Pradesh|Maharashtra|Manipur|Meghalaya|Mizoram|Nagaland|Odisha|Orissa|Punjab|Rajasthan|Sikkim|Tamil Nadu|Telangana|Tripura|Uttar Pradesh|Uttarakhand|Uttaranchal|West Bengal|Delhi|Puducherry|Pondicherry|Jammu and Kashmir|Ladakh|Andaman and Nicobar Islands|Chandigarh|Dadra and Nagar Haveli|Daman and Diu|Lakshadweep|Bombay|Madras|Mysore)\s*[.:]?$/i;
 // Constitution uses PART headings; other acts CHAPTER. Both fold to chapters.
 const CHAPTER_HEADING = /^(CHAPTER|PART)\s*([IVXLCDM]+)([A-Z])?$/;
 /**
@@ -237,6 +251,8 @@ export function parseInlineAct(
   // blocks that carry no "[Vide …]" citation (ARB's first block).
   let stateAmendmentBase = 0;
   let stateAmendmentBlocks = 0;
+  /** Set for exactly one line after a "[Vide …]" citation — see STATE_OR_UT. */
+  let justLeftStateAmendment = false;
   let stateAmendmentSkipped = 0;
   let currentChapter: string | undefined;
   /** The Part currently in force, so Chapters printed under it can name it. */
@@ -412,10 +428,22 @@ export function parseInlineAct(
         stateAmendmentBlocks += 1;
         continue;
       }
+      // A bare State name straight after a citation opens the NEXT State's
+      // amendment under the same banner — not central text.
+      if (justLeftStateAmendment) {
+        justLeftStateAmendment = false;
+        if (STATE_OR_UT.test(flat)) {
+          stateAmendmentMode = true;
+          stateAmendmentBlocks += 1;
+          continue;
+        }
+      }
+
       if (stateAmendmentMode) {
         // Primary exit: the "[Vide <State> Act …]" citation that closes it.
         if (STATE_AMENDMENT_END.test(flat)) {
           stateAmendmentMode = false;
+          justLeftStateAmendment = true;
           continue;
         }
         // Fallback exit: the central Act resuming at a higher section base, or
