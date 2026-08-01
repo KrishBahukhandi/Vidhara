@@ -73,6 +73,11 @@ export function SiteFooter() {
             className="text-small text-text-muted transition-colors hover:text-text">
             Suggest an improvement
           </Link>
+          <Link
+            href="/verification"
+            className="text-small text-text-muted transition-colors hover:text-text">
+            How we verify
+          </Link>
           <Link href="/privacy" className="text-small text-text-muted transition-colors hover:text-text">
             Privacy
           </Link>

@@ -1,0 +1,202 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+
+import { PageShell } from "@/components/site-chrome";
+import { listActs, countPublishedSections, countPublishedMappings } from "@/features/acts/queries";
+
+export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  title: "How we verify the text — sources, method and known limits",
+  description:
+    "Where Vidhara's bare-act text comes from, how it is extracted from the official PDFs, what we check, the defects we have found and fixed, and what we do not claim. Free, no sign-up.",
+  alternates: { canonical: "/verification" },
+};
+
+/**
+ * The trust page.
+ *
+ * Our corpus is a fraction the size of the big bare-act apps; what it has
+ * instead is a verifiable chain from the official PDF to the page. That is
+ * worthless if nobody can see it, which is the entire reason this page exists.
+ *
+ * Two rules for anything written here: every number is read live from the
+ * database rather than typed in, so the page cannot drift from the corpus; and
+ * the limits section is not smaller than the claims section. A trust page that
+ * only lists strengths is marketing, and a reader who catches it overstating
+ * once has no reason to believe the rest.
+ */
+export default async function VerificationPage() {
+  const [acts, sections, mappings] = await Promise.all([
+    listActs(),
+    countPublishedSections(),
+    countPublishedMappings(),
+  ]);
+
+  return (
+    <PageShell>
+      <p className="font-mono text-small text-accent">How we verify</p>
+      <h1 className="mt-1 font-serif text-h1 font-semibold text-text">
+        Where this text comes from
+      </h1>
+      <p className="mt-3 max-w-measure text-body text-text-muted">
+        Every provision on Vidhara is traced to the government&rsquo;s own published PDF. This page
+        explains how, what we check, what we have found wrong and fixed — and, just as important,
+        what we do not claim.
+      </p>
+
+      <dl className="mt-6 grid grid-cols-3 gap-4 rounded-md border border-border bg-surface p-4">
+        <div>
+          <dt className="text-small text-text-muted">Acts</dt>
+          <dd className="font-mono text-h3 font-semibold text-text">{acts.length}</dd>
+        </div>
+        <div>
+          <dt className="text-small text-text-muted">Sections</dt>
+          <dd className="font-mono text-h3 font-semibold text-text">{sections.toLocaleString("en-IN")}</dd>
+        </div>
+        <div>
+          <dt className="text-small text-text-muted">Old⇄new mappings</dt>
+          <dd className="font-mono text-h3 font-semibold text-text">{mappings.toLocaleString("en-IN")}</dd>
+        </div>
+      </dl>
+
+      <Section title="The source is the government's PDF, not another website">
+        <p>
+          Each act is taken from{" "}
+          <a
+            href="https://www.indiacode.nic.in"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-brand hover:underline">
+            India Code
+          </a>{" "}
+          or the Gazette of India — the official publications — and never copied from another legal
+          site. For each one we record the exact file we used, its size in bytes and its SHA-256
+          hash, so the text on this page can be traced back to a specific government document rather
+          than to &ldquo;a PDF we found&rdquo;.
+        </p>
+        <p>
+          Every section page carries that provenance at the bottom, including a link to the source
+          document, so you can check any provision against the original yourself.
+        </p>
+      </Section>
+
+      <Section title="Extraction reads the page, not the copy-paste">
+        <p>
+          Statute PDFs put marginal notes in one column and text in another, and print schedules as
+          tables. Copying text out collapses those columns and silently interleaves them. We instead
+          read the coordinates of every word on the page and rebuild the structure from its
+          geometry, which is why a three-column schedule keeps each period beside the limb it
+          belongs to.
+        </p>
+      </Section>
+
+      <Section title="What we check before publishing">
+        <p>
+          Where the structure allows it, extraction is verified <strong>lossless</strong>: we
+          compare every word of the parsed result against the source document and require the counts
+          to match exactly. The Limitation Act&rsquo;s Schedule, for instance, was published only
+          once its 4,581 word tokens matched the PDF&rsquo;s 4,581.
+        </p>
+        <p>
+          A scanner then runs over the whole corpus looking for known defect shapes — text that
+          duplicates itself, provisions that ended up empty, headings that leaked into a body,
+          numbering that jumps. It currently reports <strong>zero severity-1 defects</strong> across
+          all {sections.toLocaleString("en-IN")} published sections.
+        </p>
+      </Section>
+
+      <Section title="Things we have found wrong — and fixed">
+        <p>
+          This is the part that matters, because a corpus assembled in bulk will carry these and
+          nobody will know. Each of these was a real defect in our own data, found by checking:
+        </p>
+        <ul className="mt-2 list-disc space-y-2 pl-5">
+          <li>
+            <strong>One State&rsquo;s amendment shown as national law.</strong> India Code prints
+            State amendments immediately after the central section they modify. Around 95 sections
+            had absorbed that text — including CrPC §438 (anticipatory bail), §125 (maintenance) and
+            §154 (FIR). A reader would have taken a Rajasthan or Bihar amendment for the central
+            provision.
+          </li>
+          <li>
+            <strong>The Constitution was missing Part II.</strong> Citizenship — Articles 5 to 11 —
+            had no Part of its own, and those articles sat under &ldquo;The Union and its
+            Territory&rdquo;.
+          </li>
+          <li>
+            <strong>Schedule entries read as sections.</strong> The NDPS Act&rsquo;s schedule of
+            substances parsed as sections numbered past 110, none of which exist in the Act.
+          </li>
+          <li>
+            <strong>Headings swallowed into the text.</strong> Chapter and Part headings appended to
+            the end of the previous section&rsquo;s body.
+          </li>
+        </ul>
+        <p className="mt-3">
+          Every correction is recorded with the date, the cause and the fix, and lives in a versioned
+          data bundle rather than being edited straight into the live database — so a republish can
+          never quietly undo it.
+        </p>
+      </Section>
+
+      <Section title="What we do not claim">
+        <p>
+          Being useful means being clear about the edges. All of the following are true today:
+        </p>
+        <ul className="mt-2 list-disc space-y-2 pl-5">
+          <li>
+            <strong>{acts.length} acts is narrow.</strong> Other apps carry hundreds. We would rather
+            add them slowly and check each one than publish a corpus we cannot vouch for.
+          </li>
+          <li>
+            <strong>Parsing is automated, with spot checks against the PDF.</strong> A full
+            clause-by-clause human proofread of every section has not been done.
+          </li>
+          <li>
+            <strong>Footnotes and amendment history are excluded.</strong> You get the provision as
+            currently printed, not the record of how it changed.
+          </li>
+          <li>
+            <strong>Most schedules are not ingested.</strong> The Limitation Act&rsquo;s Schedule is;
+            others are not yet. Where a schedule matters, read it from the source PDF.
+          </li>
+          <li>
+            <strong>There is no case law here.</strong> Vidhara tells you what a provision says, not
+            how courts have read it.
+          </li>
+        </ul>
+        <p className="mt-3">
+          For anything you file or rely on professionally, check the bare act. This is a reading and
+          reference tool, not a substitute for the official text.
+        </p>
+      </Section>
+
+      <Section title="If you find a mistake">
+        <p>
+          Wrong text is the most serious kind of bug we can have, and it is treated that way — a
+          report goes to the top of the queue ahead of any feature. Every section page has a report
+          link scoped to that exact provision, or you can{" "}
+          <Link href="/feedback" className="text-brand hover:underline">
+            tell us here
+          </Link>
+          .
+        </p>
+      </Section>
+
+      <p className="mt-10 text-small text-text-faint">
+        Counts on this page are read from the live database, so they stay accurate as the corpus
+        grows. Last checked when this page was generated.
+      </p>
+    </PageShell>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="mt-8">
+      <h2 className="font-serif text-h3 font-semibold text-text">{title}</h2>
+      <div className="mt-2 max-w-measure space-y-3 text-body text-text-muted">{children}</div>
+    </section>
+  );
+}

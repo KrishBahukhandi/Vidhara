@@ -230,6 +230,31 @@ export async function getMappingPairPreview(
   return { rows: data, total: count ?? data.length };
 }
 
+/**
+ * Exact published counts for the verification page. `head: true` asks
+ * PostgREST for the count without the rows — the alternative, fetching to
+ * count, silently caps at 1,000 and has already under-reported once (D-020).
+ */
+export async function countPublishedSections(): Promise<number> {
+  if (!isContentConfigured) return 0;
+  const { count, error } = await getServerClient()
+    .from("act_sections")
+    .select("id", { count: "exact", head: true })
+    .eq("review_status", "published");
+  if (error) throw new Error(`countPublishedSections: ${error.message}`);
+  return count ?? 0;
+}
+
+export async function countPublishedMappings(): Promise<number> {
+  if (!isContentConfigured) return 0;
+  const { count, error } = await getServerClient()
+    .from("law_mappings")
+    .select("id", { count: "exact", head: true })
+    .eq("review_status", "published");
+  if (error) throw new Error(`countPublishedMappings: ${error.message}`);
+  return count ?? 0;
+}
+
 export type ActSchedule = Tables<"act_schedules">;
 
 /** One limb of an article. Articles 114-116 of the Limitation Act carry

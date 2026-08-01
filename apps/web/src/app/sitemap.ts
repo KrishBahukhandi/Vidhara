@@ -15,6 +15,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/practice`, changeFrequency: "weekly", priority: 0.7 },
     // Advocate track — its own search intent ("quick section lookup in court").
     { url: `${SITE_URL}/cite`, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${SITE_URL}/limitation`, changeFrequency: "weekly", priority: 0.7 },
+    // The trust page carries the claim the whole corpus rests on; "is <app>
+    // accurate" is a real query for anyone deciding what to cite from.
+    { url: `${SITE_URL}/verification`, changeFrequency: "monthly", priority: 0.8 },
   ];
 
   const [acts, sectionPaths] = await Promise.all([listActs(), listAllSectionPaths()]);

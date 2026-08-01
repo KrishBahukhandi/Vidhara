@@ -56,6 +56,11 @@ export function SectionProvenance({
         ) : null}
         {provenance ? <p className="text-micro text-text-faint">{provenance}</p> : null}
         <p className="pt-1">
+          <Link href="/verification" className="font-medium text-brand hover:underline">
+            How we verify this text →
+          </Link>
+        </p>
+        <p className="pt-1">
           Spotted a mistake in this text or its mapping?{" "}
           <Link
             href={`/feedback?about=${encodeURIComponent(`${act} §${number}`)}`}

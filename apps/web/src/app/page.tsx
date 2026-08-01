@@ -87,6 +87,17 @@ export default function HomePage() {
             See the IPC ⇄ BNS mapping
           </Link>
         </div>
+
+        {/* The corpus is small next to the big bare-act apps; what it has is a
+            traceable chain to the government PDF. Said once, in plain terms,
+            with the evidence a click away. */}
+        <p className="animate-rise text-small text-text-muted" style={{ animationDelay: "300ms" }}>
+          Every provision traced to the government&rsquo;s own PDF — and we publish the mistakes
+          we&rsquo;ve found and fixed.{" "}
+          <Link href="/verification" className="font-medium text-brand hover:underline">
+            How we verify
+          </Link>
+        </p>
       </section>
 
       <ContinueReading />
