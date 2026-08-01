@@ -4,7 +4,9 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import {
+  allowsCopyingExclusion,
   computeLimitation,
+  copyingDays,
   LIMITATION_FACTORS,
   parseLimitationPeriod,
   type LimitationPeriod,
@@ -33,6 +35,8 @@ export function LimitationWorksheet({ articles }: { articles: ScheduleArticle[] 
   const [limbIndex, setLimbIndex] = useState(0);
   const [startOn, setStartOn] = useState("");
   const diary = useCaseDiary();
+  const [appliedOn, setAppliedOn] = useState("");
+  const [readyOn, setReadyOn] = useState("");
   const [saveTo, setSaveTo] = useState("");
   const [saved, setSaved] = useState<string | null>(null);
 
@@ -54,7 +58,14 @@ export function LimitationWorksheet({ articles }: { articles: ScheduleArticle[] 
   const limbs = selected?.rows.filter((r) => parseLimitationPeriod(r.period)) ?? [];
   const limb = limbs[limbIndex] ?? limbs[0] ?? null;
   const period: LimitationPeriod | null = limb ? parseLimitationPeriod(limb.period) : null;
-  const result = period && startOn ? computeLimitation(startOn, period) : null;
+  // s.12(2)-(4) only reaches appeals, leave to appeal, revision, review and
+  // setting aside an award — never a plain suit.
+  const copyingAllowed = Boolean(
+    limb && selected && allowsCopyingExclusion(limb.description, selected.division),
+  );
+  const excluded =
+    copyingAllowed && appliedOn && readyOn ? copyingDays({ appliedOn, readyOn }) : null;
+  const result = period && startOn ? computeLimitation(startOn, period, excluded ?? 0) : null;
 
   const longDate = (iso: string) =>
     new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-IN", {
@@ -197,6 +208,54 @@ export function LimitationWorksheet({ articles }: { articles: ScheduleArticle[] 
             </section>
           ) : null}
 
+          {limb && period && copyingAllowed ? (
+            <section>
+              <h2 className="text-small font-semibold uppercase tracking-wide text-text-muted">
+                Optional · Time requisite for a copy (s.12(2))
+              </h2>
+              <p className="mt-1 max-w-measure text-small text-text-muted">
+                For an appeal, revision or review, the time spent obtaining the copy of the decree,
+                sentence or order is excluded. Take both dates from the certificate on the copy.
+              </p>
+              <div className="mt-2 flex flex-wrap gap-3">
+                <label className="text-small text-text-muted">
+                  Copy applied for
+                  <input
+                    type="date"
+                    value={appliedOn}
+                    onChange={(event) => setAppliedOn(event.target.value)}
+                    className="mt-1 block h-11 rounded-md border border-border bg-surface px-3 text-body text-text focus:border-brand focus:outline-none"
+                  />
+                </label>
+                <label className="text-small text-text-muted">
+                  Copy ready
+                  <input
+                    type="date"
+                    value={readyOn}
+                    onChange={(event) => setReadyOn(event.target.value)}
+                    className="mt-1 block h-11 rounded-md border border-border bg-surface px-3 text-body text-text focus:border-brand focus:outline-none"
+                  />
+                </label>
+              </div>
+              {appliedOn && readyOn && excluded === null ? (
+                <p className="mt-2 text-small text-danger">
+                  The copy cannot be ready before it was applied for — check those dates.
+                </p>
+              ) : null}
+              {/* The Explanation to s.12 is the trap this step exists to name. */}
+              <p className="mt-2 max-w-measure text-small text-text-muted">
+                <strong className="text-text">Not</strong> the date of the decree. Time the court took
+                to prepare the decree <em>before</em> you applied for a copy is expressly not
+                excluded — see the Explanation to{" "}
+                <Link href="/acts/lim/12" className="text-brand hover:underline">
+                  s.12
+                </Link>
+                . Whether the endpoints themselves count varies in practice; the interval below is
+                the plain difference between the two dates.
+              </p>
+            </section>
+          ) : null}
+
           {result ? (
             <section className="rounded-md border border-brand bg-surface p-4">
               <h2 className="text-small font-semibold uppercase tracking-wide text-text-muted">
@@ -217,6 +276,12 @@ export function LimitationWorksheet({ articles }: { articles: ScheduleArticle[] 
                   <li className="text-text-muted">
                     The corresponding day does not exist in that month, so the period ends on its
                     last day.
+                  </li>
+                ) : null}
+                {excluded !== null && excluded > 0 ? (
+                  <li>
+                    s.12(2) — <strong>{excluded} days</strong> excluded for obtaining the copy
+                    (applied {longDate(appliedOn)}, ready {longDate(readyOn)}).
                   </li>
                 ) : null}
               </ol>

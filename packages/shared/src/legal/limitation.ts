@@ -112,6 +112,8 @@ const toISO = (d: Date): string => d.toISOString().slice(0, 10);
 export function computeLimitation(
   startOn: string,
   period: LimitationPeriod,
+  /** Days excluded under s.12(2)-(4) — see `copyingDays`. */
+  excludedDays = 0,
 ): LimitationResult | null {
   const start = parseISO(startOn);
   if (!start) return null;
@@ -134,6 +136,9 @@ export function computeLimitation(
       clamped = true;
     }
   }
+
+  // s.12(2)-(4) exclusions extend the period by the days they remove from it.
+  if (excludedDays > 0) result.setUTCDate(result.getUTCDate() + excludedDays);
 
   return { expiresOn: toISO(result), clamped, weekday: WEEKDAYS[result.getUTCDay()]! };
 }
@@ -199,3 +204,57 @@ export const LIMITATION_FACTORS: LimitationFactor[] = [
     effect: "Part payment of a debt or interest before expiry restarts the period from the date of payment.",
   },
 ];
+
+/**
+ * s.12(2)-(4): the time requisite for obtaining a copy.
+ *
+ * For an appeal, an application for leave to appeal, revision or review, s.12(2)
+ * excludes the day the judgment was pronounced AND "the time requisite for
+ * obtaining a copy of the decree, sentence or order"; s.12(3) also excludes the
+ * time for a copy of the judgment; s.12(4) does the same for the award on an
+ * application to set one aside.
+ *
+ * The pronouncement day is already excluded by `computeLimitation` (it is the
+ * start date, and s.12(1) excludes it), so what is added here is only the
+ * copying time.
+ *
+ * WHAT THIS DELIBERATELY DOES NOT DO: decide what "requisite" means. That is a
+ * question courts answer on the copy certificate, and the Explanation to s.12
+ * is emphatic that time the court took to prepare the decree BEFORE a copy was
+ * applied for does **not** count — which is why the input is the application
+ * date, never the date of the decree. Whether the endpoints are themselves
+ * counted varies in practice, so the caller shows both dates and the interval
+ * rather than presenting a number as settled.
+ */
+export interface CopyingTime {
+  /** Date the copy was applied for — NOT the date of the decree (see the
+   * Explanation to s.12). */
+  appliedOn: string;
+  /** Date the copy was ready for delivery, as certified. */
+  readyOn: string;
+}
+
+/** Days between application and the copy being ready. null if either date is
+ * unusable or the order is reversed, which is a data-entry error, not a period. */
+export function copyingDays(time: CopyingTime): number | null {
+  const applied = Date.parse(`${time.appliedOn}T00:00:00Z`);
+  const ready = Date.parse(`${time.readyOn}T00:00:00Z`);
+  if (Number.isNaN(applied) || Number.isNaN(ready)) return null;
+  const days = Math.round((ready - applied) / 86_400_000);
+  return days < 0 ? null : days;
+}
+
+/**
+ * Whether s.12(2)-(4) can apply at all to a given Article. It is available for
+ * appeals, leave to appeal, revision, review and setting aside an award — and
+ * NOT for suits, which is most of the Schedule. Offering it everywhere would
+ * invite an advocate to add copying time to a plain suit, which would overstate
+ * their limitation.
+ *
+ * Decided from the Article's own printed words rather than a list of numbers,
+ * so it stays correct if the Schedule is re-ingested.
+ */
+export function allowsCopyingExclusion(description: string, division: string | null): boolean {
+  if ((division ?? "").toLowerCase().includes("appeal")) return true;
+  return /\b(appeal|revision|revise|review|set aside an award)\b/i.test(description);
+}

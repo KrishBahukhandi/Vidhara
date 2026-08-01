@@ -4,7 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import { Pressable, StyleSheet, TextInput, View } from "react-native";
 
 import {
+  allowsCopyingExclusion,
   computeLimitation,
+  copyingDays,
   LIMITATION_FACTORS,
   parseLimitationPeriod,
   type LimitationPeriod,
@@ -49,6 +51,8 @@ export default function LimitationScreen() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [limbIndex, setLimbIndex] = useState(0);
   const [startOn, setStartOn] = useState("");
+  const [appliedOn, setAppliedOn] = useState("");
+  const [readyOn, setReadyOn] = useState("");
   const [saved, setSaved] = useState<string | null>(null);
 
   useEffect(() => {
@@ -74,7 +78,17 @@ export default function LimitationScreen() {
   const limbs = selected?.rows.filter((r) => parseLimitationPeriod(r.period)) ?? [];
   const limb = limbs[limbIndex] ?? limbs[0] ?? null;
   const period: LimitationPeriod | null = limb ? parseLimitationPeriod(limb.period) : null;
-  const result = period && ISO.test(startOn) ? computeLimitation(startOn, period) : null;
+  // s.12(2)-(4) reaches appeals, leave to appeal, revision, review and setting
+  // aside an award — never a plain suit.
+  const copyingAllowed = Boolean(
+    limb && selected && allowsCopyingExclusion(limb.description, selected.division),
+  );
+  const excluded =
+    copyingAllowed && ISO.test(appliedOn) && ISO.test(readyOn)
+      ? copyingDays({ appliedOn, readyOn })
+      : null;
+  const result =
+    period && ISO.test(startOn) ? computeLimitation(startOn, period, excluded ?? 0) : null;
 
   const field = [
     styles.input,
@@ -229,9 +243,59 @@ export default function LimitationScreen() {
             </>
           ) : null}
 
+          {limb && period && copyingAllowed ? (
+            <>
+              <Step n={4} title="Time requisite for a copy (s.12(2))" />
+              <AppText variant="small" tone="muted">
+                For an appeal, revision or review, the time spent obtaining the copy of the decree,
+                sentence or order is excluded. Take both dates from the certificate on the copy.
+              </AppText>
+              <AppText variant="micro" tone="muted">
+                Copy applied for
+              </AppText>
+              <TextInput
+                placeholder="YYYY-MM-DD"
+                placeholderTextColor={colors.textFaint}
+                value={appliedOn}
+                onChangeText={(v) => {
+                  setAppliedOn(v);
+                  setSaved(null);
+                }}
+                autoCapitalize="none"
+                style={field}
+              />
+              <AppText variant="micro" tone="muted">
+                Copy ready
+              </AppText>
+              <TextInput
+                placeholder="YYYY-MM-DD"
+                placeholderTextColor={colors.textFaint}
+                value={readyOn}
+                onChangeText={(v) => {
+                  setReadyOn(v);
+                  setSaved(null);
+                }}
+                autoCapitalize="none"
+                style={field}
+              />
+              {ISO.test(appliedOn) && ISO.test(readyOn) && excluded === null ? (
+                <AppText variant="small" tone="danger">
+                  The copy cannot be ready before it was applied for — check those dates.
+                </AppText>
+              ) : null}
+              {/* The Explanation to s.12 is the trap this step exists to name. */}
+              <AppText variant="small" tone="muted">
+                Not the date of the decree. Time the court took to prepare the decree before you
+                applied for a copy is expressly not excluded — see the Explanation to s.12. Whether
+                the endpoints themselves count varies in practice; this is the plain difference
+                between the two dates.
+              </AppText>
+            </>
+          ) : null}
+
           {result && limb ? (
             <>
-              <Step n={4} title="Working" />
+              <Step n={copyingAllowed ? 5 : 4} title="Working" />
               <View style={[styles.card, { borderColor: colors.brand, backgroundColor: colors.surface }]}>
                 <AppText variant="small">Period begins to run: {longDate(startOn)}</AppText>
                 <AppText variant="small">
@@ -247,6 +311,12 @@ export default function LimitationScreen() {
                     last day.
                   </AppText>
                 ) : null}
+                {excluded !== null && excluded > 0 ? (
+                  <AppText variant="small">
+                    s.12(2) — {excluded} days excluded for obtaining the copy (applied{" "}
+                    {longDate(appliedOn)}, ready {longDate(readyOn)}).
+                  </AppText>
+                ) : null}
                 <AppText style={styles.answer}>
                   On these facts alone, the period ends on {longDate(result.expiresOn)}.
                 </AppText>
@@ -258,7 +328,7 @@ export default function LimitationScreen() {
                 ) : null}
               </View>
 
-              <Step n={5} title="Keep it on the file" />
+              <Step n={copyingAllowed ? 6 : 5} title="Keep it on the file" />
               {saved ? (
                 <AppText variant="small" tone="brand">
                   Saved to {saved}.
@@ -311,7 +381,7 @@ export default function LimitationScreen() {
             </>
           ) : null}
 
-          <Step n={result ? 6 : 5} title="What would move that date" />
+          <Step n={(result ? 6 : 5) + (copyingAllowed ? 1 : 0)} title="What would move that date" />
           <AppText variant="small" tone="muted">
             The date above is only right if none of these apply. Whether they do is a question of
             fact on your file, not something this screen can know.
