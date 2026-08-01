@@ -114,6 +114,55 @@ export async function listChapters(actSlug: string): Promise<Result<ChapterListI
   );
 }
 
+/** One limb of a Schedule Article — see the web twin in features/acts/queries. */
+export interface ScheduleRow {
+  label?: string;
+  description: string;
+  period: string;
+  commencement: string;
+}
+
+export interface ScheduleArticle {
+  id: string;
+  number: string;
+  division: string | null;
+  part_number: string | null;
+  part_title: string | null;
+  rows: ScheduleRow[];
+}
+
+/**
+ * Every Article of an act's schedule, ordered as printed. 137 rows for the
+ * Limitation Act — small enough to fetch once and search on the device, which
+ * is what the worksheet needs since an advocate may well be offline in a court
+ * basement by the time they use it.
+ */
+export async function listScheduleArticles(
+  actSlug: string,
+  scheduleSlug: string,
+): Promise<Result<ScheduleArticle[]>> {
+  const { data, error } = await supabase
+    .from("act_schedule_articles")
+    .select(
+      "id, number, division, part_number, part_title, rows, act_schedules!inner(slug, acts!inner(slug))",
+    )
+    .eq("act_schedules.slug", scheduleSlug)
+    .eq("act_schedules.acts.slug", actSlug)
+    .order("sort_key", { ascending: true });
+
+  if (error) return err(ERROR_CODES.INTERNAL, LOAD_ERROR);
+  return ok(
+    data.map(({ id, number, division, part_number, part_title, rows }) => ({
+      id,
+      number,
+      division,
+      part_number,
+      part_title,
+      rows: rows as unknown as ScheduleRow[],
+    })),
+  );
+}
+
 export async function getSection(
   actSlug: string,
   number: string,

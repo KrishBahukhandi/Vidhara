@@ -158,8 +158,8 @@ function LimitationCard({ c }: { c: DiaryCase }) {
       </AppText>
       <AppText style={styles.big}>Ends {longDate(lim.expiresOn)}</AppText>
       <AppText variant="micro" tone="faint">
-        From {lim.runsFrom.toLowerCase().replace(/\.$/, "")} — {longDate(lim.startOn)}. Worked out on
-        the website; recheck it against the file.
+        From {lim.runsFrom.toLowerCase().replace(/\.$/, "")} — {longDate(lim.startOn)}. Recheck it
+        against the file.
       </AppText>
     </Card>
   );

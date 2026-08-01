@@ -66,6 +66,21 @@ export default function DiaryScreen() {
         </AppText>
       </Pressable>
 
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Open the limitation worksheet"
+        onPress={() => router.push("/limitation")}
+        style={({ pressed }) => [
+          styles.tool,
+          { borderColor: colors.border, opacity: pressed ? 0.85 : 1 },
+        ]}>
+        <Ionicons name="hourglass-outline" size={18} color={colors.brand} />
+        <AppText variant="small" style={styles.grow}>
+          Limitation worksheet
+        </AppText>
+        <Ionicons name="chevron-forward" size={16} color={colors.textFaint} />
+      </Pressable>
+
       <Transfer diary={diary} />
 
       {diary.cases.length > 6 ? (
@@ -293,6 +308,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   list: { paddingBottom: sp(6), gap: sp(2) },
+  tool: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: sp(2),
+    borderWidth: 1,
+    borderRadius: radius.md,
+    paddingHorizontal: sp(3),
+    minHeight: 48,
+  },
+  grow: { flex: 1 },
   transferRow: { flexDirection: "row", alignItems: "center", gap: sp(2) },
   transferBtn: { minHeight: 40, justifyContent: "center", paddingHorizontal: sp(1) },
   transferBox: { borderWidth: 1, borderRadius: radius.md, padding: sp(3), gap: sp(2) },

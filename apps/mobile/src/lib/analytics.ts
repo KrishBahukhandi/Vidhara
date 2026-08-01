@@ -22,6 +22,8 @@ export type EventName =
   | "practice_started"
   | "practice_answered"
   | "ask_ai_assisted"
+  | "limitation_computed"
+  | "limitation_saved_to_case"
   | "diary_case_added"
   | "diary_case_opened"
   | "diary_hearing_logged"
