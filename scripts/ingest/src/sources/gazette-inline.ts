@@ -366,6 +366,23 @@ export function parseInlineAct(
         }
         continue;
       }
+      /**
+       * Once the footnote block has begun on this page, everything below it is
+       * footnote material — including the occasional line the typesetter left
+       * at BODY height. The Transfer of Property Act prints footnote 7 at 10pt
+       * among neighbours at 8.1pt; the small-type path never saw it, and
+       * "7. Subs. by the Adaptation of Laws…" then read as a plausible section 7
+       * (7 > the section 3 in force), which in turn made the REAL sections 4, 5
+       * and 6 look non-increasing and dropped all three. The Sale of Goods Act
+       * loses s.3 the same way.
+       *
+       * Note the asymmetry: a body-height line may be *skipped* by the latch but
+       * may never *set* it. Setting it would let a genuine repealed section —
+       * "32. [Repeal.]—Rep. by Repealing and Amending Act, 1974" — silently
+       * swallow the rest of its page.
+       */
+      if (footnotesStarted) continue;
+
       if (!started) {
         if (ENACTED.test(flat)) started = true;
         continue;

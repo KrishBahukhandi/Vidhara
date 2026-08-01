@@ -21,6 +21,9 @@ export const ACT_ABBREVIATIONS = [
   "MV",
   "ARB",
   "LIM",
+  "TP",
+  "SRA",
+  "SGA",
 ] as const;
 export type ActAbbreviation = (typeof ACT_ABBREVIATIONS)[number];
 
@@ -45,6 +48,9 @@ export const ACT_SLUG: Record<ActAbbreviation, string> = {
   MV: "mv",
   ARB: "arb",
   LIM: "lim",
+  TP: "tp",
+  SRA: "sra",
+  SGA: "sga",
 };
 
 /** Alias → canonical abbreviation. Keys must be lowercase, punctuation-free. */
@@ -98,6 +104,16 @@ const ACT_ALIASES: Record<string, ActAbbreviation> = {
   lim: "LIM",
   "limitation act": "LIM",
   limitation: "LIM",
+  tp: "TP",
+  tpa: "TP",
+  "transfer of property act": "TP",
+  "transfer of property": "TP",
+  sra: "SRA",
+  "specific relief act": "SRA",
+  "specific relief": "SRA",
+  sga: "SGA",
+  "sale of goods act": "SGA",
+  "sale of goods": "SGA",
 };
 
 export interface ParsedSectionRef {
@@ -114,6 +130,29 @@ const SECTION_TOKEN = /^(\d{1,4})\s*-?\s*([A-Za-z]{1,2})?(?:\s*\([^)]*\))*$/;
 
 const SECTION_WORDS = /^(?:s|ss|sec|secs|section|sections|art|article)$/i;
 const NOISE_WORDS = new Set(["of", "the", "under", "in"]);
+
+/**
+ * Alias lookup, indexed both as written and with the noise words removed.
+ *
+ * Queries have "of"/"the" stripped before the act name is assembled, so a key
+ * containing them could never be hit: "constitution of india 21", "code of
+ * criminal procedure 438" and "code of civil procedure 151" all failed to
+ * resolve, which is as natural a way to type those three as exists. Indexing
+ * the stripped form as well fixes every alias at once, instead of leaving the
+ * next person to notice that their new act needs a hand-written duplicate.
+ */
+const ALIAS_INDEX: Record<string, ActAbbreviation> = (() => {
+  const index: Record<string, ActAbbreviation> = {};
+  for (const [alias, abbreviation] of Object.entries(ACT_ALIASES)) {
+    index[alias] = abbreviation;
+    const stripped = alias
+      .split(" ")
+      .filter((word) => !NOISE_WORDS.has(word))
+      .join(" ");
+    if (stripped) index[stripped] = abbreviation;
+  }
+  return index;
+})();
 
 function normalize(input: string): string {
   return input
@@ -175,7 +214,7 @@ export function parseSectionRef(input: string): ParsedSectionRef | null {
 
   let act: ActAbbreviation | null = null;
   if (actWords.length > 0) {
-    const candidate = ACT_ALIASES[actWords.join(" ")];
+    const candidate = ALIAS_INDEX[actWords.join(" ")];
     if (!candidate) return null; // named an act we don't recognize — not a confident ref
     act = candidate;
   }

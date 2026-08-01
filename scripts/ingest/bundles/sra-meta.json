@@ -1,0 +1,8 @@
+{
+  "act": {
+    "slug": "sra", "title": "The Specific Relief Act, 1963", "shortTitle": "Specific Relief Act",
+    "abbreviation": "SRA", "year": 1963, "category": "civil", "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/1583"
+  },
+  "provenance": "Official India Code text: The Specific Relief Act, 1963 (47 of 1963), English PDF (bitstream 123456789/1583/7/A1963-47.pdf, 259,229 bytes, sha256 7b90aae6b01d7c95...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-01. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Includes the 2018 amendments. Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+}

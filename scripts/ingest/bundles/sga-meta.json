@@ -1,0 +1,8 @@
+{
+  "act": {
+    "slug": "sga", "title": "The Sale of Goods Act, 1930", "shortTitle": "Sale of Goods Act",
+    "abbreviation": "SGA", "year": 1930, "category": "commercial", "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/2390"
+  },
+  "provenance": "Official India Code text: The Sale of Goods Act, 1930 (3 of 1930), English PDF (bitstream 123456789/2390/1/193003.pdf, 377,988 bytes, sha256 069ff04276e35110...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-01. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+}

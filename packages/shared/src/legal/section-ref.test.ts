@@ -106,3 +106,32 @@ describe("parseSectionRef", () => {
     expect(parseSectionRef(`302 ipc ${"x".repeat(100)}`)).toBeNull();
   });
 });
+
+describe("act names containing noise words", () => {
+  it("resolves aliases written with 'of' — the natural way to type them", () => {
+    // Queries drop "of"/"the" before the act name is assembled, so an alias key
+    // containing them could never match. These three were dead on arrival.
+    expect(parseSectionRef("constitution of india 21")).toMatchObject({ act: "COI", section: "21" });
+    expect(parseSectionRef("code of criminal procedure 438")).toMatchObject({
+      act: "CRPC",
+      section: "438",
+    });
+    expect(parseSectionRef("code of civil procedure 151")).toMatchObject({
+      act: "CPC",
+      section: "151",
+    });
+  });
+
+  it("resolves the acts added alongside the fix", () => {
+    expect(parseSectionRef("transfer of property 54")).toMatchObject({ act: "TP", section: "54" });
+    expect(parseSectionRef("tp 53A")).toMatchObject({ act: "TP", section: "53A" });
+    expect(parseSectionRef("sale of goods 19")).toMatchObject({ act: "SGA", section: "19" });
+    expect(parseSectionRef("specific relief act 38")).toMatchObject({ act: "SRA", section: "38" });
+    expect(parseSectionRef("s. 10 sra")).toMatchObject({ act: "SRA", section: "10" });
+  });
+
+  it("still refuses an act it does not know", () => {
+    expect(parseSectionRef("companies act 149")).toBeNull();
+  });
+});
+

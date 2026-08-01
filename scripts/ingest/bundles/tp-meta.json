@@ -1,0 +1,8 @@
+{
+  "act": {
+    "slug": "tp", "title": "The Transfer of Property Act, 1882", "shortTitle": "Transfer of Property Act",
+    "abbreviation": "TP", "year": 1882, "category": "civil", "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/2338"
+  },
+  "provenance": "Official India Code text: The Transfer of Property Act, 1882 (4 of 1882), English PDF (bitstream 123456789/2338/1/A1882-04.pdf, 565,764 bytes, sha256 5223fdf06a0aa3ed...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-01. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+}
