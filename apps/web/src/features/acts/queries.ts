@@ -199,6 +199,38 @@ export async function askSections(q: string): Promise<AskResult> {
   }
 }
 
+export type StateAmendmentRow = Tables<"act_state_amendments">;
+
+/**
+ * State amendments for one section (D-053).
+ *
+ * These are NOT part of the section's text and are never merged into it — the
+ * whole point of the D-032 guard is that a Chhattisgarh amendment must not read
+ * as the Indian Penal Code. They are fetched separately so the page can present
+ * them as what they are: law in one State, with its own authority.
+ */
+export async function getStateAmendmentsForSection(
+  sectionId: string,
+): Promise<StateAmendmentRow[]> {
+  if (!isContentConfigured) return [];
+  const { data, error } = await getServerClient()
+    .from("act_state_amendments")
+    .select("*")
+    .eq("section_id", sectionId)
+    .order("sort_order");
+  if (error) throw new Error(`getStateAmendmentsForSection: ${error.message}`);
+  return data;
+}
+
+export async function countStateAmendments(): Promise<number> {
+  if (!isContentConfigured) return 0;
+  const { count, error } = await getServerClient()
+    .from("act_state_amendments")
+    .select("id", { count: "exact", head: true });
+  if (error) return 0;
+  return count ?? 0;
+}
+
 export async function getMappingsForSection(sectionId: string): Promise<MappingRow[]> {
   if (!isContentConfigured) return [];
   const { data, error } = await getServerClient()

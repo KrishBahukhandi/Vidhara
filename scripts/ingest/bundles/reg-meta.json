@@ -1,8 +1,13 @@
 {
   "act": {
-    "slug": "reg", "title": "The Registration Act, 1908", "shortTitle": "Registration Act",
-    "abbreviation": "REG", "year": 1908, "category": "civil", "status": "active",
+    "slug": "reg",
+    "title": "The Registration Act, 1908",
+    "shortTitle": "Registration Act",
+    "abbreviation": "REG",
+    "year": 1908,
+    "category": "civil",
+    "status": "active",
     "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/2190"
   },
-  "provenance": "Official India Code text: The Registration Act, 1908 (16 of 1908), English PDF (bitstream 123456789/2190/5/A1908-16.pdf, 721,071 bytes, sha256 95b81008f2d529cf...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-01. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. This Act carries extensive State amendments, which are skipped rather than presented as central law (D-033). Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+  "provenance": "Official India Code text: The Registration Act, 1908 (16 of 1908), English PDF (bitstream 123456789/2190/5/A1908-16.pdf, 721,071 bytes, sha256 95b81008f2d529cf...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-01. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. This Act carries the heaviest State amendment apparatus in the corpus — 44 regions and 154 cited blocks, several States stacked under a single banner — all of which is skipped rather than presented as central law (D-052). The published section set is the Act's own arrangement of sections exactly: 1-93 plus 16A, 23A and 32A, 96 in all. Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
 }

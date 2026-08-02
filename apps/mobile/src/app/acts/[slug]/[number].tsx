@@ -7,6 +7,7 @@ import { Pressable, Share, StyleSheet, View } from "react-native";
 import { AiExplain } from "@/components/acts/ai-explain";
 import { BookmarkButton } from "@/components/acts/bookmark-button";
 import { MappingCard } from "@/components/acts/mapping-card";
+import { StateAmendments } from "@/components/acts/state-amendments";
 import { SectionNav } from "@/components/acts/section-nav";
 import { AppText } from "@/components/ui/app-text";
 import { MarkdownLite } from "@/components/ui/markdown-lite";
@@ -14,9 +15,11 @@ import { Screen } from "@/components/ui/screen";
 import {
   getAdjacentSections,
   getMappings,
+  getStateAmendments,
   getSection,
   type AdjacentSection,
   type MappingRow,
+  type StateAmendmentRow,
   type SectionWithAct,
 } from "@/features/acts/api";
 import { track } from "@/lib/analytics";
@@ -30,6 +33,7 @@ export default function SectionReaderScreen() {
   const { colors } = useTheme();
   const [section, setSection] = useState<SectionWithAct | null>(null);
   const [mappings, setMappings] = useState<MappingRow[]>([]);
+  const [stateAmendments, setStateAmendments] = useState<StateAmendmentRow[]>([]);
   const [adjacent, setAdjacent] = useState<{
     prev: AdjacentSection | null;
     next: AdjacentSection | null;
@@ -39,6 +43,7 @@ export default function SectionReaderScreen() {
   useEffect(() => {
     if (!slug || !number) return;
     setAdjacent({ prev: null, next: null });
+    setStateAmendments([]);
     getSection(slug, number).then((result) => {
       if (!result.ok) {
         setError(result.error.message);
@@ -57,6 +62,9 @@ export default function SectionReaderScreen() {
       });
       getMappings(result.data.id).then((m) => {
         if (m.ok) setMappings(m.data);
+      });
+      getStateAmendments(result.data.id).then((a) => {
+        if (a.ok) setStateAmendments(a.data);
       });
       getAdjacentSections(result.data.act_id, result.data.sort_key).then(setAdjacent);
     });
@@ -200,6 +208,8 @@ export default function SectionReaderScreen() {
               ))}
             </View>
           ) : null}
+
+          <StateAmendments amendments={stateAmendments} />
 
           <SectionNav slug={section.acts.slug} prev={adjacent.prev} next={adjacent.next} />
         </View>

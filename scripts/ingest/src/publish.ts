@@ -19,7 +19,7 @@ export interface PublishOptions {
 export async function publishBundle(
   bundle: ActBundle,
   options: PublishOptions,
-): Promise<{ actId: string; sections: number; chapters: number }> {
+): Promise<{ actId: string; sections: number; chapters: number; stateAmendments: number }> {
   const url = process.env.SUPABASE_URL;
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !serviceKey) {
@@ -100,6 +100,27 @@ export async function publishBundle(
     .upsert(rows, { onConflict: "act_id,number" });
   if (sectionsError) throw new Error(`sections upsert failed: ${sectionsError.message}`);
 
+  // Sections the bundle no longer produces are removed, for the same reason
+  // divisions are below — and this one had teeth. IPC 354E, 376F, 509A, 509B
+  // (Chhattisgarh), 379A, 379B (Gujarat) and 382B-382F (Tripura), plus IEA
+  // 114B, were published as central law before the State-amendment guard
+  // existed. Every later republish upserted around them and left all twelve
+  // standing, because nothing ever deleted a section. Upsert-only means a
+  // defect can be fixed in the bundle and stay live indefinitely.
+  const keptNumbers = rows.map((row) => row.number);
+  const { data: removed, error: staleSectionError } = await db
+    .from("act_sections")
+    .delete()
+    .eq("act_id", act.id)
+    .not("number", "in", `(${keptNumbers.map((n) => `"${n}"`).join(",")})`)
+    .select("number");
+  if (staleSectionError) throw new Error(`stale section cleanup failed: ${staleSectionError.message}`);
+  if (removed && removed.length > 0) {
+    console.warn(
+      `  ⚠ removed ${removed.length} section(s) no longer in the bundle: ${removed.map((r) => r.number).join(", ")}`,
+    );
+  }
+
   // Upsert alone leaves divisions the bundle no longer produces. That is not
   // hypothetical: changing the division key left ARB with 28 rows for 17
   // divisions, the extras being its pre-two-level "Chapter V", "C", "S". They
@@ -116,7 +137,65 @@ export async function publishBundle(
     if (staleError) throw new Error(`stale chapter cleanup failed: ${staleError.message}`);
   }
 
-  return { actId: act.id, sections: rows.length, chapters: bundle.chapters.length };
+  // ── State amendments (D-053) ───────────────────────────────────────────────
+  // Replaced wholesale rather than upserted: an amendment the bundle no longer
+  // carries has been withdrawn or was mis-parsed, and either way leaving it
+  // attributed to a State would be worse than losing it. Cheap — the largest
+  // act in the corpus has 154.
+  let stateAmendments = 0;
+  if (bundle.stateAmendments) {
+    const { data: sectionIds, error: idError } = await db
+      .from("act_sections")
+      .select("id, number")
+      .eq("act_id", act.id);
+    if (idError) throw new Error(`section id lookup failed: ${idError.message}`);
+    const idByNumber = new Map((sectionIds ?? []).map((s) => [s.number, s.id]));
+
+    const { error: clearError } = await db
+      .from("act_state_amendments")
+      .delete()
+      .in("section_id", [...idByNumber.values()]);
+    if (clearError) throw new Error(`state amendment cleanup failed: ${clearError.message}`);
+
+    const amendmentRows = bundle.stateAmendments.flatMap((amendment, index) => {
+      const sectionId = idByNumber.get(amendment.sectionNumber);
+      // An amendment we cannot attach to a real section is dropped loudly. It
+      // must never land on the nearest section instead: a State amendment shown
+      // against the wrong provision is the D-032 defect wearing a label.
+      if (!sectionId) {
+        console.warn(
+          `  ⚠ State amendment for §${amendment.sectionNumber} (${amendment.state}) has no such section — dropped`,
+        );
+        return [];
+      }
+      return [
+        {
+          section_id: sectionId,
+          state: amendment.state,
+          citation: amendment.citation,
+          amendment_text: amendment.text,
+          sort_order: index,
+        },
+      ];
+    });
+
+    if (amendmentRows.length > 0) {
+      const { error: amendmentError } = await db
+        .from("act_state_amendments")
+        .upsert(amendmentRows, { onConflict: "section_id,citation" });
+      if (amendmentError) {
+        throw new Error(`state amendments upsert failed: ${amendmentError.message}`);
+      }
+    }
+    stateAmendments = amendmentRows.length;
+  }
+
+  return {
+    actId: act.id,
+    sections: rows.length,
+    chapters: bundle.chapters.length,
+    stateAmendments,
+  };
 }
 
 /**

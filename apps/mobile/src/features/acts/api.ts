@@ -226,6 +226,26 @@ export async function getMappings(sectionId: string): Promise<Result<MappingRow[
   return ok(data);
 }
 
+export type StateAmendmentRow = Tables<"act_state_amendments">;
+
+/**
+ * State amendments for a section (D-053). Fetched separately from the section
+ * and never merged into its body — a Chhattisgarh amendment must not read as the
+ * Indian Penal Code, which is the whole point of the D-032 guard.
+ */
+export async function getStateAmendments(
+  sectionId: string,
+): Promise<Result<StateAmendmentRow[]>> {
+  const { data, error } = await supabase
+    .from("act_state_amendments")
+    .select("*")
+    .eq("section_id", sectionId)
+    .order("sort_order");
+
+  if (error) return err(ERROR_CODES.INTERNAL, LOAD_ERROR);
+  return ok(data);
+}
+
 export type MappingLookupOutcome =
   | { kind: "not-a-ref" }
   | { kind: "not-found"; act: string; section: string }

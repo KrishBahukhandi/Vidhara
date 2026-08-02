@@ -76,7 +76,7 @@ function parseGazetteCommand(inputPath: string, flags: string[]): void {
     result = parseGazetteLayoutText(inputText);
     format = "layout (heuristic columns)";
   }
-  const { sections, chapters, diagnostics } = result;
+  const { sections, chapters, diagnostics, stateAmendments } = result;
   console.log(`format: ${format}`);
 
   for (const diagnostic of diagnostics) console.warn(`  ⚠ ${diagnostic}`);
@@ -92,11 +92,14 @@ function parseGazetteCommand(inputPath: string, flags: string[]): void {
       marginalNote: section.marginalNote,
       bodyMd: section.bodyMd,
     })),
+    // Kept beside the Act, never merged into a section body (D-053).
+    ...(stateAmendments && stateAmendments.length > 0 ? { stateAmendments } : {}),
     provenance: meta.provenance,
   };
   writeFileSync(outPath, `${JSON.stringify(bundle, null, 2)}\n`);
   console.log(
-    `Parsed ${sections.length} section(s), ${chapters.length} chapter(s), ${diagnostics.length} diagnostic(s) → ${outPath}`,
+    `Parsed ${sections.length} section(s), ${chapters.length} chapter(s), ` +
+      `${stateAmendments?.length ?? 0} State amendment(s), ${diagnostics.length} diagnostic(s) → ${outPath}`,
   );
   console.log("Next: ingest validate, spot-check against the PDF, then publish.");
 }
@@ -248,7 +251,9 @@ async function main(): Promise<void> {
     publishAct: flags.includes("--publish-act"),
   });
   console.log(
-    `Published: act ${result.actId} · ${result.sections} section(s) · ${result.chapters} chapter(s) · review_status=${reviewStatus}`,
+    `Published: act ${result.actId} · ${result.sections} section(s) · ${result.chapters} chapter(s)` +
+      (result.stateAmendments > 0 ? ` · ${result.stateAmendments} State amendment(s)` : "") +
+      ` · review_status=${reviewStatus}`,
   );
 }
 

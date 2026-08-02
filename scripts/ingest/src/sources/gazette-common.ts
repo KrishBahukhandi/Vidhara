@@ -30,10 +30,37 @@ export interface ParsedChapter {
   partTitle?: string;
 }
 
+/**
+ * One State's amendment to one central section, kept OUT of the Act's text and
+ * recorded beside it instead.
+ *
+ * The parser has skipped these since D-032, because printing a Rajasthan
+ * amendment inside the central section is the worst defect we can ship. But
+ * skipping them silently has its own cost, and it is not a small one: an
+ * advocate in Karnataka reading Registration Act s.17 is shown the central
+ * provision with nothing to indicate that their State has amended it. Silence
+ * reads as "there is nothing else", which is a different wrong answer to the
+ * same question (D-053).
+ */
+export interface ParsedStateAmendment {
+  /** Central section the amendment attaches to — "17", "80", "438". */
+  sectionNumber: string;
+  /** State or UT as the citation prints it. Kept verbatim, typos and all: it
+   * is a label copied from the source, not a key we look anything up by. */
+  state: string;
+  /** The "[Vide …]" citation, verbatim — the authority for the amendment. */
+  citation: string;
+  /** The amending text as printed. */
+  text: string;
+}
+
 export interface GazetteParseResult {
   sections: ParsedSection[];
   chapters: ParsedChapter[];
   diagnostics: string[];
+  /** Present only for parsers that capture them; absent means "not looked for",
+   * which is different from "none in this act". */
+  stateAmendments?: ParsedStateAmendment[];
 }
 
 export interface LineParts {

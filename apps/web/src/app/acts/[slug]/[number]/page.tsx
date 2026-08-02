@@ -10,11 +10,13 @@ import { MappingPanel } from "@/components/mapping-panel";
 import { RecordRecent } from "@/components/record-recent";
 import { SectionNav } from "@/components/section-nav";
 import { SectionProvenance } from "@/components/section-provenance";
+import { StateAmendments } from "@/components/state-amendments";
 import { SectionShare } from "@/components/section-share";
 import { PageShell } from "@/components/site-chrome";
 import {
   getAdjacentSections,
   getMappingsForSection,
+  getStateAmendmentsForSection,
   getSectionWithAct,
 } from "@/features/acts/queries";
 import { TrackEvent } from "@/lib/analytics";
@@ -68,9 +70,10 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
   const section = await getSectionWithAct(slug, decodeURIComponent(number));
   if (!section) notFound();
 
-  const [mappings, adjacent] = await Promise.all([
+  const [mappings, adjacent, stateAmendments] = await Promise.all([
     getMappingsForSection(section.id),
     getAdjacentSections(section.act_id, section.sort_key),
+    getStateAmendmentsForSection(section.id),
   ]);
   const isSample = section.provenance?.startsWith("dev-sample");
 
@@ -161,6 +164,8 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
           ))}
         </section>
       ) : null}
+
+      <StateAmendments amendments={stateAmendments} />
 
       <SectionNav slug={slug} prev={adjacent.prev} next={adjacent.next} />
 

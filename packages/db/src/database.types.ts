@@ -1,9 +1,9 @@
 /**
  * Database types — GENERATED from the live NexLex Supabase project
- * (ref eubyvglzkbzfeznocilg, migrations 0001–0010).
+ * (ref eubyvglzkbzfeznocilg, migrations 0001–0014).
  * Regenerate after schema changes: pnpm --filter @nexlex/db gen:types
  * (needs a Supabase access token with project access; entries below were added
- * by hand for 0009–0010 when the token lacked the types endpoint).
+ * by hand for 0009–0014 when the token lacked the types endpoint).
  */
 export type Json =
   | string
@@ -170,6 +170,47 @@ export type Database = {
             columns: ["act_id"]
             isOneToOne: false
             referencedRelation: "acts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      act_state_amendments: {
+        Row: {
+          amendment_text: string
+          citation: string
+          created_at: string
+          id: string
+          section_id: string
+          sort_order: number
+          state: string
+          updated_at: string
+        }
+        Insert: {
+          amendment_text: string
+          citation: string
+          created_at?: string
+          id?: string
+          section_id: string
+          sort_order?: number
+          state: string
+          updated_at?: string
+        }
+        Update: {
+          amendment_text?: string
+          citation?: string
+          created_at?: string
+          id?: string
+          section_id?: string
+          sort_order?: number
+          state?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "act_state_amendments_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "act_sections"
             referencedColumns: ["id"]
           },
         ]

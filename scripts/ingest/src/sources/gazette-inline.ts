@@ -23,7 +23,12 @@
  * - Section numbers still increase monotonically, so the strictly-increasing
  *   guard rejects any footnote number that survives.
  */
-import type { GazetteParseResult, ParsedChapter, ParsedSection } from "./gazette-common";
+import type {
+  GazetteParseResult,
+  ParsedChapter,
+  ParsedSection,
+  ParsedStateAmendment,
+} from "./gazette-common";
 import { END_SENTINELS, FURNITURE, normalizeChapterTitle } from "./gazette-common";
 import { deriveSortKey } from "../sort-key";
 
@@ -100,24 +105,130 @@ const SCHEDULE_START =
  * sections): the amending text was appended to the central section's body, and
  * quoted insertions (ARB §8B) became phantom central sections. So the block is
  * SKIPPED — not stopped at, since the central Act resumes afterwards.
- */
-const STATE_AMENDMENT_START = /^STATE\s+AMENDMENTS?\b/;
-/** Primary terminator: the citation that closes a State-amendment block. */
-const STATE_AMENDMENT_END = /^\[?\s*Vide\b/i;
-/**
- * States and Union territories, including the pre-reorganisation names that
- * old amendments still carry (Bombay, Madras, Mysore).
  *
- * The Registration Act stacks several States under ONE "STATE AMENDMENT"
- * banner: each block ends with its "[Vide <State> Act …]" citation and the next
- * begins with nothing but the State's name. Leaving the block at the citation
- * therefore dropped straight into the next State's text as if it were central
- * law — Uttar Pradesh's inserted section 18A became a central §18A, which is
- * the D-032 defect exactly. A bare State name immediately after a citation
- * re-opens the block.
+ * A BANNER OPENS A REGION, NOT A BLOCK. This is the correction D-051 got half
+ * right. One banner routinely covers many States in turn, each closing with its
+ * own "[Vide …]" citation: the Registration Act runs 41 banners over 154 such
+ * citations. Treating the citation as the terminator therefore dropped out of
+ * the region into the NEXT State's amendment and read it as central law — which
+ * is how nine provisions of Karnataka and Uttar Pradesh law came within one step
+ * of being published as national law.
+ *
+ * D-051 patched that with a closed list of State names, on the theory that the
+ * next block always announces itself with one. It usually does, and the patch
+ * still missed six of the nine, for three separate reasons: a page number
+ * between the citation and the name (the region resumes across a page break
+ * eight times here), the print's own typos ("Uttarkhand"), and blocks that carry
+ * no name at all and open straight into "Insertion of new section 80A.—After
+ * section 80 of the Registration Act, 1908 (Central Act 16 of 1908)…".
+ *
+ * The region model needs none of that: nothing inside a banner is central law
+ * until the central Act demonstrably resumes, so the parser stops trying to
+ * recognise where one State ends and the next begins. The list of State names is
+ * gone with it — a list that has to be complete and correctly spelled to keep
+ * State law out of a national act was the wrong thing to depend on.
  */
-const STATE_OR_UT =
-  /^(Andhra Pradesh|Arunachal Pradesh|Assam|Bihar|Chhattisgarh|Goa|Gujarat|Haryana|Himachal Pradesh|Jharkhand|Karnataka|Kerala|Madhya Pradesh|Maharashtra|Manipur|Meghalaya|Mizoram|Nagaland|Odisha|Orissa|Punjab|Rajasthan|Sikkim|Tamil Nadu|Telangana|Tripura|Uttar Pradesh|Uttarakhand|Uttaranchal|West Bengal|Delhi|Puducherry|Pondicherry|Jammu and Kashmir|Ladakh|Andaman and Nicobar Islands|Chandigarh|Dadra and Nagar Haveli|Daman and Diu|Lakshadweep|Bombay|Madras|Mysore)\s*[.:]?$/i;
+const STATE_AMENDMENT_START = /^STATE\s+AMEN[DE]+MENTS?\b/;
+/**
+ * The amending instruction that introduces a State's change — "Amendment of
+ * section 34 of XVI of 1908.—In the principal Act, in section 34,--",
+ * "Insertion of proviso to section 53.—…", "Insertion of new section 80A.—After
+ * section 80 of the Registration Act, 1908 (Central Act 16 of 1908)…".
+ *
+ * This opens a region in its own right, because the banner cannot be relied on
+ * to be there: the Registration Act prints Uttarakhand's amendment of section 53
+ * under nothing but the word "Uttarakhand", and section 53 accordingly went out
+ * with a proviso of Uttarakhand law inside it. The instruction is the one part
+ * of the block that is always present — it is what an amendment *is*.
+ *
+ * It is also the shape furthest from anything a principal Act says: sections
+ * carry their number at line start, so a numberless line opening "Amendment of
+ * section …" is amending apparatus. Verified against every act on disk — the
+ * 200 instruction lines in ARB, CPC, HMA, LIM, MV, REG and TP are all State
+ * amendments, and no section text changed anywhere when this began matching.
+ */
+const AMENDING_INSTRUCTION =
+  /^(?:Amendment|Insertion|Substitution|Omission|Addition|Deletion|Renumbering|Repeal(?:ed)?)\s+(?:of|for|to|at)\s+(?:new\s+|the\s+)*(?:section|sub-section|clause|proviso|Part|Chapter|Schedule|Explanation|heading)\b/i;
+/**
+ * A one-line fragment left above a BANNERLESS block — the bare State name that
+ * stands in for the banner. Dropped from the section being closed rather than
+ * matched against a list of States: a list has to be complete AND correctly
+ * spelled to keep State law out of a national act, and this print spells
+ * Uttarakhand three different ways.
+ *
+ * Ending punctuation disqualifies it, because a sentence is not an orphan. The
+ * first version of this rule allowed a trailing period and truncated section 78
+ * of the Registration Act at "…necessary to effect the purposes of this / Act."
+ * — the last line of its real text. Trimming published text to tidy up an
+ * unrelated defect is worse than the defect, so this pattern errs toward
+ * leaving the fragment in.
+ */
+const ORPHAN_FRAGMENT = /^[A-Z][A-Za-z]*(?:\s+[A-Z][A-Za-z]*){0,2}$/;
+/**
+ * The citation closing ONE State's amendment — "[Vide Kerala Act 21 of 1998,
+ * s. 2]". Note what it does NOT do: end the banner's region. See below.
+ */
+const STATE_AMENDMENT_CITATION = /^\[?\s*Vide\b/i;
+/**
+ * A citation is a bracketed unit and long ones wrap. The J&K/Ladakh adaptation
+ * order runs to three printed lines — "[Vide the Jammu and Kashmir
+ * Reorganization (Adaptation of Central Laws) Order, 2020, notification / No.
+ * S.O. 1123(E) dated (18-3-2020) and Vide … / … dated (23-10-2020).]" — and
+ * treating only its first line as the citation left ARB §29B and CPC §35A
+ * looking like State insertions. The unit ends at the closing bracket.
+ */
+const CITATION_END = /\]/;
+/** Give up rather than eat the Act if a citation's bracket never closes. */
+const CITATION_MAX_LINES = 6;
+/**
+ * The State named by a citation. Everything from "Vide" up to the instrument
+ * word is the jurisdiction: "[Vide Karnataka Act 28 of 1975, s. 2]" is
+ * Karnataka, and "[Vide the Jammu and Kashmir Reorganization (Adaptation of
+ * Central Laws) Order, 2020…]" is Jammu and Kashmir. A leading "the" is the
+ * print's, not part of the name.
+ */
+const CITATION_STATE =
+  /\bVide\s+(?:the\s+)?([A-Za-z][A-Za-z\s&]*?)\s+(?:Act|Order|Ordinance|Regulation|Reorganisation|Reorganization|Amendment|Notification|Adaptation)\b/i;
+/**
+ * The same, for citations that omit the instrument word altogether — the
+ * Contract Act closes Uttar Pradesh's amendment of s.55 with "[Vide Uttar
+ * Pradesh 57 of 1976, s. 26]". Without this the State could not be named, and a
+ * block whose State cannot be named is dropped, so that amendment stayed
+ * invisible after the section it belonged to had been cleaned of it — the worst
+ * of both. Falls back to the run of words before the Act's number.
+ */
+const CITATION_STATE_NO_INSTRUMENT =
+  /\bVide\s+(?:the\s+)?([A-Za-z][A-Za-z\s&]*?)\s+(?:\d{1,4}|[IVXLC]+)\s+of\s+\d{4}/i;
+/** The section an instruction names: "Amendment of section 34 of XVI of 1908",
+ * "Insertion of new section 80A.—After section 80…". The base is what the
+ * amendment attaches to, since an inserted "80A" hangs off s.80. */
+const INSTRUCTION_TARGET = /\bsections?\s+(\d{1,3})/i;
+/**
+ * The Registration Act's citations spell three States wrong ("Uttarkhand",
+ * "Uttar Pardesh") or lower-case ("kerala"), and left alone those become extra
+ * jurisdictions in a list of who has amended a section — which misleads in the
+ * opposite direction from the silence this is fixing.
+ *
+ * A closed list is what D-052 removed from the guard, so it is worth being
+ * clear why one is acceptable here: this one decides a LABEL. A name it misses
+ * is displayed as the source spells it, and the citation is shown verbatim
+ * regardless. The list the guard used decided whether State law entered a
+ * national act, where a miss published the wrong law.
+ */
+const STATE_SPELLING: Record<string, string> = {
+  uttarkhand: "Uttarakhand",
+  uttaranchal: "Uttarakhand",
+  "uttar pardesh": "Uttar Pradesh",
+  bengal: "Bengal",
+  orissa: "Orissa",
+};
+function canonicalState(raw: string): string {
+  const key = raw.toLowerCase().replace(/\s+/g, " ").trim();
+  return (
+    STATE_SPELLING[key] ??
+    key.replace(/\b[a-z]/g, (c) => c.toUpperCase()).replace(/\bAnd\b/g, "and")
+  );
+}
 // Constitution uses PART headings; other acts CHAPTER. Both fold to chapters.
 const CHAPTER_HEADING = /^(CHAPTER|PART)\s*([IVXLCDM]+)([A-Z])?$/;
 /**
@@ -242,17 +353,52 @@ export function parseInlineAct(
    * Survives page breaks — blocks wrap pages (IPC §108, CrPC §300). */
   let illustrationMode = false;
   let illustrationLines = 0;
-  // Inside a "STATE AMENDMENT" block: every line is skipped until the block
-  // closes, so neither its text nor its quoted insertions enter the Act.
+  // Inside a "STATE AMENDMENT" region: every line is skipped until the CENTRAL
+  // Act resumes, so neither its text nor its quoted insertions enter the Act.
   let stateAmendmentMode = false;
-  // Section base in force when the block opened. The block's own quoted
-  // insertions are lettered variants of it ("8A"/"8B" after s.8), so the Act is
-  // taken to resume at the first base GREATER than this — the fallback for
-  // blocks that carry no "[Vide …]" citation (ARB's first block).
+  // Section base in force when the region opened. A region's quoted insertions
+  // are lettered variants of it ("8A"/"8B" after s.8; 80A–80G after s.80), so
+  // the Act is taken to resume at the first base GREATER than this. That single
+  // test is what makes the region model safe: an insertion can add letters to
+  // the base but never advances past it, so no amount of stacked State text can
+  // look like the Act resuming.
   let stateAmendmentBase = 0;
+  let stateAmendmentRegions = 0;
   let stateAmendmentBlocks = 0;
-  /** Set for exactly one line after a "[Vide …]" citation — see STATE_OR_UT. */
-  let justLeftStateAmendment = false;
+  /** True from a closed "[Vide …]" citation until the next line of substance. */
+  let sinceCitation = false;
+  /** Lines consumed so far by a citation whose bracket has not yet closed. */
+  let citationLines = 0;
+  /** The section a region hangs off, as printed ("80", "16A"). */
+  let stateAmendmentAnchor = "";
+  /** Lines of the State block currently being read, and its citation so far. */
+  let blockLines: string[] = [];
+  let citationParts: string[] = [];
+  const stateAmendments: ParsedStateAmendment[] = [];
+
+  /** Files the block just closed by a citation. A block with no citation is
+   * dropped rather than guessed at: without one there is no authority to show,
+   * and an amendment we cannot attribute to a State is worse than none. */
+  const closeStateBlock = () => {
+    const citation = citationParts.join(" ").replace(/\s+/g, " ").trim();
+    const text = blockLines.join(" ").replace(/\s+/g, " ").trim();
+    blockLines = [];
+    citationParts = [];
+    if (!citation || !text) return;
+    const state = (CITATION_STATE.exec(citation) ?? CITATION_STATE_NO_INSTRUMENT.exec(citation))?.[1]
+      ?.replace(/\s+/g, " ")
+      .trim();
+    if (!state) return;
+    // Prefer the section the instruction names over the one the region follows:
+    // a block is usually printed under its target, but not always.
+    const named = INSTRUCTION_TARGET.exec(text.slice(0, 160))?.[1];
+    stateAmendments.push({
+      sectionNumber: named ?? stateAmendmentAnchor,
+      state: canonicalState(state),
+      citation,
+      text,
+    });
+  };
   let stateAmendmentSkipped = 0;
   let currentChapter: string | undefined;
   /** The Part currently in force, so Chapters printed under it can name it. */
@@ -268,6 +414,8 @@ export function parseInlineAct(
   let currentPartForSection: string | undefined;
   let rawParts: string[] = [];
   let lastBase = 0;
+  /** The last section number as printed ("16A"), for anchoring State blocks. */
+  let lastNumber = "";
   /** Sort key (base + letter fraction) — "120A" must sort after "120". */
   let lastKey = 0;
 
@@ -421,48 +569,107 @@ export function parseInlineAct(
       // ── State amendments ────────────────────────────────────────────────
       // Opening the block closes the section in progress, so no amending text
       // reaches its body.
-      if (STATE_AMENDMENT_START.test(flat)) {
+      const banner = !stateAmendmentMode && STATE_AMENDMENT_START.test(flat);
+      if (banner || (!stateAmendmentMode && AMENDING_INSTRUCTION.test(flat))) {
+        // A bannerless block is announced only by its instruction, and the line
+        // above it is usually the bare State name standing in for the banner.
+        // Drop that one orphan so it does not close inside the section's text.
+        // Only when there is no banner — where there IS one it is the separator,
+        // and the line above it is the section's own last line.
+        if (!banner && rawParts.length > 1 && ORPHAN_FRAGMENT.test(rawParts[rawParts.length - 1] ?? "")) {
+          rawParts.pop();
+        }
         flush();
         stateAmendmentMode = true;
         stateAmendmentBase = lastBase;
-        stateAmendmentBlocks += 1;
+        stateAmendmentAnchor = lastNumber;
+        stateAmendmentRegions += 1;
+        blockLines = [];
+        citationParts = [];
+        // A bannerless block IS its instruction, so that line belongs to it.
+        if (!banner) blockLines.push(flat);
         continue;
-      }
-      // A bare State name straight after a citation opens the NEXT State's
-      // amendment under the same banner — not central text.
-      if (justLeftStateAmendment) {
-        justLeftStateAmendment = false;
-        if (STATE_OR_UT.test(flat)) {
-          stateAmendmentMode = true;
-          stateAmendmentBlocks += 1;
-          continue;
-        }
       }
 
       if (stateAmendmentMode) {
-        // Primary exit: the "[Vide <State> Act …]" citation that closes it.
-        if (STATE_AMENDMENT_END.test(flat)) {
-          stateAmendmentMode = false;
-          justLeftStateAmendment = true;
+        // Page numbers and running heads are not substance: a page break
+        // between two States' blocks must not read as the line after the
+        // citation, which is one of the three ways D-051's latch was defeated.
+        if (FURNITURE.some((re) => re.test(flat))) continue;
+
+        // A citation closes one State's block, and only that. The region runs
+        // on — the next line is as likely to be another State's amendment as
+        // anything belonging to the Act.
+        if (citationLines > 0) {
+          citationParts.push(flat);
+          if (CITATION_END.test(flat)) {
+            citationLines = 0;
+            sinceCitation = true;
+            closeStateBlock();
+          } else if (++citationLines > CITATION_MAX_LINES) {
+            // Unclosed bracket. Stop consuming, but do NOT treat the Act as
+            // resumed: falling back to the base test can only over-skip, while
+            // trusting a citation we never saw end could publish State law.
+            citationLines = 0;
+            diagnostics.push(
+              `State-amendment citation near §${stateAmendmentBase} ran past ${CITATION_MAX_LINES} lines with no closing bracket`,
+            );
+          }
           continue;
         }
-        // Fallback exit: the central Act resuming at a higher section base, or
-        // a new chapter — for blocks printed without a closing citation.
-        const resume = SECTION_START.exec(flat);
+        if (STATE_AMENDMENT_CITATION.test(flat)) {
+          stateAmendmentBlocks += 1;
+          citationParts.push(flat);
+          if (CITATION_END.test(flat)) {
+            sinceCitation = true;
+            closeStateBlock();
+          } else {
+            citationLines = 1;
+          }
+          continue;
+        }
+
+        // Two ways the Act resumes, and it needs both.
+        //
+        // A section number PAST the one the region opened on can be nothing but
+        // the Act: everything a State inserts is a lettered variant of that
+        // number ("80A"–"80G" after s.80), which advances the letter and never
+        // the base. This also covers regions printed with no closing citation
+        // at all (ARB's first block).
+        //
+        // That test alone is not enough, because the Act's OWN lettered
+        // sections are indistinguishable from insertions by number — HMA §13B
+        // (divorce by mutual consent) sits directly after a State region opened
+        // on §13, as do CPC §§35A–45 and ARB §29B. What separates them is where
+        // they are printed: the Act resumes on the line after a citation, while
+        // an insertion is introduced by its amending instruction ("Insertion of
+        // new section 80A.—After section 80 of the principal Act…") and is
+        // usually quoted besides. So a lettered section is the Act's own when it
+        // directly follows a "[Vide …]" — which, across the Registration Act's
+        // 151 cited blocks, is where every genuine resumption occurs.
+        const resume = SECTION_START.exec(flat.replace(LEADING_MARKERS, ""));
         if (resume) {
           const base = Number.parseInt(resume[1] ?? "0", 10);
-          if (base > stateAmendmentBase) {
+          if (base > stateAmendmentBase || sinceCitation) {
             stateAmendmentMode = false;
             // fall through: this line is a real section start
           } else {
             stateAmendmentSkipped += 1;
+            sinceCitation = false;
+            blockLines.push(flat);
             continue;
           }
-        } else if (CHAPTER_HEADING.test(flat)) {
+        } else if (sinceCitation && CHAPTER_HEADING.test(flat.replace(LEADING_MARKERS, ""))) {
+          // A Part heading is the Act resuming ONLY directly after a citation.
+          // Elsewhere in the region it belongs to the amendment: Bengal inserts
+          // a whole "PART XIIIA — OF TOUTS" carrying sections 80A to 80G, and
+          // exiting on that heading published all seven as central law.
           stateAmendmentMode = false;
           // fall through: real chapter heading
         } else {
-          continue; // amending prose — drop it
+          sinceCitation = false;
+          blockLines.push(flat); // amending prose — out of the Act, into the record
+          continue;
         }
       }
 
@@ -524,6 +731,7 @@ export function parseInlineAct(
         if (plausible) {
           flush();
           lastBase = base;
+          lastNumber = match[1];
           lastKey = key;
           currentNumber = match[1];
           currentChapterForSection = currentChapter;
@@ -546,9 +754,9 @@ export function parseInlineAct(
   // Must sit OUTSIDE the illustration branch: State amendments are unrelated to
   // illustrations, and nesting these here meant they only reported for acts
   // that happened to have illustrations (silent on MV, which has six blocks).
-  if (stateAmendmentBlocks > 0) {
+  if (stateAmendmentRegions > 0) {
     diagnostics.push(
-      `skipped ${stateAmendmentBlocks} State-amendment block(s)` +
+      `skipped ${stateAmendmentRegions} State-amendment region(s) covering ${stateAmendmentBlocks} cited block(s)` +
         (stateAmendmentSkipped > 0
           ? `, incl. ${stateAmendmentSkipped} State-inserted section(s) — verify none belong to the central Act`
           : ""),
@@ -556,8 +764,8 @@ export function parseInlineAct(
   }
   if (stateAmendmentMode) {
     diagnostics.push(
-      "document ended inside a State-amendment block — check the tail was meant to be skipped",
+      "document ended inside a State-amendment region — check the tail was meant to be skipped",
     );
   }
-  return { sections, chapters, diagnostics };
+  return { sections, chapters, diagnostics, stateAmendments };
 }

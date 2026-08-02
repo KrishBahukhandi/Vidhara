@@ -2,7 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageShell } from "@/components/site-chrome";
-import { listActs, countPublishedSections, countPublishedMappings } from "@/features/acts/queries";
+import {
+  listActs,
+  countPublishedSections,
+  countPublishedMappings,
+  countStateAmendments,
+} from "@/features/acts/queries";
 
 export const revalidate = 3600;
 
@@ -27,10 +32,11 @@ export const metadata: Metadata = {
  * once has no reason to believe the rest.
  */
 export default async function VerificationPage() {
-  const [acts, sections, mappings] = await Promise.all([
+  const [acts, sections, mappings, stateAmendments] = await Promise.all([
     listActs(),
     countPublishedSections(),
     countPublishedMappings(),
+    countStateAmendments(),
   ]);
 
   return (
@@ -114,10 +120,15 @@ export default async function VerificationPage() {
         <ul className="mt-2 list-disc space-y-2 pl-5">
           <li>
             <strong>One State&rsquo;s amendment shown as national law.</strong> India Code prints
-            State amendments immediately after the central section they modify. Around 95 sections
-            had absorbed that text — including CrPC §438 (anticipatory bail), §125 (maintenance) and
-            §154 (FIR). A reader would have taken a Rajasthan or Bihar amendment for the central
-            provision.
+            State amendments immediately after the central section they modify, and our text had
+            absorbed them. This was found in stages and the last of it was only cleared on 2 August
+            2026: <strong>68 sections</strong> — including CrPC §438 (anticipatory bail), §125
+            (maintenance) and §154 (FIR) — were still carrying a State&rsquo;s amending text inside
+            the central provision, about 142,000 characters of it. A further{" "}
+            <strong>21 provisions were published as sections in their own right</strong> though no
+            such section exists nationally: IPC 354E, 376F, 509A and 509B (Chhattisgarh), 379A and
+            379B (Gujarat), 382B–382F (Tripura), IEA 114B (Chhattisgarh), and Registration Act
+            80A–80G and 89C–89D (Bengal and Uttar Pradesh).
           </li>
           <li>
             <strong>The Constitution was missing Part II.</strong> Citizenship — Articles 5 to 11 —
@@ -137,6 +148,24 @@ export default async function VerificationPage() {
           Every correction is recorded with the date, the cause and the fix, and lives in a versioned
           data bundle rather than being edited straight into the live database — so a republish can
           never quietly undo it.
+        </p>
+      </Section>
+
+      <Section title="State amendments are shown, and shown separately">
+        <p>
+          Several States amend central Acts in their own application. Keeping that text out of the
+          section is not enough on its own: a reader in Karnataka who sees only the central
+          provision has been told, in effect, that nothing else applies. Silence is its own wrong
+          answer.
+        </p>
+        <p>
+          So where the source records one, the amendment now appears in its own block beneath the
+          section — labelled with the State, with the amending Act cited, and collapsed until you
+          open it. There are currently{" "}
+          <strong>{stateAmendments.toLocaleString("en-IN")} such amendments</strong> across the
+          corpus. What is shown is the amending instruction as India Code prints it (&ldquo;in
+          section 17, after clause (b), insert…&rdquo;), never a consolidated State version of the
+          section — writing that ourselves would mean composing statute text, which we do not do.
         </p>
       </Section>
 
@@ -164,6 +193,11 @@ export default async function VerificationPage() {
           <li>
             <strong>There is no case law here.</strong> Vidhara tells you what a provision says, not
             how courts have read it.
+          </li>
+          <li>
+            <strong>State amendments are recorded, not consolidated.</strong> You get the amending
+            instruction and its citation, not the section as it reads in that State — and only where
+            the source prints one, which is not the same as everywhere one exists.
           </li>
         </ul>
         <p className="mt-3">

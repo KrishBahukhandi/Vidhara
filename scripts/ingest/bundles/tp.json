@@ -949,5 +949,13 @@
       "bodyMd": "Nothing in the foregoing sections of this Chapter applies to stocks, shares or debentures, or to instruments which are for the time being, by law or custom, negotiable, or to any mercantile document of title to goods. Explanation.—The expression “mercantile document of title to goods” includes a bill of lading, dock-warrant, warehouse keeper's certificate, railway receipt, warrant or order for the delivery of goods, and any other document used in the ordinary course of business as proof of the possession or control of goods, or authorising or purporting to authorise, either by endorsement or by delivery, the possessor of the document to transfer or receive goods thereby represented.]"
     }
   ],
+  "stateAmendments": [
+    {
+      "sectionNumber": "54",
+      "state": "Assam",
+      "citation": "[Vide Assam Act 10 of 1976, s. 2.]",
+      "text": "Assam. Amendment of section 54 of the Central Act 4 of 1882.—In Section 54 of the principal Act, in para 2, for the expression “by a registered instrument” the following expression shall be substituted, namely: — “by an instrument registered in the State of Assam, notwithstanding anything contained in the India Registration Act, 1908 (Act 16 of 1908) to the contrary.”"
+    }
+  ],
   "provenance": "Official India Code text: The Transfer of Property Act, 1882 (4 of 1882), English PDF (bitstream 123456789/2338/1/A1882-04.pdf, 565,764 bytes, sha256 5223fdf06a0aa3ed...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-01. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
 }

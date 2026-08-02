@@ -204,7 +204,7 @@ describe("State-amendment guard (D-032)", () => {
     // The amending text must not reach the central section's body.
     expect(sections[0]?.bodyMd).not.toMatch(/Rajasthan|STATE AMENDMENT|Vide/);
     expect(sections[0]?.bodyMd).toContain("such form");
-    expect(diagnostics.some((d) => /skipped 1 State-amendment block/.test(d))).toBe(true);
+    expect(diagnostics.some((d) => /skipped 1 State-amendment region/.test(d))).toBe(true);
   });
 
   it("drops sections a State inserted, and resumes at the next central section", () => {
@@ -252,7 +252,251 @@ describe("State-amendment guard (D-032)", () => {
     );
     const { sections, diagnostics } = parseInlineAct(xml, {});
     expect(sections.map((s) => s.number)).toEqual(["10"]);
-    expect(diagnostics.some((d) => /ended inside a State-amendment block/.test(d))).toBe(true);
+    expect(diagnostics.some((d) => /ended inside a State-amendment region/.test(d))).toBe(true);
+  });
+});
+
+/**
+ * The Registration Act stacks many States under one banner. Each case here is
+ * a way the previous, block-shaped guard let State law through as central law.
+ */
+/* Section numbers here are small so each fixture starts inside the parser's
+ * plausibility window; the real provisions are named in the comments. */
+describe("stacked State amendments under one banner (D-052)", () => {
+  it("stays in the region for the NEXT State after a citation", () => {
+    // Karnataka's and Uttar Pradesh's blocks share one banner. Treating the
+    // citation as the terminator published both insertions as central law.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "8. Fees payable.—All fees shall be payable in advance." },
+        { h: 10, text: "STATE AMENDMENT" },
+        { h: 10, text: "Kerala" },
+        { h: 10, text: "Insertion of new section 8A.—After section 8 of the principal Act, insert:—" },
+        { h: 10, text: "8A. Recovery of registration fees.—If on inspection it is found." },
+        { h: 10, text: "[Vide Kerala Act 21 of 1998, s. 2]" },
+        { h: 10, text: "Insertion of new section 8B.—After section 8A of the principal Act, insert:—" },
+        { h: 10, text: "8B. Deficient amount of fees.—Where the value of the property is understated." },
+        { h: 10, text: "[Vide Karnataka Act 28 of 1975, s. 2]" },
+        { h: 10, text: "9. Penalty.—Every registering officer who commits an offence shall be punished." },
+      ]),
+    );
+    const { sections } = parseInlineAct(xml, {});
+    expect(sections.map((s) => s.number)).toEqual(["8", "9"]);
+  });
+
+  it("does not let a page break between two States' blocks end the region", () => {
+    // A page number landing after the citation consumed the one-line latch the
+    // first fix relied on, which is how six of nine insertions still got through.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "18. Optional registration.—Any of the following documents may be registered." },
+        { h: 10, text: "STATE AMENDMENT" },
+        { h: 10, text: "Tripura" },
+        { h: 10, text: "Amendment of section 18.—In section 18 of the principal Act, omit clause (d)." },
+        { h: 10, text: "[Vide Tripura Act 7 of 1982, s. 2]" },
+      ]),
+      lines([
+        { h: 10, text: "13" },
+        { h: 10, text: "Uttar Pradesh" },
+        { h: 10, text: "Insertion of new section 18A.—After section 18 of the principal Act, insert:—" },
+        { h: 10, text: "18A. Documents relating to agricultural land.—Every such document shall be registered." },
+        { h: 10, text: "[Vide Uttar Pradesh Act 14 of 1971, s. 2]" },
+        { h: 10, text: "19. Documents in language not understood.—If a document is presented." },
+      ]),
+    );
+    const { sections } = parseInlineAct(xml, {});
+    expect(sections.map((s) => s.number)).toEqual(["18", "19"]);
+  });
+
+  it("keeps a Part a State inserted out of the Act's own Parts", () => {
+    // Bengal inserts a whole "PART XIIIA — OF TOUTS" carrying 80A–80G. Exiting
+    // the region on that heading published all seven as central sections, and
+    // the two Parts as Parts of the Act.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "8. Fees payable.—All fees shall be payable in advance." },
+        { h: 10, text: "STATE AMENDMENT" },
+        { h: 10, text: "Insertion of new section 8A.—After Part III of the main Act, insert Part IIIA:—" },
+        { h: 10, text: "PART IIIA" },
+        { h: 10, text: "OF TOUTS" },
+        { h: 10, text: "8A. Powers to frame lists of touts.—Every Registrar may frame a list." },
+        { h: 10, text: "8B. Inquiry regarding suspected touts.—Any Registrar may hold an inquiry." },
+        { h: 10, text: "[Vide Bengal Act 5 of 1942, s. 9]" },
+        { h: 10, text: "PART IV" },
+        { h: 10, text: "OF PENALTIES" },
+        { h: 10, text: "9. Penalty.—Every registering officer who commits an offence shall be punished." },
+      ]),
+    );
+    const { sections, chapters } = parseInlineAct(xml, {});
+    expect(sections.map((s) => s.number)).toEqual(["8", "9"]);
+    // The real Part follows the citation and is the Act resuming; the inserted
+    // one is introduced by its amending instruction and belongs to Bengal.
+    expect(chapters.map((c) => c.number)).toEqual(["IV"]);
+  });
+
+  it("treats a citation that wraps several printed lines as one unit", () => {
+    // ARB §29B and CPC §35A sit right after the three-line J&K/Ladakh
+    // adaptation order, and were skipped as insertions when only its first
+    // line counted as the citation.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "9A. Time limit for arbitral award.—The award shall be made within twelve months." },
+        { h: 10, text: "STATE AMENDMENT" },
+        { h: 10, text: "Amendment of section 9A.—For sub-section (1), substitute the following." },
+        { h: 10, text: "[Vide the Jammu and Kashmir Reorganization (Adaptation of Central Laws)" },
+        { h: 10, text: "Order, 2020, notification No. S.O. 1123(E) dated (18-3-2020) and Vide Union" },
+        { h: 10, text: "Territory of Ladakh Reorganisation Order, 2020, No. S.O. 3774(E).]" },
+        { h: 10, text: "9B. Fast track procedure.—The parties may agree in writing to have their dispute resolved." },
+      ]),
+    );
+    expect(parseInlineAct(xml, {}).sections.map((s) => s.number)).toEqual(["9A", "9B"]);
+  });
+
+  it("catches a block printed with no banner at all", () => {
+    // Uttarakhand's proviso to Registration Act s.53 is introduced by nothing
+    // but the State's name, and went out inside the central section's body.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "13. Entries to be numbered consecutively.—All entries shall be numbered in a series." },
+        { h: 10, text: "Uttarakhand" },
+        { h: 10, text: "Insertion of proviso to section 13.—In section 13 of the Principal Act, insert:—" },
+        { h: 10, text: "“Provided that where the Book is in electronic form, all entries shall be identical.”" },
+        { h: 10, text: "[Vide Uttarakhand Act 24 of 2014, s. 11]" },
+        { h: 10, text: "14. Current indexes.—In every office there shall be prepared current indexes." },
+      ]),
+    );
+    const { sections } = parseInlineAct(xml, {});
+    expect(sections.map((s) => s.number)).toEqual(["13", "14"]);
+    expect(sections[0]?.bodyMd).not.toMatch(/Uttarakhand|proviso|electronic/);
+    expect(sections[0]?.bodyMd).toContain("numbered in a series");
+  });
+
+  it("tolerates the print's misspelling of the banner", () => {
+    // "STATE AMENEDMENT" — twice in the Registration Act, and both times the
+    // whole Gujarat amendment landed in the central section's body.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "14. Enquiry before registration.—Subject to the provisions contained in this Part." },
+        { h: 10, text: "STATE AMENEDMENT" },
+        { h: 10, text: "Gujarat" },
+        { h: 10, text: "Amendment of section 14 of XVI of 1908.—In the principal Act, in section 14,--" },
+        { h: 10, text: "“(1A) The registering officer may refuse to accept the documents.”" },
+        { h: 10, text: "[Vide Gujarat Act 4 of 2020, s. 4]" },
+        { h: 10, text: "15. Procedure on admission.—If all the persons executing the document appear." },
+      ]),
+    );
+    const { sections } = parseInlineAct(xml, {});
+    expect(sections.map((s) => s.number)).toEqual(["14", "15"]);
+    expect(sections[0]?.bodyMd).not.toMatch(/AMENEDMENT|Gujarat|registering officer may refuse/);
+  });
+
+  it("does not trim a real last line that looks like an orphan fragment", () => {
+    // Registration Act §78 ends "…to effect the purposes of this / Act." — a
+    // one-word final line. The orphan trim cut it until it required that a
+    // fragment carry no sentence-ending punctuation.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "18. Fees to be fixed.—The State Government shall prepare a table of fees payable" },
+        { h: 10, text: "for such other matters as appear necessary to effect the purposes of this" },
+        { h: 10, text: "Act." },
+        { h: 10, text: "STATE AMENDMENT" },
+        { h: 10, text: "Assam" },
+        { h: 10, text: "Insertion of new section 18A.—In the principal Act, after section 18, insert:—" },
+        { h: 10, text: "18A. Power to remit fees.—The State Government may by order remit the fees." },
+        { h: 10, text: "[Vide Assam Act 24 of 2013, s. 2]" },
+        { h: 10, text: "19. Publication of fees.—A table of the fees shall be published in the Gazette." },
+      ]),
+    );
+    const { sections } = parseInlineAct(xml, {});
+    expect(sections.map((s) => s.number)).toEqual(["18", "19"]);
+    expect(sections[0]?.bodyMd).toMatch(/purposes of this Act\.$/);
+  });
+});
+
+/**
+ * Skipping State amendments keeps them out of the Act; capturing them keeps
+ * them from vanishing. Both have to hold at once (D-053).
+ */
+describe("capturing State amendments (D-053)", () => {
+  const act = doc(
+    lines([
+      { h: 10, text: "WHEREAS it is enacted as follows:—" },
+      { h: 10, text: "17. Documents of which registration is compulsory.—The following documents shall be registered." },
+      { h: 10, text: "STATE AMENDMENT" },
+      { h: 10, text: "Karnataka" },
+      { h: 10, text: "Amendment of section 17.—In section 17 of the principal Act, after clause (b), insert:—" },
+      { h: 10, text: "“(bb) instruments of partition of immovable property;”" },
+      { h: 10, text: "[Vide Karnataka Act 55 of 1976, s. 3]" },
+      { h: 10, text: "Kerala" },
+      { h: 10, text: "Amendment of section 17.—In section 17 of the principal Act, omit clause (d)." },
+      { h: 10, text: "[Vide kerala Act 7 of 1968, s. 2]" },
+      { h: 10, text: "18. Documents of which registration is optional.—Any of the following may be registered." },
+    ]),
+  );
+
+  it("records each State's block against the section, with its authority", () => {
+    const { sections, stateAmendments = [] } = parseInlineAct(act, {});
+    expect(sections.map((s) => s.number)).toEqual(["17", "18"]);
+    expect(stateAmendments).toHaveLength(2);
+    expect(stateAmendments.map((a) => a.state)).toEqual(["Karnataka", "Kerala"]);
+    expect(stateAmendments.every((a) => a.sectionNumber === "17")).toBe(true);
+    expect(stateAmendments[0]?.citation).toBe("[Vide Karnataka Act 55 of 1976, s. 3]");
+    expect(stateAmendments[0]?.text).toContain("instruments of partition");
+  });
+
+  it("keeps the captured text OUT of the section it belongs to", () => {
+    // The reason the parser skips these at all. Capturing must not undo it.
+    const { sections } = parseInlineAct(act, {});
+    expect(sections[0]?.bodyMd).not.toMatch(/Karnataka|Kerala|partition|Vide/);
+  });
+
+  it("normalises the State for grouping but prints the citation verbatim", () => {
+    // The source writes "kerala"; two spellings would read as two jurisdictions.
+    const { stateAmendments = [] } = parseInlineAct(act, {});
+    expect(stateAmendments[1]?.state).toBe("Kerala");
+    expect(stateAmendments[1]?.citation).toBe("[Vide kerala Act 7 of 1968, s. 2]");
+  });
+
+  it("names the State even when the citation omits the word 'Act'", () => {
+    // Contract Act s.55: "[Vide Uttar Pradesh 57 of 1976, s. 26]".
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "5. Revocation of proposals.—A proposal may be revoked at any time before acceptance." },
+        { h: 10, text: "STATE AMENDMENT" },
+        { h: 10, text: "Uttar Pradesh" },
+        { h: 10, text: "Amendment of section 5.—In section 5 of the Principal Act, insert the following." },
+        { h: 10, text: "[Vide Uttar Pradesh 57 of 1976, s. 26]" },
+        { h: 10, text: "6. Revocation how made.—A proposal is revoked by notice of revocation." },
+      ]),
+    );
+    const { stateAmendments = [] } = parseInlineAct(xml, {});
+    expect(stateAmendments).toHaveLength(1);
+    expect(stateAmendments[0]?.state).toBe("Uttar Pradesh");
+  });
+
+  it("drops a block it cannot attribute rather than guessing a State", () => {
+    // No citation, so no authority to show. Silent loss beats a wrong label.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "8. Power to refer parties.—A judicial authority shall refer the parties." },
+        { h: 10, text: "STATE AMENDMENT" },
+        { h: 10, text: "After section 8, insert the following section:—" },
+        { h: 10, text: "8B. Power of the court to refer.—If during the pendency of a petition." },
+        { h: 10, text: "9. Interim measures.—A party may apply to a court." },
+      ]),
+    );
+    const { sections, stateAmendments = [] } = parseInlineAct(xml, {});
+    expect(sections.map((s) => s.number)).toEqual(["8", "9"]);
+    expect(stateAmendments).toHaveLength(0);
   });
 });
 

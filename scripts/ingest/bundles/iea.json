@@ -812,13 +812,7 @@
       "number": "114A",
       "chapterNumber": "III",
       "marginalNote": "Presumption as to absence of consent in certain prosecution for rape",
-      "bodyMd": "–In a prosecution for rape under clause (a), clause (b), clause (c), clause (d), clause (e), clause (f), clause (g), clause (h), clause (i), clause (j), clause (k), clause (l), clause (m) or clause (n) of sub-section (2) of section 376 of the Indian Penal Code (45 of 1860), where sexual intercourse by the accused is proved and the question is whether it was without the consent of the woman alleged to have been raped and such woman states in her evidence before the court that she did not consent, the court shall presume that she did not consent. Explanation. –– In this section, “sexual intercourse” shall mean any of the acts mentioned in clauses (a) to (d) of section 375 of the Indian Penal Code (45 of 1860).] STATE AMENDMENT Chhattisgarh Insertion of new Section 114B. –– After section 114A of the Indian Evidence Act, the following shall be inserted, namely: ––"
-    },
-    {
-      "number": "114B",
-      "chapterNumber": "III",
-      "marginalNote": "Presumption as to offences committed under section 354, section 354A, section",
-      "bodyMd": "Presumption as to offences committed under section 354, section 354A, section 354B, section 354C, section 354D, section 509, section 509A or section 509B of the Indian Penal Code, 1860.-When the question is whether a person has committed an offence under Section 354, section 354A, section 354B, section 354C, section 354D, section 509, section 509A, or section 509B of the Indian Penal Code and if the victim deposes before the court that she has been subjected to sexual harassment or her modesty was outraged or she was disrobed or she was stalked or her privacy was intruded or she was sexually harassed by any means, as the case may be, the court may, unless contrary is proved, presume that such offence has been committed by that person. [Vide Chhattisgarh Act 25 of 2015, s. 14.]"
+      "bodyMd": "–In a prosecution for rape under clause (a), clause (b), clause (c), clause (d), clause (e), clause (f), clause (g), clause (h), clause (i), clause (j), clause (k), clause (l), clause (m) or clause (n) of sub-section (2) of section 376 of the Indian Penal Code (45 of 1860), where sexual intercourse by the accused is proved and the question is whether it was without the consent of the woman alleged to have been raped and such woman states in her evidence before the court that she did not consent, the court shall presume that she did not consent. Explanation. –– In this section, “sexual intercourse” shall mean any of the acts mentioned in clauses (a) to (d) of section 375 of the Indian Penal Code (45 of 1860).]"
     },
     {
       "number": "115",
@@ -1139,5 +1133,13 @@
       "bodyMd": "– The improper admission or rejection of evidence shall not be ground of itself for a new trial or reversal of any decision in any case, if it shall appear to the Court before which such objection is raised that, independently of the evidence objected to and admitted, there was sufficient evidence to justify the decision, or that, if the rejected evidence had been received, it ought not to have varied the decision. THE SCHEDULE. –– [Enactments repealed.] Rep. by the Repealing Act, 1938 (1 of 1938), s. 2 and the Schedule."
     }
   ],
-  "provenance": "Official India Code text: The Indian Evidence Act, 1872 (1 of 1872), English PDF (iea_1872.pdf) retrieved via Internet Archive Wayback Machine snapshot 2021-09-03 of indiacode.nic.in (portal unreachable from ingest network). Extracted via pdftotext 26.07 -bbox and @nexlex/ingest inline parser on 2026-07-15. Repealed by BSA 2023 w.e.f. 2024-07-01. Automated parse; footnotes/amendment history excluded; spot-verified; full clause-level proofread pending."
+  "stateAmendments": [
+    {
+      "sectionNumber": "114",
+      "state": "Chhattisgarh",
+      "citation": "[Vide Chhattisgarh Act 25 of 2015, s. 14.]",
+      "text": "Chhattisgarh Insertion of new Section 114B. –– After section 114A of the Indian Evidence Act, the following shall be inserted, namely: –– 114B. Presumption as to offences committed under section 354, section 354A, section 354B, section 354C, section 354D, section 509, section 509A or section 509B of the Indian Penal Code, 1860.-When the question is whether a person has committed an offence under Section 354, section 354A, section 354B, section 354C, section 354D, section 509, section 509A, or section 509B of the Indian Penal Code and if the victim deposes before the court that she has been subjected to sexual harassment or her modesty was outraged or she was disrobed or she was stalked or her privacy was intruded or she was sexually harassed by any means, as the case may be, the court may, unless contrary is proved, presume that such offence has been committed by that person."
+    }
+  ],
+  "provenance": "Official India Code text: The Indian Evidence Act, 1872 (1 of 1872), English PDF (iea_1872.pdf) retrieved via Internet Archive Wayback Machine snapshot 2021-09-03 of indiacode.nic.in (portal unreachable from ingest network). Extracted via pdftotext 26.07 -bbox and @nexlex/ingest inline parser on 2026-07-15. Repealed by BSA 2023 w.e.f. 2024-07-01. Automated parse; footnotes/amendment history excluded; spot-verified; full clause-level proofread pending. Section 114B, inserted by Chhattisgarh Act 25 of 2015 and published as central law, was removed on 2026-08-02 and is now recorded as a State amendment (D-052/D-053)."
 }

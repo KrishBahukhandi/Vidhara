@@ -34,6 +34,18 @@ export const chapterSchema = z.object({
   sortOrder: z.number().int().nonnegative(),
 });
 
+/**
+ * A State's amendment to a central section (D-053). Stored beside the Act, never
+ * inside it: the text is law in one State only, and the whole point of the D-032
+ * guard is that it must not read as the central provision.
+ */
+export const stateAmendmentSchema = z.object({
+  sectionNumber: z.string().trim().regex(/^\d{1,4}[A-Z]{0,2}$/, "Section number like 17, 80"),
+  state: z.string().trim().min(2, "Which State or UT this applies in"),
+  citation: z.string().trim().min(5, "The [Vide …] authority, verbatim"),
+  text: z.string().trim().min(20, "The amending text as printed"),
+});
+
 export const actBundleSchema = z.object({
   act: z.object({
     slug: z.string().regex(/^[a-z0-9-]+$/),
@@ -48,6 +60,8 @@ export const actBundleSchema = z.object({
   }),
   chapters: z.array(chapterSchema).default([]),
   sections: z.array(sectionSchema).min(1, "A bundle must contain at least one section"),
+  /** Absent means the parser did not look for them; [] means it found none. */
+  stateAmendments: z.array(stateAmendmentSchema).optional(),
   /** Where this text came from and who prepared it — required, never "dev-sample". */
   provenance: z
     .string()
@@ -59,6 +73,7 @@ export const actBundleSchema = z.object({
 });
 
 export type ActBundle = z.infer<typeof actBundleSchema>;
+export type BundleStateAmendment = z.infer<typeof stateAmendmentSchema>;
 export type BundleSection = z.infer<typeof sectionSchema>;
 
 /**
