@@ -500,6 +500,91 @@ describe("capturing State amendments (D-053)", () => {
   });
 });
 
+/**
+ * The Evidence Act sets every chapter heading with a 10pt drop cap and an 8.2pt
+ * remainder, below body height. The height filter reduced them to "C V. –– O D
+ * E" and the Act read as having no chapters at all (D-054).
+ */
+describe("small-caps division headings (D-054)", () => {
+  /** Drop cap at body height, the rest of each word below it — as printed. */
+  const dropCap = (words: Array<[string, string]>, y: number) => {
+    let x = 200;
+    const out: string[] = [];
+    for (const [cap, rest] of words) {
+      out.push(word(x, y, 10, cap));
+      x += cap.length * 5 + 3;
+      if (rest) {
+        out.push(word(x, y, 8.2, rest));
+        x += rest.length * 5 + 5;
+      }
+    }
+    return out.join("\n");
+  };
+
+  it("recovers a heading whose small caps sit below body height", () => {
+    const xml = doc(
+      [
+        lines([
+          { h: 10, text: "WHEREAS it is enacted as follows:—" },
+          { h: 10, text: "6. Proof of facts by oral evidence.—All facts may be proved by oral evidence." },
+        ]),
+        dropCap(
+          [
+            ["C", "HAPTER"],
+            ["V.", ""],
+            ["––", ""],
+            ["O", "F"],
+            ["D", "OCUMENTARY"],
+            ["E", "VIDENCE"],
+          ],
+          78,
+        ),
+        lines([{ h: 10, text: "7. Proof of contents of documents.—Contents may be proved by primary evidence." }], 92),
+      ].join("\n"),
+    );
+    const { sections, chapters } = parseInlineAct(xml, {});
+    expect(sections.map((s) => s.number)).toEqual(["6", "7"]);
+    expect(chapters).toHaveLength(1);
+    expect(chapters[0]?.number).toBe("V");
+    expect(chapters[0]?.title).toBe("OF DOCUMENTARY EVIDENCE");
+    // The heading must leave the previous section's body, not just be found.
+    expect(sections[0]?.bodyMd).not.toMatch(/HAPTER|OCUMENTARY|C V\./);
+  });
+
+  it("does not read the title word PARTIES as Part IE", () => {
+    // "PART" is a prefix of "PARTIES". The NI Act prints a bare "CHAPTER III"
+    // with its title on the line below; once small-caps repair joins that line
+    // into "PARTIES TO NOTES, BILLS AND CHEQUES." it begins with PART, and an
+    // unguarded match invented a Part "IE" that swallowed 14 chapters.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "CHAPTER III" },
+        { h: 10, text: "P ARTIES TO N OTES , B ILLS AND C HEQUES." },
+        { h: 10, text: "2. Maturity.—The maturity of a promissory note is the date on which it falls due." },
+      ]),
+    );
+    const { chapters } = parseInlineAct(xml, {});
+    expect(chapters).toHaveLength(1);
+    expect(chapters[0]?.kind).toBe("chapter");
+    expect(chapters[0]?.number).toBe("III");
+    expect(chapters[0]?.title).toBe("PARTIES TO NOTES, BILLS AND CHEQUES.");
+  });
+
+  it("keeps the whole title when number and title share a line", () => {
+    // A non-greedy capture named this chapter "OF THE" and dropped the rest.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "CHAPTER VII. –– OF THE BURDEN OF PROOF" },
+        { h: 10, text: "11. Burden of proof.—Whoever desires any Court to give judgment must prove." },
+      ]),
+    );
+    const { chapters } = parseInlineAct(xml, {});
+    expect(chapters[0]?.title).toBe("OF THE BURDEN OF PROOF");
+  });
+});
+
 describe("bracketed chapter heading guard (D-033)", () => {
   it("recognises an inserted chapter whose bracket and title share the line", () => {
     // NDPS §68 ended with "[CHAPTER VA [F ORFEITURE OF ILLEGALLY ACQUIRED

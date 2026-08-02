@@ -164,7 +164,11 @@ export function normalizeChapterTitle(raw: string): string {
     // the letter after it), while "OF PERIOD" must stay two words. `next` may
     // carry the source's punctuation ("B ILLS" → "N OTES," in the NI Act), so
     // a trailing comma or period must not defeat the join.
-    const isFragment = /^[A-Z]{1,2}$/.test(cur) && !STANDALONE_CAPS.has(cur);
+    // A hyphen may ride along with the drop cap: the Constitution prints Part
+    // V's fifth chapter as "C OMPTROLLER AND A UDITOR -G ENERAL OF I NDIA", so
+    // the fragment is "-G" and joining it gives "AUDITOR -GENERAL" — closed up
+    // by the hyphen rule at the end.
+    const isFragment = /^-?[A-Z]{1,2}$/.test(cur) && !STANDALONE_CAPS.has(cur.replace(/^-/, ""));
     // Sentence-case titles drop-cap too: the Arbitration Act prints "G eneva
     // Convention Awards". A lone capital before a lowercase word is that same
     // artefact — except "A" and "I", which are words, so they are excluded.
@@ -184,7 +188,8 @@ export function normalizeChapterTitle(raw: string): string {
   return joined
     .join(" ")
     .replace(/\s+([,.;:])/g, "$1")
-    .replace(/\s+-\s+/g, "-");
+    .replace(/\s+-\s+/g, "-")
+    .replace(/\s+-(?=[A-Za-z])/g, "-");
 }
 
 /** Schedules/forms follow the last section ("THE SCHEDULE [See section…]",

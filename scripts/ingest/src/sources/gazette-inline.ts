@@ -242,8 +242,35 @@ const CHAPTER_HEADING = /^(CHAPTER|PART)\s*([IVXLCDM]+)([A-Z])?$/;
  * "…as specified in Part II of the Schedule" is mixed case and never matches.
  * Drop-capped titles ("F ORFEITURE") are covered by allowing single letters.
  */
+/**
+ * Widened for the Evidence Act, which prints EVERY chapter this way:
+ * "C HAPTER VII. –– O F THE B URDEN OF P ROOF" — number and title on one line,
+ * separated by a period and a doubled en-dash, and set in small caps with a
+ * drop cap (hence the spaces inside the words). Three things had to give:
+ *
+ *  - the separator now tolerates the period after the numeral and a RUN of
+ *    dashes, where before a single optional dash sat directly against `[A-Z]`;
+ *  - the title capture is GREEDY. Non-greedy stopped at the first word boundary
+ *    that let the rest of the pattern match, which would have named this chapter
+ *    "OF THE". The character class is upper-case only, so greedy still stops at
+ *    the first lowercase — and stops before "]", which is what keeps NDPS's
+ *    "[CHAPTER VA [FORFEITURE OF ILLEGALLY ACQUIRED PROPERTY]" intact;
+ *  - the line is matched AFTER small-caps repair (see the call site), because
+ *    "C HAPTER" starts with neither "CHAPTER" nor "PART".
+ *
+ * Without this the Act's eleven chapters were invisible and their headings fell
+ * into the preceding section's body — Evidence §§4, 58 and 90A each ended with
+ * the chapter heading that should have followed them.
+ *
+ * The keyword must not be followed by a letter. "PART" is a prefix of "PARTIES",
+ * and the NI Act's chapter title "P ARTIES TO N OTES, B ILLS AND C HEQUES." —
+ * once small-caps repair joins it into "PARTIES TO NOTES…" — otherwise reads as
+ * Part "IE" titled "STO NOTES, BILLS AND CHEQUES.", taking the Act's remaining
+ * fourteen chapters under it. Nothing caught this before because the line was
+ * only ever matched in its unrepaired form.
+ */
 const CHAPTER_HEADING_INLINE =
-  /^(CHAPTER|PART)\s*([IVXLCDM]+)([A-Z])?\s*[[—–-]?\s*([A-Z][A-Z\s,.'()—–-]{5,}?)\s*\]?(?:\s|$)/;
+  /^(CHAPTER|PART)(?![A-Za-z])\s*([IVXLCDM]+)([A-Z])?\s*[.,:]?\s*[[—–-]*\s*([A-Z][A-Z\s,.'()—–-]{5,})\s*\]?(?:\s|$)/;
 const ALL_CAPS_LINE = /^[A-Z][A-Z0-9\s,.'()—–-]*$/;
 /**
  * A title line for the heading just seen. Looser than ALL_CAPS_LINE because a
@@ -301,6 +328,14 @@ const TITLE_PERIOD_SPLIT = /^(.{3,120}?)\.\s+([\s\S]*)$/;
  * brackets/stars, and a body-height footnote digit directly before an opening
  * bracket ("4 [174A. Non-appearance…"). */
 const LEADING_MARKERS = /^(?:\d{1,2}\s*\[|[[\]*\s])+/;
+
+/** Does this line read as a CHAPTER/PART heading, in either printed form and
+ * after small-caps repair? Used both to recover a heading the height filter
+ * shredded and to decide that a State-amendment region has ended. */
+function isDivisionHeading(line: string): boolean {
+  const normalized = normalizeChapterTitle(line.replace(LEADING_MARKERS, ""));
+  return CHAPTER_HEADING.test(normalized) || CHAPTER_HEADING_INLINE.test(normalized);
+}
 
 function decodeEntities(s: string): string {
   return s
@@ -500,8 +535,20 @@ export function parseInlineAct(
       // collected: applied to every all-caps line it also drags in the
       // letter-spaced cross-headings that sit between sections ("P R E S E N T
       // M E N T" above NI §60), which belong to no section's body.
+      //
+      // The HEADING ITSELF needs the same recovery, and gets it on a stricter
+      // test. The Evidence Act sets its chapter lines with a 10pt drop cap and
+      // an 8.2pt remainder, so the filter reduced "C HAPTER V. –– O F D
+      // OCUMENTARY E VIDENCE" to "C V. –– O D E" — unrecognisable. The contents
+      // pages set the same words at 9.0pt, which is why the act appeared to have
+      // chapters at all. Rather than widen the recovery to every all-caps line
+      // and readmit the cross-headings, the full line is used only when it
+      // actually reads as a division heading: a cross-heading has no CHAPTER or
+      // PART keyword and still cannot qualify.
+      const isSmallCapsHeading = bodyHeight.length > 0 && isDivisionHeading(fullLine);
       const flat =
-        bodyHeight && pendingChapterNumber !== null && ALL_CAPS_LINE.test(fullLine)
+        bodyHeight &&
+        (isSmallCapsHeading || (pendingChapterNumber !== null && ALL_CAPS_LINE.test(fullLine)))
           ? fullLine
           : bodyHeight;
       const isSmallLine = !flat;
@@ -659,11 +706,14 @@ export function parseInlineAct(
             blockLines.push(flat);
             continue;
           }
-        } else if (sinceCitation && CHAPTER_HEADING.test(flat.replace(LEADING_MARKERS, ""))) {
-          // A Part heading is the Act resuming ONLY directly after a citation.
-          // Elsewhere in the region it belongs to the amendment: Bengal inserts
-          // a whole "PART XIIIA — OF TOUTS" carrying sections 80A to 80G, and
-          // exiting on that heading published all seven as central law.
+        } else if (sinceCitation && isDivisionHeading(flat)) {
+          // A Part or Chapter heading is the Act resuming ONLY directly after a
+          // citation. Elsewhere in the region it belongs to the amendment:
+          // Bengal inserts a whole "PART XIIIA — OF TOUTS" carrying sections 80A
+          // to 80G, and exiting on that heading published all seven as central
+          // law. The titled form counts too — the Evidence Act resumes at
+          // "C HAPTER VIII. –– E STOPPEL" directly below Chhattisgarh's
+          // citation, and testing only the bare form lost that chapter.
           stateAmendmentMode = false;
           // fall through: real chapter heading
         } else {
@@ -683,7 +733,12 @@ export function parseInlineAct(
       // An inserted chapter carries a leading amendment bracket ("[CHAPTER VA"),
       // so strip markers before matching — otherwise the heading is not
       // recognised and lands in the previous section's body (D-033).
-      const chapterLine = flat.replace(LEADING_MARKERS, "");
+      // Small-caps repair first: the Evidence Act sets "C HAPTER VII. –– O F THE
+      // B URDEN OF P ROOF", which begins with neither keyword until the drop cap
+      // is rejoined. The same repair already guarded NEXT_HEADING below, so the
+      // heading was recognised well enough to be kept OUT of a Part's title —
+      // just not well enough to become a chapter of its own.
+      const chapterLine = normalizeChapterTitle(flat.replace(LEADING_MARKERS, ""));
       const chapterMatch = CHAPTER_HEADING.exec(chapterLine);
       if (chapterMatch) {
         flush();
