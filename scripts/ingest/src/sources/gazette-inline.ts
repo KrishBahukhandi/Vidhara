@@ -129,6 +129,9 @@ const SCHEDULE_START =
  * State law out of a national act was the wrong thing to depend on.
  */
 const STATE_AMENDMENT_START = /^STATE\s+AMEN[DE]+MENTS?\b/;
+/** Marks a pending division as unnumbered until its title is known — the title
+ * then becomes its key (see flushChapter). Never appears in output. */
+const UNNUMBERED = "\u0000unnumbered";
 /**
  * The amending instruction that introduces a State's change — "Amendment of
  * section 34 of XVI of 1908.—In the principal Act, in section 34,--",
@@ -178,6 +181,9 @@ const STATE_AMENDMENT_CITATION = /^\[?\s*Vide\b/i;
  * looking like State insertions. The unit ends at the closing bracket.
  */
 const CITATION_END = /\]/;
+/** How far above the enactment formula a first-division heading may sit and
+ * still belong to the act's body rather than to its table of contents. */
+const PREAMBLE_DIVISION_MAX_LINES = 5;
 /** Give up rather than eat the Act if a citation's bracket never closes. */
 const CITATION_MAX_LINES = 6;
 /**
@@ -437,6 +443,24 @@ export function parseInlineAct(
   let stateAmendmentSkipped = 0;
   let currentChapter: string | undefined;
   /** The Part currently in force, so Chapters printed under it can name it. */
+  /** Set once a CHAPTER or PART heading is seen — closes the window in which an
+   * unnumbered division may be recognised. See UNNUMBERED_DIVISION below. */
+  let sawNumberedDivision = false;
+  /**
+   * A first division heading printed ABOVE the enactment formula.
+   *
+   * The Penal Code sets "CHAPTER I / I NTRODUCTION" between its date line and
+   * its preamble, so the heading arrives before parsing has started and was
+   * dropped — leaving sections 1 to 5 under no chapter at all. Carrying it
+   * across is safe only because of what it is: the act's FIRST division, close
+   * to the formula. Everything before the formula is the table of contents, and
+   * a contents listing ENDS with the act's last division — measured across all
+   * sixteen acts on disk, the nearest heading above the formula is CHAPTER XXXVII
+   * (CrPC), PART XV (Registration), CHAPTER XVII (NI) and so on. Only the Penal
+   * Code's is numbered I, and only its is within three lines.
+   */
+  let preambleDivision: { number: string; kind: "chapter" | "part"; title: string[] } | null = null;
+  let preambleDivisionAge = 0;
   let currentPart: { number: string; title: string } | undefined;
   /** Parent Part of `currentChapter`, when that is a nested Chapter. */
   let currentChapterPart: string | undefined;
@@ -484,20 +508,27 @@ export function parseInlineAct(
       normalizeChapterTitle(pendingChapterTitle.join(" ")) ||
       `${pendingChapterKind === "part" ? "Part" : "Chapter"} ${pendingChapterNumber}`;
     const isPart = pendingChapterKind === "part";
+    // An unnumbered division has no number to be keyed by, and several can sit
+    // in one act (the Hindu Marriage Act has six), so its TITLE is its key —
+    // unique within an act, and stable across re-parses. `unnumbered` tells the
+    // renderers to show the title alone rather than invent "Chapter <title>".
+    const unnumbered = pendingChapterNumber === UNNUMBERED;
+    const number = unnumbered ? title : pendingChapterNumber;
     chapters.push({
-      number: pendingChapterNumber,
+      number,
       title,
       sortOrder: chapters.length + 1,
       kind: pendingChapterKind,
+      ...(unnumbered ? { unnumbered: true } : {}),
       // A Chapter belongs to the Part it was printed under. ARB repeats
       // "CHAPTER I" inside both PART I and PART II, so the parent is what
       // tells the two apart.
       ...(isPart ? {} : currentPart ? { partNumber: currentPart.number, partTitle: currentPart.title } : {}),
     });
     if (isPart) {
-      currentPart = { number: pendingChapterNumber, title };
+      currentPart = { number, title };
     }
-    currentChapter = pendingChapterNumber;
+    currentChapter = number;
     // Only a nested Chapter needs its Part recorded on the section; a section
     // sitting directly under a Part is identified by the Part alone.
     currentChapterPart = isPart ? undefined : currentPart?.number;
@@ -546,9 +577,25 @@ export function parseInlineAct(
       // actually reads as a division heading: a cross-heading has no CHAPTER or
       // PART keyword and still cannot qualify.
       const isSmallCapsHeading = bodyHeight.length > 0 && isDivisionHeading(fullLine);
+      // An unnumbered division is a centred, all-caps line printed before the
+      // Act's first numbered division. It needs the same small-caps recovery:
+      // the Contract Act sets "P RELIMINARY" at 9.9pt + 8.1pt, so the height
+      // filter leaves the single letter "P".
+      const unnumberedDivision =
+        started &&
+        !sawNumberedDivision &&
+        bodyHeight.length > 0 &&
+        (line[0]?.xMin ?? 0) >= CENTRED_HEADING_MIN_X &&
+        ALL_CAPS_LINE.test(normalizeChapterTitle(fullLine));
       const flat =
         bodyHeight &&
-        (isSmallCapsHeading || (pendingChapterNumber !== null && ALL_CAPS_LINE.test(fullLine)))
+        (isSmallCapsHeading ||
+          unnumberedDivision ||
+          // A title is being collected — either for a heading already seen, or
+          // for one waiting above the enactment formula. The Penal Code sets
+          // its "I NTRODUCTION" at 10pt + 8.2pt, so the filter leaves "I".
+          ((pendingChapterNumber !== null || preambleDivision !== null) &&
+            ALL_CAPS_LINE.test(fullLine)))
           ? fullLine
           : bodyHeight;
       const isSmallLine = !flat;
@@ -595,7 +642,37 @@ export function parseInlineAct(
       if (footnotesStarted) continue;
 
       if (!started) {
-        if (ENACTED.test(flat)) started = true;
+        if (ENACTED.test(flat)) {
+          started = true;
+          // Adopt a first-division heading printed just above the formula.
+          if (preambleDivision && preambleDivisionAge <= PREAMBLE_DIVISION_MAX_LINES) {
+            pendingChapterNumber = preambleDivision.number;
+            pendingChapterKind = preambleDivision.kind;
+            pendingChapterTitle = preambleDivision.title;
+            sawNumberedDivision = true;
+          }
+          preambleDivision = null;
+          continue;
+        }
+        const above = normalizeChapterTitle(flat.replace(LEADING_MARKERS, ""));
+        const bare = CHAPTER_HEADING.exec(above);
+        const inline = bare ? null : CHAPTER_HEADING_INLINE.exec(above);
+        const seen = bare ?? inline;
+        if (seen && `${seen[2]}${seen[3] ?? ""}` === "I") {
+          preambleDivision = {
+            number: "I",
+            kind: seen[1] === "PART" ? "part" : "chapter",
+            title: inline?.[4] ? [inline[4]] : [],
+          };
+          preambleDivisionAge = 0;
+        } else if (preambleDivision) {
+          // The title follows on the next line ("I NTRODUCTION").
+          if (preambleDivisionAge === 0 && preambleDivision.title.length === 0 && CHAPTER_TITLE_LINE.test(flat)) {
+            preambleDivision.title.push(flat.replace(TITLE_APPARATUS, " "));
+          } else {
+            preambleDivisionAge += 1;
+          }
+        }
         continue;
       }
       if (ENACTED.test(flat)) {
@@ -745,6 +822,7 @@ export function parseInlineAct(
         flushChapter();
         pendingChapterNumber = `${chapterMatch[2]}${chapterMatch[3] ?? ""}`;
         pendingChapterKind = chapterMatch[1] === "PART" ? "part" : "chapter";
+        sawNumberedDivision = true;
         continue;
       }
       const chapterInline = CHAPTER_HEADING_INLINE.exec(chapterLine);
@@ -753,6 +831,7 @@ export function parseInlineAct(
         flushChapter();
         pendingChapterNumber = `${chapterInline[2]}${chapterInline[3] ?? ""}`;
         pendingChapterKind = chapterInline[1] === "PART" ? "part" : "chapter";
+        sawNumberedDivision = true;
         // The title shared the line; keep it so the chapter is not left unnamed.
         if (chapterInline[4]) pendingChapterTitle.push(chapterInline[4]);
         continue;
@@ -760,12 +839,42 @@ export function parseInlineAct(
       // Section heading, ignoring any leading amendment bracket/marker.
       const headline = flat.replace(LEADING_MARKERS, "");
       const centred = (line[0]?.xMin ?? 0) >= CENTRED_HEADING_MIN_X;
+
+
       if (
         pendingChapterNumber !== null &&
         (CHAPTER_TITLE_LINE.test(flat) || (centred && pendingChapterTitle.length === 0)) &&
         !NEXT_HEADING.test(normalizeChapterTitle(headline)) &&
         !SECTION_START.test(headline)
       ) {
+        pendingChapterTitle.push(flat.replace(TITLE_APPARATUS, " "));
+        continue;
+      }
+
+      /**
+       * An UNNUMBERED division. Several acts open with a centred "PRELIMINARY"
+       * that carries no number — Contract, Civil Procedure and Arbitration each
+       * have one — and the Hindu Marriage Act is divided this way throughout:
+       * PRELIMINARY, HINDU MARRIAGES, RESTITUTION OF CONJUGAL RIGHTS AND
+       * JUDICIAL SEPARATION, NULLITY OF MARRIAGE AND DIVORCE, JURISDICTION AND
+       * PROCEDURE, SAVINGS AND REPEALS. It prints no CHAPTER or PART anywhere,
+       * which is why all 37 of its sections sat under no heading at all.
+       *
+       * The window is what makes this safe. Centred all-caps lines are also how
+       * CROSS-headings are set ("PRESENTMENT" above NI §60), and those belong to
+       * no division — so a line qualifies only BEFORE the act's first numbered
+       * division. Cross-headings always follow one. Measured across all sixteen
+       * acts on disk: the window contains exactly these headings and nothing
+       * else — one each in ARB, CPC and ICA, six in HMA, none anywhere else.
+       *
+       * Sits below the title branch so a heading that wraps is absorbed into the
+       * title already being collected rather than opening a second division.
+       */
+      if (unnumberedDivision && !SECTION_START.test(headline)) {
+        flush();
+        flushChapter();
+        pendingChapterNumber = UNNUMBERED;
+        pendingChapterKind = "chapter";
         pendingChapterTitle.push(flat.replace(TITLE_APPARATUS, " "));
         continue;
       }
@@ -803,6 +912,19 @@ export function parseInlineAct(
 
   flush();
   flushChapter();
+  // An unnumbered division with no sections under it is not a division of the
+  // Act: the Hindu Marriage Act ends with a centred "STATEMENT OF OBJECTS AND
+  // REASONS", which is appendix matter printed after the last section. A
+  // NUMBERED heading is left alone even when empty — the source printed a
+  // number, so the division exists whether or not we placed sections in it.
+  const usedDivisions = new Set(sections.map((s) => s.chapterNumber));
+  for (let i = chapters.length - 1; i >= 0; i--) {
+    const chapter = chapters[i];
+    if (chapter?.unnumbered && !usedDivisions.has(chapter.number)) chapters.splice(i, 1);
+  }
+  chapters.forEach((chapter, index) => {
+    chapter.sortOrder = index + 1;
+  });
   if (keepIllustrations && illustrationLines > 0) {
     diagnostics.push(`kept ${illustrationLines} illustration line(s)`);
   }

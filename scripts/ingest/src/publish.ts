@@ -67,6 +67,7 @@ export async function publishBundle(
           number: chapter.number,
           title: chapter.title,
           kind: chapter.kind,
+          unnumbered: chapter.unnumbered ?? false,
           part_number: chapter.partNumber ?? "",
           part_title: chapter.partTitle ?? null,
           sort_order: chapter.sortOrder,

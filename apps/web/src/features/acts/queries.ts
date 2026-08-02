@@ -29,6 +29,9 @@ export interface ChapterListItem {
   /** Parent Part of a nested Chapter; "" for a top-level division. */
   part_number: string;
   part_title: string | null;
+  /** Titled but unnumbered in the source ("PRELIMINARY"); `number` holds the
+   * title, so only the title is rendered. */
+  unnumbered: boolean;
 }
 
 export interface SectionWithAct extends Section {
@@ -77,11 +80,11 @@ export async function listChaptersByAct(slug: string): Promise<ChapterListItem[]
   if (!isContentConfigured) return [];
   const { data, error } = await getServerClient()
     .from("act_chapters")
-    .select("id, number, title, sort_order, kind, part_number, part_title, acts!inner(slug)")
+    .select("id, number, title, sort_order, kind, part_number, part_title, unnumbered, acts!inner(slug)")
     .eq("acts.slug", slug)
     .order("sort_order", { ascending: true });
   if (error) throw new Error(`listChaptersByAct: ${error.message}`);
-  return data.map(({ id, number, title, sort_order, kind, part_number, part_title }) => ({
+  return data.map(({ id, number, title, sort_order, kind, part_number, part_title, unnumbered }) => ({
     id,
     number,
     title,
@@ -89,6 +92,7 @@ export async function listChaptersByAct(slug: string): Promise<ChapterListItem[]
     kind,
     part_number,
     part_title,
+    unnumbered,
   }));
 }
 

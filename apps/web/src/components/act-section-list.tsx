@@ -132,10 +132,19 @@ export function ActSectionList({
                     className={`mb-3 text-small font-semibold uppercase tracking-wide text-text-muted${
                       parent ? " pl-3" : ""
                     }`}>
-                    <span className="font-mono text-brand">
-                      {chapter.kind === "part" ? "Part" : "Ch."} {chapter.number}
-                    </span>{" "}
-                    · {chapter.title}
+                    {chapter.unnumbered ? (
+                      // The source titled this division but gave it no number
+                      // ("PRELIMINARY"). Printing "Ch. PRELIMINARY" would put a
+                      // number on it that the Act does not have.
+                      chapter.title
+                    ) : (
+                      <>
+                        <span className="font-mono text-brand">
+                          {chapter.kind === "part" ? "Part" : "Ch."} {chapter.number}
+                        </span>{" "}
+                        · {chapter.title}
+                      </>
+                    )}
                   </Heading>
                 ) : null}
                 {rows(secs)}

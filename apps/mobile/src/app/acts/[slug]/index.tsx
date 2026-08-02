@@ -84,7 +84,11 @@ export default function ActDetailScreen() {
           : undefined;
       if (parent) announcedPart = parent;
       out.push({
-        title: `${ch.kind === "part" ? "Part" : "Ch."} ${ch.number} · ${ch.title}`,
+        // An unnumbered division ("PRELIMINARY") shows its title alone —
+        // "Ch. PRELIMINARY" would give it a number the Act does not have.
+        title: ch.unnumbered
+          ? ch.title
+          : `${ch.kind === "part" ? "Part" : "Ch."} ${ch.number} · ${ch.title}`,
         parentTitle,
         nested: Boolean(parent),
         data: secs,

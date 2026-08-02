@@ -1,9 +1,9 @@
 /**
  * Database types — GENERATED from the live NexLex Supabase project
- * (ref eubyvglzkbzfeznocilg, migrations 0001–0014).
+ * (ref eubyvglzkbzfeznocilg, migrations 0001–0015).
  * Regenerate after schema changes: pnpm --filter @nexlex/db gen:types
  * (needs a Supabase access token with project access; entries below were added
- * by hand for 0009–0014 when the token lacked the types endpoint).
+ * by hand for 0009–0015 when the token lacked the types endpoint).
  */
 export type Json =
   | string
@@ -23,6 +23,7 @@ export type Database = {
     Tables: {
       act_chapters: {
         Row: {
+          unnumbered: boolean
           act_id: string
           id: string
           kind: string
@@ -33,6 +34,7 @@ export type Database = {
           title: string
         }
         Insert: {
+          unnumbered?: boolean
           act_id: string
           id?: string
           kind?: string
@@ -43,6 +45,7 @@ export type Database = {
           title: string
         }
         Update: {
+          unnumbered?: boolean
           act_id?: string
           id?: string
           kind?: string

@@ -28,6 +28,14 @@ export interface ParsedChapter {
   /** The Part this Chapter was printed under, when there is one. */
   partNumber?: string;
   partTitle?: string;
+  /**
+   * The source printed this division with a title but NO number — "PRELIMINARY"
+   * in the Contract, Civil Procedure and Arbitration Acts, and every one of the
+   * Hindu Marriage Act's six divisions. `number` then holds the title, because
+   * a division still needs a key and several can share an act; renderers use
+   * this flag to show the title alone instead of "Ch. <title>".
+   */
+  unnumbered?: boolean;
 }
 
 /**

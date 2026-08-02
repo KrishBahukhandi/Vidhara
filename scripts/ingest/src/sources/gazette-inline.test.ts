@@ -7,12 +7,13 @@ import { parseInlineAct } from "./gazette-inline";
 const word = (x: number, y: number, h: number, text: string) =>
   `<word xMin="${x}" yMin="${y}" xMax="${x + text.length * 5}" yMax="${y + h}">${text}</word>`;
 
-/** Lays each string out as one visual line (12pt apart), splitting on spaces. */
-function lines(specs: Array<{ h: number; text: string }>, startY = 50): string {
+/** Lays each string out as one visual line (12pt apart), splitting on spaces.
+ * `x` sets the left edge — body text sits at 72, a centred heading past 150. */
+function lines(specs: Array<{ h: number; text: string; x?: number }>, startY = 50): string {
   let y = startY;
   const out: string[] = [];
-  for (const { h, text } of specs) {
-    let x = 72;
+  for (const { h, text, x: startX } of specs) {
+    let x = startX ?? 72;
     for (const token of text.split(" ")) {
       out.push(word(x, y, h, token));
       x += token.length * 5 + 5;
@@ -582,6 +583,165 @@ describe("small-caps division headings (D-054)", () => {
     );
     const { chapters } = parseInlineAct(xml, {});
     expect(chapters[0]?.title).toBe("OF THE BURDEN OF PROOF");
+  });
+});
+
+/**
+ * Divisions the source titles but does not number (D-055). The Hindu Marriage
+ * Act is built entirely from them, which is why all 37 of its sections sat
+ * under no heading.
+ */
+describe("unnumbered divisions (D-055)", () => {
+  it("files sections under a titled division that carries no number", () => {
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "PRELIMINARY", x: 275 },
+        { h: 10, text: "1. Short title.—This Act may be called the Indian Contract Act, 1872." },
+        { h: 10, text: "2. Interpretation-clause.—In this Act the following words are used as follows." },
+        { h: 10, text: "CHAPTER I" },
+        { h: 10, text: "OF THE COMMUNICATION OF PROPOSALS" },
+        { h: 10, text: "3. Communication.—The communication of proposals is deemed to be made." },
+      ]),
+    );
+    const { sections, chapters } = parseInlineAct(xml, {});
+    expect(chapters.map((c) => `${c.unnumbered ? "unnum" : c.number}:${c.title}`)).toEqual([
+      "unnum:PRELIMINARY",
+      "I:OF THE COMMUNICATION OF PROPOSALS",
+    ]);
+    // An unnumbered division is keyed by its title, so several can coexist.
+    expect(chapters[0]?.number).toBe("PRELIMINARY");
+    expect(sections.map((s) => `${s.number}→${s.chapterNumber}`)).toEqual([
+      "1→PRELIMINARY",
+      "2→PRELIMINARY",
+      "3→I",
+    ]);
+  });
+
+  it("keeps several unnumbered divisions apart", () => {
+    // The Hindu Marriage Act's six divisions would collapse into one if they
+    // shared a key.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "PRELIMINARY", x: 275 },
+        { h: 10, text: "1. Short title.—This Act may be called the Hindu Marriage Act, 1955." },
+        { h: 10, text: "HINDU MARRIAGES", x: 263 },
+        { h: 10, text: "5. Conditions for a Hindu marriage.—A marriage may be solemnised." },
+        { h: 10, text: "NULLITY OF MARRIAGE AND DIVORCE", x: 222 },
+        { h: 10, text: "11. Void marriages.—Any marriage solemnised after the commencement." },
+      ]),
+    );
+    const { sections, chapters } = parseInlineAct(xml, {});
+    expect(chapters.map((c) => c.title)).toEqual([
+      "PRELIMINARY",
+      "HINDU MARRIAGES",
+      "NULLITY OF MARRIAGE AND DIVORCE",
+    ]);
+    expect(chapters.every((c) => c.unnumbered)).toBe(true);
+    expect(sections.map((s) => s.chapterNumber)).toEqual([
+      "PRELIMINARY",
+      "HINDU MARRIAGES",
+      "NULLITY OF MARRIAGE AND DIVORCE",
+    ]);
+  });
+
+  it("keeps the heading out of the previous section's body", () => {
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "4. Overriding effect of Act.—Save as otherwise expressly provided." },
+        { h: 10, text: "HINDU MARRIAGES", x: 263 },
+        { h: 10, text: "5. Conditions for a Hindu marriage.—A marriage may be solemnised." },
+      ]),
+    );
+    const { sections } = parseInlineAct(xml, {});
+    expect(sections[0]?.bodyMd).not.toMatch(/HINDU MARRIAGES/);
+    expect(sections[0]?.bodyMd).toContain("expressly provided");
+  });
+
+  it("does not treat a cross-heading as a division once chapters have begun", () => {
+    // "PRESENTMENT" sits between NI Act sections and belongs to no division.
+    // Only lines BEFORE the first numbered division may qualify.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "CHAPTER I" },
+        { h: 10, text: "OF NOTES BILLS AND CHEQUES" },
+        { h: 10, text: "4. Promissory note.—A promissory note is an instrument in writing." },
+        { h: 10, text: "PRESENTMENT", x: 275 },
+        { h: 10, text: "5. Bill of exchange.—A bill of exchange is an instrument in writing." },
+      ]),
+    );
+    const { chapters } = parseInlineAct(xml, {});
+    expect(chapters).toHaveLength(1);
+    expect(chapters[0]?.number).toBe("I");
+  });
+
+  it("drops a trailing unnumbered division that has no sections", () => {
+    // HMA prints "STATEMENT OF OBJECTS AND REASONS" after its last section.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "PRELIMINARY", x: 275 },
+        { h: 10, text: "1. Short title.—This Act may be called the Hindu Marriage Act, 1955." },
+        { h: 10, text: "STATEMENT OF OBJECTS AND REASONS", x: 201 },
+      ]),
+    );
+    const { chapters } = parseInlineAct(xml, {});
+    expect(chapters.map((c) => c.title)).toEqual(["PRELIMINARY"]);
+  });
+});
+
+describe("a first division printed above the enactment formula (D-055)", () => {
+  it("adopts CHAPTER I when the act prints it over its preamble", () => {
+    // The Penal Code sets "CHAPTER I / I NTRODUCTION" between its date line and
+    // its preamble, so it arrives before parsing starts. Sections 1-5 sat under
+    // no chapter because of it. The title's small caps are below body height.
+    const xml = doc(
+      [
+        lines([
+          { h: 10, text: "THE INDIAN PENAL CODE", x: 233 },
+          { h: 10, text: "ACT NO. 45 OF 1860", x: 253 },
+          { h: 10, text: "CHAPTER I", x: 278 },
+        ]),
+        [
+          word(272, 92, 10, "I"),
+          word(280, 92, 8.2, "NTRODUCTION"),
+        ].join("\n"),
+        lines(
+          [
+            { h: 10, text: "Preamble.—WHEREAS it is expedient; It is" },
+            { h: 10, text: "enacted as follows:—" },
+            { h: 10, text: "1. Title and extent.—This Act shall be called the Indian Penal Code." },
+            { h: 10, text: "2. Punishment of offences.—Every person shall be liable to punishment." },
+          ],
+          106,
+        ),
+      ].join("\n"),
+    );
+    const { sections, chapters } = parseInlineAct(xml, {});
+    expect(chapters).toHaveLength(1);
+    expect(chapters[0]?.number).toBe("I");
+    expect(chapters[0]?.title).toBe("INTRODUCTION");
+    expect(sections.map((s) => s.chapterNumber)).toEqual(["I", "I"]);
+  });
+
+  it("ignores the contents listing's last heading above the formula", () => {
+    // Everything before the formula is the table of contents, and a contents
+    // listing ENDS with the act's LAST division — CrPC's is "CHAPTER XXXVII".
+    // Only a first division may carry across.
+    const xml = doc(
+      lines([
+        { h: 10, text: "CHAPTER XXXVII", x: 276 },
+        { h: 10, text: "OF MISCELLANEOUS PROVISIONS", x: 200 },
+        { h: 10, text: "It is hereby enacted as follows:—" },
+        { h: 10, text: "1. Short title.—This Act may be called the Code." },
+      ]),
+    );
+    const { sections, chapters } = parseInlineAct(xml, {});
+    expect(chapters).toHaveLength(0);
+    expect(sections[0]?.chapterNumber).toBeUndefined();
   });
 });
 

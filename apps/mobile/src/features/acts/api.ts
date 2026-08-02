@@ -37,6 +37,9 @@ export interface ChapterListItem {
    * Arbitration Act nests Chapters inside Parts and repeats their numbers. */
   part_number: string;
   part_title: string | null;
+  /** Titled but unnumbered in the source ("PRELIMINARY"); `number` holds the
+   * title, so only the title is rendered. */
+  unnumbered: boolean;
 }
 
 export interface SectionWithAct extends Section {
@@ -97,19 +100,20 @@ export async function listSections(actSlug: string): Promise<Result<SectionListI
 export async function listChapters(actSlug: string): Promise<Result<ChapterListItem[]>> {
   const { data, error } = await supabase
     .from("act_chapters")
-    .select("id, number, title, kind, part_number, part_title, acts!inner(slug)")
+    .select("id, number, title, kind, part_number, part_title, unnumbered, acts!inner(slug)")
     .eq("acts.slug", actSlug)
     .order("sort_order", { ascending: true });
 
   if (error) return err(ERROR_CODES.INTERNAL, LOAD_ERROR);
   return ok(
-    data.map(({ id, number, title, kind, part_number, part_title }) => ({
+    data.map(({ id, number, title, kind, part_number, part_title, unnumbered }) => ({
       id,
       number,
       title,
       kind,
       part_number,
       part_title,
+      unnumbered,
     })),
   );
 }

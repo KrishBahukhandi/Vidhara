@@ -31,6 +31,9 @@ export const chapterSchema = z.object({
   kind: z.enum(["chapter", "part"]).default("chapter"),
   partNumber: z.string().trim().min(1).optional(),
   partTitle: z.string().trim().min(1).optional(),
+  /** Division the source titled but did not number; `number` holds the title.
+   * See ParsedChapter.unnumbered. */
+  unnumbered: z.boolean().optional(),
   sortOrder: z.number().int().nonnegative(),
 });
 
