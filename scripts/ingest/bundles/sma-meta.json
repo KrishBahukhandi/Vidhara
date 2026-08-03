@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "sma",
+    "title": "The Special Marriage Act, 1954",
+    "shortTitle": "Special Marriage Act",
+    "abbreviation": "SMA",
+    "year": 1954,
+    "category": "family",
+    "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/1387"
+  },
+  "provenance": "Official India Code text: The Special Marriage Act, 1954, English PDF (bitstream 123456789/1387/1/A1954-43E.pdf, 377,569 bytes, sha256 8edbdc1c6178de27...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-03. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. This PDF prints its amendment footnotes at body height, so sections 3 to 7 were re-extracted from the source line stream and their numbering restored (D-058). Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+}

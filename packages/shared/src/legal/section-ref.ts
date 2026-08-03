@@ -30,6 +30,7 @@ export const ACT_ABBREVIATIONS = [
   "HMGA",
   "HAMA",
   "PART",
+  "SMA",
 ] as const;
 export type ActAbbreviation = (typeof ACT_ABBREVIATIONS)[number];
 
@@ -63,6 +64,7 @@ export const ACT_SLUG: Record<ActAbbreviation, string> = {
   HMGA: "hmga",
   HAMA: "hama",
   PART: "part",
+  SMA: "sma",
 };
 
 /** Alias → canonical abbreviation. Keys must be lowercase, punctuation-free. */
@@ -147,6 +149,9 @@ const ACT_ALIASES: Record<string, ActAbbreviation> = {
   "indian partnership act": "PART",
   "partnership act": "PART",
   partnership: "PART",
+  sma: "SMA",
+  "special marriage act": "SMA",
+  "special marriage": "SMA",
 };
 
 export interface ParsedSectionRef {

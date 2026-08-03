@@ -200,10 +200,11 @@ export default async function VerificationPage() {
             the source prints one, which is not the same as everywhere one exists.
           </li>
           <li>
-            <strong>Some acts are held back rather than published.</strong> The Special Marriage Act
-            was extracted and then withheld: its PDF prints amendment footnotes in the same size as
-            its text, and five sections came out damaged. We would rather ship {acts.length} acts we
-            can vouch for than {acts.length + 1} we cannot.
+            <strong>An act is held back rather than published if we cannot vouch for it.</strong> The
+            Special Marriage Act was withheld on first extraction — its PDF prints amendment
+            footnotes in the same size as its text, and five sections came out damaged. It is
+            published now only because the repaired text matches the Act&rsquo;s own arrangement of
+            sections exactly, section for section.
           </li>
         </ul>
         <p className="mt-3">
