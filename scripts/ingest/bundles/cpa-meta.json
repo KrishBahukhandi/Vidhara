@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "cpa",
+    "title": "The Consumer Protection Act, 2019",
+    "shortTitle": "Consumer Protection Act",
+    "abbreviation": "CPA",
+    "year": 2019,
+    "category": "civil",
+    "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/12808"
+  },
+  "provenance": "Official India Code text: The Consumer Protection Act, 2019, English PDF (bitstream 123456789/12808/1/the_consumer_protection_act,_2019_no._35_of_2019_date_09.08.2019.pdf, 1,236,998 bytes, sha256 0ae7f82ab5b77d50...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-03. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+}

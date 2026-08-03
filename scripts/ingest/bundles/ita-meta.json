@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "ita",
+    "title": "The Information Technology Act, 2000",
+    "shortTitle": "Information Technology Act",
+    "abbreviation": "ITA",
+    "year": 2000,
+    "category": "civil",
+    "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/1999"
+  },
+  "provenance": "Official India Code text: The Information Technology Act, 2000, English PDF (bitstream 123456789/1999/1/A2000-21 (1).pdf, 462,882 bytes, sha256 45fb45419e5da89a...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-03. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+}

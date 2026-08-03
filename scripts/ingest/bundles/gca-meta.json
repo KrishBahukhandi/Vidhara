@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "gca",
+    "title": "The General Clauses Act, 1897",
+    "shortTitle": "General Clauses Act",
+    "abbreviation": "GCA",
+    "year": 1897,
+    "category": "general",
+    "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/15374"
+  },
+  "provenance": "Official India Code text: The General Clauses Act, 1897, English PDF (bitstream 123456789/15374/1/the_general_clauses_act,_1897.pdf, 549,254 bytes, sha256 ef4645f24759ec1e...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-03. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+}

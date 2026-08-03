@@ -73,11 +73,24 @@ function isIllustrationHeading(text: string): boolean {
 // twenty-fourth Year…" (CrPC) / "…ADOPT, ENACT AND GIVE TO OURSELVES THIS
 // CONSTITUTION" (COI preamble). A SECOND occurrence mid-document marks an
 // appended amendment act — parsing stops there.
-// "as" without "follows": the Partnership Act's formula WRAPS — "…it ishereby
-// enacted as" / "follows:—" — and requiring both words on one line found no
-// formula at all, so the act parsed to zero sections. Verified across all
-// twenty-one acts on disk: dropping "follows" changes no act's match count.
-const ENACTED = /enacted\s+as\b|enacted\s+by\s+Parliament|ENACT\s+AND\s+GIVE\s+TO\s+OURSELVES/i;
+/**
+ * The enactment formula, in two strengths — and they must differ.
+ *
+ * STARTING the act tolerates the wrap: the Partnership Act prints "…it ishereby
+ * enacted as" / "follows:—", so requiring both words on one line found no
+ * formula and the act parsed to zero sections (D-057).
+ *
+ * ENDING it may not. A second occurrence marks an appended amendment act, so a
+ * loose match here truncates the act silently — and did: D-057 widened this to
+ * a bare "enacted as" after checking it against the twenty-one acts then on
+ * disk, and the Information Technology Act, ingested later, says "Bills
+ * **enacted as** President's Act under sub-clause (a) of clause 1 of article
+ * 356" in the body of its First Schedule. That one phrase cut the act at
+ * section 2 of 109. The terminator therefore keeps the strict form; only the
+ * opener accepts the wrap, and only at end of line where a wrap actually is.
+ */
+const ENACTED = /enacted\s+(?:as\s+follows|by\s+Parliament)|ENACT\s+AND\s+GIVE\s+TO\s+OURSELVES/i;
+const ENACTED_START = /enacted\s+(?:as\s+follows|by\s+Parliament)|enacted\s+as\s*$|ENACT\s+AND\s+GIVE\s+TO\s+OURSELVES/i;
 /**
  * Schedules follow the last section — parsing ends. Ordinal form ("THE FIRST
  * SCHEDULE") and the unnumbered form ("THE SCHEDULE") both count: NDPS prints
@@ -682,7 +695,7 @@ export function parseInlineAct(
       if (footnotesStarted) continue;
 
       if (!started) {
-        if (ENACTED.test(flat)) {
+        if (ENACTED_START.test(flat)) {
           started = true;
           // Adopt a first-division heading printed just above the formula.
           if (preambleDivision && preambleDivisionAge <= PREAMBLE_DIVISION_MAX_LINES) {
