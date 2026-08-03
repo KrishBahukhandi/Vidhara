@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "rti",
+    "title": "The Right to Information Act, 2005",
+    "shortTitle": "Right to Information Act",
+    "abbreviation": "RTI",
+    "year": 2005,
+    "category": "civil",
+    "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/2065"
+  },
+  "provenance": "Official India Code text: The Right to Information Act, 2005, English PDF (bitstream 123456789/2065/1/aa2005.pdf, 355,456 bytes, sha256 8956eaba5db40796...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-03. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+}
