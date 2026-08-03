@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "hmga",
+    "title": "The Hindu Minority and Guardianship Act, 1956",
+    "shortTitle": "Hindu Minority and Guardianship Act",
+    "abbreviation": "HMGA",
+    "year": 1956,
+    "category": "family",
+    "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/1649"
+  },
+  "provenance": "Official India Code text: The Hindu Minority and Guardianship Act, 1956, English PDF (bitstream 123456789/1649/1/195632.pdf, 58,917 bytes, sha256 59087d51afc03591...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-03. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+}

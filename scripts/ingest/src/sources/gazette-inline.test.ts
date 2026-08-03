@@ -745,6 +745,143 @@ describe("a first division printed above the enactment formula (D-055)", () => {
   });
 });
 
+describe("prints that defeated the sentinels (D-057)", () => {
+  it("finds an enactment formula that wraps mid-phrase", () => {
+    // The Partnership Act prints "…it ishereby enacted as" / "follows:—", and
+    // requiring both words on one line found no formula at all — 0 sections.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is expedient to define the law relating to partnership; it ishereby enacted as" },
+        { h: 10, text: "follows:—" },
+        { h: 10, text: "1. Short title.—This Act may be called the Indian Partnership Act, 1932." },
+      ]),
+    );
+    expect(parseInlineAct(xml, {}).sections.map((s) => s.number)).toEqual(["1"]);
+  });
+
+  it("does not end the act on body prose about digital signatures", () => {
+    // "Digitally signed" unanchored matched the Maharashtra amendment's own
+    // words — "The statement shall be digitally signed by all the partners" —
+    // and silently ended the Partnership Act at section 58 of 74.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "8. Application for registration.—The registration may be effected at any time." },
+        { h: 10, text: "The statement shall be digitally signed by all the partners or their agents." },
+        { h: 10, text: "9. Registration.—Where the Registrar is satisfied, he shall record an entry." },
+      ]),
+    );
+    expect(parseInlineAct(xml, {}).sections.map((s) => s.number)).toEqual(["8", "9"]);
+  });
+
+  it("still stops at the publisher's trailer, and says so", () => {
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "1. Short title.—This Act may be called the Test Act." },
+        { h: 10, text: "Digitally signed by RAM KUMAR SHARMA" },
+        { h: 10, text: "2. Never reached.—This must not be parsed." },
+      ]),
+    );
+    const { sections, diagnostics } = parseInlineAct(xml, {});
+    expect(sections.map((s) => s.number)).toEqual(["1"]);
+    expect(diagnostics.some((d) => /stopped at document trailer/.test(d))).toBe(true);
+  });
+
+  it("does not end the act on a SCHEDULE quoted inside a State amendment", () => {
+    // The Partnership Act's Goa amendment carries its own "SCHEDULE" heading.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "3. Application of provisions.—The provisions shall apply as follows." },
+        { h: 10, text: "STATE AMENDMENT" },
+        { h: 10, text: "Goa, Daman and Diu" },
+        { h: 10, text: "Amendment of section 3.—The Acts mentioned in the Schedule below shall come into force." },
+        { h: 10, text: "SCHEDULE" },
+        { h: 10, text: "1. The Indian Partnership Act, 1932." },
+        { h: 10, text: "[Vide Goa Act 5 of 1964, s. 2]" },
+        { h: 10, text: "4. Definition of partnership.—Partnership is the relation between persons." },
+      ]),
+    );
+    expect(parseInlineAct(xml, {}).sections.map((s) => s.number)).toEqual(["3", "4"]);
+  });
+
+  it("recognises every printed spelling of the State-amendment banner", () => {
+    for (const banner of ["STATE AMENDMENT", "STATE AMENDMENTS", "STATE AMENEDMENT", "STATE AMENDEMT"]) {
+      const xml = doc(
+        lines([
+          { h: 10, text: "WHEREAS it is enacted as follows:—" },
+          { h: 10, text: "5. Registration.—A firm may be registered at any time." },
+          { h: 10, text: banner },
+          { h: 10, text: "Amendment of section 5.—In section 5 of the principal Act, insert the following." },
+          { h: 10, text: "[Vide Maharashtra Act 29 of 1984, s. 6]" },
+          { h: 10, text: "6. Effect.—Registration shall have effect as provided." },
+        ]),
+      );
+      const { sections } = parseInlineAct(xml, {});
+      expect(sections.map((s) => s.number), banner).toEqual(["5", "6"]);
+      expect(sections[0]?.bodyMd, banner).not.toMatch(/principal Act|Vide/);
+    }
+  });
+});
+
+describe("marginal notes the dash rules got wrong (D-057)", () => {
+  it("splits a bracketed repeal note at its brackets", () => {
+    // "[Repeals.]―Rep. by the Repealing and Amending Act, 1960" was cut inside
+    // the citation, leaving "Repeals.―Rep" as the section's title.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "3. [Repeals.]―Rep. by the Repealing and Amending Act, 1960 (58 of 1960), s. 2." },
+      ]),
+    );
+    const s = parseInlineAct(xml, {}).sections[0];
+    expect(s?.marginalNote).toBe("Repeals.");
+    expect(s?.bodyMd).toMatch(/^Rep\. by the Repealing and Amending Act/);
+  });
+
+  it("splits a bracketed note with no dash at all", () => {
+    // The Partnership Act prints "[Repeals.] Rep. by the Repealing Act, 1938".
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "3. [Repeals.] Rep. by the Repealing Act, 1938 (1 of 1938), s. 2 and Sch." },
+      ]),
+    );
+    const s = parseInlineAct(xml, {}).sections[0];
+    expect(s?.marginalNote).toBe("Repeals.");
+    expect(s?.bodyMd).toMatch(/^Rep\. by the Repealing Act/);
+  });
+
+  it("keeps a bracketed note that carries two sentences whole", () => {
+    // IPC §56's bracket genuinely holds both marginal notes; splitting at the
+    // first period dropped the second.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "3. [Sentence to penal servitude. Proviso as to sentence for term exceeding ten years.] Rep. by Act 17 of 1949." },
+      ]),
+    );
+    expect(parseInlineAct(xml, {}).sections[0]?.marginalNote).toBe(
+      "Sentence to penal servitude. Proviso as to sentence for term exceeding ten years.",
+    );
+  });
+
+  it("treats the horizontal bar as a run-in dash", () => {
+    // U+2015, the primary dash in the Hindu Succession, Hindu Adoptions and
+    // Special Marriage Acts, and 519 times in the Constitution.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "3. Devolution of interest.\u2015When a Hindu dies intestate, his property shall devolve." },
+      ]),
+    );
+    const s = parseInlineAct(xml, {}).sections[0];
+    expect(s?.marginalNote).toBe("Devolution of interest");
+    expect(s?.bodyMd).toBe("When a Hindu dies intestate, his property shall devolve.");
+  });
+});
+
 describe("bracketed chapter heading guard (D-033)", () => {
   it("recognises an inserted chapter whose bracket and title share the line", () => {
     // NDPS §68 ended with "[CHAPTER VA [F ORFEITURE OF ILLEGALLY ACQUIRED

@@ -23,9 +23,11 @@ export default function CitePage() {
       </p>
       <p className="mt-3 text-small text-text-faint">
         Covers the criminal codes (IPC, CrPC, Evidence and their BNS/BNSS/BSA successors), the
-        Constitution, and the Contract, NI, CPC, NDPS, Motor Vehicles, Arbitration, Limitation, Transfer
-        of Property, Specific Relief, Sale of Goods, Hindu Marriage and Registration Acts. Looking
-        for another act? Tell us on a miss — that&rsquo;s how we pick what to add next.
+        Constitution, the Hindu family-law code (Marriage, Succession, Adoptions and Maintenance,
+        Minority and Guardianship), and the Contract, Partnership, NI, CPC, NDPS, Motor Vehicles,
+        Arbitration, Limitation, Transfer of Property, Specific Relief, Sale of Goods and
+        Registration Acts. Looking for another act? Tell us on a miss — that&rsquo;s how we pick
+        what to add next.
       </p>
       <p className="mt-3 text-small text-text-muted">
         Working out a period instead?{" "}

@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "part",
+    "title": "The Indian Partnership Act, 1932",
+    "shortTitle": "Indian Partnership Act",
+    "abbreviation": "PART",
+    "year": 1932,
+    "category": "commercial",
+    "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/2394"
+  },
+  "provenance": "Official India Code text: The Indian Partnership Act, 1932, English PDF (bitstream 123456789/2394/1/aA1932-9.pdf, 425,539 bytes, sha256 6fa1e7859290a72c...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-03. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+}

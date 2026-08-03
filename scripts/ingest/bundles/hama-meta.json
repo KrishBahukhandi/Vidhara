@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "hama",
+    "title": "The Hindu Adoptions and Maintenance Act, 1956",
+    "shortTitle": "Hindu Adoptions and Maintenance Act",
+    "abbreviation": "HAMA",
+    "year": 1956,
+    "category": "family",
+    "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/1638"
+  },
+  "provenance": "Official India Code text: The Hindu Adoptions and Maintenance Act, 1956, English PDF (bitstream 123456789/1638/1/AA1956____78.pdf, 146,411 bytes, sha256 5503d94a84375aba...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-03. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+}

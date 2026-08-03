@@ -199,6 +199,12 @@ export default async function VerificationPage() {
             instruction and its citation, not the section as it reads in that State — and only where
             the source prints one, which is not the same as everywhere one exists.
           </li>
+          <li>
+            <strong>Some acts are held back rather than published.</strong> The Special Marriage Act
+            was extracted and then withheld: its PDF prints amendment footnotes in the same size as
+            its text, and five sections came out damaged. We would rather ship {acts.length} acts we
+            can vouch for than {acts.length + 1} we cannot.
+          </li>
         </ul>
         <p className="mt-3">
           For anything you file or rely on professionally, check the bare act. This is a reading and

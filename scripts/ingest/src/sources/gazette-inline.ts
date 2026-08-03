@@ -73,7 +73,11 @@ function isIllustrationHeading(text: string): boolean {
 // twenty-fourth Year…" (CrPC) / "…ADOPT, ENACT AND GIVE TO OURSELVES THIS
 // CONSTITUTION" (COI preamble). A SECOND occurrence mid-document marks an
 // appended amendment act — parsing stops there.
-const ENACTED = /enacted\s+(?:as\s+follows|by\s+Parliament)|ENACT\s+AND\s+GIVE\s+TO\s+OURSELVES/i;
+// "as" without "follows": the Partnership Act's formula WRAPS — "…it ishereby
+// enacted as" / "follows:—" — and requiring both words on one line found no
+// formula at all, so the act parsed to zero sections. Verified across all
+// twenty-one acts on disk: dropping "follows" changes no act's match count.
+const ENACTED = /enacted\s+as\b|enacted\s+by\s+Parliament|ENACT\s+AND\s+GIVE\s+TO\s+OURSELVES/i;
 /**
  * Schedules follow the last section — parsing ends. Ordinal form ("THE FIRST
  * SCHEDULE") and the unnumbered form ("THE SCHEDULE") both count: NDPS prints
@@ -128,7 +132,13 @@ const SCHEDULE_START =
  * gone with it — a list that has to be complete and correctly spelled to keep
  * State law out of a national act was the wrong thing to depend on.
  */
-const STATE_AMENDMENT_START = /^STATE\s+AMEN[DE]+MENTS?\b/;
+/** Four spellings occur across the corpus — "STATE AMENDMENT" (161),
+ * "STATE AMENDMENTS" (25), "STATE AMENEDMENT" (2, Registration) and
+ * "STATE AMENDEMT" (1, Partnership). Rather than chase each typo, anything
+ * beginning "STATE AMEN" opens a region: nothing else in twenty-one acts
+ * starts a line that way, and the cost of missing one is State law published
+ * as central law. */
+const STATE_AMENDMENT_START = /^STATE\s+AMEN[A-Z]*\b/;
 /** Marks a pending division as unnumbered until its title is known — the title
  * then becomes its key (see flushChapter). Never appears in output. */
 const UNNUMBERED = "\u0000unnumbered";
@@ -325,11 +335,31 @@ const SECTION_START = /^(\d{1,3}[A-Z]{0,2})\s?\.\s*(\S.*)$/;
 const SECTION_START_NODOT = /^(\d{1,3}[A-Z]{0,2})\s+([“"].*)$/;
 // Title ends at the first ".—"/".–" (em/en dash). Non-greedy, length-capped so
 // a stray mid-body dash can't swallow a paragraph as the "title".
-const TITLE_SPLIT = /^(.{3,160}?)\.\s*[—–]\s*([\s\S]*)$/;
+// The dash class carries THREE characters. Besides the em (U+2014) and en
+// (U+2013) dashes, several prints set the run-in dash as a HORIZONTAL BAR
+// (U+2015): it is the primary dash in the Hindu Succession (88), Hindu
+// Adoptions and Maintenance (52) and Special Marriage (98) Acts, and appears
+// 519 times in the Constitution. Without it the split fell through to the
+// sentence-period fallback and cut inside the repeal citation — "Repeals.―Rep"
+// as the title, "by the Repealing and Amending Act, 1960…" as the body.
+const TITLE_SPLIT = /^(.{3,160}?)\.\s*[—–―]\s*([\s\S]*)$/;
 // Fallback for run-in titles with no dash (mostly repealed sections:
 // "Definition of “Queen”. Omitted by the A. O. 1950."): split at the first
 // sentence period.
 const TITLE_PERIOD_SPLIT = /^(.{3,120}?)\.\s+([\s\S]*)$/;
+/**
+ * A BRACKETED marginal note, which is how the prints mark a repealed or omitted
+ * section: "31. [Repeals.]―Rep. by the Repealing and Amending Act, 1960" and
+ * "73. [Repeals.] Rep. by the Repealing Act, 1938". The brackets delimit the
+ * note exactly, so they are a better split than either dash rule — and both of
+ * those rules got it wrong here, cutting inside the citation to leave
+ * "Repeals.―Rep" as the title. Tried FIRST for that reason; the dash after the
+ * bracket is optional because the Partnership Act prints none.
+ */
+const TITLE_BRACKET_SPLIT = /^\[\s*([^\]]{3,160}?)\s*\]\s*[—–―]?\s*([\s\S]*)$/;
+/** Amendment/footnote glyphs that can precede a section number at line start —
+ * brackets/stars, and a body-height footnote digit directly before an opening
+ * bracket ("4 [174A. Non-appearance…"). */
 /** Amendment/footnote glyphs that can precede a section number at line start —
  * brackets/stars, and a body-height footnote digit directly before an opening
  * bracket ("4 [174A. Non-appearance…"). */
@@ -481,7 +511,8 @@ export function parseInlineAct(
   const flush = () => {
     if (currentNumber === null) return;
     const raw = rawParts.join(" ").replace(/\s+/g, " ").trim();
-    const split = TITLE_SPLIT.exec(raw) ?? TITLE_PERIOD_SPLIT.exec(raw);
+    const split =
+      TITLE_BRACKET_SPLIT.exec(raw) ?? TITLE_SPLIT.exec(raw) ?? TITLE_PERIOD_SPLIT.exec(raw);
     // Strip stray amendment brackets from an extracted title.
     let marginalNote = split ? (split[1] ?? "").replace(/[[\]]/g, "").trim() : "";
     const bodyMd = split ? (split[2] ?? "").trim() : raw;
@@ -675,17 +706,27 @@ export function parseInlineAct(
         }
         continue;
       }
-      if (ENACTED.test(flat)) {
+      // Both end-of-act sentinels are suspended inside a State-amendment
+      // region: what a State quotes is not the central Act ending. The
+      // Partnership Act's Goa amendment carries its own "SCHEDULE" heading —
+      // listing the Acts it brings into force — and that one word ended the
+      // parse at section 3 of 74.
+      if (!stateAmendmentMode && ENACTED.test(flat)) {
         diagnostics.push(`stopped at appended amendment act: "${flat.slice(0, 60)}"`);
         ended = true;
         break;
       }
-      if (SCHEDULE_START.test(flat)) {
+      if (!stateAmendmentMode && SCHEDULE_START.test(flat)) {
         diagnostics.push(`stopped at schedules: "${flat.slice(0, 40)}"`);
         ended = true;
         break;
       }
-      if (END_SENTINELS.some((re) => re.test(flat))) {
+      // Guarded like the other two sentinels, and no longer silent: ending the
+      // act is the most destructive thing this parser can do, and doing it
+      // without a word is how the Partnership Act lost sections 59 to 74
+      // unnoticed.
+      if (!stateAmendmentMode && END_SENTINELS.some((re) => re.test(flat))) {
+        diagnostics.push(`stopped at document trailer: "${flat.slice(0, 60)}"`);
         ended = true;
         break;
       }

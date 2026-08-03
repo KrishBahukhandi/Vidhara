@@ -206,12 +206,23 @@ export function normalizeChapterTitle(raw: string): string {
 export const SCHEDULE_HEADING =
   /^THE\s+(?:FIRST|SECOND|THIRD|FOURTH|FIFTH|SIXTH|SEVENTH)?\s*SCHEDULE\b/;
 
+/**
+ * The publisher's trailer — where the document stops being the act.
+ *
+ * "Digitally signed" is ANCHORED because unanchored it matched ordinary text:
+ * the Partnership Act's Maharashtra amendment says "The statement shall be
+ * digitally signed by all the partners", and that one phrase ended the act at
+ * section 58 of 74. The trailer form is "Digitally signed by <name>" on its own
+ * line. Verified across all twenty-one acts on disk: the anchored pattern
+ * matches nothing that is not a trailer, and the loose one matched only that
+ * body prose.
+ */
 export const END_SENTINELS = [
   /Legislative Counsel/i,
   /Secretary to the Govt/i,
   /UPLOADED BY THE MANAGER/i,
   /MGIPMRND/,
-  /Digitally signed/i,
+  /^\s*Digitally signed by/i,
 ];
 
 export function classifyRightFragment(fragment: string, parts: LineParts): void {
