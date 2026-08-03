@@ -31,6 +31,12 @@ export const ACT_ABBREVIATIONS = [
   "HAMA",
   "PART",
   "SMA",
+  "POCSO",
+  "JJ",
+  "PCA",
+  "SCST",
+  "DV",
+  "DOWRY",
 ] as const;
 export type ActAbbreviation = (typeof ACT_ABBREVIATIONS)[number];
 
@@ -65,6 +71,12 @@ export const ACT_SLUG: Record<ActAbbreviation, string> = {
   HAMA: "hama",
   PART: "part",
   SMA: "sma",
+  POCSO: "pocso",
+  JJ: "jj",
+  PCA: "pca",
+  SCST: "scst",
+  DV: "dv",
+  DOWRY: "dowry",
 };
 
 /** Alias → canonical abbreviation. Keys must be lowercase, punctuation-free. */
@@ -152,6 +164,30 @@ const ACT_ALIASES: Record<string, ActAbbreviation> = {
   sma: "SMA",
   "special marriage act": "SMA",
   "special marriage": "SMA",
+  pocso: "POCSO",
+  "protection of children from sexual offences act": "POCSO",
+  "protection of children from sexual offences": "POCSO",
+  jj: "JJ",
+  "juvenile justice act": "JJ",
+  "juvenile justice": "JJ",
+  "jj act": "JJ",
+  pca: "PCA",
+  "prevention of corruption act": "PCA",
+  "prevention of corruption": "PCA",
+  "pc act": "PCA",
+  scst: "SCST",
+  "sc st act": "SCST",
+  "scheduled castes and scheduled tribes prevention of atrocities act": "SCST",
+  "prevention of atrocities act": "SCST",
+  "atrocities act": "SCST",
+  dv: "DV",
+  "domestic violence act": "DV",
+  "domestic violence": "DV",
+  "protection of women from domestic violence act": "DV",
+  "pwdva": "DV",
+  dowry: "DOWRY",
+  "dowry prohibition act": "DOWRY",
+  "dowry prohibition": "DOWRY",
 };
 
 export interface ParsedSectionRef {

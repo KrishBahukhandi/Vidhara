@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "pocso",
+    "title": "The Protection of Children from Sexual Offences Act, 2012",
+    "shortTitle": "Protection of Children from Sexual Offences Act",
+    "abbreviation": "POCSO",
+    "year": 2012,
+    "category": "criminal",
+    "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/2079"
+  },
+  "provenance": "Official India Code text: The Protection of Children from Sexual Offences Act, 2012, English PDF (bitstream 123456789/2079/1/AA2012-32.pdf, 207,723 bytes, sha256 def90f072fdb6b62...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-03. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+}

@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "dv",
+    "title": "The Protection of Women from Domestic Violence Act, 2005",
+    "shortTitle": "Domestic Violence Act",
+    "abbreviation": "DV",
+    "year": 2005,
+    "category": "criminal",
+    "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/2021"
+  },
+  "provenance": "Official India Code text: The Protection of Women from Domestic Violence Act, 2005, English PDF (bitstream 123456789/2021/5/A2005-43.pdf, 267,233 bytes, sha256 17ea6d7cb89fcae5...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-03. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+}

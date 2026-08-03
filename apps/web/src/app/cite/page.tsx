@@ -22,12 +22,14 @@ export default function CitePage() {
         device and stays readable on bad signal.
       </p>
       <p className="mt-3 text-small text-text-faint">
-        Covers the criminal codes (IPC, CrPC, Evidence and their BNS/BNSS/BSA successors), the
+        Covers the criminal codes (IPC, CrPC, Evidence and their BNS/BNSS/BSA successors) and the
+        statutes that sit beside them — POCSO, Juvenile Justice, Prevention of Corruption, SC/ST
+        (Prevention of Atrocities), Domestic Violence, Dowry Prohibition and NDPS. Also the
         Constitution, the family-law code (Hindu Marriage, Succession, Adoptions and Maintenance,
-        Minority and Guardianship, and Special Marriage), and the Contract, Partnership, NI, CPC, NDPS, Motor Vehicles,
-        Arbitration, Limitation, Transfer of Property, Specific Relief, Sale of Goods and
-        Registration Acts. Looking for another act? Tell us on a miss — that&rsquo;s how we pick
-        what to add next.
+        Minority and Guardianship, and Special Marriage), and the Contract, Partnership, NI, CPC,
+        Motor Vehicles, Arbitration, Limitation, Transfer of Property, Specific Relief, Sale of
+        Goods and Registration Acts. Looking for another act? Tell us on a miss — that&rsquo;s how
+        we pick what to add next.
       </p>
       <p className="mt-3 text-small text-text-muted">
         Working out a period instead?{" "}

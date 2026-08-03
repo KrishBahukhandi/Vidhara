@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "pca",
+    "title": "The Prevention of Corruption Act, 1988",
+    "shortTitle": "Prevention of Corruption Act",
+    "abbreviation": "PCA",
+    "year": 1988,
+    "category": "criminal",
+    "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/1558"
+  },
+  "provenance": "Official India Code text: The Prevention of Corruption Act, 1988, English PDF (bitstream 123456789/1558/1/A1988-49.pdf, 399,275 bytes, sha256 57a0d7960125d42d...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-03. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+}

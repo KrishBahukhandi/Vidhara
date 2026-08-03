@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "jj",
+    "title": "The Juvenile Justice (Care and Protection of Children) Act, 2015",
+    "shortTitle": "Juvenile Justice Act",
+    "abbreviation": "JJ",
+    "year": 2015,
+    "category": "criminal",
+    "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/2148"
+  },
+  "provenance": "Official India Code text: The Juvenile Justice (Care and Protection of Children) Act, 2015, English PDF (bitstream 123456789/2148/1/a2016-2.pdf, 466,296 bytes, sha256 00d43505b7f4f254...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-03. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+}

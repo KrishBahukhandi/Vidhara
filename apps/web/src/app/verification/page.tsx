@@ -200,11 +200,12 @@ export default async function VerificationPage() {
             the source prints one, which is not the same as everywhere one exists.
           </li>
           <li>
-            <strong>An act is held back rather than published if we cannot vouch for it.</strong> The
-            Special Marriage Act was withheld on first extraction — its PDF prints amendment
-            footnotes in the same size as its text, and five sections came out damaged. It is
-            published now only because the repaired text matches the Act&rsquo;s own arrangement of
-            sections exactly, section for section.
+            <strong>An act is held back rather than published if we cannot vouch for it.</strong>{" "}
+            Six acts&rsquo; PDFs print amendment footnotes in the same size as their text, which
+            destroys sections outright — the Special Marriage Act lost the conditions for a valid
+            marriage, and the SC/ST (Prevention of Atrocities) Act lost its central punishment
+            provision. Each is published only because the repaired text matches that Act&rsquo;s own
+            arrangement of sections, section for section; the repair refuses to run otherwise.
           </li>
         </ul>
         <p className="mt-3">

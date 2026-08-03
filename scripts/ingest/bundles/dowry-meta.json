@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "dowry",
+    "title": "The Dowry Prohibition Act, 1961",
+    "shortTitle": "Dowry Prohibition Act",
+    "abbreviation": "DOWRY",
+    "year": 1961,
+    "category": "criminal",
+    "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/1679"
+  },
+  "provenance": "Official India Code text: The Dowry Prohibition Act, 1961, English PDF (bitstream 123456789/1679/4/a1961-28.pdf, 185,946 bytes, sha256 08f57bb1675a5a85...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-03. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+}

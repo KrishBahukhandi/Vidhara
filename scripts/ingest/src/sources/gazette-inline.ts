@@ -331,8 +331,17 @@ const TITLE_APPARATUS = /[[\]*\d]+/g;
 // \s?\. : the PDF sometimes splits "174A ." with a space before the period.
 const SECTION_START = /^(\d{1,3}[A-Z]{0,2})\s?\.\s*(\S.*)$/;
 // Amendment brackets can eat the number's period ("1[17 “Government”.—…" →
-// "17 “Government”.—…"). Only a quote-led title is accepted dotless.
-const SECTION_START_NODOT = /^(\d{1,3}[A-Z]{0,2})\s+([“"].*)$/;
+// "17 “Government”.—…"), and the print sometimes simply drops it: the Juvenile
+// Justice Act's section 86, substituted in 2021, is set as "[86 Classification
+// of offences and designated court.— (1) …" with no period at all, so neither
+// section pattern matched and the section was absent.
+//
+// A CAPITAL is therefore accepted where only a quote was before. The narrowing
+// that keeps wrapped cross-references out is unchanged: a number at line start
+// followed by lowercase ("…of section\n86 shall apply") still matches nothing,
+// and the plausibility guard downstream still requires a strictly increasing
+// sort key and a small step in the base.
+const SECTION_START_NODOT = /^(\d{1,3}[A-Z]{0,2})\s+([“"A-Z].*)$/;
 // Title ends at the first ".—"/".–" (em/en dash). Non-greedy, length-capped so
 // a stray mid-body dash can't swallow a paragraph as the "title".
 // The dash class carries THREE characters. Besides the em (U+2014) and en
