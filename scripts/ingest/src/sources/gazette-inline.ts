@@ -479,6 +479,7 @@ export function parseInlineAct(
   // look like the Act resuming.
   let stateAmendmentBase = 0;
   let stateAmendmentRegions = 0;
+  let trailingHeadings = 0;
   let stateAmendmentBlocks = 0;
   /** True from a closed "[Vide …]" citation until the next line of substance. */
   let sinceCitation = false;
@@ -552,6 +553,53 @@ export function parseInlineAct(
   /** Sort key (base + letter fraction) — "120A" must sort after "120". */
   let lastKey = 0;
 
+  /**
+   * A CROSS-HEADING left at the end of a finished body.
+   *
+   * These sit between sections — "Election" above Transfer of Property §35,
+   * "Unpaid seller's lien" above Sale of Goods §47, "General provisions
+   * relating to succession" above Hindu Succession §18 — and the parser appends
+   * them to whatever section is open, because at the time the line arrives it is
+   * neither a section start nor a division heading.
+   *
+   * D-056 tried to classify these AS THEY STREAMED, by geometry, and failed:
+   * centred all-caps also describes IPC's 163 "Illustrations" headings and
+   * CrPC's schedule rows. The mistake was deciding too early. By the time a body
+   * is flushed the question is much easier — a section's text ends in a
+   * terminator, so a trailing run that follows one and has none of its own is
+   * not part of the provision. That is also exactly what the content scanner
+   * flags as "no-terminator", which is how these were found.
+   *
+   * Illustrations are excluded by name: their text legitimately trails without
+   * punctuation once the print's quotation marks are mangled ("Illustrations “a
+   * “one “all"), and it is content rather than a heading.
+   */
+  // The tail must not END like a sentence, and must not CONTAIN a sentence
+  // boundary. Testing for a terminator anywhere was wrong twice over: U+2019 is
+  // an apostrophe far more often than a quote, so "Unpaid seller’s lien" looked
+  // terminated and survived; and a heading marker like "B.—A" carries a period
+  // without being prose.
+  const ENDS_LIKE_SENTENCE = /[.;:?!”")\]]$/;
+  const HAS_SENTENCE_BREAK = /\.\s/;
+  const trimTrailingHeading = (body: string): string => {
+    const match = /^([\s\S]*[.;:?!”’")\]])\s+(\S[^.;:?!]{0,60})$/.exec(body);
+    const tail = match?.[2]?.trim();
+    if (!match?.[1] || !tail) return body;
+    if (ENDS_LIKE_SENTENCE.test(tail) || HAS_SENTENCE_BREAK.test(tail)) return body;
+    if (/^Illustration/i.test(tail)) return body;
+    if (!/^[A-Z(—–―]/.test(tail)) return body;
+    // A heading does not end in a comma. Constitution article 74 trails
+    // "…omitted by the Constitution (Seventh Amendment) Act," — footnote text,
+    // and trimming its last word would tidy the symptom while leaving the rest.
+    if (/,$/.test(tail)) return body;
+    // An asterisk run is the print's mark for OMITTED text — the Constitution
+    // ends articles 123, 213 and 227 with "(4)* * * * *", which records that a
+    // clause was repealed. That is apparatus worth keeping, not a heading.
+    if (tail.includes("*")) return body;
+    trailingHeadings += 1;
+    return match[1];
+  };
+
   const flush = () => {
     if (currentNumber === null) return;
     const raw = rawParts.join(" ").replace(/\s+/g, " ").trim();
@@ -572,7 +620,7 @@ export function parseInlineAct(
       chapterNumber: currentChapterForSection,
       partNumber: currentPartForSection,
       marginalNote,
-      bodyMd,
+      bodyMd: trimTrailingHeading(bodyMd),
     });
     currentNumber = null;
     rawParts = [];
@@ -1016,6 +1064,9 @@ export function parseInlineAct(
   // Must sit OUTSIDE the illustration branch: State amendments are unrelated to
   // illustrations, and nesting these here meant they only reported for acts
   // that happened to have illustrations (silent on MV, which has six blocks).
+  if (trailingHeadings > 0) {
+    diagnostics.push(`trimmed ${trailingHeadings} cross-heading(s) from the end of a body`);
+  }
   if (stateAmendmentRegions > 0) {
     diagnostics.push(
       `skipped ${stateAmendmentRegions} State-amendment region(s) covering ${stateAmendmentBlocks} cited block(s)` +

@@ -141,7 +141,10 @@ function analyse(sections: Section[]): Finding[] {
       });
     }
     // A repealed/omitted section legitimately has a one-line citation body.
-    const isRepealCitation = /^\s*(?:Rep\.|Omitted)\b/.test(body);
+    // No \b after "Rep\." — a period is not a word character, so the boundary
+    // could never match and all 61 "Rep. by s. 65, ibid." bodies were reported
+    // as suspiciously short. The exclusion only ever worked for "Omitted".
+    const isRepealCitation = /^\s*\[?\s*(?:Rep\.|Repealed|Omitted)/i.test(body);
     if (body.length < 40 && !isRepealCitation) {
       findings.push({
         code: "very-short",
@@ -150,7 +153,10 @@ function analyse(sections: Section[]): Finding[] {
         detail: `${body.length} chars: "${body}"`,
       });
     }
-    if (!/[.;:)\]"'\d]$/.test(body)) {
+    // Typographic quotes close a sentence as surely as straight ones, and an
+    // asterisk run is the print's own mark for elided text ("*** omitted").
+    // Between them these accounted for 27 of the reports.
+    if (!/[.;:)\]"'\u201d\u2019\d]$|\*+$/.test(body)) {
       findings.push({
         code: "no-terminator",
         sev: "SEV2",
@@ -197,7 +203,11 @@ function analyse(sections: Section[]): Finding[] {
       bodiesByAct.set(act, seen);
     }
     const prev = seen.get(key);
-    if (prev && body.length > 80) {
+    // Two sections repealed by the same Act carry the same citation word for
+    // word — IPC §§490/492 and Limitation §§28/32 are duplicates by nature, not
+    // by defect.
+    const bothRepeals = /^\s*\[?\s*(?:Rep\.|Repealed|Omitted)/i.test(body);
+    if (prev && body.length > 80 && !bothRepeals) {
       findings.push({
         code: "dup-body",
         sev: "SEV2",

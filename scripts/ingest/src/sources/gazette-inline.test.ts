@@ -955,6 +955,77 @@ describe("markers and dashes the prints put in the way (D-062)", () => {
   });
 });
 
+describe("cross-headings left at the end of a body (D-063)", () => {
+  it("trims a cross-heading that belongs to the next section", () => {
+    // "Election" sits between Transfer of Property §§34 and 35; the parser
+    // appends it to whichever section is open, because when the line arrives it
+    // is neither a section start nor a division heading.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "4. Transfer by ostensible owner.—Where the transferor is the ostensible owner." },
+        { h: 10, text: "Election", x: 275 },
+        { h: 10, text: "5. Election when necessary.—Where a person professes to transfer property." },
+      ]),
+    );
+    const { sections } = parseInlineAct(xml, {});
+    expect(sections.map((s) => s.number)).toEqual(["4", "5"]);
+    expect(sections[0]?.bodyMd).toMatch(/ostensible owner\.$/);
+    expect(sections[0]?.bodyMd).not.toMatch(/Election/);
+  });
+
+  it("keeps text that ends in a terminator, however short", () => {
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "4. Public documents.—The following are public documents." },
+        { h: 10, text: "All other documents are private." },
+        { h: 10, text: "5. Private documents.—All other documents are private." },
+      ]),
+    );
+    expect(parseInlineAct(xml, {}).sections[0]?.bodyMd).toMatch(/private\.$/);
+  });
+
+  it("keeps an elision marker, which records that a clause was repealed", () => {
+    // The Constitution ends articles 123, 213 and 227 with "(4)* * * * *".
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "4. Power to promulgate Ordinances.—The President may promulgate such Ordinances." },
+        { h: 10, text: "(4)* * * * *" },
+        { h: 10, text: "5. Next section.—Something else entirely follows here." },
+      ]),
+    );
+    expect(parseInlineAct(xml, {}).sections[0]?.bodyMd).toMatch(/\* \* \* \*$/);
+  });
+
+  it("keeps illustration text, which trails without punctuation when mangled", () => {
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "4. Agreements void for uncertainty.—Agreements the meaning of which is not certain are void." },
+        { h: 10, text: "Illustrations “a “one “all" },
+        { h: 10, text: "5. Next section.—Something else entirely follows here." },
+      ]),
+    );
+    expect(parseInlineAct(xml, {}).sections[0]?.bodyMd).toMatch(/Illustrations/);
+  });
+
+  it("keeps a trailing fragment that ends in a comma — that is footnote text", () => {
+    // Constitution article 74 trails "…omitted by the Constitution (Seventh
+    // Amendment) Act,". Trimming the last word would tidy the symptom only.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "4. Council of Ministers.—There shall be a Council of Ministers to aid the President." },
+        { h: 10, text: "The words omitted by the Constitution (Seventh Amendment) Act," },
+        { h: 10, text: "5. Next section.—Something else entirely follows here." },
+      ]),
+    );
+    expect(parseInlineAct(xml, {}).sections[0]?.bodyMd).toMatch(/Act,$/);
+  });
+});
+
 describe("bracketed chapter heading guard (D-033)", () => {
   it("recognises an inserted chapter whose bracket and title share the line", () => {
     // NDPS §68 ended with "[CHAPTER VA [F ORFEITURE OF ILLEGALLY ACQUIRED
