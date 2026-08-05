@@ -54,6 +54,24 @@ const RUN_IN_HEADING = /^\d{1,3}[A-Z]{0,2}\.\s*[^―—–]{3,120}[.\]]\s*[―�
 /** Where the footnote block may begin, as a fraction of page height. */
 export const DEFAULT_PAGE_FOOT = 0.77;
 
+/**
+ * A DRAWN RULE, used as a DELIMITER PAIR.
+ *
+ * The Indian Succession Act's PDF prints a run of hyphens across the column
+ * around each footnote block — 97 of them — and numbers the notes WITHOUT a
+ * period ("1 The Act has been extended to Berar…", "3 Ins. by Act 18 of 1929,
+ * s. 2."), so neither the page-foot test nor the footnote shape sees any of it.
+ *
+ * The rules come in PAIRS and the block sits between them; body text resumes
+ * directly after the closing rule, often mid-sentence. Treating a rule as
+ * "footnotes start here, to the end of the page" was tried and was badly wrong —
+ * rules appear from 0.10 to 0.91 of page height and 40 pages carry more than
+ * one, so latching to the page end dropped 1,008 lines and 60 real sections.
+ * A pair also spans page breaks (the Act's very first block opens on page 1 and
+ * closes on page 2), so the toggle is document-wide, not page-scoped.
+ */
+const RULE_LINE = /^[-–—_]{12,}$/;
+
 interface Row {
   tag: string;
   text: string;
@@ -102,13 +120,23 @@ export function contentsSections(xhtml: string): string[] {
  * appearing below the block, which no repaired act does but which must never be
  * swallowed if one did.
  */
+export interface StripOptions {
+  /** Fraction of page height below which a footnote block may begin. */
+  pageFoot?: number;
+  /** The PDF brackets its footnotes with drawn rules — see RULE_LINE. */
+  ruleDelimited?: boolean;
+}
+
 export function stripBodyHeightFootnotes(
   xhtml: string,
-  pageFoot: number = DEFAULT_PAGE_FOOT,
+  options: StripOptions = {},
 ): { filtered: string; dropped: string[] } {
+  const pageFoot = options.pageFoot ?? DEFAULT_PAGE_FOOT;
   const dropped: string[] = [];
   const parts = xhtml.split(/(<page\b)/);
   const out: string[] = [];
+  /** Rule-delimited blocks cross page breaks, so this survives the page loop. */
+  let betweenRules = false;
   for (const chunk of parts) {
     if (chunk === "<page" || !/<word /.test(chunk)) {
       out.push(chunk);
@@ -119,10 +147,19 @@ export function stripBodyHeightFootnotes(
     let inFootnotes = false;
     for (const [y, row] of [...groupRows(chunk).entries()].sort((a, b) => a[0] - b[0])) {
       if (Math.max(...row.map((w) => w.height)) < MIN_BODY_HEIGHT) continue;
-      if (y / height < pageFoot) continue;
       const text = row.map((w) => w.text).join(" ").replace(/\s+/g, " ").trim();
+
+      if (options.ruleDelimited) {
+        const rule = RULE_LINE.test(text.replace(/\s+/g, ""));
+        if (rule) betweenRules = !betweenRules;
+        if (!rule && !betweenRules) continue;
+        dropped.push(text);
+        for (const w of row) filtered = filtered.replace(w.tag, "");
+        continue;
+      }
+
       if (!inFootnotes) {
-        if (!FOOTNOTE.test(text) || RUN_IN_HEADING.test(text)) continue;
+        if (y / height < pageFoot || !FOOTNOTE.test(text) || RUN_IN_HEADING.test(text)) continue;
         inFootnotes = true;
       } else if (RUN_IN_HEADING.test(text)) {
         break;

@@ -206,8 +206,7 @@ export default async function VerificationPage() {
             marriage, and the SC/ST (Prevention of Atrocities) Act lost its central punishment
             provision. Each is published only because the repaired text matches that Act&rsquo;s own
             arrangement of sections, section for section; the repair refuses to run otherwise.
-            Two more are extracted but withheld — the Advocates and Indian Succession Acts —
-            because each still has sections missing or footnote text inside them.
+            Nothing is currently withheld.
           </li>
         </ul>
         <p className="mt-3">

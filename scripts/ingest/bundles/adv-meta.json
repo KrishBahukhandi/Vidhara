@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "adv",
+    "title": "The Advocates Act, 1961",
+    "shortTitle": "Advocates Act",
+    "abbreviation": "ADV",
+    "year": 1961,
+    "category": "general",
+    "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/1631"
+  },
+  "provenance": "Official India Code text: The Advocates Act, 1961, English PDF (bitstream 123456789/1631/4/A1961-25.pdf, 325,211 bytes, sha256 e944a8c6c4a0caa2...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-03. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser, with the body-height footnote filter (D-059). Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+}

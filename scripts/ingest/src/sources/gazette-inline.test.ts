@@ -882,6 +882,79 @@ describe("marginal notes the dash rules got wrong (D-057)", () => {
   });
 });
 
+describe("markers and dashes the prints put in the way (D-062)", () => {
+  it("reads a section whose number carries a closing bracket", () => {
+    // The Advocates Act prints "[ [10B.] Disqualification of members of Bar
+    // Council.―…" — the bracket after the period left the title starting "]",
+    // which failed the title-shape test and dropped the section into §10A.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "10A. Transaction of business.—A Bar Council may meet at such place as it thinks fit." },
+        { h: 10, text: "[ [10B.] Disqualification of members of Bar Council.―An elected member shall be deemed." },
+        { h: 10, text: "11. Roll of advocates.—Every State Bar Council shall prepare and maintain a roll." },
+      ]),
+    );
+    const { sections } = parseInlineAct(xml, {});
+    expect(sections.map((s) => s.number)).toEqual(["10A", "10B", "11"]);
+    expect(sections[1]?.marginalNote).toBe("Disqualification of members of Bar Council");
+    expect(sections[0]?.bodyMd).not.toMatch(/Disqualification/);
+  });
+
+  it("reads a section number behind an inline superscript marker", () => {
+    // The Indian Succession Act renders superscripts inline: "1*50. General
+    // principles relating to intestate succession.-For…". Eight sections were
+    // missing because only the bracket form of the marker was stripped.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "9. Domicile of origin.-The domicile of origin prevails until a new domicile is acquired." },
+        { h: 10, text: "1*10. General principles relating to intestate succession.-For the purpose of succession." },
+        { h: 10, text: "11. Division of property.-The property shall be divided in equal shares." },
+      ]),
+    );
+    expect(parseInlineAct(xml, {}).sections.map((s) => s.number)).toEqual(["9", "10", "11"]);
+  });
+
+  it("accepts a hyphen as the run-in dash", () => {
+    // The Indian Succession Act sets its run-in rule as ".-", which left the
+    // whole first sentence inside the marginal note.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "2. Definitions.- In this Act, unless there is anything repugnant, the following apply." },
+      ]),
+    );
+    const s = parseInlineAct(xml, {}).sections[0];
+    expect(s?.marginalNote).toBe("Definitions");
+    expect(s?.bodyMd).toMatch(/^In this Act/);
+  });
+
+  it("consumes a doubled dash but never a repeated horizontal bar", () => {
+    // The Evidence Act sets "Repeal of enactments.––Rep. by…" (doubled en dash),
+    // so a single-dash rule left one behind. But U+2015 doubles as an opening
+    // QUOTE — "Abolition of Untouchability.――Untouchability‖ is abolished…" —
+    // and consuming a run of those ate the quote mark.
+    const doubled = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "2. Repeal of enactments.\u2013\u2013Rep. by the Repealing Act, 1938 (1 of 1938), s. 2." },
+      ]),
+    );
+    expect(parseInlineAct(doubled, {}).sections[0]?.bodyMd).toMatch(/^Rep\. by the Repealing Act/);
+
+    const quoted = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "2. Abolition of Untouchability.\u2015\u2015Untouchability\u2016 is abolished and its practice forbidden." },
+      ]),
+    );
+    expect(parseInlineAct(quoted, {}).sections[0]?.bodyMd).toBe(
+      "\u2015Untouchability\u2016 is abolished and its practice forbidden.",
+    );
+  });
+});
+
 describe("bracketed chapter heading guard (D-033)", () => {
   it("recognises an inserted chapter whose bracket and title share the line", () => {
     // NDPS §68 ended with "[CHAPTER VA [F ORFEITURE OF ILLEGALLY ACQUIRED

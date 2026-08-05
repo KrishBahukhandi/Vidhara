@@ -342,7 +342,13 @@ const TITLE_APPARATUS = /[[\]*\d]+/g;
 // so the title/body split happens after the whole section is accumulated.
 // \s* not \s+: some PDFs drop the space after the number ("16.“Undue…").
 // \s?\. : the PDF sometimes splits "174A ." with a space before the period.
-const SECTION_START = /^(\d{1,3}[A-Z]{0,2})\s?\.\s*(\S.*)$/;
+// A closing bracket may sit between the number and the title, because an
+// amendment bracketed the number itself: the Advocates Act prints its section
+// 10B as "[ [10B.] Disqualification of members of Bar Council.―…". Leading
+// markers strip the opening brackets, but the one AFTER the period stayed, and
+// the title then began with "]" — which failed the title-shape test and dropped
+// the section.
+const SECTION_START = /^(\d{1,3}[A-Z]{0,2})\s?\.\s*\]?\s*(\S.*)$/;
 // Amendment brackets can eat the number's period ("1[17 “Government”.—…" →
 // "17 “Government”.—…"), and the print sometimes simply drops it: the Juvenile
 // Justice Act's section 86, substituted in 2021, is set as "[86 Classification
@@ -364,7 +370,14 @@ const SECTION_START_NODOT = /^(\d{1,3}[A-Z]{0,2})\s+([“"A-Z].*)$/;
 // 519 times in the Constitution. Without it the split fell through to the
 // sentence-period fallback and cut inside the repeal citation — "Repeals.―Rep"
 // as the title, "by the Repealing and Amending Act, 1960…" as the body.
-const TITLE_SPLIT = /^(.{3,160}?)\.\s*[—–―]\s*([\s\S]*)$/;
+// A RUN of em/en dashes, or exactly ONE horizontal bar. The Evidence Act sets
+// its run-in rule as a doubled en dash ("Repeal of enactments.––Rep. by…"), so
+// matching a single dash left one behind at the head of 182 bodies. But U+2015
+// may not repeat: this print also uses it as an opening QUOTE — article 17 of
+// the Constitution reads "Abolition of Untouchability.――Untouchability‖ is
+// abolished…", where the second ― opens the quotation. Consuming a run of them
+// ate that quote mark. Dashes repeat; the bar does not.
+const TITLE_SPLIT = /^(.{3,160}?)\.\s*(?:[—–]+|―|-)\s*([\s\S]*)$/;
 // Fallback for run-in titles with no dash (mostly repealed sections:
 // "Definition of “Queen”. Omitted by the A. O. 1950."): split at the first
 // sentence period.
@@ -378,14 +391,23 @@ const TITLE_PERIOD_SPLIT = /^(.{3,120}?)\.\s+([\s\S]*)$/;
  * "Repeals.―Rep" as the title. Tried FIRST for that reason; the dash after the
  * bracket is optional because the Partnership Act prints none.
  */
-const TITLE_BRACKET_SPLIT = /^\[\s*([^\]]{3,160}?)\s*\]\s*[—–―]?\s*([\s\S]*)$/;
+const TITLE_BRACKET_SPLIT = /^\[\s*([^\]]{3,160}?)\s*\]\s*\.?\s*(?:[—–]+|―)?\s*([\s\S]*)$/;
 /** Amendment/footnote glyphs that can precede a section number at line start —
  * brackets/stars, and a body-height footnote digit directly before an opening
  * bracket ("4 [174A. Non-appearance…"). */
-/** Amendment/footnote glyphs that can precede a section number at line start —
+/**
+ * Amendment/footnote glyphs that can precede a section number at line start —
  * brackets/stars, and a body-height footnote digit directly before an opening
- * bracket ("4 [174A. Non-appearance…"). */
-const LEADING_MARKERS = /^(?:\d{1,2}\s*\[|[[\]*\s])+/;
+ * bracket ("4 [174A. Non-appearance…").
+ *
+ * The digit may be followed by a STAR rather than a bracket. The Indian
+ * Succession Act's PDF renders superscript markers inline, so its section 50 is
+ * printed "1*50. General principles relating to intestate succession.-For…".
+ * Stripping only the bracket form left "1*50." unmatched by every section
+ * pattern, and eight sections went missing that way — 50, 51, 52, 54, 57, 116,
+ * 117 and 382, which includes the whole opening of the Parsi intestacy rules.
+ */
+const LEADING_MARKERS = /^(?:\d{1,2}\s*[[*]|[[\]*\s])+/;
 
 /** Does this line read as a CHAPTER/PART heading, in either printed form and
  * after small-caps repair? Used both to recover a heading the height filter

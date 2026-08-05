@@ -28,8 +28,8 @@ export default function CitePage() {
         Constitution, the family-law code (Hindu Marriage, Succession, Adoptions and Maintenance,
         Minority and Guardianship, and Special Marriage), and the Contract, Partnership, NI, CPC,
         Motor Vehicles, Arbitration, Limitation, Transfer of Property, Specific Relief, Sale of
-        Goods, Registration, Consumer Protection, Information Technology, Right to Information and General
-        Clauses Acts.
+        Goods, Registration, Consumer Protection, Information Technology, Right to Information, Advocates,
+        Indian Succession and General Clauses Acts.
         Looking for another act? Tell us on a miss — that&rsquo;s how we pick what to add next.
       </p>
       <p className="mt-3 text-small text-text-muted">

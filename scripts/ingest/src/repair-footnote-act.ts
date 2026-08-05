@@ -20,16 +20,18 @@ import process from "node:process";
 import { contentsSections, stripBodyHeightFootnotes } from "./body-footnotes";
 import { parseInlineAct } from "./sources/gazette-inline";
 
-const [slug, input] = process.argv.slice(2);
+const [slug, input, ...flags] = process.argv.slice(2);
 if (!slug || !input) {
-  console.error("Usage: tsx src/repair-footnote-act.ts <slug> <act.xhtml>");
+  console.error("Usage: tsx src/repair-footnote-act.ts <slug> <act.xhtml> [--rule-delimited]");
   process.exit(1);
 }
+/** The PDF draws rules around its footnote blocks (Indian Succession). */
+const ruleDelimited = flags.includes("--rule-delimited");
 
 const xhtml = readFileSync(input, "utf8");
 const expected = contentsSections(xhtml);
 const before = parseInlineAct(xhtml);
-const { filtered, dropped } = stripBodyHeightFootnotes(xhtml);
+const { filtered, dropped } = stripBodyHeightFootnotes(xhtml, { ruleDelimited });
 const after = parseInlineAct(filtered);
 
 console.log(`${slug}: dropped ${dropped.length} body-height footnote line(s) at the page foot`);

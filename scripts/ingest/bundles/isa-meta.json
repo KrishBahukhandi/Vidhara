@@ -1,0 +1,13 @@
+{
+  "act": {
+    "slug": "isa",
+    "title": "The Indian Succession Act, 1925",
+    "shortTitle": "Indian Succession Act",
+    "abbreviation": "ISA",
+    "year": 1925,
+    "category": "civil",
+    "status": "active",
+    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/19051"
+  },
+  "provenance": "Official India Code text: The Indian Succession Act, 1925, English PDF (bitstream 123456789/19051/1/indian_succession_act_1925.pdf, 694,325 bytes, sha256 07fb374ab81026e8...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-03. This PDF brackets its footnotes with drawn rules and renders superscript markers inline (\"1*50. General principles…\"), both of which are handled at ingest (D-062). Section 52 is absent because this edition does not print it — its own footnote records sections 50 to 56 being substituted by Act 17 of 1939. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+}
