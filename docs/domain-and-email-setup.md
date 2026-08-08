@@ -179,17 +179,23 @@ reset and email-change flows use it.
 Three places read the site origin, each from an env var with the old Vercel URL as
 fallback:
 
-| Where | Variable | Set in |
+**Done 2026-08-08.** All three source fallbacks now default to
+`https://vidhara.bahukhandi-labs.com`, so nothing has to be set for the site to
+emit correct absolute URLs — the env vars remain as overrides only:
+
+| Where | Variable | Override set in |
 | --- | --- | --- |
-| `apps/web/src/lib/site.ts` | `NEXT_PUBLIC_SITE_URL` | Vercel → Vidhara project → Environment Variables (Production) |
+| `apps/web/src/lib/site.ts` | `NEXT_PUBLIC_SITE_URL` | Vercel → Vidhara project → Environment Variables |
 | `apps/mobile/src/lib/site.ts` | `EXPO_PUBLIC_WEB_URL` | `apps/mobile/.env` + EAS build secrets |
 | `supabase/functions/hearing-reminders/index.ts` | `SITE_URL` | Supabase → Edge Functions → Secrets |
 
-All three to `https://vidhara.bahukhandi-labs.com`. The web one needs a redeploy
-to take effect — env changes do not rebuild on their own.
+Defaulting to the real domain rather than reading an env var was deliberate:
+preview deploys and local dev then generate correct URLs too, and there is no
+silent failure mode where an unset variable quietly reverts every canonical link,
+OG tag and sitemap entry to the Vercel origin.
 
-The fallback literals in the source get updated in the same change, so local dev
-and preview deploys generate correct absolute URLs too.
+The Edge Function fallback only takes effect on its next deploy — it is compiled
+into the function, not read at request time from the repo.
 
 ---
 

@@ -29,7 +29,7 @@ const SMTP_FROM = Deno.env.get("SMTP_FROM") ?? SMTP_USER ?? "";
 const CRON_SECRET = Deno.env.get("REMINDERS_CRON_SECRET");
 /** Public base URL used to build confirm/unsubscribe links. */
 const FN_URL = `${Deno.env.get("SUPABASE_URL")}/functions/v1/hearing-reminders`;
-const SITE_URL = Deno.env.get("SITE_URL") ?? "https://vidhara-web-lyart.vercel.app";
+const SITE_URL = Deno.env.get("SITE_URL") ?? "https://vidhara.bahukhandi-labs.com";
 /** Belt-and-braces cap so a bug can never blast the mail account. */
 const MAX_PER_RUN = Number(Deno.env.get("REMINDERS_MAX_PER_RUN") ?? "200");
 
