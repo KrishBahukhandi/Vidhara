@@ -7,7 +7,7 @@ and turning on real email so sign-in works (unblocks D-021 and D-041).
 (`dns1–4.bigrock.in`). The apex and `www` already serve the Bahukhandi Labs site
 from a *different* Vercel project — nothing below touches them.
 
-State of the zone before any of this (checked 2026-08-05):
+State of the zone before any of this (checked 2026-08-08):
 
 | Record | Value |
 | --- | --- |
@@ -36,8 +36,8 @@ Manage DNS → CNAME Records → Add:
 | Field | Value |
 | --- | --- |
 | Host / Name | `vidhara` |
-| Value | **whatever the Vidhara project showed** (usually `cname.vercel-dns.com`) |
-| TTL | 3600 (or lowest offered, while testing) |
+| Value | `674284893f4e96b2.vercel-dns-017.com` — per-project, from the Vidhara project |
+| TTL | 3600 (or lowest offered; BigRock defaults to 38400) |
 
 > **Do not copy the `www` CNAME value.** Vercel issues a different target per
 > project. Reusing `1a23e4dae3eec2cc.vercel-dns-017.com` would make
@@ -58,6 +58,35 @@ Then confirm the certificate and that it is *Vidhara* being served:
 ```bash
 curl -sI https://vidhara.bahukhandi-labs.com | head -1
 ```
+
+### If Vercel says "Invalid Configuration" against a zone that is provably right
+
+This happened on the first attempt and will happen again with the Resend records,
+so it is worth knowing the mechanism.
+
+BigRock's SOA ends `... 172800 38400`. That last field is the **negative-cache
+TTL: 38,400 seconds, or 10.7 hours.** Under RFC 2308 a resolver that asks for a
+record which does not yet exist caches *the absence* for that long. So any check
+Vercel ran before the record was added — or while it was wrong — pins a "no such
+record" answer for most of a day, however correct the zone becomes afterwards.
+
+Confirm the zone is genuinely fine before blaming it. All four nameservers should
+agree, and Vercel's edge should answer on the CNAME target:
+
+```bash
+for ns in dns1 dns2 dns3 dns4; do dig +short CNAME vidhara.bahukhandi-labs.com @$ns.bigrock.in; done
+```
+
+A `404` from `https://<target>.vercel-dns-017.com` is the **healthy** signal: the
+edge is alive and simply has no domain→project binding yet. The site answering
+nothing at all on both 80 and 443 is downstream of that, not a separate fault —
+Vercel does not route the hostname or issue a certificate until it validates.
+
+In order: hit **Refresh**; if that fails, **remove the domain from the project and
+re-add it**, which forces fresh validation; otherwise wait out the negative cache.
+Lowering the record TTL does not clear an already-cached negative — negative
+caching keys off the SOA minimum, not the record — but it does make the next
+change propagate in an hour instead of half a day.
 
 ---
 
