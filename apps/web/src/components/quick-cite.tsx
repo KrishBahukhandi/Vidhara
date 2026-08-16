@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ACT_SLUG, parseSectionRef } from "@nexlex/shared";
+import { ACT_SLUG, parseOrderRuleRef, parseSectionRef } from "@nexlex/shared";
 
 import { MissingContentForm } from "@/components/missing-content-form";
+import { OrderRuleNotice } from "@/components/order-rule-notice";
 import { track } from "@/lib/analytics";
 import {
   clearCache,
@@ -37,6 +38,7 @@ export function QuickCite() {
   const [section, setSection] = useState<CitedSection | null>(null);
   const [hits, setHits] = useState<Hit[] | null>(null);
   const [state, setState] = useState<"idle" | "loading" | "error">("idle");
+  const [orderRule, setOrderRule] = useState<ReturnType<typeof parseOrderRuleRef>>(null);
   const [message, setMessage] = useState("");
   const [fromCache, setFromCache] = useState(false);
   const [copied, setCopied] = useState<"cite" | "text" | null>(null);
@@ -98,6 +100,18 @@ export function QuickCite() {
     setState("loading");
     setMessage("");
     setCopied(null);
+
+    // An advocate citing "Order 7 Rule 11" is citing the CPC's First Schedule,
+    // which is not in the corpus. Checked before anything else: concept search
+    // would otherwise return sections matching the bare digit, which for
+    // someone drafting is worse than being told we do not have it.
+    const orderRuleRef = parseOrderRuleRef(trimmed);
+    setOrderRule(orderRuleRef);
+    if (orderRuleRef) {
+      track("quick_cite_lookup", { matched_ref: false, order_rule: true, offline: !navigator.onLine });
+      setState("idle");
+      return;
+    }
 
     const ref = parseSectionRef(trimmed);
     track("quick_cite_lookup", { matched_ref: Boolean(ref?.act), offline: !navigator.onLine });
@@ -174,6 +188,12 @@ export function QuickCite() {
           {state === "loading" ? "…" : "Cite"}
         </button>
       </form>
+
+      {orderRule ? (
+        <div className="mt-4">
+          <OrderRuleNotice value={orderRule} />
+        </div>
+      ) : null}
 
       {state === "error" ? (
         <>

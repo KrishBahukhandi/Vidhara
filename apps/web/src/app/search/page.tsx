@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { ACT_SLUG, parseSectionRef } from "@nexlex/shared";
+import { ACT_SLUG, parseOrderRuleRef, parseSectionRef } from "@nexlex/shared";
 
 import { MissingContentForm } from "@/components/missing-content-form";
+import { OrderRuleNotice } from "@/components/order-rule-notice";
 import { SearchBox } from "@/components/search-box";
 import { SearchResults } from "@/components/search-results";
 import { PageShell } from "@/components/site-chrome";
@@ -30,6 +31,11 @@ export default async function SearchPage({
     redirect(`/acts/${ACT_SLUG[ref.act]}/${encodeURIComponent(ref.section)}?via=search`);
   }
 
+  // The CPC's Orders and Rules are not in the corpus (78% of that Act by
+  // volume). Detected before searching so the reader is told, rather than
+  // handed the seven unrelated sections FTS matches on the digit alone.
+  const orderRule = query ? parseOrderRuleRef(query) : null;
+
   const hits = query ? await searchSections(query) : [];
   // Plain FTS found nothing → let the grounded AI librarian interpret the
   // question (e.g. "anticipatory bail" → "bail to person apprehending arrest")
@@ -48,6 +54,12 @@ export default async function SearchPage({
       <div className="mt-6 max-w-2xl">
         <SearchBox initialQuery={query} autoFocus={!query} />
       </div>
+
+      {orderRule ? (
+        <div className="mt-6 max-w-2xl">
+          <OrderRuleNotice value={orderRule} />
+        </div>
+      ) : null}
 
       {query && hits.length > 0 ? (
         <>

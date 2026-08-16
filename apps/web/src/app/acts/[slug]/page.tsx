@@ -66,6 +66,26 @@ export default async function ActPage({ params }: { params: Promise<Params> }) {
         {act.status !== "active" ? " · no longer in force" : ""}
       </p>
 
+      {/* The CPC is cited two ways and we carry only one of them. Saying so on
+          the act page itself means a reader browsing for Order VII Rule 11
+          learns the boundary before concluding it is not in the Act at all. */}
+      {act.slug === "cpc" ? (
+        <p className="mt-4 max-w-measure rounded-md border border-warning p-4 text-small text-text-muted">
+          <strong className="font-semibold text-text">Sections only.</strong> This is the CPC&rsquo;s
+          body — sections 1&ndash;158. Its <strong>First Schedule</strong> (the Orders and Rules:
+          Order VII Rule 11, Order VIII Rule 6, Order XXXIX and so on) is not ingested yet; read
+          those on{" "}
+          <a
+            href="https://www.indiacode.nic.in/handle/123456789/2191"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline underline-offset-4 hover:text-text">
+            India Code
+          </a>
+          .
+        </p>
+      ) : null}
+
       {schedules.length > 0 ? (
         <nav className="mt-6 rounded-md border border-border bg-surface p-4" aria-label="Schedules">
           <p className="text-small font-semibold uppercase tracking-wide text-text-muted">
