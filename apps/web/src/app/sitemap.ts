@@ -23,15 +23,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const [acts, sectionPaths] = await Promise.all([listActs(), listAllSectionPaths()]);
 
+  // `lastModified` comes from each section's own updated_at, which the
+  // act_sections touch trigger maintains — so a content repair (and this
+  // corpus has had many) tells Google that page is worth recrawling, while
+  // the untouched thousands do not compete for the same crawl budget. A
+  // sitemap without it asks Google to guess across 5,600 URLs on a domain
+  // young enough to have little crawl budget to spend.
+  const actLastMod = new Map<string, string>();
+  for (const { slug, updatedAt } of sectionPaths) {
+    const current = actLastMod.get(slug);
+    if (!current || updatedAt > current) actLastMod.set(slug, updatedAt);
+  }
+
   return [
     ...staticEntries,
     ...acts.map((act) => ({
       url: `${SITE_URL}/acts/${act.slug}`,
+      // An act page is a list of its sections, so it is as fresh as its
+      // freshest section.
+      lastModified: actLastMod.get(act.slug),
       changeFrequency: "weekly" as const,
       priority: 0.8,
     })),
-    ...sectionPaths.map(({ slug, number }) => ({
+    ...sectionPaths.map(({ slug, number, updatedAt }) => ({
       url: `${SITE_URL}/acts/${slug}/${encodeURIComponent(number)}`,
+      lastModified: updatedAt,
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),

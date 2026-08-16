@@ -77,6 +77,8 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
   ]);
   const isSample = section.provenance?.startsWith("dev-sample");
 
+  const sectionUrl = `${SITE_URL}/acts/${slug}/${encodeURIComponent(section.number)}`;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Legislation",
@@ -85,7 +87,34 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
     isPartOf: { "@type": "Legislation", name: section.acts.title },
     legislationJurisdiction: "IN",
     inLanguage: "en",
-    url: `${SITE_URL}/acts/${slug}/${encodeURIComponent(section.number)}`,
+    // Freshness signal that matches what the sitemap claims for this URL —
+    // the two disagreeing is worse than neither, so both read updated_at.
+    dateModified: section.updated_at,
+    url: sectionUrl,
+  };
+
+  // Mirrors the visible breadcrumb below. Google renders this hierarchy in the
+  // result itself instead of a bare URL, and for a corpus this size it is also
+  // how the act→section structure is communicated: 5,594 sections that each
+  // look like a top-level page give a crawler nothing to generalise from.
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Bare Acts", item: `${SITE_URL}/acts` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: section.acts.title,
+        item: `${SITE_URL}/acts/${slug}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: `Section ${section.number}`,
+        item: sectionUrl,
+      },
+    ],
   };
 
   return (
@@ -109,6 +138,10 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
       <nav className="text-small text-text-muted" aria-label="Breadcrumb">

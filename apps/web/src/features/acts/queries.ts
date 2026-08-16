@@ -356,19 +356,25 @@ export async function getSchedule(
 /** For sitemap generation: every published section's canonical path parts.
  * Paged in 1,000-row ranges — PostgREST's default cap was silently truncating
  * the sitemap to 1,000 of 3,118 URLs. */
-export async function listAllSectionPaths(): Promise<{ slug: string; number: string }[]> {
+export async function listAllSectionPaths(): Promise<
+  { slug: string; number: string; updatedAt: string }[]
+> {
   if (!isContentConfigured) return [];
-  const paths: { slug: string; number: string }[] = [];
+  const paths: { slug: string; number: string; updatedAt: string }[] = [];
   const pageSize = 1000;
+  // Paginated because PostgREST caps a plain select at 1,000 rows — the exact
+  // default that silently truncated the sitemap to 1,000 of 3,129 URLs at V0.1.
   for (let from = 0; ; from += pageSize) {
     const { data, error } = await getServerClient()
       .from("act_sections")
-      .select("number, acts!inner(slug)")
+      .select("number, updated_at, acts!inner(slug)")
       .order("act_id", { ascending: true })
       .order("sort_key", { ascending: true })
       .range(from, from + pageSize - 1);
     if (error) throw new Error(`listAllSectionPaths: ${error.message}`);
-    for (const row of data) paths.push({ slug: row.acts.slug, number: row.number });
+    for (const row of data) {
+      paths.push({ slug: row.acts.slug, number: row.number, updatedAt: row.updated_at });
+    }
     if (data.length < pageSize) break;
   }
   return paths;
