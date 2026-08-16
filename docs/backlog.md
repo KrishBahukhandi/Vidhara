@@ -17,7 +17,7 @@
 | `https://vidhara.bahukhandi-labs.com` | **200**, sitemap emits the new origin |
 | `https://vidhara-web-lyart.vercel.app` | still 200 — kept alive so shared links do not rot |
 | `/api/v1/health` | `{"ok":true,"service":"vidhara-web","minSupportedAppVersion":"0.1.0"}` |
-| Corpus | **36 acts / 5,594 sections**, content-qa **0 SEV1**, SEV2 29 |
+| Corpus | **36 acts / 5,594 sections**, content-qa **0 SEV1**, SEV2 **19** (D-066) |
 | `hearing-reminders?action=status` | `{"configured":false}` — Edge Function secrets still unset |
 | Git tags | `v0.1.0`, `v0.2.0` — no `v0.5.0` |
 | DNS: Resend DKIM / SPF / MX | all three resolve ✓ (domain verified) |
@@ -104,9 +104,21 @@ reminders (built, still inert — needs the Edge Function secrets above).
 
 Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterised, not unknown.
 
-- [ ] **29 SEV2 findings** (down from 174 in D-063): ~7 are correct as they stand, ~8 are footnote
-      residue in acts that print footnotes at body height, ~14 are illustration text the print
-      itself mangles
+- [x] **Category A cleared (D-066): SEV2 29 → 19.** Ten bodies carried appended non-statute text —
+      cross-headings, footnote apparatus, and the entire First Schedule inside CRPC §484 "Repeal and
+      savings" (1,747 chars). Repaired bundle-first and republished; 1,271 mappings intact.
+- [ ] **19 SEV2 remain, and they split by what they need, not by severity:**
+      - **3 are missing statute text** — TP §126 ends "the right to take back at", ISA §281 at
+        "declare that", NI §52 mid-illustration. **Blocked on source PDFs**, which are not on disk.
+        The words cannot be written from recall (D-011; D-031 records that going wrong).
+      - **~6 lack only a full stop**, in illustrations the print itself mangles — cosmetic.
+      - the rest are dup-body / bracket-count / genuinely-short articles, characterised in D-063.
+- [ ] **Parser fix for the trailing-heading rule** — D-066 measured exactly why it missed these
+      (tail capture excludes `.` so heading markers like "B.—A" never match; 60-char cap too short
+      for CPC §67's 84-char heading). **Blocked on the same source PDFs**: without them the
+      old-vs-new regression cannot run, and D-056 is the record of widening these rules unmeasured.
+- [ ] **Re-fetch source PDFs for TP, ISA, NI, CPC, CRPC** — unblocks both items above. Provenance
+      in each bundle records byte counts and SHA-256, so a re-fetch is verifiable (D-037 did this).
 - [ ] **Two parser defects blocked on inputs, not effort** (D-056). The ICA footnote-as-section
       case needs a signal the text layer does not carry — a rule line, a font-name change, or the
       sub-7pt amendment superscript — so it is a *source acquisition* problem. The cross-heading
