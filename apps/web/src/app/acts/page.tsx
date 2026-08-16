@@ -9,7 +9,7 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "Bare Acts Library — Indian statutes, structured and searchable",
   description:
-    "Read Indian bare acts section by section: BNS, BNSS, BSA, IPC, CrPC, Evidence Act and more — free, structured, and mapped between old and new criminal laws.",
+    "All 36 Indian bare acts, section by section: BNS, BNSS, BSA, IPC, CrPC, Evidence Act, the Constitution, Contract Act, CPC, NI Act, POCSO, Hindu Marriage, Limitation, Motor Vehicles and more — free.",
 };
 
 const STATUS_LABEL: Record<string, string> = {

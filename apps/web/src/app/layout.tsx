@@ -22,8 +22,15 @@ export const metadata: Metadata = {
     default: "Vidhara — India's legal learning platform",
     template: "%s · Vidhara",
   },
+  // Kept under ~155 characters of *useful* text, because that is roughly where
+  // Google truncates: the previous 239-character version spent its tail on
+  // "plain-language explanations and a daily quiz. For Indian law students and
+  // judiciary aspirants" — copy no searcher ever saw. The corpus count and the
+  // named acts are front-loaded instead, since naming only seven of 36 acts
+  // made the site invisible for queries it answers well (the same undersell
+  // D-032 found in /cite's coverage line).
   description:
-    "Every section of the IPC, CrPC, Evidence Act, BNS, BNSS, BSA and the Constitution — free, with the official old⇄new mapping (IPC 302 → BNS 103), plain-language explanations and a daily quiz. For Indian law students and judiciary aspirants.",
+    "36 Indian bare acts, free: the official IPC→BNS, CrPC→BNSS and Evidence→BSA mapping, plus the Constitution, Contract Act, CPC, NI, POCSO, Hindu Marriage, Limitation and more — full section text.",
   keywords: [
     "IPC to BNS",
     "CrPC to BNSS",
@@ -31,6 +38,14 @@ export const metadata: Metadata = {
     "bare acts",
     "new criminal laws India",
     "judiciary exam preparation",
+    "Constitution of India",
+    "Indian Contract Act",
+    "Code of Civil Procedure",
+    "Negotiable Instruments Act",
+    "POCSO Act",
+    "Hindu Marriage Act",
+    "Limitation Act",
+    "Motor Vehicles Act",
   ],
   openGraph: {
     type: "website",
