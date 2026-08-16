@@ -306,7 +306,7 @@ Controls: per-plan daily quotas; hard per-user daily token cap; prompt caching; 
 - **Server logs**: structured JSON (`level, event, feature, durationMs`); no PII.
 - **AI observability**: every call logged → admin dashboard charts (cost/day, latency P95, flag rate).
 - **Client health**: app version distribution + forced-upgrade flag (`min_supported_version` served by `/api/v1/health`) so stale binaries can be gated gracefully.
-- **Uptime**: external ping on `/api/v1/health` (checks DB + auth reachability).
+- **Uptime**: external ping on `/api/v1/health`. Returns `ok` (liveness — always true if the function runs, and carries `minSupportedAppVersion` for the upgrade gate) and `db` (readiness — one bounded indexed read). **UptimeRobot watches the keyword `"db":"up"`, not the status code**, because every page is database-backed and a 200 from Vercel says nothing about Supabase. Until 2026-08-16 this line described a check the code did not perform.
 - **Error handling standard** (rules.md §6): expected failures = typed results; unexpected = throw → boundary; user-facing messages human and actionable.
 
 ## 13. Rate Limiting
