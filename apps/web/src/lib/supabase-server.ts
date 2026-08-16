@@ -2,8 +2,13 @@ import { createNexlexClient, type NexlexClient } from "@nexlex/db";
 
 /**
  * Stateless anonymous Supabase client for RSC content reads (published-only
- * via RLS). No sessions, no cookies — auth-bearing web surfaces (admin, later)
- * will use @supabase/ssr separately.
+ * via RLS). No sessions, no cookies.
+ *
+ * Sign-in (D-065) deliberately did NOT change this. The session lives in the
+ * browser only, so every server render is anonymous and every page is
+ * cacheable — which is why useSession has a real "loading" state rather than
+ * the server knowing who you are. Server-rendered personalisation would need
+ * @supabase/ssr and cookie-bound sessions; nothing needs it yet.
  *
  * Env may be absent in CI builds: pages must degrade to empty shells there
  * (queries.ts guards on `isContentConfigured`).

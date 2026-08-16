@@ -1,14 +1,9 @@
-import { ERROR_CODES, err, ok, type Result } from "@nexlex/shared";
-import { z } from "zod";
+import { ERROR_CODES, emailSchema, err, ok, otpSchema, type Result } from "@nexlex/shared";
 
 import { isSupabaseConfigured } from "@/lib/env";
 import { supabase } from "@/lib/supabase";
 
-export const emailSchema = z.string().trim().toLowerCase().pipe(z.email("Enter a valid email"));
-const otpSchema = z
-  .string()
-  .trim()
-  .regex(/^\d{6}$/, "Enter the 6-digit code");
+export { emailSchema, OTP_MAX_LENGTH, OTP_MIN_LENGTH } from "@nexlex/shared";
 
 export async function requestOtp(emailInput: string): Promise<Result<{ email: string }>> {
   const parsed = emailSchema.safeParse(emailInput);

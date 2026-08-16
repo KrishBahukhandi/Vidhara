@@ -44,6 +44,10 @@ export type EventName =
   | "bookmark_removed"
   | "recents_resumed"
   | "fake_door_clicked"
+  | "sign_in_code_requested"
+  | "signed_in"
+  | "signed_out"
+  | "onboarding_completed"
   | "error_boundary_hit";
 
 /** `section_viewed.via` — every navigation path into a section must thread one. */

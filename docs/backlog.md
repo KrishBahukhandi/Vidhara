@@ -1,7 +1,7 @@
 # Vidhara — Backlog
 
-> **Status**: Living document — the single list of what is not done. · **Last updated**: 2026-08-16
-> Compiled from decision-log D-001…D-063, launch-checklist, roadmap and a live check of the
+> **Status**: Living document — the single list of what is not done. · **Last updated**: 2026-08-16 (D-065: web auth shipped)
+> Compiled from decision-log D-001…D-065, launch-checklist, roadmap and a live check of the
 > deployed site, DNS and Edge Functions on 2026-08-16. Where the docs and reality disagreed,
 > reality won and the discrepancy is noted.
 >
@@ -18,7 +18,7 @@
 | `https://vidhara-web-lyart.vercel.app` | still 200 — kept alive so shared links do not rot |
 | `/api/v1/health` | `{"ok":true,"service":"vidhara-web","minSupportedAppVersion":"0.1.0"}` |
 | Corpus | **36 acts / 5,594 sections**, content-qa **0 SEV1**, SEV2 29 |
-| `hearing-reminders?action=status` | `{"configured":false}` — **no SMTP secrets exist** |
+| `hearing-reminders?action=status` | `{"configured":false}` — Edge Function secrets still unset |
 | Git tags | `v0.1.0`, `v0.2.0` — no `v0.5.0` |
 | DNS: Resend DKIM / SPF / MX | all three resolve ✓ (domain verified) |
 | DNS: `_dmarc` | **absent** |
@@ -27,30 +27,33 @@
 
 ## 1. Email + auth — the unblocker
 
-D-021 parked email-OTP sign-in. The root cause is **Supabase configuration, not code**:
-`requestOtp`/`verifyOtp` in `apps/mobile/src/features/auth/api.ts` are correct and expect a
-6-digit `{{ .Token }}`. Full runbook: [domain-and-email-setup.md](domain-and-email-setup.md).
+**Web sign-in is live and confirmed working (D-065).** D-021 diagnosed this as configuration-only;
+that was half right. The templates did need rewriting to emit `{{ .Token }}` — but both clients
+also hardcoded a **6**-digit code against a project that issues **8**, so mail alone would not have
+produced a working sign-in on either surface. Both are fixed; the schema now lives in
+`packages/shared` and accepts Supabase's whole 6–10 range.
+Runbook: [domain-and-email-setup.md](domain-and-email-setup.md).
 
 - [x] Domain `vidhara.bahukhandi-labs.com` live on Vercel
 - [x] Resend account created; `bahukhandi-labs.com` verified (DKIM + SPF + MX resolve)
+- [x] Resend API key into Supabase → Auth → SMTP (`smtp.resend.com`, user `resend`)
+- [x] **Magic Link + Confirm signup templates emit `{{ .Token }}`** — the actual defect
+- [x] Auth rate limit raised; Site URL set
+- [x] Real OTP delivered end to end, **inbox not spam** on a cold domain
+- [x] **Web sign-in / sign-up shipped and confirmed working by the founder** (D-065) — mode
+      toggle, "no account uses that email yet", name + role + exam targets on sign-up
+- [x] OTP length bug fixed on **both** surfaces — both validated `/^\d{6}$/` against this
+      project's 8-digit codes, so the app could never have signed in either (D-065)
 - [ ] **`_dmarc` TXT record** — `v=DMARC1; p=none; rua=mailto:krishbahukhandi35@gmail.com`.
-      Start at `p=none`; going to `p=reject` before DKIM is proven bins your own sign-in mail.
-- [ ] Resend API key, scoped **Sending access only**. Straight into Supabase — never into chat,
-      a commit, or a client-side env var.
-- [ ] Supabase → Auth → SMTP Settings: host `smtp.resend.com`, port 465 (fallback 587),
-      username the literal word `resend`, sender `noreply@bahukhandi-labs.com`, name `Vidhara`
-- [ ] **Rewrite the Magic Link template to emit `{{ .Token }}`.** This is the actual defect —
-      the stock template sends `{{ .ConfirmationURL }}`, a link, and no amount of SMTP config
-      puts a code in it. Do **Confirm signup** as well.
-- [ ] Auth → Rate limits: raise email sending above the default 30/hour (sized for Supabase's
-      built-in service; it will throttle a beta cohort). Stay at or under Resend's 100/day.
-- [ ] URL Configuration → Site URL `https://vidhara.bahukhandi-labs.com`
-- [ ] Send a real OTP end to end on a device; confirm it lands in inbox, not spam
+      Still absent, checked against BigRock's own nameservers. Start at `p=none`.
 - [ ] Edge Function secrets: `SMTP_*` + `REMINDERS_CRON_SECRET`; schedule the daily
-      `hearing-reminders` POST (~18:00 IST)
+      `hearing-reminders` POST (~18:00 IST). **A separate store from Auth SMTP** — the function
+      still reports `{"configured":false}`, so reminders remain dark and the control stays hidden.
+- [ ] **Verify sign-in on the Android app.** Fixed in code, never run on a device — the build is
+      blocked by §10.
 
-**Unblocks:** sign-in · cross-device sync · diary sync · hearing reminders (built, inert, and
-currently hidden from the UI by design — D-030, D-041) · any account-gated feature.
+**Unblocks:** ✅ sign-in · cross-device sync (not built) · diary sync (not built) · hearing
+reminders (built, still inert — needs the Edge Function secrets above).
 
 ## 2. Security
 
@@ -160,6 +163,29 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
 - [ ] No error boundaries or logger convention in either app
 - [ ] `packages/db` types are hand-maintained: `gen:types` targets `--local` and the stored access
       token lacks the types endpoint (D-030)
+
+## 10. The repo lives inside iCloud Drive — it corrupts builds
+
+Confirmed by inode, not inferred: `docs/backlog.md` is the same file at `~/Documents/…` and at
+`~/Library/Mobile Documents/com~apple~CloudDocs/Documents/…`, and two merge-conflict folders sit
+beside the project.
+
+iCloud writes conflict copies (`… 2.bin`, `… 3.xml`) **inside** `node_modules` and Gradle output
+dirs. Gradle hashes everything in its own snapshot directories, so it dies on files it did not
+create and cannot read. Three Android builds failed this way on 2026-08-16, one after 27m54s.
+468 artifacts were cleared and **102 came back within two minutes** — a 10-30 minute build cannot
+win that race. `next dev` and `tsc` wedge on the same cause, sleeping at 0.2% CPU rather than
+failing outright, which reads as "slow" and is not.
+
+- [x] `node_modules`, workspace `node_modules`, `.turbo` protected — created **empty**, marked
+      with `com.apple.fileprovider.ignore#P`, *then* populated. A full `pnpm install` under that
+      regime produced zero duplicates. Retrofitting the attribute onto an already-synced tree does
+      **not** work and briefly makes files unreadable.
+- [ ] `apps/mobile/android` is **not** protected — the next Gradle run will churn again. This
+      affects the founder's own `expo run:android`, not just an agent's.
+- [ ] **Decide the real fix** (founder's call, both touch the machine rather than the repo):
+      turn off System Settings → iCloud → iCloud Drive → Options → *Desktop & Documents Folders*,
+      or move the repo somewhere unsynced (`~/dev/NexLex`). Nothing else makes long builds reliable.
 
 ## 9. Docs drift — worth an hour
 

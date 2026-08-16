@@ -5,7 +5,7 @@ import { View, StyleSheet } from "react-native";
 import { AppText } from "@/components/ui/app-text";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
-import { verifyOtp } from "@/features/auth/api";
+import { OTP_MAX_LENGTH, verifyOtp } from "@/features/auth/api";
 import { sp } from "@/theme";
 
 export default function VerifyScreen() {
@@ -37,16 +37,16 @@ export default function VerifyScreen() {
       <View style={styles.header}>
         <AppText variant="h1">Check your email</AppText>
         <AppText tone="muted">
-          We sent a 6-digit code to {email ?? "your email"}. It expires in 10 minutes.
+          We sent a code to {email ?? "your email"}. It expires in an hour.
         </AppText>
       </View>
 
       <View style={styles.form}>
         <Field
           label="Sign-in code"
-          placeholder="000000"
+          placeholder="Code from your email"
           keyboardType="number-pad"
-          maxLength={6}
+          maxLength={OTP_MAX_LENGTH}
           value={code}
           onChangeText={setCode}
           onSubmitEditing={onSubmit}

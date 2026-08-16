@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { AccountLink } from "@/components/account-link";
 import { NAV_LINKS } from "@/lib/nav";
 
 /** Hamburger → dropdown for narrow screens. Closes on route change + Escape. */
@@ -75,6 +76,9 @@ export function MobileNav() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <AccountLink className="block border-b border-border py-4 text-body font-medium text-text transition-colors hover:text-brand" />
+              </li>
             </ul>
             <span className="mt-5 inline-flex rounded-md bg-brand px-3 py-2 text-small font-medium text-on-brand">
               📱 Android app — coming to Google Play

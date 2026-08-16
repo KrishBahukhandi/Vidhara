@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { AccountLink } from "@/components/account-link";
 import { MobileNav } from "@/components/mobile-nav";
 import { NAV_LINKS } from "@/lib/nav";
 
@@ -23,6 +24,7 @@ export function SiteHeader() {
               {link.label}
             </Link>
           ))}
+          <AccountLink className="text-small font-medium text-text-muted transition-colors hover:text-text" />
           <span className="rounded-md bg-brand px-3 py-1.5 text-small font-medium text-on-brand">
             Coming to Google Play
           </span>
