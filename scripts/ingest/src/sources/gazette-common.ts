@@ -104,6 +104,14 @@ export const FURNITURE = [
   // Case-SENSITIVE: the masthead is all-caps; body text routinely says
   // "notification in the Gazette of India" (an /i here ate IEA §113 whole).
   /THE GAZETTE OF INDIA/,
+  // A third-party collector's watermark stamped on every page of the Indian
+  // Succession Act PDF that India Code serves (noted in D-062 when that act was
+  // ingested). It sits at small type, so it was invisible while illustration
+  // blocks closed at the first body-height line; once they stay open to the end
+  // of the section it lands in 34 bodies. Anchored on the collector's name
+  // rather than on "Page N of M", which is a shape statute text could
+  // conceivably carry. Measured: zero matches in the other six acts on disk.
+  /All India Christian Council|christiancouncil\.in/i,
   /^\s*EXTRAORDINARY\s*$/i,
   // The Gazette masthead reads "[PART II—SEC. 3(i)]" — that is the *Gazette's*
   // part, not the act's. Matching "PART II" alone also ate real divisions: the

@@ -45,3 +45,7 @@ test-results/
 
 # typescript incremental build info
 *.tsbuildinfo
+
+# Source PDFs re-fetched for parsing — verifiable from each bundle's provenance
+# (byte count + sha256), so they are reproducible rather than stored.
+scripts/ingest/.sources/

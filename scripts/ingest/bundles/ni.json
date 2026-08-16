@@ -130,7 +130,7 @@
       "number": "4",
       "chapterNumber": "II",
       "marginalNote": "“Promissory note”",
-      "bodyMd": "A “Promissory note” is an instrument in writing (not being a bank-note or a currency-note) containing an unconditional undertaking, signed by the maker, to pay a certain sum of money only to, or to the order of, a certain person, or to the bearer of the instrument. Illustrations A Signs instruments in the following terms: ) “I promise to pay B or order Rs. 500.” “I acknowledge myself to be indebted to B in Rs. 1,000, to be paid on demand, for value received.” “Mr. B, U Rs. 1,000.” “I promise to Pay B Rs. 500 and all other sums which shall be due to him.” “I promise to Pay B Rs. 500, first deducting thereout any money which he may owe me.” “I promise to Pay B Rs. 500 seven days after my marriage with C.” “I, promise to Pay B Rs. 500 on D's death, provided D leaves me enough to pay that sum.” “India”"
+      "bodyMd": "A “Promissory note” is an instrument in writing (not being a bank-note or a currency-note) containing an unconditional undertaking, signed by the maker, to pay a certain sum of money only to, or to the order of, a certain person, or to the bearer of the instrument. Illustrations A Signs instruments in the following terms: ) “I promise to pay B or order Rs. 500.” “I acknowledge myself to be indebted to B in Rs. 1,000, to be paid on demand, for value received.” “Mr. B, U Rs. 1,000.” “I promise to Pay B Rs. 500 and all other sums which shall be due to him.” “I promise to Pay B Rs. 500, first deducting thereout any money which he may owe me.” “I promise to Pay B Rs. 500 seven days after my marriage with C.” “I, promise to Pay B Rs. 500 on D's death, provided D leaves me enough to pay that sum.” “India” The instruments respectively marked (a) and (b) are promissory notes. The instruments respectively marked (c), (d), (e), (f), (g) and (h)are not promissory notes."
     },
     {
       "number": "5",
@@ -346,7 +346,7 @@
       "number": "40",
       "chapterNumber": "III",
       "marginalNote": "Discharge of indorser's liability",
-      "bodyMd": "Where the holder of a negotiable instrument, without the consent of the indorser, destroys or impairs the indorser’s remedy against a prior party, the indorser is discharged from liability to the holder to the same extent as if the instrument had been paid at maturity. Illustration A is the holder of a bill of exchange made payable to the order of B, which contains the following indorsements in blank:— First indorsement, “B”. indorsement, “Peter Williams”. indorsement, “Wright & Co.” “John Rozario”."
+      "bodyMd": "Where the holder of a negotiable instrument, without the consent of the indorser, destroys or impairs the indorser’s remedy against a prior party, the indorser is discharged from liability to the holder to the same extent as if the instrument had been paid at maturity. Illustration A is the holder of a bill of exchange made payable to the order of B, which contains the following indorsements in blank:— First indorsement, “B”. indorsement, “Peter Williams”. indorsement, “Wright & Co.” “John Rozario”. This bill A puts in suit against John Rozario and strikes out, without John Rozario's consent, the indorsements by Peter Williams and Wright & Co. A is not entitled to recover anything from John Rozario."
     },
     {
       "number": "41",
@@ -412,19 +412,19 @@
       "number": "50",
       "chapterNumber": "IV",
       "marginalNote": "Effect of indorsement",
-      "bodyMd": "The indorsement of a negotiable instrument followed by delivery transfers to the indorsee the property therein with the right of further negotiation; but the indorsement may, by express words, restrict or exclude such right, or may merely constitute the indorsee an agent to indorse the instrument, or to receive its contents for the indorser, or for some other specified person. Illustrations — “Pay the contents to C only”. “Pay C for my use.” “Pay C or order for the account of B.” “the within must be credited to C.” ) “P a y C. ” “Pay C value in account with the Oriental Bank.” “Pay the contents to C, being part of the consideration and others.”"
+      "bodyMd": "The indorsement of a negotiable instrument followed by delivery transfers to the indorsee the property therein with the right of further negotiation; but the indorsement may, by express words, restrict or exclude such right, or may merely constitute the indorsee an agent to indorse the instrument, or to receive its contents for the indorser, or for some other specified person. Illustrations — “Pay the contents to C only”. “Pay C for my use.” “Pay C or order for the account of B.” “the within must be credited to C.” These indorsements exclude the right of further negotiation by C. ) “P a y C. ” “Pay C value in account with the Oriental Bank.” “Pay the contents to C, being part of the consideration and others.” These indorsements do not exclude the right of further negotiation by C."
     },
     {
       "number": "51",
       "chapterNumber": "IV",
       "marginalNote": "Who may negotiate",
-      "bodyMd": "Every sole maker, drawer, payee or indorsee, or all of several joint makers, drawers, payees or indorsees, of a negotiable instrument may, if the negotiability of such instrument has not been restricted or excluded as mentioned in section 50, indorse and negotiate the same. Explanation.—Nothing in this section enables a maker or drawer to indorse or negotiate an instrument, unless he is in lawful possession or is holder thereof; or enables a payee or indorsee to indorse or negotiate an instrument, unless he is holder thereof. Illustration not containing the words “or order” or any"
+      "bodyMd": "Every sole maker, drawer, payee or indorsee, or all of several joint makers, drawers, payees or indorsees, of a negotiable instrument may, if the negotiability of such instrument has not been restricted or excluded as mentioned in section 50, indorse and negotiate the same. Explanation.—Nothing in this section enables a maker or drawer to indorse or negotiate an instrument, unless he is in lawful possession or is holder thereof; or enables a payee or indorsee to indorse or negotiate an instrument, unless he is holder thereof. Illustration not containing the words “or order” or any equivalent words. B may negotiate the instrument."
     },
     {
       "number": "52",
       "chapterNumber": "IV",
       "marginalNote": "Indorser who excludes his own liability or makes it conditional",
-      "bodyMd": "The indorser of a negotiable instrument may, by express words in the indorsement, exclude his own liability thereon, or make such “payable liability or the right of the indorsee to receive the amount due thereon depend upon the happening of a specified event, although such event may never happen. Where an indorser so excludes his liability and afterwards becomes the holder of the instrument, all intermediate indorsers are liable to him. Illustrations “Without recourse”. “without recourse” he transfers the instrument to B, and B indorses it to C,"
+      "bodyMd": "The indorser of a negotiable instrument may, by express words in the indorsement, exclude his own liability thereon, or make such “payable liability or the right of the indorsee to receive the amount due thereon depend upon the happening of a specified event, although such event may never happen. Where an indorser so excludes his liability and afterwards becomes the holder of the instrument, all intermediate indorsers are liable to him. Illustrations “Without recourse”. Upon this indorsement he incurs no liability. (b) A is the payee and holder of a negotiable instrument. Excluding personal liability by an indorsement “without recourse” he transfers the instrument to B, and B indorses it to C, reinstated in his former rights, but has the rights of an indorsee against B and C."
     },
     {
       "number": "53",

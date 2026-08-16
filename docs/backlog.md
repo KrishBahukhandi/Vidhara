@@ -17,7 +17,7 @@
 | `https://vidhara.bahukhandi-labs.com` | **200**, sitemap emits the new origin |
 | `https://vidhara-web-lyart.vercel.app` | still 200 — kept alive so shared links do not rot |
 | `/api/v1/health` | `{"ok":true,…,"db":"up"}` — now a real readiness check (D-066 session) |
-| Corpus | **36 acts / 5,594 sections**, content-qa **0 SEV1**, SEV2 **19** (D-066) |
+| Corpus | **36 acts / 5,594 sections**, content-qa **0 SEV1**, SEV2 **14** (D-067) |
 | `hearing-reminders?action=status` | `{"configured":false}` — Edge Function secrets still unset |
 | Git tags | `v0.1.0`, `v0.2.0` — no `v0.5.0` |
 | DNS: Resend DKIM / SPF / MX | all three resolve ✓ (domain verified) |
@@ -119,7 +119,17 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
 - [x] **Category A cleared (D-066): SEV2 29 → 19.** Ten bodies carried appended non-statute text —
       cross-headings, footnote apparatus, and the entire First Schedule inside CRPC §484 "Repeal and
       savings" (1,747 chars). Repaired bundle-first and republished; 1,271 mappings intact.
-- [ ] **19 SEV2 remain, and they split by what they need, not by severity:**
+- [x] **Illustration continuations restored (D-067): SEV2 19 → 14.** Four acts print an
+      illustration's first line at body height and its wrap at footnote height, so the block closed
+      on its own opening line and continuations were dropped — invisible to every check, because a
+      cut after a full stop still ends like a sentence. Fixed in the parser and regressed across
+      2,240 sections: 0 notes changed, 0 text lost, 11 bodies restored, 2 watermark removals.
+      **All seven source PDFs are now on disk** (`scripts/ingest/.sources/`, gitignored) and
+      verified against provenance, so the next parser change can be regressed without re-fetching.
+- [ ] **CPC's 38 missing illustration lines did NOT come back** — that act fails for a different
+      reason D-067's fix does not reach. Measure it next; the source is on disk.
+- [ ] **ISA §281 still truncated** — needs D-062's `--rule-delimited` mode, not run in D-067.
+- [ ] **14 SEV2 remain, and they split by what they need, not by severity:**
       - **3 are missing statute text** — TP §126 ends "the right to take back at", ISA §281 at
         "declare that", NI §52 mid-illustration. **Blocked on source PDFs**, which are not on disk.
         The words cannot be written from recall (D-011; D-031 records that going wrong).

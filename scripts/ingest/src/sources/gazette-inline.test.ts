@@ -1304,3 +1304,66 @@ describe("parseInlineAct chapter headings", () => {
     expect(chapters.find((c) => c.number === "III")?.title).toBe("SECURITY FOR COSTS");
   });
 });
+
+describe("illustrations whose continuation is set at footnote height (D-067)", () => {
+  it("keeps a wrapped illustration line after a body-height opening line", () => {
+    // Transfer of Property §126 illustration (b): the first line is set at body
+    // height and only the wrap is small type, so a block that closed at the
+    // first body-height line closed on the illustration's own opening line and
+    // the remainder was read as a footnote.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "4. When gift may be revoked.—A gift may be suspended or revoked." },
+        { h: 10, text: "Illustrations" },
+        { h: 10, text: "(b) A gives a lakh of rupees to B, reserving the right to take back at" },
+        { h: 8.1, text: "pleasure Rs. 10,000 out of the lakh. The gift holds good as to Rs. 90,000." },
+        { h: 10, text: "5. Onerous gifts.—Where a gift is in the form of a single transfer." },
+      ]),
+    );
+    const { sections } = parseInlineAct(xml, {});
+    expect(sections.map((s) => s.number)).toEqual(["4", "5"]);
+    expect(sections[0]?.bodyMd).toMatch(/pleasure Rs\. 10,000 out of the lakh/);
+    // and the block must not bleed into the following section
+    expect(sections[1]?.bodyMd).not.toMatch(/pleasure/);
+  });
+
+  it("still drops footnotes that follow an illustration block", () => {
+    // The whole risk of holding the block open to the end of the section: the
+    // footnote latch, not the block, is what has to keep footnotes out.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "4. Some section.—The provision reads as follows." },
+        { h: 10, text: "Illustrations" },
+        { h: 8.1, text: "(a) A gives a field to B. B may take back the field." },
+        { h: 8.1, text: "1. Subs. by Act 20 of 1983, s. 2 and the Schedule (w.e.f. 15-3-1984)." },
+        { h: 8.1, text: "2. Ins. by Act 4 of 1914, s. 3." },
+        { h: 10, text: "5. Next section.—Something else entirely follows here." },
+      ]),
+    );
+    const body = parseInlineAct(xml, {}).sections[0]?.bodyMd ?? "";
+    expect(body).toMatch(/A gives a field to B/);
+    expect(body).not.toMatch(/Subs\. by Act 20 of 1983/);
+    expect(body).not.toMatch(/Ins\. by Act 4 of 1914/);
+  });
+
+  it("drops page furniture that falls inside an illustration block", () => {
+    // The Indian Succession Act PDF carries a collector's watermark on every
+    // page at small type; with blocks open to the end of a section it reached
+    // 36 bodies. The small-type path never consulted FURNITURE before.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "4. Revocation of unprivileged will.—No unprivileged will shall be revoked." },
+        { h: 10, text: "Illustrations" },
+        { h: 8.1, text: "(a) A has made an unprivileged will. A may revoke it." },
+        { h: 8.1, text: "Collected by the All India Christian Council, www.christiancouncil.in Page 21 of 123" },
+        { h: 10, text: "5. Effect of obliteration.—An obliteration shall not be valid." },
+      ]),
+    );
+    const body = parseInlineAct(xml, {}).sections[0]?.bodyMd ?? "";
+    expect(body).toMatch(/A has made an unprivileged will/);
+    expect(body).not.toMatch(/Christian Council/);
+  });
+});

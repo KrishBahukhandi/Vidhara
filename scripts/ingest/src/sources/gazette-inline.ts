@@ -624,6 +624,11 @@ export function parseInlineAct(
     });
     currentNumber = null;
     rawParts = [];
+    // An illustration block belongs to the section it illustrates, so it ends
+    // when that section does — at the next section start or division heading,
+    // both of which flush. See the block comment at the body-height branch for
+    // why it can no longer end at the first body-height line.
+    illustrationMode = false;
   };
   const flushChapter = () => {
     if (pendingChapterNumber === null) return;
@@ -742,6 +747,12 @@ export function parseInlineAct(
         // amendment bracket, 7.2pt), stray bracket digits, asterisk rows.
         if (!/[A-Za-z]/.test(full)) continue;
         if (illustrationMode && keepIllustrations && currentNumber !== null) {
+          // Page furniture is furniture at any type size. This path never
+          // consulted FURNITURE because, while a block closed at the first
+          // body-height line, no furniture survived long enough inside one to
+          // matter. With blocks now open to the end of the section, the Indian
+          // Succession Act's per-page collector watermark lands in 36 bodies.
+          if (FURNITURE.some((re) => re.test(full))) continue;
           rawParts.push(full);
           illustrationLines++;
         }
@@ -935,10 +946,30 @@ export function parseInlineAct(
 
       if (FURNITURE.some((re) => re.test(flat))) continue;
 
-      // Any body-height content line closes an illustration block; the
-      // heading (re)opens one. Furniture above stays neutral so a block can
-      // continue past a page-number line onto the next page.
-      illustrationMode = isIllustrationHeading(flat);
+      /**
+       * A body-height line no longer CLOSES an illustration block; only the
+       * heading opens one, and `flush` closes it at the next section or
+       * division.
+       *
+       * D-018 built this on the measurement that illustrations are set in the
+       * same ~8.1-8.2pt type as footnotes, and closed the block at the first
+       * body-height line on the reasoning that the illustrations were over.
+       * That holds for the acts it was measured against. It does not hold for
+       * the Transfer of Property, Negotiable Instruments, Civil Procedure or
+       * Criminal Procedure Acts, which print an illustration's FIRST line at
+       * body height (9.96pt) and only its wrapped continuation at 8.10pt —
+       * Negotiable Instruments §52 changes height mid-line, "…B indorses it to
+       * C," at 9.96 and "who indorses it to A." at 8.10. So the block closed on
+       * the illustration's own opening line and every continuation was then
+       * read as a footnote and dropped: 64 lines of statute across four acts,
+       * and invisible to the content scanner because a body cut after a full
+       * stop still ends like a sentence.
+       *
+       * Footnotes are not admitted by this: they are excluded earlier by the
+       * page-scoped footnote latch and the FOOTNOTE_START shape, both of which
+       * run before the illustration branch in the small-type path.
+       */
+      if (isIllustrationHeading(flat)) illustrationMode = true;
 
       // An inserted chapter carries a leading amendment bracket ("[CHAPTER VA"),
       // so strip markers before matching — otherwise the heading is not
