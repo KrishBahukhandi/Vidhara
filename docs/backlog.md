@@ -1,7 +1,7 @@
 # Vidhara — Backlog
 
-> **Status**: Living document — the single list of what is not done. · **Last updated**: 2026-08-16 (D-065: web auth shipped)
-> Compiled from decision-log D-001…D-065, launch-checklist, roadmap and a live check of the
+> **Status**: Living document — the single list of what is not done. · **Last updated**: 2026-08-16 (D-066; founder-account run: key rotated, DMARC, Sentry, UptimeRobot, Search Console)
+> Compiled from decision-log D-001…D-066, launch-checklist, roadmap and a live check of the
 > deployed site, DNS and Edge Functions on 2026-08-16. Where the docs and reality disagreed,
 > reality won and the discrepancy is noted.
 >
@@ -16,12 +16,12 @@
 |---|---|
 | `https://vidhara.bahukhandi-labs.com` | **200**, sitemap emits the new origin |
 | `https://vidhara-web-lyart.vercel.app` | still 200 — kept alive so shared links do not rot |
-| `/api/v1/health` | `{"ok":true,"service":"vidhara-web","minSupportedAppVersion":"0.1.0"}` |
+| `/api/v1/health` | `{"ok":true,…,"db":"up"}` — now a real readiness check (D-066 session) |
 | Corpus | **36 acts / 5,594 sections**, content-qa **0 SEV1**, SEV2 **19** (D-066) |
 | `hearing-reminders?action=status` | `{"configured":false}` — Edge Function secrets still unset |
 | Git tags | `v0.1.0`, `v0.2.0` — no `v0.5.0` |
 | DNS: Resend DKIM / SPF / MX | all three resolve ✓ (domain verified) |
-| DNS: `_dmarc` | **absent** |
+| DNS: `_dmarc` | ✅ `v=DMARC1; p=none` on all four nameservers |
 
 ---
 
@@ -44,8 +44,9 @@ Runbook: [domain-and-email-setup.md](domain-and-email-setup.md).
       toggle, "no account uses that email yet", name + role + exam targets on sign-up
 - [x] OTP length bug fixed on **both** surfaces — both validated `/^\d{6}$/` against this
       project's 8-digit codes, so the app could never have signed in either (D-065)
-- [ ] **`_dmarc` TXT record** — `v=DMARC1; p=none; rua=mailto:krishbahukhandi35@gmail.com`.
-      Still absent, checked against BigRock's own nameservers. Start at `p=none`.
+- [x] **`_dmarc` TXT record** added and verified on all four BigRock nameservers plus Cloudflare
+      and Google. Mail auth is now complete: DKIM + SPF + MX + DMARC. Tighten to `p=quarantine`
+      after a few weeks of clean `rua` reports; do not jump to `p=reject`.
 - [ ] Edge Function secrets: `SMTP_*` + `REMINDERS_CRON_SECRET`; schedule the daily
       `hearing-reminders` POST (~18:00 IST). **A separate store from Auth SMTP** — the function
       still reports `{"configured":false}`, so reminders remain dark and the control stays hidden.
@@ -57,10 +58,10 @@ reminders (built, still inert — needs the Edge Function secrets above).
 
 ## 2. Security
 
-- [ ] **Rotate the Supabase `service_role` key**, then update `scripts/ingest/.env`.
-      It was pasted in plaintext during the ingest publishes and is still live. This appears as
-      a closing line on roughly twenty consecutive decision entries, **D-032 through D-063** —
-      the most-repeated open item in the project.
+- [x] **Supabase `service_role` key rotated** (2026-08-16) and `scripts/ingest/.env` updated.
+      Verified: the new key authenticates as service_role against a table with no SELECT policy,
+      and the Edge Functions picked it up automatically from Supabase's injected env. This closed
+      the item that had trailed every decision entry from **D-032 to D-063**.
 
 ## 3. Founder-account items (launch critical path)
 
@@ -70,15 +71,26 @@ reminders (built, still inert — needs the Edge Function secrets above).
 - [ ] **Cohort tagging verified end-to-end** in the PostHog UI (`?c=beta-1` → `vidhara_cohort` →
       `cohort` on every event). Must be proven **before any invite goes out**, or the beta
       produces uncohorted data.
-- [ ] **Sentry** — project never created, DSN never pasted. There is currently **no crash
-      reporting on either surface.** Needs `NEXT_PUBLIC_SENTRY_DSN` (+ `SENTRY_ORG`,
-      `SENTRY_PROJECT`, `SENTRY_AUTH_TOKEN` for source maps), then force a test error.
-- [ ] **UptimeRobot** monitors on `/` and `/api/v1/health`
-- [ ] **Google Search Console** — the property changed with the domain. Verify
-      `vidhara.bahukhandi-labs.com` and resubmit the sitemap. The pending D-026 action against
-      the Vercel URL is moot.
-- [ ] **Re-check OG cards** in a real link-preview debugger (WhatsApp + Telegram). D-026 deferred
-      this until a custom domain existed; that condition is now met.
+- [x] **Sentry live on web** — DSN set, error delivery proven (`flush()` returned true, event
+      `ef65e96b…`, environment `production`, release `0.1.0`). This also closed V0.1's last unmet
+      success criterion. **Gotcha:** `NEXT_PUBLIC_*` vars are compiled into the bundle, so Vercel's
+      default "Use existing Build Cache" silently ships the old one — the first redeploy did
+      nothing. Source-map upload (`SENTRY_ORG`/`PROJECT`/`AUTH_TOKEN`) still not configured, so
+      stack traces are minified.
+- [ ] **Sentry on the RN app** — still nothing.
+- [x] **UptimeRobot** monitors on `/` and `/api/v1/health`. The health endpoint was a static
+      `ok:true` that never touched Supabase, so the monitor would have stayed green through a total
+      database outage; it now returns a real `db` readiness field and the keyword watches
+      `"db":"up"`. Both the up and down paths were exercised before trusting it.
+- [x] **Google Search Console** — domain property `sc-domain:vidhara.bahukhandi-labs.com`
+      verified (isolated from the apex Bahukhandi Labs property), sitemap submitted. Already
+      serving: 278 impressions, avg position 38.8, impressions climbing. Sitemap now carries
+      `lastmod` on 5,630 URLs, and section pages emit `BreadcrumbList`.
+      **Check the sitemap flipped from "Couldn't fetch" to Success.**
+- [~] **OG cards technically verified** — 1200×630, `image/png`, absolute URLs, every page type
+      covered, and D-026's tofu-box fix confirmed holding by rendering the images. **Still needs a
+      human with the apps**: WhatsApp, Telegram, and the Facebook Sharing Debugger's *Scrape Again*
+      (which also flushes previews cached from the old Vercel origin).
 - [ ] **Play Console** account (₹25) → app created → closed-testing track
 - [ ] **12 testers × 14 continuous days** — the clock has never started and is the long pole.
       Calendar time; it cannot be compressed. Record the start date in the decision log.
