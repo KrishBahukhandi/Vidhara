@@ -1,7 +1,7 @@
-# NexLex — Product Requirements Document (PRD)
+# Vidhara — Product Requirements Document (PRD)
 
 > **Status**: Living document · **Version**: 0.2.0 · **Last updated**: 2026-07-13
-> **Owner**: Product (NexLex core team)
+> **Owner**: Product (Vidhara core team)
 > Update this document whenever features, scope, users, or strategy change.
 
 ---
@@ -65,7 +65,7 @@ Make Indian law **understandable, searchable, practicable, and practicable-at-sc
 - **G1**: Be the fastest, most pleasant way to read and search Indian bare acts (< 300 ms perceived search).
 - **G2**: Own the "old law ⇄ new law" mapping category — the canonical free utility.
 - **G3**: Ship AI features that are *pedagogically honest*: cite sections, admit uncertainty, never hallucinate case names.
-- **G4**: Build daily-habit mechanics (streaks, progress, revision queues) that make NexLex the first app opened each study day.
+- **G4**: Build daily-habit mechanics (streaks, progress, revision queues) that make Vidhara the first app opened each study day.
 - **G5**: Reach sustainable unit economics via a freemium model priced for Indian students.
 
 ## 8. Non-Goals (current cycle)
@@ -75,7 +75,7 @@ Make Indian law **understandable, searchable, practicable, and practicable-at-sc
 - ❌ Multi-country / non-Indian law.
 - ❌ iOS app in MVP (Android-first launch; iOS later from the same React Native codebase). The web surface at MVP is marketing + SEO content pages, not the full app.
 - ❌ User-generated content marketplace (notes selling etc.) — future consideration only.
-- ❌ Providing "legal advice" — NexLex is an education and productivity tool; disclaimers throughout.
+- ❌ Providing "legal advice" — Vidhara is an education and productivity tool; disclaimers throughout.
 
 ## 9. Feature Inventory
 
@@ -188,8 +188,8 @@ Make Indian law **understandable, searchable, practicable, and practicable-at-sc
 | Tier | Price (indicative) | Includes |
 |---|---|---|
 | Free | ₹0 | Full bare acts + mapping, limited bookmarks/notes, AI tutor 10 msgs/day |
-| NexLex Plus | ~₹149/mo or ₹999/yr | Unlimited bookmarks/notes, offline downloads, AI tutor 100 msgs/day, answer evaluation |
-| NexLex Pro | ~₹399/mo or ₹2,999/yr | Everything + Trial Simulator, Drafting Assistant, priority models |
+| Vidhara Plus | ~₹149/mo or ₹999/yr | Unlimited bookmarks/notes, offline downloads, AI tutor 100 msgs/day, answer evaluation |
+| Vidhara Pro | ~₹399/mo or ₹2,999/yr | Everything + Trial Simulator, Drafting Assistant, priority models |
 
 - Payments via **Razorpay** (UPI-first). Student verification discounts later.
 - Keep the mapping utility free forever — it is the acquisition engine and SEO moat.
@@ -197,7 +197,7 @@ Make Indian law **understandable, searchable, practicable, and practicable-at-sc
 
 ## 16. Competitive Analysis
 
-| Competitor | Strength | Gap NexLex exploits |
+| Competitor | Strength | Gap Vidhara exploits |
 |---|---|---|
 | Indian Kanoon | Free case law, SEO dominance | Dated UX, no learning layer, no AI tutoring |
 | SCC Online / Manupatra | Authoritative research | ₹₹₹ enterprise pricing; not for students |

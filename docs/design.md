@@ -1,4 +1,4 @@
-# NexLex — Design System
+# Vidhara — Design System
 
 > **Status**: Living document · **Version**: 0.2.0 · **Last updated**: 2026-07-13
 > Every UI decision must trace back to this document. When UI changes, update this first or alongside.
@@ -183,7 +183,7 @@ Every screen/component ships all four states — reviewed in PR:
 ## 12. Voice & Microcopy
 
 - Tone: precise, warm, plain-English (Indian English conventions); no legalese in UI chrome, full legalese fidelity in content.
-- AI disclaimers: persistent, single-line, non-scary: "NexLex explains law for learning — it isn't legal advice."
+- AI disclaimers: persistent, single-line, non-scary: "Vidhara explains law for learning — it isn't legal advice."
 - Numbers/format: Indian numbering (1,00,000), DD Mon YYYY dates, ₹ symbol.
 
 ---

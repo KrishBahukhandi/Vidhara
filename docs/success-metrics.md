@@ -1,9 +1,15 @@
-# NexLex — Success Metrics
+# Vidhara — Success Metrics
 
-> **Status**: Living document. · **Last updated**: 2026-07-16
+> **Status**: Living document. · **Last updated**: 2026-08-16
 > Definitions first (so numbers can't be gamed by redefinition), then per-release targets, then the kill/pivot lines. Targets are priors, not prophecy — their job is to force a *decision*, not to be hit precisely. Changing a target after seeing the data requires a decision-log entry explaining why that isn't rationalization.
 
 ---
+
+> ## ⚠️ Not being measured (2026-08-16)
+> The north star (Weekly Returning Readers) and every metric below are **unmeasured**: no
+> cohort has been recruited, no PostHog dashboard was ever built, and the Monday ritual has
+> never run — `docs/metrics-log.md` does not exist. The definitions are sound; nothing is
+> reading them. See [backlog.md](backlog.md) §3 and §7.
 
 ## Definitions (fixed)
 
@@ -46,4 +52,4 @@
 
 ## Review ritual
 
-Monday 30-min metrics review against this file (PostHog dashboard "NexLex Core" — [analytics-plan.md](analytics-plan.md)); numbers logged in a running `docs/metrics-log.md` table from V0.5 (created at first beta Monday); gate decisions written up in [decision-log.md](decision-log.md) with the dashboard screenshot attached.
+Monday 30-min metrics review against this file (PostHog dashboard "Vidhara Core" — [analytics-plan.md](analytics-plan.md)); numbers logged in a running `docs/metrics-log.md` table from V0.5 (created at first beta Monday); gate decisions written up in [decision-log.md](decision-log.md) with the dashboard screenshot attached.

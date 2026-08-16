@@ -1,6 +1,24 @@
-# NexLex — Feature Priority
+# Vidhara — Feature Priority
 
-> **Status**: Living document. · **Last updated**: 2026-07-16
+> **Status**: Living document. · **Last updated**: 2026-08-16
+
+> ## ⚠️ Five entries below are out of date (2026-08-16)
+>
+> The triage *reasoning* still holds. Five verdicts do not, because the founder chose to
+> build ahead of the gates this document set:
+>
+> | Entry | Filed as | Actually |
+> |---|---|---|
+> | AI Tutor → "Explain this section" probe | FUTURE, V1.1 cand. A | **SHIPPED 2026-07-24** (D-019/D-020), grounded + cache-first + eval-passed. The *unbounded* tutor is still correctly FUTURE. |
+> | AI Quiz / Daily MCQs | FUTURE, V1.1 cand. B | **SHIPPED 2026-07-24/25** (D-022/D-024) as Daily + Practice, zero-hallucination from the mapping table |
+> | Advocate Workspace | REMOVE — "startup #2" | **RE-OPENED as a second track** (D-028), shipped on both platforms: `/cite`, `/diary`, limitation worksheet, case documents |
+> | Accounts / auth | deferred (D-007) | **Web sign-in shipped** (D-065). Still no sync — the local-first posture is unchanged |
+> | Search | MUST | Shipped, plus an AI "librarian" fallback that routes NL questions to real sections (D-023) |
+>
+> Note what did *not* happen: no unbounded answer bot, no drafting, no simulator, no
+> community, no gamification. The kill list held where it mattered.
+>
+> Corpus figures below say 3,118 sections; it is now **5,594 across 36 acts**.
 > Every feature from the long-term vision, forced into exactly one bucket. The five product questions (why exist / what problem / launchable without? / how do we detect demand? / success metric) are answered inline — condensed where the answer is obvious, expanded where the call is contentious. Buckets change only via a [decision-log.md](decision-log.md) entry.
 
 **Bucket meanings.** MUST = the product is meaningless without it. SHOULD = scheduled, earns its slot in a named release. NICE = built only if users ask and it's cheap. FUTURE = parked with an explicit unlock condition ([future-ideas.md](future-ideas.md)). REMOVE = off the roadmap entirely; revisiting requires new evidence, not new enthusiasm.
@@ -16,7 +34,7 @@ The reading surface everything else hangs on. **Problem:** authoritative, readab
 **The wedge.** 1,271 official NCRB-sourced mappings nobody else surfaces this cleanly. **Problem:** every textbook, senior's notes, coaching material and old judgment cites IPC/CrPC/IEA; exams and courts now run BNS/BNSS/BSA. The cross-reference is a daily, unavoidable need with a shelf-life — urgency peaks now. **Launch without it?** Technically yes, strategically no: without it we're a worse Indian Kanoon. **Demand:** mapping_lookup volume + landing conversion (E-2). **Success:** ≥3 lookups/user/week; mapping cards viewed in ≥50% of reading sessions.
 
 ### Search (V0.1 basic, V0.2 polish — already built)
-Structured parser ("302 IPC") + FTS. **Problem:** nobody browses to §420 through a chapter tree. **Launch without?** No — it's how a 3,118-section corpus is entered. **Success:** search→section click-through ≥70%; zero-result rate <15%.
+Structured parser ("302 IPC") + FTS. **Problem:** nobody browses to §420 through a chapter tree. **Launch without?** No — it's how a 5,594-section corpus is entered. **Success:** search→section click-through ≥70%; zero-result rate <15%.
 
 ## SHOULD HAVE
 
@@ -36,10 +54,10 @@ Plausible for study, but paper notebooks, coaching modules and PDF annotators al
 
 ## FUTURE (parked with unlock conditions — see future-ideas.md for detail)
 
-### AI Tutor → first as "Explain this section" probe (V1.1 candidate A)
+### ~~AI Tutor → first as "Explain this section" probe (V1.1 candidate A)~~ → **SHIPPED 2026-07-24 (D-019/D-020)**
 The vision's centerpiece and the biggest trap. Wrong legal answers to exam-takers are trust-fatal; a general tutor also has unbounded scope. So: **fake door at V0.5**, and if chosen at G1, a *scoped* section-grounded explainer with a pre-launch eval set (release-plan §V1.1). The full tutor unlocks only if the probe shows adoption ≥30% WAU + retention lift. **Not** in the MVP: the corpus without AI is already differentiated; AI without proven retention is an expensive demo.
 
-### AI Quiz / Daily MCQs (V1.1 candidate B — merged, one habit loop)
+### ~~AI Quiz / Daily MCQs (V1.1 candidate B)~~ → **SHIPPED 2026-07-24/25 (D-022/D-024)**
 Strong habit mechanics for the exam segment, zero hallucination risk if hand-authored from the corpus. Fake door at V0.5; wins V1.1 on CTR + interview pull. Flashcards (below) only make sense downstream of this path.
 
 ### Offline (V1.1 candidate C, Android)
@@ -90,8 +108,8 @@ Not a feature — the business test. Charging before retention measures how fast
 | Recents | SHOULD | V0.5 | Cheapest return aid |
 | Notes | NICE | — | Only on unprompted pull ≥5 |
 | Highlights | NICE | — | Ditto |
-| AI Tutor (scoped probe first) | FUTURE | V1.1 cand. A | Fake door → eval-gated probe |
-| AI Quiz + Daily MCQs | FUTURE | V1.1 cand. B | Habit loop, zero AI risk |
+| AI Tutor (scoped probe first) | ~~FUTURE~~ **SHIPPED** | D-019/D-020 | Eval passed 16/16; unbounded tutor still FUTURE |
+| AI Quiz + Daily MCQs | ~~FUTURE~~ **SHIPPED** | D-022/D-024 | Daily + Practice, corpus-derived |
 | Offline | FUTURE | V1.1 cand. C | Real pain, high cost, needs strongest signal |
 | Flashcards | FUTURE | — | Only downstream of MCQ win |
 | Study Planner | FUTURE | — | Only as statute progress-tracker |

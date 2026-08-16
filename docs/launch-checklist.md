@@ -1,7 +1,31 @@
-# NexLex — Launch Checklists
+# Vidhara — Launch Checklists
 
-> **Status**: Living document. · **Last updated**: 2026-07-16
+> **Status**: Living document. · **Last updated**: 2026-08-16
 > Run top-to-bottom per release; check items off in a copy pasted into the release's decision-log entry. The smoke script and rollback plan live here because they're rehearsed, not improvised.
+
+---
+
+## ⚠️ Status as of 2026-08-16
+
+The per-release lists below are accurate about the **code** and stale about everything
+that needed an account or a person. Corrected inline; the open items are consolidated in
+[backlog.md](backlog.md), which is the list to work from.
+
+**The four founder-account items that block everything downstream, none of them started:**
+
+1. **Play Console account (₹25)** → app → closed track → 12 testers × **14 continuous
+   days**. Calendar time that cannot be compressed. Every V1.0 date depends on it.
+2. **Sentry** — never created. There is **no crash reporting on either surface**, so
+   V0.1's own success metric ("Sentry captures a forced test error") has never been met.
+3. **UptimeRobot** — never created.
+4. **A beta cohort** — nobody recruited, no interviews booked, no WhatsApp group.
+
+**Corrections to the smoke script below:** it was written for the 8-act corpus and the
+Vercel URL. Run it against **`https://vidhara.bahukhandi-labs.com`** (D-064), and note
+the corpus is now **36 acts / 5,594 sections**. Two surfaces it does not cover but should:
+the **AI explainer** and **Daily MCQ/Practice** (both live since 2026-07-24), the
+**advocate tools** (`/cite`, `/diary`, `/limitation`), and **sign-in** (`/account`,
+D-065). Add them before the next release run.
 
 ---
 
@@ -30,13 +54,13 @@
 - [x] Repo pushed to GitHub (`KrishBahukhandi/Vidhara`)
 
 **Founder-account side (READY — blocked only on account creation):**
-- [ ] **Vercel**: import the GitHub repo → *Root Directory: `apps/web`* (framework auto-detects Next.js; pnpm workspace handled automatically — "Include files outside root directory" stays ON). Env vars: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_SITE_URL` (the deploy URL), then PostHog/Sentry vars as created below.
+- [x] **Vercel** (DONE 2026-07-16; custom domain 2026-08-08, D-064): import the GitHub repo → *Root Directory: `apps/web`* (framework auto-detects Next.js; pnpm workspace handled automatically — "Include files outside root directory" stays ON). Env vars: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_SITE_URL` (the deploy URL), then PostHog/Sentry vars as created below.
 - [x] **PostHog** (DONE 2026-07-17): project on **EU** cloud; publishable key baked into analytics.tsx (localhost-gated so dev never pollutes); **verified live** — config.js loads with the key, events POST to `eu.i.posthog.com/e/`. Remaining: build the "Vidhara Core" dashboard (analytics-plan §Dashboards) in the PostHog UI.
-- [ ] **Sentry**: create project (Next.js) → paste `NEXT_PUBLIC_SENTRY_DSN` (+ `SENTRY_ORG`/`SENTRY_PROJECT`/`SENTRY_AUTH_TOKEN` for source maps) → force a test error → verify
-- [ ] **UptimeRobot**: monitors on `/` and `/api/v1/health`
-- [ ] Smoke script on the LIVE URL (desktop + Android Chrome)
-- [ ] 5 friendly walkthroughs scheduled
-- [ ] Tag `v0.1.0`; decision-log entry with this checklist's final state
+- [ ] 🔴 **Sentry — STILL NOT DONE, no crash reporting anywhere.** Create project (Next.js) → paste `NEXT_PUBLIC_SENTRY_DSN` (+ `SENTRY_ORG`/`SENTRY_PROJECT`/`SENTRY_AUTH_TOKEN` for source maps) → force a test error → verify
+- [ ] 🔴 **UptimeRobot — STILL NOT DONE.** Monitors on `/` and `/api/v1/health`
+- [x] Smoke script run on the live URL (2026-07-16); **re-run needed against the new domain and the surfaces added since**
+- [ ] 🔴 5 friendly walkthroughs — never scheduled
+- [x] Tagged `v0.1.0`
 
 ## V0.2 checklist (target 2026-07-24)
 
@@ -50,9 +74,9 @@
 - [x] DB types regenerated (migrations 0001–0005)
 
 **Founder-account side (blocked on accounts):**
-- [ ] Play Console account (₹25 one-time) → app created → closed-testing track → 12 testers enrolled + opted in → EAS build installed by all 12 → **clock start date recorded in decision-log**
-- [ ] OG preview spot-check on the live URL (WhatsApp + Telegram debuggers) after Vercel deploy
-- [ ] Smoke script on live URL; tag `v0.2.0`
+- [ ] 🔴 **THE LONG POLE — never started.** Play Console account (₹25 one-time) → app created → closed-testing track → 12 testers enrolled + opted in → EAS build installed by all 12 → **clock start date recorded in decision-log**
+- [ ] OG preview spot-check (WhatsApp + Telegram debuggers) — **now unblocked**, a custom domain exists (D-026 deferred this until one did)
+- [x] Smoke script run; tagged `v0.2.0`
 
 ## V0.5 checklist (freeze 2026-08-01, cohort in by 2026-08-03)
 
@@ -65,11 +89,11 @@
 
 **Founder / account side (blocked):**
 - [ ] Cohort tagging: PostHog is now live so the code path is active (`?c=beta-1` → `vidhara_cohort` → `cohort` on every event). Still verify once end-to-end in the PostHog UI **before any invite goes out**.
-- [ ] Beta WhatsApp group created; add its link (a beta-welcome banner is deliberately NOT built yet — pointless without the group URL; ~20 min once the link exists)
-- [ ] Recruitment posts sent per user-feedback-plan §channels; 30+ committed before freeze
-- [ ] Interview calendar: ≥3/week booked for weeks 1–3
+- [ ] 🔴 Beta WhatsApp group — never created. Add its link (a beta-welcome banner is deliberately NOT built yet — pointless without the group URL; ~20 min once the link exists)
+- [ ] 🔴 Recruitment posts — never sent. 30+ committed before freeze
+- [ ] 🔴 Interview calendar — nothing booked. ≥3/week for weeks 1–3
 - [x] **Mobile V0.5 parity built** (2026-07-17): apps/mobile has recents ("Continue reading" on Library), local bookmarks (Save on reader + Saved tab, was Notes), 3 fake doors (ai_explain reader / daily_mcq Library / offline Saved), all AsyncStorage local-first; renamed to Vidhara (app.json + strings; package com.vidhara.app); analytics is a stub (posthog-react-native to wire before the cohort). Verified in Expo web preview: view → recents, Save → Saved persists, fake doors vote. Typecheck green.
-- [ ] Android beta build shipped to closed track (founder: `expo run:android` on device first, then EAS build → Play closed track)
+- [ ] 🔴 Android beta build — not shipped; **the build itself is currently blocked**, see backlog §10 (iCloud). Founder: (founder: `expo run:android` on device first, then EAS build → Play closed track)
 - [ ] Monday metrics ritual: PostHog "Vidhara Core" dashboard exists; first `docs/metrics-log.md` entry template ready
 - [ ] Smoke script on live URL; tag `v0.5.0` (after cohort tagging verified)
 

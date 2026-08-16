@@ -1,4 +1,4 @@
-# NexLex — Development Phases
+# Vidhara — Development Phases
 
 > **Status**: ⚠️ **SUPERSEDED for forward planning (2026-07-16, decision D-001)** — retained as the historical build log through Phase 1. All forward planning now lives in [roadmap.md](roadmap.md) + [release-plan.md](release-plan.md) (lean, release-based: V0.1 → V2.0 with pre-registered gates). Phase 2–8 content below is ARCHIVED — those features were re-triaged in [feature-priority.md](feature-priority.md) and mostly parked in [future-ideas.md](future-ideas.md); do not build from this file.
 > **Version**: 0.4.0 · **Last updated**: 2026-07-16

@@ -1,9 +1,17 @@
-# NexLex — Validation Plan
+# Vidhara — Validation Plan
 
-> **Status**: Living document. · **Last updated**: 2026-07-16
+> **Status**: Living document. · **Last updated**: 2026-08-16
 > The assumptions the company dies on, ranked by (risk × cheapness-to-test), each mapped to a concrete experiment with a pass/fail line written *before* the data exists.
 
 ---
+
+> ## ⚠️ Largely unexecuted (2026-08-16)
+> Most experiments below need a cohort, and none has been recruited. **E-5 (fake doors) is
+> superseded** — two of its three doors became real features before collecting a vote
+> (D-019/D-022), so G1 must read adoption of what shipped rather than door CTR. E-6's page
+> count is now **5,594 across 36 acts**. The assumption table's "Untested" column is still
+> accurate for nearly every row, which is the point worth sitting with: a month of building
+> moved almost none of them. See [backlog.md](backlog.md).
 
 ## Assumptions, ranked
 
@@ -13,7 +21,7 @@
 | A-2 | They return weekly while studying (it's a tool, not a one-time lookup) | No retention → no product, only a utility page | E-3, E-6 | Untested |
 | A-3 | Web reaches this audience despite mobile-first habits (until Play unlocks) | Learning stalls until Android ships | E-1, E-2 | Untested |
 | A-4 | Clean, provenance-tracked text beats free PDFs/Indian Kanoon enough to switch | Corpus quality isn't a moat, just a cost | E-3 interviews | Untested |
-| A-5 | Comprehension (not just access) is a top pain → AI explainer is wanted | V1.1 candidate A dies | E-5 fake door + interviews | Untested |
+| A-5 | Comprehension (not just access) is a top pain → AI explainer is wanted | V1.1 candidate A dies | ~~E-5 fake door~~ → adoption of the shipped explainer + interviews | **Still untested** — built before it was validated (D-019) |
 | A-6 | A section-grounded LLM can be accurate enough for exam-takers | AI layer unshippable at acceptable risk | E-7 eval set | Untested |
 | A-7 | Some segment pays for a layer above the free corpus | No business; stays a public good | E-8 | Untested (deliberately last) |
 
@@ -27,13 +35,13 @@
 
 **E-4 — Continuous interviews.** 3–5/week from V0.5 onward, mom-test protocol ([user-feedback-plan.md](user-feedback-plan.md)). Interviews rank *problems*, analytics rank *behaviors*; G1 requires both to agree before money is spent.
 
-**E-5 — Fake doors (V0.5–V1.0, D-010: honest "coming soon — tap to vote" copy).** Three doors: AI-explain (reader), Daily MCQ (home), Offline (Android). *Read:* relative CTR with ≥30 unique voters, cross-checked against interview pull at G1. Fake doors measure *curiosity*; interviews confirm *need*; neither alone picks V1.1.
+**E-5 — Fake doors (V0.5–V1.0, D-010: honest "coming soon — tap to vote" copy).** ⚠️ **SUPERSEDED 2026-07-24/25.** Two of the three doors — AI-explain and Daily MCQ — were **built as real features** by founder decision (D-019/D-020, D-022/D-024) before any door collected a vote, so their CTR can never be read. Only the Android offline door survives. **G1 must therefore measure adoption and retention of the shipped features, not door CTR.** Original design, retained for the record: three doors: AI-explain (reader), Daily MCQ (home), Offline (Android). *Read:* relative CTR with ≥30 unique voters, cross-checked against interview pull at G1. Fake doors measure *curiosity*; interviews confirm *need*; neither alone picks V1.1.
 
-**E-6 — SEO organic pull (V1.0+).** 3,118 indexed section pages + sitemap already built. *Metric:* Search Console impressions/clicks trend for "IPC 420 BNS", "BNS 103", etc. Validates durable demand independent of our pushing — the strongest A-1 evidence there is.
+**E-6 — SEO organic pull (V1.0+).** 3,118 indexed section pages + sitemap already built *(now **5,594** across 36 acts)*. *Metric:* Search Console impressions/clicks trend for "IPC 420 BNS", "BNS 103", etc. Validates durable demand independent of our pushing — the strongest A-1 evidence there is.
 
 **E-7 — AI accuracy eval (pre-V1.1, only if candidate A wins).** 50 hand-checked Q/A pairs from the corpus *before* any UI work. *Pass:* ~0 factual errors on evals, <5% hallucination-style failures, every answer cites and displays the underlying section. *Fail action:* candidate B ships instead; no negotiation — this line exists because it will be tempting to bend.
 
-**E-8 — Willingness-to-pay (pre-V2.0, G2-gated).** 10 pricing interviews (Van Westendorp-style bands) + a "support NexLex / early-supporter" soft CTA. Only after 4 weeks of stable WRR. Charging earlier just measures churn speed.
+**E-8 — Willingness-to-pay (pre-V2.0, G2-gated).** 10 pricing interviews (Van Westendorp-style bands) + a "support Vidhara / early-supporter" soft CTA. Only after 4 weeks of stable WRR. Charging earlier just measures churn speed.
 
 ## Learning goals per release (what each release must TEACH, not ship)
 

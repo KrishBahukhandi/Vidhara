@@ -1,4 +1,4 @@
-# NexLex — Technical Architecture
+# Vidhara — Technical Architecture
 
 > **Status**: Living document · **Version**: 0.2.0 · **Last updated**: 2026-07-13
 > Any change to system design, APIs, database, or infrastructure MUST be reflected here in the same task.

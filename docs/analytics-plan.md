@@ -1,9 +1,20 @@
-# NexLex — Analytics Plan
+# Vidhara — Analytics Plan
 
-> **Status**: Living document. · **Last updated**: 2026-07-16
+> **Status**: Living document. · **Last updated**: 2026-08-16
 > Tools, the event schema (versioned here — the code implements THIS file), dashboards, and monitoring. Rule: if a release's Go/No-Go references a number, the event producing it ships **in or before** that release, and is verified end-to-end before users arrive.
 
 ---
+
+> ## ⚠️ Partly live (2026-08-16)
+> **PostHog is live** (EU cloud, verified 2026-07-17) and events fire from the web.
+> **Sentry was never created — there is no crash reporting on either surface.**
+> **UptimeRobot was never created.** The "Vidhara Core" dashboard does not exist and
+> cohort tagging has never been verified end to end, which must happen *before* any invite
+> goes out. The mobile app's `track()` is still a **stub** that logs in dev and no-ops in
+> release, so an Android cohort would generate zero data.
+> Event schema below predates these events, all now live: the AI explainer, Daily MCQ /
+> Practice, the advocate tools, and sign-in (`sign_in_code_requested`, `signed_in`,
+> `signed_out`, `onboarding_completed`). See [backlog.md](backlog.md) §3 and §4.
 
 ## Stack (all free tiers; total cost ₹0 until well past V1.0)
 
@@ -48,7 +59,7 @@ Naming: `snake_case`, past-tense verbs. Common properties on every event (set on
 
 ## Dashboards (PostHog, built at V0.1, named exactly)
 
-1. **NexLex Core** (the Monday board): WRR (north star), DAU/WAU, activation %, D1/D7/D30 cohort grid, sections/session median, lookups/user/wk.
+1. **Vidhara Core** (the Monday board): WRR (north star), DAU/WAU, activation %, D1/D7/D30 cohort grid, sections/session median, lookups/user/wk.
 2. **Funnels**: `$pageview(/)` → `landing_lookup_submitted` → `section_viewed` (message test E-2); `search_performed` → `search_result_clicked` (search quality); `section_viewed` → `mapping_card_viewed` (wedge engagement).
 3. **Demand signals**: `fake_door_clicked` by feature (unique users, not clicks); `share_clicked` rate; `via` breakdown of `section_viewed`.
 4. **Quality**: Sentry crash-free %, `error_boundary_hit` by route, `mapping_lookup` `found=false` rate (parser gaps), `search_performed` zero-result rate (content/FTS gaps — these two directly feed content backlog).

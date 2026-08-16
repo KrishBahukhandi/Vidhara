@@ -189,15 +189,18 @@ failing outright, which reads as "slow" and is not.
 
 ## 9. Docs drift — worth an hour
 
-- `roadmap.md`, `release-plan.md`, `launch-checklist.md` are dated **2026-07-16** and **every
-  calendar target has slipped.** V1.0 was set for the week of 2026-09-01 — about two weeks out —
-  with the Play clock not yet started, and that alone needs 14 continuous days plus a review pass.
-  The ladder needs re-dating against the real constraint (SMTP → cohort → Play clock), not
-  quietly ignored.
-- `decision-log.md`'s header says last-updated 2026-07-19; it carries entries through 2026-08-08.
+- [x] **Reconciled 2026-08-16.** `roadmap.md`, `release-plan.md`, `launch-checklist.md`,
+  `feature-priority.md`, `validation-plan.md`, `analytics-plan.md`, `success-metrics.md` and
+  `user-feedback-plan.md` now carry dated status blocks stating what actually happened. The
+  pre-registered go/no-go criteria were **not** edited — their value is that they predate the
+  data (D-012) — so releases that shipped without evaluating their gate are marked unevaluated
+  rather than retrofitted into a pass.
+- [ ] **Re-date the ladder once the Play Console account exists.** Every date from V0.5 rightward
+  descends from that clock; re-dating before it exists would just produce a second fiction.
+- [x] `decision-log.md` header corrected (was 2026-07-19 against entries running to D-065).
 - Gates **G1 and G2 cannot be run** — they are pre-registered against cohort data that does not
   exist, because no cohort exists.
-- Docs still say "NexLex" in prose (D-014 left the cosmetic sweep deliberately undone).
+- [x] Docs prose swept to "Vidhara" (2026-08-16). Preserved on purpose: the on-disk directory `NexLex/`, D-014's own entry, and the internal `@nexlex/*` package names.
 - `phases.md` remains as a historical build log, superseded by the roadmap for forward planning.
 
 ---

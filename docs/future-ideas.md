@@ -1,4 +1,4 @@
-# NexLex — Future Ideas (Parking Lot)
+# Vidhara — Future Ideas (Parking Lot)
 
 > **Status**: Living document. · **Last updated**: 2026-07-16
 > Everything cut from the roadmap lives here **with an explicit unlock condition** — the evidence that would justify revisiting it. Nothing leaves this file on enthusiasm; only on evidence, via a [decision-log.md](decision-log.md) entry. The long-term vision is preserved here, not abandoned — it's sequenced.

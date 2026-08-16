@@ -1,6 +1,6 @@
-# NexLex — Decision Log
+# Vidhara — Decision Log
 
-> **Status**: Living document — append-only. · **Last updated**: 2026-07-19
+> **Status**: Living document — append-only. · **Last updated**: 2026-08-16 (D-065)
 > Product/strategy decisions with rationale and a revisit trigger. Architecture decisions stay in `architecture.md` §16 (ADR-1…11); this log covers product strategy from the 2026-07-16 lean reset onward. Updated the day a decision is made — not at release boundaries.
 
 ---

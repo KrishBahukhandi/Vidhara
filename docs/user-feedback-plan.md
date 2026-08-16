@@ -1,9 +1,16 @@
-# NexLex — User Feedback Plan
+# Vidhara — User Feedback Plan
 
-> **Status**: Living document. · **Last updated**: 2026-07-16
+> **Status**: Living document. · **Last updated**: 2026-08-16
 > How users are recruited, interviewed, and synthesized into decisions. Interviews are the founder's primary job from V0.5 through G1 — code is the side job in that window. Protocol is Mom-Test throughout: past behavior, not opinions about the future; their words, not our pitch.
 
 ---
+
+> ## ⚠️ Not started (2026-08-16)
+> No cohort has been recruited, no recruitment post has been sent, no interview has been
+> booked, and the beta WhatsApp group does not exist. The channels and scripts below are
+> untested in the field. What *does* exist is a passive channel: `/feedback` plus the
+> report-a-miss and missing-content forms, whose rows are the demand signal for which act
+> gets ingested next (D-028, D-049). See [backlog.md](backlog.md) §7.
 
 ## Channels (in recruitment order)
 
@@ -20,7 +27,7 @@
 > Built a free tool for the IPC→BNS transition problem — type any old section (e.g. 420 IPC) and instantly get the new section with both full texts, all 8 major acts included, based on the official government mapping tables. Looking for 30 students/aspirants to use it during actual prep for 3 weeks and tell me what's broken or missing: {link}?c=beta-1 — no signup, free.
 
 **Interview ask (to active beta users):**
-> Saw you've been using NexLex — could I get 20 minutes on a call this week to watch how you actually study with it? I'm deciding what to build next and your usage would decide it. (Happy to send ₹200 UPI for your time.)
+> Saw you've been using Vidhara — could I get 20 minutes on a call this week to watch how you actually study with it? I'm deciding what to build next and your usage would decide it. (Happy to send ₹200 UPI for your time.)
 
 Incentives: early access + named thanks by default; ₹200 UPI for 30-min calls with strangers post-V1.0. Never pay for beta cohort participation itself (paid users fake retention).
 

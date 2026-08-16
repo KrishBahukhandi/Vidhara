@@ -1,4 +1,4 @@
-# NexLex — Engineering Rulebook
+# Vidhara — Engineering Rulebook
 
 > **Status**: Living document · **Version**: 0.2.0 · **Last updated**: 2026-07-13
 > These rules are binding for all code written in this repository — by humans or AI. Violations found in review block merge. Rule changes require an entry in memory.md (Design/Architecture Decisions).

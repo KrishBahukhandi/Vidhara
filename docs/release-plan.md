@@ -1,7 +1,38 @@
-# NexLex — Release Plan
+# Vidhara — Release Plan
 
-> **Status**: Living document. · **Last updated**: 2026-07-16
+> **Status**: Living document. · **Last updated**: 2026-08-16
 > One section per release. Every release answers the same 15 questions. Go/No-Go criteria are **pre-registered**: written before the data exists so they cannot be rationalized afterwards. Scope for V1.1+ is intentionally thin — filling it in today would be assumption-driven development with better formatting.
+
+---
+
+## ⚠️ Status as of 2026-08-16 — what actually happened
+
+Written 2026-07-16. Per-release detail below is unchanged **except for corrected facts**;
+this block carries the actuals. See [roadmap.md](roadmap.md) §Reconciliation for the
+strategic divergences and [backlog.md](backlog.md) for what remains.
+
+**The pre-registered Go/No-Go criteria below have NOT been edited and must not be.**
+Their entire value is that they were written before the data existed (D-012). Where a
+release shipped without its criteria being evaluated, that is recorded as an unevaluated
+gate — not retrofitted into a pass.
+
+| Release | Status | Gate evaluated? |
+|---|---|---|
+| **V0.1** | ✅ Shipped 2026-07-16, tagged `v0.1.0` | ⚠️ Partly — smoke passed; **Sentry never configured, so "Sentry captures a forced test error" was never met**; PostHog live from 2026-07-17 |
+| **V0.2** | ⚠️ Code shipped, tagged `v0.2.0` | ❌ No — the Play clock this release existed to start **has never started** |
+| **V0.5** | ❌ Not started | ❌ No cohort exists, so the D7 ≥25% bar has nothing to measure |
+| **V1.0** | ⛔ Blocked | Needs 14 continuous tester-days not yet begun |
+| **G1** | ⛔ Cannot run | No cohort → no data, no interviews |
+
+**Facts corrected inline below:** the corpus is now **36 acts / 5,594 sections at 0 SEV1**
+(V0.1's text said 8 acts / 3,118 sections — true when written).
+
+**Scope that arrived off-plan** and is not described in any release section here: the AI
+explainer and `ask` librarian (D-019/D-020/D-023), Daily MCQ + Practice (D-022/D-024),
+the entire advocate track (D-028…D-048), `/verification` (D-049), 28 further acts
+(D-031…D-062), the domain move (D-064) and web sign-in (D-065). Roughly a release-and-a-
+half of work sits outside this ladder, which is the strongest argument for re-planning
+from the Play account date rather than patching these dates again.
 
 ---
 
@@ -13,7 +44,7 @@
 | **Est. dev time** | 2–3 days |
 | **Risk level** | **Low** — no new product code; deploy + instrumentation only |
 
-**Purpose.** Put the already-built product at a public URL and make every future learning claim measurable. V0.1 exists to kill the "it's not ready" excuse: the corpus (8 acts, 3,118 sections, 1,271 mappings) is live in Supabase and the web app renders it — nothing else is required for a stranger to get value.
+**Purpose.** Put the already-built product at a public URL and make every future learning claim measurable. V0.1 exists to kill the "it's not ready" excuse: the corpus (8 acts, 3,118 sections, 1,271 mappings when written; **36 acts / 5,594 sections now**) is live in Supabase and the web app renders it — nothing else is required for a stranger to get value.
 
 **Target users.** Founder + 5 friendly users (law students in personal network) doing a scripted walkthrough.
 
