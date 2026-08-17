@@ -39,6 +39,9 @@ export function QuickCite() {
   const [hits, setHits] = useState<Hit[] | null>(null);
   const [state, setState] = useState<"idle" | "loading" | "error">("idle");
   const [orderRule, setOrderRule] = useState<ReturnType<typeof parseOrderRuleRef>>(null);
+  const [orderMatches, setOrderMatches] = useState<
+    { id: string; number: string; title: string; sortOrder: number; ruleCount: number }[]
+  >([]);
   const [message, setMessage] = useState("");
   const [fromCache, setFromCache] = useState(false);
   const [copied, setCopied] = useState<"cite" | "text" | null>(null);
@@ -110,6 +113,29 @@ export function QuickCite() {
     if (orderRuleRef) {
       track("quick_cite_lookup", { matched_ref: false, order_rule: true, offline: !navigator.onLine });
       setState("idle");
+      // Client-side because this is a client component; act_orders is
+      // anon-readable, same as every other content table.
+      const db = getBrowserClient();
+      if (db && navigator.onLine) {
+        const { data } = await db
+          .from("act_orders")
+          .select("id, number, title, sort_order, acts!inner(slug)")
+          .eq("acts.slug", "cpc")
+          .eq("number", orderRuleRef.order)
+          .eq("review_status", "published")
+          .order("sort_order");
+        setOrderMatches(
+          (data ?? []).map((o) => ({
+            id: o.id as string,
+            number: o.number as string,
+            title: o.title as string,
+            sortOrder: o.sort_order as number,
+            ruleCount: 0,
+          })),
+        );
+      } else {
+        setOrderMatches([]);
+      }
       return;
     }
 
@@ -191,7 +217,7 @@ export function QuickCite() {
 
       {orderRule ? (
         <div className="mt-4">
-          <OrderRuleNotice value={orderRule} />
+          <OrderRuleNotice value={orderRule} matches={orderMatches} />
         </div>
       ) : null}
 

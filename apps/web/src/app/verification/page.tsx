@@ -191,13 +191,11 @@ export default async function VerificationPage() {
             others are not yet. Where a schedule matters, read it from the source PDF.
           </li>
           <li>
-            <strong>
-              The Civil Procedure Code&rsquo;s Orders and Rules are not here — only its sections.
-            </strong>{" "}
-            Sections 1&ndash;158 are complete. The First Schedule, which holds Order VII Rule 11,
-            Order VIII Rule 6, Order XXXIX and the rest of what civil practice runs on, is roughly
-            three-quarters of that Act by volume and is not ingested. Search for one and we say so
-            rather than showing you a section that merely contains the same digit.
+            <strong>State amendments to the CPC&rsquo;s Orders are excluded.</strong> The First
+            Schedule is now here in full — 57 Orders and 728 rules — but what you read is the
+            central Schedule. Several States substitute or insert rules (Uttar Pradesh does both),
+            and those are kept out rather than merged in, for the same reason a State&rsquo;s
+            amendment never enters a section&rsquo;s text.
           </li>
           <li>
             <strong>There is no case law here.</strong> Vidhara tells you what a provision says, not

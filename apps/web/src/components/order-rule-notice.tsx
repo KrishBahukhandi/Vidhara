@@ -2,52 +2,75 @@ import Link from "next/link";
 
 import { formatOrderRule, type OrderRuleRef } from "@nexlex/shared";
 
+import type { OrderSummary } from "@/features/acts/queries";
+
 /**
  * Shown when a reader cites the Code of Civil Procedure's First Schedule.
  *
- * Sections 1-158 are in this corpus; the Orders and Rules are not, and that is
- * 78% of the Act by volume. Without this notice full-text search answers
- * "Order 7 Rule 11" with seven unrelated sections that merely contain a 7 —
- * Constitution art. 366, General Clauses §3, Consumer Protection §38 — which is
- * worse than an empty result, because it looks like an answer.
+ * Until the Orders were ingested this said "we do not carry that" — which was
+ * at least honest, since full-text search answered "Order 7 Rule 11" with seven
+ * unrelated sections matched on the digit alone. Now it routes to the rule.
  *
- * D-049's rule for the verification page applies here too: state the limit in
- * the same breath as the claim, and say what we do have instead.
+ * It still has a not-found branch, because a reference can be well-formed and
+ * still name nothing: "Order 99 Rule 3" parses cleanly. Saying so beats
+ * silence, and beats a page of noise.
+ *
+ * NB: the prop is `value`, not `ref` — React reserves `ref` and intercepts it
+ * rather than passing it through, which renders this component with nothing.
  */
-// NB: the prop is `value`, not `ref` — React reserves `ref` and intercepts it
-// rather than passing it through, which renders this component with nothing.
-export function OrderRuleNotice({ value }: { value: OrderRuleRef }) {
+export function OrderRuleNotice({
+  value,
+  matches,
+  actSlug = "cpc",
+}: {
+  value: OrderRuleRef;
+  /** Orders sharing the cited number — two for Order XI. */
+  matches: OrderSummary[];
+  actSlug?: string;
+}) {
   const cite = formatOrderRule(value);
+
+  if (matches.length === 0) {
+    return (
+      <div className="rounded-md border border-warning bg-surface p-5">
+        <p className="text-body font-semibold text-text">
+          There is no {cite} in the Code of Civil Procedure.
+        </p>
+        <p className="mt-2 text-body text-text-muted">
+          The First Schedule runs to Order LI. Anything shown below is a full-text match, not that
+          rule.{" "}
+          <Link
+            href={`/acts/${actSlug}/orders`}
+            className="underline underline-offset-4 hover:text-text">
+            Browse all Orders
+          </Link>
+          .
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <div className="rounded-md border border-warning bg-surface p-5">
-      <p className="text-body font-semibold text-text">
-        {cite} is in the CPC&rsquo;s First Schedule, which Vidhara does not carry yet.
-      </p>
-      <p className="mt-2 text-body text-text-muted">
-        We have the Code of Civil Procedure&rsquo;s{" "}
-        <strong className="font-semibold text-text">sections 1&ndash;158</strong>. Its{" "}
-        <strong className="font-semibold text-text">Orders and Rules</strong> — where rejection of
-        a plaint, set-off, injunctions and appeals live — are a separate schedule we have not
-        ingested. Anything shown below is a full-text match, not that rule.
-      </p>
-      <p className="mt-3 text-small text-text-muted">
-        Read it on{" "}
-        <a
-          href="https://www.indiacode.nic.in/handle/123456789/2191"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline underline-offset-4 hover:text-text">
-          India Code
-        </a>{" "}
-        meanwhile. ·{" "}
-        <Link href="/acts/cpc" className="underline underline-offset-4 hover:text-text">
-          CPC sections we do have
-        </Link>{" "}
-        ·{" "}
-        <Link href="/verification" className="underline underline-offset-4 hover:text-text">
-          what else is missing
-        </Link>
-      </p>
+    <div className="rounded-md border border-border bg-surface p-5">
+      <p className="text-body font-semibold text-text">{cite}</p>
+      <ul className="mt-3 flex flex-col gap-2">
+        {matches.map((o) => (
+          <li key={o.id}>
+            <Link
+              href={`/acts/${actSlug}/orders/${o.sortOrder}${value.rule ? `#rule-${value.rule}` : ""}`}
+              className="text-body text-text underline underline-offset-4 hover:text-brand">
+              Order {o.number} — {o.title}
+              {value.rule ? `, Rule ${value.rule}` : ""}
+            </Link>
+          </li>
+        ))}
+      </ul>
+      {matches.length > 1 ? (
+        <p className="mt-3 text-small text-text-muted">
+          Two Orders carry this number — the Commercial Courts Act substituted a parallel one for
+          suits before a Commercial Division. Check which applies to your matter.
+        </p>
+      ) : null}
     </div>
   );
 }

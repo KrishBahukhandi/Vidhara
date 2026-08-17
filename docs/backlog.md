@@ -1,7 +1,7 @@
 # Vidhara — Backlog
 
-> **Status**: Living document — the single list of what is not done. · **Last updated**: 2026-08-16 (D-066; founder-account run: key rotated, DMARC, Sentry, UptimeRobot, Search Console)
-> Compiled from decision-log D-001…D-066, launch-checklist, roadmap and a live check of the
+> **Status**: Living document — the single list of what is not done. · **Last updated**: 2026-08-17 (D-068; founder-account run: key rotated, DMARC, Sentry, UptimeRobot, Search Console)
+> Compiled from decision-log D-001…D-068, launch-checklist, roadmap and a live check of the
 > deployed site, DNS and Edge Functions on 2026-08-16. Where the docs and reality disagreed,
 > reality won and the discrepancy is noted.
 >
@@ -197,6 +197,16 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
 - [ ] No error boundaries or logger convention in either app
 - [ ] `packages/db` types are hand-maintained: `gen:types` targets `--local` and the stored access
       token lacks the types endpoint (D-030)
+
+## 5b. CPC Orders and Rules — done (D-068)
+
+- [x] **57 Orders, 728 rules published** to `act_orders` / `act_order_rules` (migration 0017) and
+      rendered at `/acts/cpc/orders`. "Order 7 Rule 11" now resolves to the rule instead of seven
+      sections matched on the digit. 78% of that Act, previously absent.
+- [ ] **The Appendices (forms) are still not ingested** — now the largest uncovered part of the CPC.
+- [ ] **Orders are not in full-text search** — "rejection of plaint" still finds only sections. The
+      FTS index exists on `act_order_rules`; nothing queries it yet.
+- [ ] **TP's and CrPC's schedules** could now use this same pattern.
 
 ## 10. The repo lives inside iCloud Drive — it corrupts builds
 

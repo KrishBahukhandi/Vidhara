@@ -7,7 +7,7 @@ import { OrderRuleNotice } from "@/components/order-rule-notice";
 import { SearchBox } from "@/components/search-box";
 import { SearchResults } from "@/components/search-results";
 import { PageShell } from "@/components/site-chrome";
-import { askSections, searchSections } from "@/features/acts/queries";
+import { askSections, findOrdersByNumber, searchSections } from "@/features/acts/queries";
 import { TrackEvent } from "@/lib/analytics";
 
 export const metadata: Metadata = {
@@ -35,6 +35,7 @@ export default async function SearchPage({
   // volume). Detected before searching so the reader is told, rather than
   // handed the seven unrelated sections FTS matches on the digit alone.
   const orderRule = query ? parseOrderRuleRef(query) : null;
+  const orderMatches = orderRule ? await findOrdersByNumber("cpc", orderRule.order) : [];
 
   const hits = query ? await searchSections(query) : [];
   // Plain FTS found nothing → let the grounded AI librarian interpret the
@@ -57,7 +58,7 @@ export default async function SearchPage({
 
       {orderRule ? (
         <div className="mt-6 max-w-2xl">
-          <OrderRuleNotice value={orderRule} />
+          <OrderRuleNotice value={orderRule} matches={orderMatches} />
         </div>
       ) : null}
 

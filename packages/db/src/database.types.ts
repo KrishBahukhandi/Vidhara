@@ -1,6 +1,6 @@
 /**
  * Database types — GENERATED from the live NexLex Supabase project
- * (ref eubyvglzkbzfeznocilg, migrations 0001–0015).
+ * (ref eubyvglzkbzfeznocilg, migrations 0001–0017).
  * Regenerate after schema changes: pnpm --filter @nexlex/db gen:types
  * (needs a Supabase access token with project access; entries below were added
  * by hand for 0009–0015 when the token lacked the types endpoint).
@@ -124,6 +124,81 @@ export type Database = {
           },
         ]
       }
+      act_orders: {
+        Row: {
+          act_id: string;
+          created_at: string;
+          id: string;
+          number: string;
+          provenance: string | null;
+          review_status: string;
+          sort_order: number;
+          title: string;
+          updated_at: string;
+        };
+        Insert: {
+          act_id: string;
+          created_at?: string;
+          id?: string;
+          number: string;
+          provenance?: string | null;
+          review_status?: string;
+          sort_order: number;
+          title: string;
+          updated_at?: string;
+        };
+        Update: {
+          act_id?: string;
+          created_at?: string;
+          id?: string;
+          number?: string;
+          provenance?: string | null;
+          review_status?: string;
+          sort_order?: number;
+          title?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      act_order_rules: {
+        Row: {
+          body_md: string;
+          body_plain: string;
+          created_at: string;
+          id: string;
+          marginal_note: string;
+          number: string;
+          order_id: string;
+          sort_key: number;
+          updated_at: string;
+          version: number;
+        };
+        Insert: {
+          body_md: string;
+          body_plain: string;
+          created_at?: string;
+          id?: string;
+          marginal_note: string;
+          number: string;
+          order_id: string;
+          sort_key: number;
+          updated_at?: string;
+          version?: number;
+        };
+        Update: {
+          body_md?: string;
+          body_plain?: string;
+          created_at?: string;
+          id?: string;
+          marginal_note?: string;
+          number?: string;
+          order_id?: string;
+          sort_key?: number;
+          updated_at?: string;
+          version?: number;
+        };
+        Relationships: [];
+      };
       act_schedules: {
         Row: {
           act_id: string
@@ -591,6 +666,23 @@ export type Database = {
       }
     }
     Views: {
+      v_order_rules: {
+        Row: {
+          act_abbreviation: string | null;
+          act_slug: string | null;
+          body_md: string | null;
+          body_plain: string | null;
+          id: string | null;
+          marginal_note: string | null;
+          order_id: string | null;
+          order_number: string | null;
+          order_sort: number | null;
+          order_title: string | null;
+          rule_number: string | null;
+          sort_key: number | null;
+        };
+        Relationships: [];
+      };
       v_mapping_lookup: {
         Row: {
           change_summary_md: string | null

@@ -70,18 +70,16 @@ export default async function ActPage({ params }: { params: Promise<Params> }) {
           the act page itself means a reader browsing for Order VII Rule 11
           learns the boundary before concluding it is not in the Act at all. */}
       {act.slug === "cpc" ? (
-        <p className="mt-4 max-w-measure rounded-md border border-warning p-4 text-small text-text-muted">
-          <strong className="font-semibold text-text">Sections only.</strong> This is the CPC&rsquo;s
-          body — sections 1&ndash;158. Its <strong>First Schedule</strong> (the Orders and Rules:
-          Order VII Rule 11, Order VIII Rule 6, Order XXXIX and so on) is not ingested yet; read
-          those on{" "}
-          <a
-            href="https://www.indiacode.nic.in/handle/123456789/2191"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline underline-offset-4 hover:text-text">
-            India Code
-          </a>
+        <p className="mt-4 max-w-measure rounded-md border border-border bg-surface p-4 text-small text-text-muted">
+          This page lists the CPC&rsquo;s <strong className="font-semibold text-text">sections</strong>.
+          Its <strong className="font-semibold text-text">First Schedule</strong> — the Orders and
+          Rules, where Order VII Rule 11, Order VIII Rule 6 and Order XXXIX live — is a separate
+          list:{" "}
+          <Link
+            href={`/acts/${slug}/orders`}
+            className="font-medium text-text underline underline-offset-4 hover:text-brand">
+            browse the Orders and Rules
+          </Link>
           .
         </p>
       ) : null}

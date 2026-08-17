@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { listActs, listAllSectionPaths } from "@/features/acts/queries";
+import { listActs, listAllSectionPaths, listOrders } from "@/features/acts/queries";
 import { SITE_URL } from "@/lib/site";
 
 export const revalidate = 3600;
@@ -23,6 +23,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const [acts, sectionPaths] = await Promise.all([listActs(), listAllSectionPaths()]);
 
+  // The CPC's First Schedule is its own list of pages — 57 Orders that nothing
+  // else links to deeply.
+  const orderEntries: MetadataRoute.Sitemap = [];
+  for (const act of acts) {
+    const orders = await listOrders(act.slug);
+    if (orders.length === 0) continue;
+    orderEntries.push({
+      url: `${SITE_URL}/acts/${act.slug}/orders`,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    });
+    for (const o of orders) {
+      orderEntries.push({
+        url: `${SITE_URL}/acts/${act.slug}/orders/${o.sortOrder}`,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      });
+    }
+  }
+
   // `lastModified` comes from each section's own updated_at, which the
   // act_sections touch trigger maintains — so a content repair (and this
   // corpus has had many) tells Google that page is worth recrawling, while
@@ -37,6 +57,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     ...staticEntries,
+    ...orderEntries,
     ...acts.map((act) => ({
       url: `${SITE_URL}/acts/${act.slug}`,
       // An act page is a list of its sections, so it is as fresh as its

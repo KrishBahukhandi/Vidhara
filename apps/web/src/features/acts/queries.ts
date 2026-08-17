@@ -379,3 +379,78 @@ export async function listAllSectionPaths(): Promise<
   }
   return paths;
 }
+
+// ── First Schedule: Orders and Rules (CPC) ───────────────────────────────────
+
+export interface OrderSummary {
+  id: string;
+  number: string;
+  title: string;
+  sortOrder: number;
+  ruleCount: number;
+}
+
+export interface OrderRule {
+  number: string;
+  marginalNote: string;
+  bodyMd: string;
+}
+
+/** Orders of an act's First Schedule, in printed order, with rule counts. */
+export async function listOrders(actSlug: string): Promise<OrderSummary[]> {
+  if (!isContentConfigured) return [];
+  const { data, error } = await getServerClient()
+    .from("act_orders")
+    .select("id, number, title, sort_order, acts!inner(slug), act_order_rules(count)")
+    .eq("acts.slug", actSlug)
+    .eq("review_status", "published")
+    .order("sort_order", { ascending: true });
+  if (error) throw new Error(`listOrders: ${error.message}`);
+  return (data ?? []).map((o) => ({
+    id: o.id as string,
+    number: o.number as string,
+    title: o.title as string,
+    sortOrder: o.sort_order as number,
+    // PostgREST returns an aggregate as [{ count }].
+    ruleCount: (o.act_order_rules as unknown as { count: number }[])?.[0]?.count ?? 0,
+  }));
+}
+
+/**
+ * One Order with its rules. Matched on sort_order rather than number because
+ * the number is not unique — the Commercial Courts Act substituted a parallel
+ * Order XI and the source carries both.
+ */
+export async function getOrderWithRules(
+  actSlug: string,
+  sortOrder: number,
+): Promise<{ number: string; title: string; rules: OrderRule[] } | null> {
+  if (!isContentConfigured) return null;
+  const { data, error } = await getServerClient()
+    .from("act_orders")
+    .select("number, title, acts!inner(slug), act_order_rules(number, sort_key, marginal_note, body_md)")
+    .eq("acts.slug", actSlug)
+    .eq("sort_order", sortOrder)
+    .eq("review_status", "published")
+    .maybeSingle();
+  if (error) throw new Error(`getOrderWithRules: ${error.message}`);
+  if (!data) return null;
+  const rules = ((data.act_order_rules ?? []) as unknown as {
+    number: string;
+    sort_key: number;
+    marginal_note: string;
+    body_md: string;
+  }[])
+    .sort((a, b) => a.sort_key - b.sort_key)
+    .map((r) => ({ number: r.number, marginalNote: r.marginal_note, bodyMd: r.body_md }));
+  return { number: data.number as string, title: data.title as string, rules };
+}
+
+/** Every Order sharing a printed number — usually one, two for Order XI. */
+export async function findOrdersByNumber(
+  actSlug: string,
+  number: string,
+): Promise<OrderSummary[]> {
+  const all = await listOrders(actSlug);
+  return all.filter((o) => o.number.toUpperCase() === number.toUpperCase());
+}
