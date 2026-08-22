@@ -496,3 +496,63 @@ export async function searchOrderRules(q: string): Promise<OrderRuleHit[]> {
     snippet: r.snippet,
   }));
 }
+
+// ── Appendices: the forms ────────────────────────────────────────────────────
+
+export interface AppendixSummary {
+  id: string;
+  letter: string;
+  title: string;
+  sortOrder: number;
+  formCount: number;
+}
+
+export interface AppendixForm {
+  number: string;
+  title: string;
+  bodyMd: string;
+}
+
+export async function listAppendices(actSlug: string): Promise<AppendixSummary[]> {
+  if (!isContentConfigured) return [];
+  const { data, error } = await getServerClient()
+    .from("act_appendices")
+    .select("id, letter, title, sort_order, acts!inner(slug), act_appendix_forms(count)")
+    .eq("acts.slug", actSlug)
+    .eq("review_status", "published")
+    .order("sort_order", { ascending: true });
+  if (error) throw new Error(`listAppendices: ${error.message}`);
+  return (data ?? []).map((a) => ({
+    id: a.id as string,
+    letter: a.letter as string,
+    title: a.title as string,
+    sortOrder: a.sort_order as number,
+    formCount: (a.act_appendix_forms as unknown as { count: number }[])?.[0]?.count ?? 0,
+  }));
+}
+
+export async function getAppendixWithForms(
+  actSlug: string,
+  letter: string,
+): Promise<{ letter: string; title: string; forms: AppendixForm[] } | null> {
+  if (!isContentConfigured) return null;
+  const { data, error } = await getServerClient()
+    .from("act_appendices")
+    .select("letter, title, acts!inner(slug), act_appendix_forms(number, title, body_md, sort_order)")
+    .eq("acts.slug", actSlug)
+    .eq("letter", letter.toUpperCase())
+    .eq("review_status", "published")
+    .maybeSingle();
+  if (error) throw new Error(`getAppendixWithForms: ${error.message}`);
+  if (!data) return null;
+  const forms = ((data.act_appendix_forms ?? []) as unknown as {
+    number: string;
+    title: string;
+    body_md: string;
+    sort_order: number;
+  }[])
+    // Ordered by printed position, not number — Appendix A's numbering restarts.
+    .sort((a, b) => a.sort_order - b.sort_order)
+    .map((f) => ({ number: f.number, title: f.title, bodyMd: f.body_md }));
+  return { letter: data.letter as string, title: data.title as string, forms };
+}

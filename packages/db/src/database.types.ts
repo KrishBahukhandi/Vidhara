@@ -1,6 +1,6 @@
 /**
  * Database types — GENERATED from the live NexLex Supabase project
- * (ref eubyvglzkbzfeznocilg, migrations 0001–0018).
+ * (ref eubyvglzkbzfeznocilg, migrations 0001–0019).
  * Regenerate after schema changes: pnpm --filter @nexlex/db gen:types
  * (needs a Supabase access token with project access; entries below were added
  * by hand for 0009–0015 when the token lacked the types endpoint).
@@ -196,6 +196,42 @@ export type Database = {
           sort_key?: number;
           updated_at?: string;
           version?: number;
+        };
+        Relationships: [];
+      };
+      act_appendices: {
+        Row: {
+          act_id: string; created_at: string; id: string; letter: string;
+          provenance: string | null; review_status: string; sort_order: number;
+          title: string; updated_at: string;
+        };
+        Insert: {
+          act_id: string; created_at?: string; id?: string; letter: string;
+          provenance?: string | null; review_status?: string; sort_order: number;
+          title: string; updated_at?: string;
+        };
+        Update: {
+          act_id?: string; created_at?: string; id?: string; letter?: string;
+          provenance?: string | null; review_status?: string; sort_order?: number;
+          title?: string; updated_at?: string;
+        };
+        Relationships: [];
+      };
+      act_appendix_forms: {
+        Row: {
+          appendix_id: string; body_md: string; body_plain: string; created_at: string;
+          id: string; number: string; sort_key: number; sort_order: number;
+          title: string; updated_at: string; version: number;
+        };
+        Insert: {
+          appendix_id: string; body_md: string; body_plain: string; created_at?: string;
+          id?: string; number: string; sort_key: number; sort_order: number;
+          title: string; updated_at?: string; version?: number;
+        };
+        Update: {
+          appendix_id?: string; body_md?: string; body_plain?: string; created_at?: string;
+          id?: string; number?: string; sort_key?: number; sort_order?: number;
+          title?: string; updated_at?: string; version?: number;
         };
         Relationships: [];
       };

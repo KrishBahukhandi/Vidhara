@@ -10,7 +10,7 @@
  */
 import { createClient } from "@supabase/supabase-js";
 
-import type { ParsedOrder } from "./sources/cpc-schedule";
+import type { ParsedAppendix, ParsedOrder } from "./sources/cpc-schedule";
 
 export interface PublishOrdersOptions {
   actSlug: string;
@@ -124,4 +124,73 @@ export async function publishOrders(
   }
 
   return { orders: orders.length, rules: ruleCount, removed };
+}
+
+// ── Appendices (the forms) ───────────────────────────────────────────────────
+
+
+export async function publishAppendices(
+  appendices: ParsedAppendix[],
+  options: PublishOrdersOptions,
+): Promise<{ appendices: number; forms: number }> {
+  const url = process.env.SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !serviceKey) {
+    throw new Error("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set (scripts/ingest/.env)");
+  }
+  const db = createClient(url, serviceKey, { auth: { persistSession: false } });
+
+  const { data: act, error: actError } = await db
+    .from("acts")
+    .select("id")
+    .eq("slug", options.actSlug)
+    .single();
+  if (actError || !act) throw new Error(`act not found: ${options.actSlug}`);
+
+  let formCount = 0;
+  for (const [i, ap] of appendices.entries()) {
+    const { data: saved, error } = await db
+      .from("act_appendices")
+      .upsert(
+        {
+          act_id: act.id,
+          letter: ap.letter,
+          title: ap.title || `Appendix ${ap.letter}`,
+          sort_order: i,
+          review_status: options.reviewStatus,
+          provenance: options.provenance,
+        },
+        { onConflict: "act_id,letter" },
+      )
+      .select("id")
+      .single();
+    if (error || !saved) throw new Error(`appendix ${ap.letter}: ${error?.message}`);
+
+    const appendixId = saved.id as string;
+    // Keyed by POSITION, not number: Appendix A's numbering restarts partway
+    // through (49 plaints, then defences beginning again at No. 1) and the
+    // print marks those groups with no heading this parser can rely on.
+    const forms = ap.forms.map((f, n) => ({
+      appendix_id: appendixId,
+      number: f.number,
+      sort_order: n,
+      sort_key: ruleSortKey(f.number),
+      title: f.title,
+      body_md: f.bodyMd,
+      body_plain: toPlain(f.bodyMd),
+    }));
+    if (forms.length) {
+      const { error: formError } = await db
+        .from("act_appendix_forms")
+        .upsert(forms, { onConflict: "appendix_id,sort_order" });
+      if (formError) throw new Error(`appendix ${ap.letter} forms: ${formError.message}`);
+      await db
+        .from("act_appendix_forms")
+        .delete()
+        .eq("appendix_id", appendixId)
+        .gte("sort_order", forms.length);
+    }
+    formCount += forms.length;
+  }
+  return { appendices: appendices.length, forms: formCount };
 }

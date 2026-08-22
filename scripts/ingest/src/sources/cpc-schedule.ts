@@ -65,8 +65,27 @@ export interface ParsedOrder {
   rules: ParsedRule[];
 }
 
+export interface ParsedForm {
+  number: string;
+  title: string;
+  bodyMd: string;
+}
+
+export interface ParsedAppendix {
+  letter: string;
+  title: string;
+  forms: ParsedForm[];
+}
+
 export interface CpcScheduleParseResult {
   orders: ParsedOrder[];
+  /**
+   * The Appendices — 30% of the document and a different kind of content: not
+   * provisions to read but forms to copy (a plaint for money lent, a decree for
+   * possession). Their dotted runs are the fill-in blanks as printed, so they
+   * are kept rather than collapsed as whitespace.
+   */
+  appendices: ParsedAppendix[];
   diagnostics: string[];
 }
 
@@ -180,6 +199,26 @@ const VIDE_CITATION = /\[\s*Vide\b/i;
 // for page furniture.
 const APPENDIX_START = /^APPENDIX\s+[A-Z]\s*$/;
 /**
+ * An Appendix heading, in the three forms this print uses.
+ *
+ * Four of the nine are set with a DROP CAP, and because bbox words are ordered
+ * by x-position the line reaches the parser as "A D PPENDIX" — a large "A",
+ * the appendix letter, then "PPENDIX" in small caps. That is the same artifact
+ * D-054 measured on "C HAPTER V" and D-055 on "I NTRODUCTION"; without it,
+ * Appendices D, E, G and H were invisible and their forms were absorbed into
+ * whichever Appendix was open (Appendix C ended up with 88).
+ */
+const APPENDIX_HEADING = /^APPENDIX[-\s]+([A-Z])\s*$/;
+// Words are ordered by x, and the drop cap sits left of the small-caps
+// remainder with the letter to its right: "A" @280, "PPENDIX" @288, "D" @324.
+const APPENDIX_DROPCAP = /^A\s+PPENDIX[-\s]+([A-Z])\s*$/;
+
+function matchAppendix(line: string): string | null {
+  return (APPENDIX_HEADING.exec(line) ?? APPENDIX_DROPCAP.exec(line))?.[1] ?? null;
+}
+/** "No. 1" alone, or "No. 1 MONEY LENT" with the title run in. */
+const FORM_HEADING = /^No\.\s*(\d+[A-Z]*)\s*(.*)$/;
+/**
  * A rule whose entire body is amendment apparatus. FOOTNOTE_SHAPE catches the
  * common form at line start, but Order X carries "Explanation ins. by s. 59,
  * ibid. (w.e.f. 1-2-1977)." where a real word precedes the citation verb, so it
@@ -240,7 +279,7 @@ export function parseCpcSchedule(xhtml: string): CpcScheduleParseResult {
   }
   if (entry === -1) {
     diagnostics.push("first schedule not found — no page carries the heading, ORDER I and rule text");
-    return { orders: [], diagnostics };
+    return { orders: [], appendices: [], diagnostics };
   }
   diagnostics.push(`schedule starts on page ${entry + 1} of ${allPages.length}`);
   const pages = allPages.slice(entry);
@@ -271,6 +310,73 @@ export function parseCpcSchedule(xhtml: string): CpcScheduleParseResult {
   let ruleNumber: string | null = null;
   let ruleParts: string[] = [];
   let lastRuleBase = 0;
+
+  // Appendices: same container/item shape as Orders/Rules, and read in the same
+  // pass because they sit in the same document behind the same furniture,
+  // height and marker handling.
+  const appendices: ParsedAppendix[] = [];
+  let inAppendices = false;
+  let currentAppendix: ParsedAppendix | null = null;
+  let pendingAppendixTitle = false;
+  let formNumber: string | null = null;
+  let formTitle = "";
+  let formParts: string[] = [];
+  let pendingFormTitle = false;
+  /** Text seen inside an Appendix before any "No. N" heading. */
+  let looseParts: string[] = [];
+
+  const flushForm = () => {
+    if (formNumber === null) return;
+    // Joined with newlines, not spaces. A form is a layout as much as a text —
+    // "IN THE COURT OF …" / "A.B. … Plaintiff" / "against" / "C.D. … Defendant"
+    // is unusable as one paragraph — so its lines are kept and the renderer
+    // preserves them.
+    const body = formParts
+      .map((l) => l.replace(/[ \t]+/g, " ").trimEnd())
+      .join("\n")
+      .trim();
+    if (body || formTitle) {
+      currentAppendix?.forms.push({
+        number: formNumber,
+        title: formTitle.trim() || `Form No. ${formNumber}`,
+        bodyMd: body,
+      });
+    }
+    formNumber = null;
+    formTitle = "";
+    formParts = [];
+    pendingFormTitle = false;
+  };
+
+  const flushAppendix = () => {
+    flushForm();
+    if (currentAppendix) {
+      // Appendix I (Statement of Truth, inserted 2018) is a single form with no
+      // "No. N" heading at all, so nothing was collected for it. Text seen
+      // inside an Appendix before any numbered form is that Appendix's own
+      // single form rather than something to discard.
+      const loose = looseParts
+        .map((l) => l.replace(/[ \t]+/g, " ").trimEnd())
+        .join("\n")
+        .trim();
+      if (currentAppendix.forms.length === 0 && loose.length > 120) {
+        currentAppendix.forms.push({ number: "1", title: currentAppendix.title, bodyMd: loose });
+      }
+      const existing = appendices.find((a) => a.letter === currentAppendix!.letter);
+      if (existing) {
+        // The print repeats a heading (Appendix I appears twice — once as the
+        // amendment's insertion header, once as the Appendix). Keep whichever
+        // carries content rather than emitting both.
+        if (currentAppendix.forms.length > existing.forms.length) {
+          appendices[appendices.indexOf(existing)] = currentAppendix;
+        }
+      } else if (currentAppendix.forms.length > 0 || currentAppendix.title) {
+        appendices.push(currentAppendix);
+      }
+    }
+    currentAppendix = null;
+    looseParts = [];
+  };
 
   const flushRule = () => {
     if (ruleNumber === null) return;
@@ -364,10 +470,59 @@ export function parseCpcSchedule(xhtml: string): CpcScheduleParseResult {
       if (!fullLine) continue;
       if (FURNITURE.some((re) => re.test(fullLine))) continue;
 
-      if (APPENDIX_START.test(stripMarkers(fullLine))) {
-        diagnostics.push(`stopped at the Appendices: "${stripMarkers(fullLine).slice(0, 40)}"`);
-        flushOrder();
-        return finish();
+      const bareLine = stripMarkers(fullLine);
+      const appendixLetter = matchAppendix(bareLine);
+      if (appendixLetter) {
+        // The Orders end here. Rather than stop, hand over to the Appendices —
+        // same document, same machinery, different content.
+        if (!inAppendices) {
+          diagnostics.push(`Orders end at "${bareLine}"; reading the Appendices`);
+          flushOrder();
+          inAppendices = true;
+        }
+        flushAppendix();
+        currentAppendix = { letter: appendixLetter, title: "", forms: [] };
+        pendingAppendixTitle = true;
+        continue;
+      }
+
+      if (inAppendices) {
+        if (pendingAppendixTitle) {
+          const piece = normalizeChapterTitle(bareLine).replace(/[[\]]/g, "").trim();
+          // The title is one centred line; a form heading below it ends it.
+          if (piece && !FORM_HEADING.test(bareLine)) {
+            currentAppendix!.title = piece;
+            pendingAppendixTitle = false;
+            continue;
+          }
+          pendingAppendixTitle = false;
+        }
+
+        const form = FORM_HEADING.exec(bareLine);
+        if (form) {
+          flushForm();
+          formNumber = form[1]!;
+          const inlineTitle = (form[2] ?? "").trim();
+          if (inlineTitle) {
+            formTitle = normalizeChapterTitle(inlineTitle);
+          } else {
+            // Title sits on the next line.
+            pendingFormTitle = true;
+          }
+          continue;
+        }
+
+        if (formNumber !== null) {
+          if (pendingFormTitle) {
+            formTitle = normalizeChapterTitle(bareLine);
+            pendingFormTitle = false;
+            continue;
+          }
+          formParts.push(fullLine);
+        } else if (currentAppendix) {
+          looseParts.push(fullLine);
+        }
+        continue;
       }
 
       // Small type: footnotes, and the apparatus that opens them.
@@ -484,6 +639,7 @@ export function parseCpcSchedule(xhtml: string): CpcScheduleParseResult {
   }
   flushOrder();
 
+  flushAppendix();
   return finish();
 
   function finish(): CpcScheduleParseResult {
@@ -500,7 +656,9 @@ export function parseCpcSchedule(xhtml: string): CpcScheduleParseResult {
     if (count > 1) diagnostics.push(`Order ${number} appears ${count}× — check both are central law`);
   }
 
+  const formCount = appendices.reduce((n, a) => n + a.forms.length, 0);
   diagnostics.push(`${orders.length} Order(s), ${seen.size} distinct, ${ruleCount} rule(s)`);
-  return { orders, diagnostics };
+  diagnostics.push(`${appendices.length} Appendix/Appendices, ${formCount} form(s)`);
+  return { orders, appendices, diagnostics };
   }
 }

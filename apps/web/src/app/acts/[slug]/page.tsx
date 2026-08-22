@@ -80,6 +80,12 @@ export default async function ActPage({ params }: { params: Promise<Params> }) {
             className="font-medium text-text underline underline-offset-4 hover:text-brand">
             browse the Orders and Rules
           </Link>
+          , and the{" "}
+          <Link
+            href={`/acts/${slug}/appendices`}
+            className="font-medium text-text underline underline-offset-4 hover:text-brand">
+            Appendices (the forms)
+          </Link>
           .
         </p>
       ) : null}

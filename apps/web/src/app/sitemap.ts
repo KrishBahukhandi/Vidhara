@@ -1,6 +1,11 @@
 import type { MetadataRoute } from "next";
 
-import { listActs, listAllSectionPaths, listOrders } from "@/features/acts/queries";
+import {
+  listActs,
+  listAllSectionPaths,
+  listAppendices,
+  listOrders,
+} from "@/features/acts/queries";
 import { SITE_URL } from "@/lib/site";
 
 export const revalidate = 3600;
@@ -43,6 +48,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
+  // The Appendices — the forms — are their own small set of pages.
+  const appendixEntries: MetadataRoute.Sitemap = [];
+  for (const act of acts) {
+    const appendices = await listAppendices(act.slug);
+    if (appendices.length === 0) continue;
+    appendixEntries.push({
+      url: `${SITE_URL}/acts/${act.slug}/appendices`,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    });
+    for (const a of appendices) {
+      appendixEntries.push({
+        url: `${SITE_URL}/acts/${act.slug}/appendices/${a.letter}`,
+        changeFrequency: "monthly" as const,
+        priority: 0.5,
+      });
+    }
+  }
+
   // `lastModified` comes from each section's own updated_at, which the
   // act_sections touch trigger maintains — so a content repair (and this
   // corpus has had many) tells Google that page is worth recrawling, while
@@ -58,6 +82,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...staticEntries,
     ...orderEntries,
+    ...appendixEntries,
     ...acts.map((act) => ({
       url: `${SITE_URL}/acts/${act.slug}`,
       // An act page is a list of its sections, so it is as fresh as its

@@ -1,7 +1,7 @@
 # Vidhara — Backlog
 
 > **Status**: Living document — the single list of what is not done. · **Last updated**: 2026-08-17 (D-068; founder-account run: key rotated, DMARC, Sentry, UptimeRobot, Search Console)
-> Compiled from decision-log D-001…D-068, launch-checklist, roadmap and a live check of the
+> Compiled from decision-log D-001…D-069, launch-checklist, roadmap and a live check of the
 > deployed site, DNS and Edge Functions on 2026-08-16. Where the docs and reality disagreed,
 > reality won and the discrepancy is noted.
 >
@@ -203,7 +203,13 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
 - [x] **57 Orders, 728 rules published** to `act_orders` / `act_order_rules` (migration 0017) and
       rendered at `/acts/cpc/orders`. "Order 7 Rule 11" now resolves to the rule instead of seven
       sections matched on the digit. 78% of that Act, previously absent.
-- [ ] **The Appendices (forms) are still not ingested** — now the largest uncovered part of the CPC.
+- [x] **The Appendices are ingested (D-069)** — 9 appendices, 213 forms, rendered at
+      `/acts/cpc/appendices` with their line breaks and dotted blanks preserved.
+- [ ] **Forms are not in full-text search** — their GIN index exists and is unused, exactly the gap
+      that had been left open for the Orders. Should not be left long.
+- [ ] **Appendix A's sub-sections are unmodelled** — its numbering restarts (49 plaints, then
+      defences from No. 1) and the print marks the groups with no heading the parser can rely on,
+      so two forms cited "Appendix A, No. 1" are told apart only by position.
 - [x] **Orders are in full-text search** (migration 0018, `search_order_rules`). "rejection of
       plaint" returns Order VII rr.11–13; "temporary injunction" returns Order XXXIX r.1. Shown as
       their own group, not merged into sections — a rule is cited and routed differently. Verified
