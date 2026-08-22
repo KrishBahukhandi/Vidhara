@@ -1,6 +1,6 @@
 /**
  * Database types — GENERATED from the live NexLex Supabase project
- * (ref eubyvglzkbzfeznocilg, migrations 0001–0017).
+ * (ref eubyvglzkbzfeznocilg, migrations 0001–0018).
  * Regenerate after schema changes: pnpm --filter @nexlex/db gen:types
  * (needs a Supabase access token with project access; entries below were added
  * by hand for 0009–0015 when the token lacked the types endpoint).
@@ -703,6 +703,21 @@ export type Database = {
       }
     }
     Functions: {
+      search_order_rules: {
+        Args: { max_results?: number; q: string; scope_act?: string };
+        Returns: {
+          rule_id: string;
+          act_abbreviation: string;
+          act_slug: string;
+          order_number: string;
+          order_title: string;
+          order_sort: number;
+          rule_number: string;
+          marginal_note: string;
+          snippet: string;
+          rank: number;
+        }[];
+      };
       search_sections: {
         Args: { max_results?: number; q: string; scope_act?: string }
         Returns: {

@@ -204,8 +204,10 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
       rendered at `/acts/cpc/orders`. "Order 7 Rule 11" now resolves to the rule instead of seven
       sections matched on the digit. 78% of that Act, previously absent.
 - [ ] **The Appendices (forms) are still not ingested** — now the largest uncovered part of the CPC.
-- [ ] **Orders are not in full-text search** — "rejection of plaint" still finds only sections. The
-      FTS index exists on `act_order_rules`; nothing queries it yet.
+- [x] **Orders are in full-text search** (migration 0018, `search_order_rules`). "rejection of
+      plaint" returns Order VII rr.11–13; "temporary injunction" returns Order XXXIX r.1. Shown as
+      their own group, not merged into sections — a rule is cited and routed differently. Verified
+      the RPC uses the GIN index (`Bitmap Index Scan`, ~6ms) rather than a seq scan.
 - [ ] **TP's and CrPC's schedules** could now use this same pattern.
 
 ## 10. The repo lives inside iCloud Drive — it corrupts builds

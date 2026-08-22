@@ -4,10 +4,16 @@ import { ACT_SLUG, parseOrderRuleRef, parseSectionRef } from "@nexlex/shared";
 
 import { MissingContentForm } from "@/components/missing-content-form";
 import { OrderRuleNotice } from "@/components/order-rule-notice";
+import { OrderRuleResults } from "@/components/order-rule-results";
 import { SearchBox } from "@/components/search-box";
 import { SearchResults } from "@/components/search-results";
 import { PageShell } from "@/components/site-chrome";
-import { askSections, findOrdersByNumber, searchSections } from "@/features/acts/queries";
+import {
+  askSections,
+  findOrdersByNumber,
+  searchOrderRules,
+  searchSections,
+} from "@/features/acts/queries";
 import { TrackEvent } from "@/lib/analytics";
 
 export const metadata: Metadata = {
@@ -31,17 +37,25 @@ export default async function SearchPage({
     redirect(`/acts/${ACT_SLUG[ref.act]}/${encodeURIComponent(ref.section)}?via=search`);
   }
 
-  // The CPC's Orders and Rules are not in the corpus (78% of that Act by
-  // volume). Detected before searching so the reader is told, rather than
-  // handed the seven unrelated sections FTS matches on the digit alone.
+  // A Schedule reference ("Order 7 Rule 11") is resolved before searching, so
+  // the reader is taken to the rule rather than handed the sections that FTS
+  // matches on the bare digit.
   const orderRule = query ? parseOrderRuleRef(query) : null;
   const orderMatches = orderRule ? await findOrdersByNumber("cpc", orderRule.order) : [];
 
-  const hits = query ? await searchSections(query) : [];
+  // Sections and Orders are searched together but reported separately — the
+  // Orders were published behind an index nothing queried, so "rejection of
+  // plaint" found only sections and Order VII Rule 11 was unreachable.
+  const [hits, ruleHits] = query
+    ? await Promise.all([searchSections(query), searchOrderRules(query)])
+    : [[], []];
   // Plain FTS found nothing → let the grounded AI librarian interpret the
   // question (e.g. "anticipatory bail" → "bail to person apprehending arrest")
   // and re-search the real corpus. Results are always real sections (D-004).
-  const assisted = query && hits.length === 0 ? await askSections(query) : null;
+  // Only when NOTHING was found. Firing on empty sections alone would spend an
+  // AI call — and print "no exact match" — over a query the Orders answered.
+  const assisted =
+    query && hits.length === 0 && ruleHits.length === 0 ? await askSections(query) : null;
 
   return (
     <PageShell>
@@ -71,6 +85,8 @@ export default async function SearchPage({
         </>
       ) : null}
 
+      {query ? <OrderRuleResults hits={ruleHits} /> : null}
+
       {query && hits.length === 0 && assisted && assisted.results.length > 0 ? (
         <>
           <TrackEvent name="ask_ai_assisted" props={{ found: assisted.results.length }} />
@@ -89,11 +105,15 @@ export default async function SearchPage({
         </>
       ) : null}
 
-      {query && hits.length === 0 && (!assisted || assisted.results.length === 0) ? (
+      {query &&
+      hits.length === 0 &&
+      ruleHits.length === 0 &&
+      (!assisted || assisted.results.length === 0) ? (
         <>
           {assisted ? <TrackEvent name="ask_ai_assisted" props={{ found: 0 }} /> : null}
           <p className="mt-6 text-body text-text-muted">
-            No sections match “{query}”. Try different words, or a section reference like “302 IPC”.
+            Nothing matches “{query}”. Try different words, or a reference like “302 IPC” or
+            “Order 7 Rule 11”.
           </p>
           <MissingContentForm query={query} />
         </>

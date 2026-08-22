@@ -454,3 +454,45 @@ export async function findOrdersByNumber(
   const all = await listOrders(actSlug);
   return all.filter((o) => o.number.toUpperCase() === number.toUpperCase());
 }
+
+export interface OrderRuleHit {
+  ruleId: string;
+  actSlug: string;
+  actAbbreviation: string;
+  orderNumber: string;
+  orderTitle: string;
+  orderSort: number;
+  ruleNumber: string;
+  marginalNote: string;
+  snippet: string;
+}
+
+/**
+ * Full-text search over Orders and Rules (search_order_rules RPC).
+ *
+ * Run alongside section search rather than merged into it: a rule and a section
+ * are cited differently ("Order VII, Rule 11" is not a section number) and land
+ * on different routes, so a single ranked list would blur which is which. The
+ * page shows them as separate groups.
+ */
+export async function searchOrderRules(q: string): Promise<OrderRuleHit[]> {
+  if (!isContentConfigured || !q.trim()) return [];
+  const { data, error } = await getServerClient().rpc("search_order_rules", { q: q.trim() });
+  if (error) {
+    // Never let the Orders break section search — this is an addition to a
+    // working surface, not a replacement for it.
+    console.error("searchOrderRules:", error.message);
+    return [];
+  }
+  return (data ?? []).map((r) => ({
+    ruleId: r.rule_id,
+    actSlug: r.act_slug,
+    actAbbreviation: r.act_abbreviation,
+    orderNumber: r.order_number,
+    orderTitle: r.order_title,
+    orderSort: r.order_sort,
+    ruleNumber: r.rule_number,
+    marginalNote: r.marginal_note,
+    snippet: r.snippet,
+  }));
+}
