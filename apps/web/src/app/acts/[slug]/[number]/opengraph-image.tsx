@@ -20,7 +20,7 @@ export default async function OgImage({
   const section = await getSectionWithAct(slug, decodeURIComponent(number));
 
   const title = section
-    ? `${section.acts.abbreviation} §${section.number}`
+    ? `${section.acts.abbreviation} ${section.number}`
     : "Vidhara — Bare Acts";
   const note = section?.marginal_note ?? "Indian bare acts, structured and free";
 
@@ -32,10 +32,10 @@ export default async function OgImage({
       counterpart =
         m.source_section_id === section.id
           ? m.target_act
-            ? `now ${m.target_act} §${m.target_number}`
+            ? `now ${m.target_act} ${m.target_number}`
             : "no counterpart in the new code"
           : m.source_act
-            ? `was ${m.source_act} §${m.source_number}`
+            ? `was ${m.source_act} ${m.source_number}`
             : "";
     }
   }

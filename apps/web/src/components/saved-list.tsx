@@ -40,7 +40,7 @@ export function SavedList() {
             href={`/acts/${b.slug}/${encodeURIComponent(b.number)}?via=bookmark`}
             className="flex items-baseline gap-4 px-4 py-3 transition-colors hover:bg-bg">
             <span className="min-w-16 font-mono text-small font-bold text-brand">
-              {b.act} §{b.number}
+              {b.act} s. {b.number}
             </span>
             <span className="font-medium text-text">{b.note}</span>
           </Link>

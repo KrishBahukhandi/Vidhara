@@ -122,8 +122,8 @@ export default async function VerificationPage() {
             <strong>One State&rsquo;s amendment shown as national law.</strong> India Code prints
             State amendments immediately after the central section they modify, and our text had
             absorbed them. This was found in stages and the last of it was only cleared on 2 August
-            2026: <strong>68 sections</strong> — including CrPC §438 (anticipatory bail), §125
-            (maintenance) and §154 (FIR) — were still carrying a State&rsquo;s amending text inside
+            2026: <strong>68 sections</strong> — including CrPC Section 438 (anticipatory bail), Section 125
+            (maintenance) and Section 154 (FIR) — were still carrying a State&rsquo;s amending text inside
             the central provision, about 142,000 characters of it. A further{" "}
             <strong>21 provisions were published as sections in their own right</strong> though no
             such section exists nationally: IPC 354E, 376F, 509A and 509B (Chhattisgarh), 379A and

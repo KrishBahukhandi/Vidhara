@@ -25,7 +25,7 @@ export function ContinueReading() {
               onClick={() => track("recents_resumed", { act: r.act, number: r.number })}
               className="flex flex-col gap-1 rounded-md border border-border bg-surface p-4 transition-colors hover:border-brand">
               <span className="font-mono text-small font-bold text-brand">
-                {r.act} §{r.number}
+                {r.act} s. {r.number}
               </span>
               <span className="line-clamp-2 text-small text-text-muted">{r.note}</span>
             </Link>

@@ -39,7 +39,7 @@ export function SearchResults({ query, hits }: { query: string; hits: SearchHit[
             onClick={() => track("search_result_clicked", { rank: index + 1 })}
             className="block px-4 py-3 transition-colors hover:bg-bg">
             <span className="font-mono text-small font-bold text-brand">
-              {hit.act_abbreviation} §{hit.number}
+              {hit.act_abbreviation} s. {hit.number}
             </span>
             <span className="ml-3 font-medium text-text">{hit.marginal_note}</span>
             {hit.snippet ? (

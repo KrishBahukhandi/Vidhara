@@ -93,7 +93,7 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
     "@context": "https://schema.org",
     "@type": "Legislation",
     name: `${section.acts.abbreviation} Section ${section.number} — ${section.marginal_note}`,
-    legislationIdentifier: `${section.acts.abbreviation} §${section.number}`,
+    legislationIdentifier: `${section.acts.abbreviation} Section ${section.number}`,
     isPartOf: { "@type": "Legislation", name: section.acts.title },
     legislationJurisdiction: "IN",
     inLanguage: "en",
@@ -162,7 +162,7 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
         <Link href={`/acts/${slug}`} className="hover:text-text">
           {section.acts.abbreviation}
         </Link>{" "}
-        / §{section.number}
+        / Section {section.number}
       </nav>
 
       <RecordRecent
@@ -176,7 +176,7 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
         <p className="text-small text-text-muted">{section.acts.title}</p>
         <div className="mt-1 flex flex-wrap items-start justify-between gap-3">
           <h1 className="max-w-measure font-serif text-h1 font-semibold text-text">
-            §{section.number} — {section.marginal_note}
+            Section {section.number} — {section.marginal_note}
           </h1>
           <BookmarkButton
             act={section.acts.abbreviation}
@@ -242,10 +242,10 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
           if (!m) return "";
           return m.source_section_id === section.id
             ? m.target_act
-              ? `${m.target_act} §${m.target_number}`
+              ? `${m.target_act} Section ${m.target_number}`
               : ""
             : m.source_act
-              ? `${m.source_act} §${m.source_number}`
+              ? `${m.source_act} Section ${m.source_number}`
               : "";
         })()}
         url={`${SITE_URL}/acts/${slug}/${encodeURIComponent(section.number)}`}

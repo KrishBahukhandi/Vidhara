@@ -76,7 +76,7 @@ export function ActSectionList({
             href={`/acts/${slug}/${encodeURIComponent(section.number)}?via=browse`}
             className="flex items-baseline gap-4 px-4 py-3 transition-colors hover:bg-bg">
             <span className="min-w-14 font-mono text-small font-bold text-brand">
-              §{section.number}
+              s. {section.number}
             </span>
             <span className="font-medium text-text">{section.marginal_note}</span>
           </Link>

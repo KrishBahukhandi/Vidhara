@@ -155,23 +155,29 @@ export function parseNcrbTable(html: string, oldAct: string, newAct: string): Nc
     else if (o === n) type = "identical";
     else type = "renumbered";
 
-    const parts = [`${oldAct} §${o} → ${newAct} §${n} per the official NCRB Sankalan table.`];
-    if (split) parts.push(`${oldAct} §${o} is split across multiple ${newAct} sections.`);
-    if (merged) parts.push(`${newAct} §${n} consolidates multiple ${oldAct} sections.`);
+    // "Section 124", not "§124". The section sign is US/German convention;
+    // Indian citation writes it out, and Search Console confirms readers do
+    // too — every arriving query says "section 151 bns" or just "151 bns",
+    // none uses the symbol. This string is read on every mapped section page.
+    const parts = [
+      `${oldAct} Section ${o} → ${newAct} Section ${n} per the official NCRB Sankalan table.`,
+    ];
+    if (split) parts.push(`${oldAct} Section ${o} is split across multiple ${newAct} sections.`);
+    if (merged) parts.push(`${newAct} Section ${n} consolidates multiple ${oldAct} sections.`);
     if (changed) parts.push(`Marked "(Change)" — substance modified; compare texts.`);
     entries.push({ oldSection: o, newSection: n, type, note: parts.join(" ") });
   }
 
   for (const o of [...deletedOld].sort((a, b) => parseInt(a, 10) - parseInt(b, 10))) {
     if (pairedOld.has(o)) {
-      diagnostics.push(`old §${o} both paired and deleted — kept as paired`);
+      diagnostics.push(`old Section ${o} both paired and deleted — kept as paired`);
       continue;
     }
     entries.push({
       oldSection: o,
       newSection: null,
       type: "omitted",
-      note: `${oldAct} §${o} has no counterpart in ${newAct} (omitted) per the official NCRB Sankalan table.`,
+      note: `${oldAct} Section ${o} has no counterpart in ${newAct} (omitted) per the official NCRB Sankalan table.`,
     });
   }
 
@@ -181,7 +187,7 @@ export function parseNcrbTable(html: string, oldAct: string, newAct: string): Nc
       oldSection: null,
       newSection: n,
       type: "new",
-      note: `${newAct} §${n} is a new provision with no ${oldAct} antecedent per the official NCRB Sankalan table.`,
+      note: `${newAct} Section ${n} is a new provision with no ${oldAct} antecedent per the official NCRB Sankalan table.`,
     });
   }
 

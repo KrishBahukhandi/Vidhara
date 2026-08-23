@@ -63,7 +63,7 @@ export function MissingContentForm({ query, path = "/search" }: { query: string;
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           maxLength={300}
-          placeholder="e.g. Limitation Act 1963, MV Act §185, NDPS Act…"
+          placeholder="e.g. Limitation Act 1963, MV Act s. 185, NDPS Act…"
           className="h-11 flex-1 rounded-md border border-border bg-bg px-4 text-body text-text placeholder:text-text-faint focus:border-brand focus:outline-none"
         />
         <button

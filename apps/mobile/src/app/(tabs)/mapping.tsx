@@ -34,7 +34,7 @@ export default function MappingScreen() {
     if (result.data.kind === "not-found") {
       setMappings(null);
       setStatus({
-        error: `${result.data.act} §${result.data.section} isn't in the library yet.`,
+        error: `${result.data.act} Section ${result.data.section} isn't in the library yet.`,
       });
       return;
     }

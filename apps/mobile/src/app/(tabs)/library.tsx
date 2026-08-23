@@ -68,7 +68,7 @@ function HitRow({ hit, onPress }: { hit: SearchHit; onPress: () => void }) {
       <View style={styles.actInfo}>
         <AppText style={styles.actTitle}>
           <AppText tone="brand" style={styles.mono}>
-            {hit.act_abbreviation} §{hit.number}
+            {hit.act_abbreviation} s. {hit.number}
           </AppText>
           {"  "}
           {hit.marginal_note}

@@ -109,7 +109,7 @@ export default function HomePage() {
           One section, two names — and everyone&rsquo;s mid-switch.
         </h2>
         <p className="mt-4 max-w-measure text-body text-text-muted">
-          Cheating was IPC §420 for 160 years. Since 1 July 2024 it&rsquo;s BNS §318. Multiply that
+          Cheating was IPC Section 420 for 160 years. Since 1 July 2024 it&rsquo;s BNS Section 318. Multiply that
           by 3,000+ sections and you get every law student&rsquo;s daily friction. Vidhara turns
           that lookup into a single tap.
         </p>
@@ -118,7 +118,7 @@ export default function HomePage() {
         <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:gap-4">
           <div className="flex-1 rounded-md border border-border bg-surface p-5">
             <p className="font-mono text-micro uppercase tracking-wide text-text-faint">Old law</p>
-            <p className="mt-1 font-mono text-h2 font-bold text-text">IPC §420</p>
+            <p className="mt-1 font-mono text-h2 font-bold text-text">IPC 420</p>
             <p className="mt-1 text-small text-text-muted">Cheating and dishonestly inducing…</p>
           </div>
           <div className="flex shrink-0 items-center justify-center text-h2 text-brand" aria-hidden>
@@ -128,7 +128,7 @@ export default function HomePage() {
           </div>
           <div className="flex-1 rounded-md border border-brand bg-surface p-5">
             <p className="font-mono text-micro uppercase tracking-wide text-text-faint">New law</p>
-            <p className="mt-1 font-mono text-h2 font-bold text-brand">BNS §318</p>
+            <p className="mt-1 font-mono text-h2 font-bold text-brand">BNS 318</p>
             <p className="mt-1 text-small text-text-muted">Cheating — consolidated &amp; updated</p>
           </div>
         </div>

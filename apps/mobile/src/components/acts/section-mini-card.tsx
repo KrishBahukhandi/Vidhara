@@ -4,7 +4,7 @@ import { AppText } from "@/components/ui/app-text";
 import { radius, sp, useTheme } from "@/theme";
 import type { LibraryItem } from "@/lib/local-library";
 
-/** Compact tappable card for a saved/recent section (act §number + note). */
+/** Compact tappable card for a saved/recent section (act + section number + note). */
 export function SectionMiniCard({ item, onPress }: { item: LibraryItem; onPress: () => void }) {
   const { colors } = useTheme();
   return (
@@ -17,7 +17,7 @@ export function SectionMiniCard({ item, onPress }: { item: LibraryItem; onPress:
         { backgroundColor: colors.surface, borderColor: colors.border, opacity: pressed ? 0.85 : 1 },
       ]}>
       <AppText tone="brand" style={styles.ref}>
-        {item.act} §{item.number}
+        {item.act} s. {item.number}
       </AppText>
       <AppText variant="small" tone="muted" numberOfLines={2}>
         {item.note}

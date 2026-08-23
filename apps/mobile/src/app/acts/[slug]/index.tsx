@@ -177,7 +177,7 @@ export default function ActDetailScreen() {
                 },
               ]}>
               <AppText tone="brand" style={styles.number}>
-                §{item.number}
+                s. {item.number}
               </AppText>
               <AppText style={styles.note} numberOfLines={2}>
                 {item.marginal_note}

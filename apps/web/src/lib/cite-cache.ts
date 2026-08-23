@@ -19,7 +19,7 @@ export interface CitedSection {
   act: string;
   note: string;
   body: string;
-  /** e.g. "now BNS §103" / "was IPC §302" — the wedge, inline. */
+  /** e.g. "now BNS 103" / "was IPC 302" — the wedge, inline. */
   counterpart: string | null;
   /** Last looked-up epoch ms. */
   ts: number;

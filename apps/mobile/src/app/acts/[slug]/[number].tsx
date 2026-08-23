@@ -81,7 +81,7 @@ export default function SectionReaderScreen() {
       channel: "copy_text",
     });
     await Clipboard.setStringAsync(
-      `${section.acts.abbreviation} §${section.number} — ${section.marginal_note}\n\n${section.body_plain}`,
+      `${section.acts.abbreviation} Section ${section.number} — ${section.marginal_note}\n\n${section.body_plain}`,
     );
     setCopiedText(true);
     setTimeout(() => setCopiedText(false), 2000);
@@ -93,10 +93,10 @@ export default function SectionReaderScreen() {
     const other = counterpart
       ? counterpart.source_section_id === section.id
         ? counterpart.target_act
-          ? ` (now ${counterpart.target_act} §${counterpart.target_number})`
+          ? ` (now ${counterpart.target_act} ${counterpart.target_number})`
           : ""
         : counterpart.source_act
-          ? ` (was ${counterpart.source_act} §${counterpart.source_number})`
+          ? ` (was ${counterpart.source_act} ${counterpart.source_number})`
           : ""
       : "";
     track("share_clicked", {
@@ -106,7 +106,7 @@ export default function SectionReaderScreen() {
     });
     await Share.share({
       message:
-        `${section.acts.abbreviation} §${section.number} — ${section.marginal_note}${other}` +
+        `${section.acts.abbreviation} Section ${section.number} — ${section.marginal_note}${other}` +
         ` · full text: ${WEB_URL}/acts/${section.acts.slug}/${encodeURIComponent(section.number)}?via=share`,
     });
   };
@@ -141,7 +141,7 @@ export default function SectionReaderScreen() {
               {section.acts.title}
             </AppText>
             <AppText variant="h1" serif>
-              §{section.number} — {section.marginal_note}
+              Section {section.number} — {section.marginal_note}
             </AppText>
             <View style={styles.actions}>
               <BookmarkButton

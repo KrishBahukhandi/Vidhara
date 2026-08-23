@@ -28,7 +28,7 @@ export function SectionNav({
           <span className="text-micro font-medium uppercase tracking-wide text-text-faint">
             ← Previous
           </span>
-          <span className="font-mono text-small font-bold text-brand">§{prev.number}</span>
+          <span className="font-mono text-small font-bold text-brand">s. {prev.number}</span>
           <span className="line-clamp-2 text-small text-text-muted">{prev.marginal_note}</span>
         </Link>
       ) : (
@@ -41,7 +41,7 @@ export function SectionNav({
           <span className="text-micro font-medium uppercase tracking-wide text-text-faint">
             Next →
           </span>
-          <span className="font-mono text-small font-bold text-brand">§{next.number}</span>
+          <span className="font-mono text-small font-bold text-brand">s. {next.number}</span>
           <span className="line-clamp-2 text-small text-text-muted">{next.marginal_note}</span>
         </Link>
       ) : (

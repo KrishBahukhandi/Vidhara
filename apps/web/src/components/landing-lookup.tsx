@@ -33,7 +33,7 @@ export function LandingLookup() {
       return;
     }
     if (parsed && !parsed.act) {
-      setHint(`Which act is §${parsed.section} from? Add it — e.g. “${parsed.section} IPC”.`);
+      setHint(`Which act is section ${parsed.section} from? Add it — e.g. “${parsed.section} IPC”.`);
       return;
     }
     // Not a section reference — fall through to full-text search.

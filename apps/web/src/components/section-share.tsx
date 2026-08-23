@@ -20,7 +20,7 @@ export function SectionShare({
   act: string;
   number: string;
   note: string;
-  /** e.g. "BNS §318" — empty string when the section has no counterpart. */
+  /** e.g. "BNS Section 318" — empty string when the section has no counterpart. */
   counterpart: string;
   url: string;
   /** Plain statute text for "Copy text" — students paste sections into notes daily. */
@@ -31,7 +31,7 @@ export function SectionShare({
 
   const shareUrl = `${url}?via=share`;
   const text =
-    `${act} §${number} — ${note}` +
+    `${act} Section ${number} — ${note}` +
     (counterpart ? ` (now ${counterpart})` : "") +
     ` · full text: ${shareUrl}`;
 
@@ -53,7 +53,7 @@ export function SectionShare({
     fire("copy_text");
     try {
       await navigator.clipboard.writeText(
-        `${act} §${number} — ${note}\n\n${bodyText}\n\n(${shareUrl})`,
+        `${act} Section ${number} — ${note}\n\n${bodyText}\n\n(${shareUrl})`,
       );
       setCopiedText(true);
       setTimeout(() => setCopiedText(false), 2000);
@@ -79,7 +79,7 @@ export function SectionShare({
       <a
         className={linkClass}
         href={`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(
-          `${act} §${number} — ${note}${counterpart ? ` (now ${counterpart})` : ""}`,
+          `${act} Section ${number} — ${note}${counterpart ? ` (now ${counterpart})` : ""}`,
         )}`}
         target="_blank"
         rel="noopener noreferrer"

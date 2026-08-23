@@ -167,7 +167,9 @@ export function QuickCite() {
 
   const copy = async (kind: "cite" | "text") => {
     if (!section) return;
-    const citation = `${section.act} §${section.number} — ${section.note}`;
+    // Indian drafts cite "Section 420 IPC", never "§420" — this string is
+    // pasted straight into a pleading.
+    const citation = `${section.act} Section ${section.number} — ${section.note}`;
     const payload = kind === "cite" ? citation : `${citation}\n\n${section.body}`;
     try {
       await navigator.clipboard.writeText(payload);
@@ -245,7 +247,7 @@ export function QuickCite() {
                 }}
                 className="flex w-full items-baseline gap-3 px-4 py-3 text-left transition-colors hover:bg-bg">
                 <span className="font-mono text-small font-semibold text-brand">
-                  {h.act_abbreviation} §{h.number}
+                  {h.act_abbreviation} s. {h.number}
                 </span>
                 <span className="text-body text-text">{h.marginal_note}</span>
               </button>
@@ -259,7 +261,7 @@ export function QuickCite() {
         <article className="mt-5 rounded-lg border border-border bg-surface p-5">
           <div className="flex flex-wrap items-center gap-3">
             <h2 className="font-mono text-h3 font-semibold text-text">
-              {section.act} §{section.number}
+              {section.act} s. {section.number}
             </h2>
             {section.counterpart ? (
               <span className="rounded-full border border-brand px-3 py-1 text-small font-medium text-brand">
@@ -320,7 +322,7 @@ export function QuickCite() {
                   void loadSection(r.slug, r.number);
                 }}
                 className="rounded-md border border-border px-3 py-1.5 font-mono text-small text-text-muted transition-colors hover:border-brand hover:text-text">
-                {r.act} §{r.number}
+                {r.act} s. {r.number}
               </button>
             ))}
           </div>

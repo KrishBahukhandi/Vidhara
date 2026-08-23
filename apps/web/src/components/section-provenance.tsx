@@ -63,9 +63,9 @@ export function SectionProvenance({
         <p className="pt-1">
           Spotted a mistake in this text or its mapping?{" "}
           <Link
-            href={`/feedback?about=${encodeURIComponent(`${act} §${number}`)}`}
+            href={`/feedback?about=${encodeURIComponent(`${act} Section ${number}`)}`}
             className="font-medium text-brand hover:underline">
-            Report an issue with {act} §{number}
+            Report an issue with {act} Section {number}
           </Link>
         </p>
       </div>

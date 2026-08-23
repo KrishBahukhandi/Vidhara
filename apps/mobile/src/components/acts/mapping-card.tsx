@@ -74,7 +74,7 @@ export function MappingCard({
         {label}
       </AppText>
       {/* Omitted/new mappings have one side with no provision at all. */}
-      <AppText variant="h3">{act && number ? `${act} §${number}` : "—"}</AppText>
+      <AppText variant="h3">{act && number ? `${act} Section ${number}` : "—"}</AppText>
       <AppText variant="small" tone="muted" numberOfLines={2}>
         {act && number ? note : "No corresponding provision"}
       </AppText>

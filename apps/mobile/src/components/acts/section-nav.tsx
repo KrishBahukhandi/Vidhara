@@ -40,7 +40,7 @@ export function SectionNav({
             </AppText>
           </View>
           <AppText tone="brand" style={styles.num}>
-            §{prev.number}
+            s. {prev.number}
           </AppText>
           <AppText variant="small" tone="muted" numberOfLines={2}>
             {prev.marginal_note}
@@ -66,7 +66,7 @@ export function SectionNav({
             <Ionicons name="arrow-forward" size={14} color={colors.textFaint} />
           </View>
           <AppText tone="brand" style={styles.num}>
-            §{next.number}
+            s. {next.number}
           </AppText>
           <AppText variant="small" tone="muted" numberOfLines={2} style={styles.textEnd}>
             {next.marginal_note}

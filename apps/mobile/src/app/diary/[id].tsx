@@ -473,7 +473,7 @@ function Sections({ c }: { c: DiaryCase }) {
             onPress={() => router.push(`/acts/${s.slug}/${encodeURIComponent(s.number)}`)}
             style={[styles.chip, { borderColor: colors.border }]}>
             <AppText variant="small" tone="brand" style={styles.chipText}>
-              {s.act} §{s.number}
+              {s.act} s. {s.number}
             </AppText>
             {s.counterpart ? (
               <AppText variant="micro" tone="muted">

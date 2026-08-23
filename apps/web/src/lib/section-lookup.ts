@@ -13,7 +13,7 @@ export interface LookedUpSection {
   act: string;
   note: string;
   body: string;
-  /** e.g. "now BNS §103" / "was IPC §302" — null when there's no mapping. */
+  /** e.g. "now BNS 103" / "was IPC 302" — null when there's no mapping. */
   counterpart: string | null;
 }
 
@@ -62,10 +62,10 @@ export async function fetchSection(
     counterpart =
       m.source_section_id === row.id
         ? m.target_act
-          ? `now ${m.target_act} §${m.target_number}`
+          ? `now ${m.target_act} ${m.target_number}`
           : null
         : m.source_act
-          ? `was ${m.source_act} §${m.source_number}`
+          ? `was ${m.source_act} ${m.source_number}`
           : null;
   }
 

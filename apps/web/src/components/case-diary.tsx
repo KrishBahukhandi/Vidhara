@@ -475,14 +475,14 @@ function CaseCard({
               <Link
                 href={`/acts/${s.slug}/${encodeURIComponent(s.number)}`}
                 className="font-mono text-small font-medium text-brand hover:underline">
-                {s.act} §{s.number}
+                {s.act} s. {s.number}
               </Link>
               {s.counterpart ? (
                 <span className="text-micro text-text-muted">{s.counterpart}</span>
               ) : null}
               <button
                 type="button"
-                aria-label={`Remove ${s.act} §${s.number}`}
+                aria-label={`Remove ${s.act} section ${s.number}`}
                 onClick={() => diary.detachSection(c.id, s.slug, s.number)}
                 className="text-micro text-text-faint hover:text-danger">
                 ✕

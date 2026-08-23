@@ -39,7 +39,7 @@ export function CounterpartText({
     <details open className="mt-4 rounded-md border border-border bg-surface">
       <summary className="cursor-pointer list-none px-5 py-3 text-small font-medium text-text">
         <span className="font-mono">
-          {actAbbreviation} §{number}
+          {actAbbreviation} Section {number}
         </span>{" "}
         — {marginalNote}
         <span className="ml-2 font-normal text-text-muted">
@@ -48,7 +48,7 @@ export function CounterpartText({
       </summary>
       <div className="border-t border-border px-5 py-4">
         <p className="mb-3 text-micro text-text-faint">
-          This is the text of <strong className="font-semibold text-text">{actAbbreviation} §{number}</strong>,
+          This is the text of <strong className="font-semibold text-text">{actAbbreviation} Section {number}</strong>,
           not of the section above. Read both before relying on either.
         </p>
         <div className="max-w-measure font-serif text-body leading-relaxed text-text">
@@ -57,7 +57,7 @@ export function CounterpartText({
         <Link
           href={`/acts/${actSlug}/${encodeURIComponent(number)}?via=mapping`}
           className="mt-3 inline-block text-small underline underline-offset-4 hover:text-brand">
-          Open {actAbbreviation} §{number} on its own page →
+          Open {actAbbreviation} Section {number} on its own page →
         </Link>
       </div>
     </details>
