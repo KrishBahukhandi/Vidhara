@@ -11,7 +11,7 @@
  * a bundled snapshot. This is the cheap 80% — your own recent sections, which
  * is what you actually re-cite in a hearing.
  */
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface CitedSection {
   slug: string;
@@ -103,8 +103,3 @@ export function clearCache(): void {
     /* nothing to do */
   }
 }
-
-export const useCiteCallbacks = () => ({
-  remember: useCallback(remember, []),
-  recall: useCallback(recall, []),
-});

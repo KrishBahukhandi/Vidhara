@@ -556,3 +556,34 @@ export async function getAppendixWithForms(
     .map((f) => ({ number: f.number, title: f.title, bodyMd: f.body_md }));
   return { letter: data.letter as string, title: data.title as string, forms };
 }
+
+export interface AppendixFormHit {
+  formId: string;
+  actSlug: string;
+  actAbbreviation: string;
+  appendixLetter: string;
+  formNumber: string;
+  formSort: number;
+  title: string;
+  snippet: string;
+}
+
+/** Full-text search over the Appendix forms (search_appendix_forms RPC). */
+export async function searchAppendixForms(q: string): Promise<AppendixFormHit[]> {
+  if (!isContentConfigured || !q.trim()) return [];
+  const { data, error } = await getServerClient().rpc("search_appendix_forms", { q: q.trim() });
+  if (error) {
+    console.error("searchAppendixForms:", error.message);
+    return [];
+  }
+  return (data ?? []).map((f) => ({
+    formId: f.form_id,
+    actSlug: f.act_slug,
+    actAbbreviation: f.act_abbreviation,
+    appendixLetter: f.appendix_letter,
+    formNumber: f.form_number,
+    formSort: f.form_sort,
+    title: f.title,
+    snippet: f.snippet,
+  }));
+}

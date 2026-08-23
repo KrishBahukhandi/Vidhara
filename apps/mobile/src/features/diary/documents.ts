@@ -38,15 +38,67 @@ function safeName(name: string, id: string): string {
   return ext ? `${id}.${ext}` : id;
 }
 
+/**
+ * The most a single document may be. A court order photographed on a modern
+ * phone is 1-3 MB; a 25 MB one is a video or a mistake, and the sandbox has no
+ * quota to warn anyone before it fills.
+ */
+const MAX_BYTES = 25 * 1024 * 1024;
+
+/** Total the feature will hold before it asks for something to be deleted. */
+const MAX_TOTAL_BYTES = 250 * 1024 * 1024;
+
+export class DocumentTooLargeError extends Error {
+  constructor(readonly bytes: number) {
+    super("That file is too large to attach.");
+    this.name = "DocumentTooLargeError";
+  }
+}
+
+export class DocumentStoreFullError extends Error {
+  constructor(readonly totalBytes: number) {
+    super("Case documents are using too much space on this device.");
+    this.name = "DocumentStoreFullError";
+  }
+}
+
+/** Bytes currently held by every stored document. */
+export function totalStoredBytes(): number {
+  try {
+    return root()
+      .list()
+      .reduce((sum, entry) => sum + (entry instanceof File ? (entry.size ?? 0) : 0), 0);
+  } catch {
+    return 0;
+  }
+}
+
 async function adopt(
   sourceUri: string,
   displayName: string,
   mimeType?: string,
 ): Promise<CaseDocument | null> {
+  const source = new File(sourceUri);
+
+  // Refuse before copying, not after: a rejected file that has already been
+  // written is the worst of both.
+  const incoming = source.size ?? 0;
+  if (incoming > MAX_BYTES) throw new DocumentTooLargeError(incoming);
+  if (totalStoredBytes() + incoming > MAX_TOTAL_BYTES) {
+    throw new DocumentStoreFullError(totalStoredBytes());
+  }
+
+  // Deduplicate on (size, name). Attaching the same order twice — easy to do
+  // when a picker reopens on the last folder — used to write a second copy of
+  // every byte, and nothing ever reclaimed it. Content hashing would be exact
+  // but means reading the whole file; size and name catch the real case.
+  const existing = findDuplicate(displayName, incoming);
+  if (existing) return existing;
+
   try {
     const id = diaryUid();
     const target = new File(root(), safeName(displayName, id));
-    await new File(sourceUri).copy(target);
+    await source.copy(target);
     return {
       id,
       name: displayName,
@@ -58,6 +110,36 @@ async function adopt(
   } catch {
     return null;
   }
+}
+
+/**
+ * An already-stored file with the same extension and byte count.
+ *
+ * Returns a CaseDocument pointing at the existing bytes rather than copying
+ * them again. The display name is the one the caller supplied, so the same
+ * bytes can appear on two cases under two names without being stored twice.
+ */
+function findDuplicate(displayName: string, size: number): CaseDocument | null {
+  if (size <= 0) return null;
+  try {
+    const ext = /\.([A-Za-z0-9]{1,8})$/.exec(displayName)?.[1]?.toLowerCase();
+    for (const entry of root().list()) {
+      if (!(entry instanceof File)) continue;
+      if ((entry.size ?? -1) !== size) continue;
+      const entryExt = /\.([A-Za-z0-9]{1,8})$/.exec(entry.uri)?.[1]?.toLowerCase();
+      if (ext !== entryExt) continue;
+      return {
+        id: diaryUid(),
+        name: displayName,
+        uri: entry.uri,
+        size,
+        addedAt: Date.now(),
+      };
+    }
+  } catch {
+    // A listing failure is not a reason to refuse an attach.
+  }
+  return null;
 }
 
 /** Photograph an order or the order sheet — the common case, done in court. */
@@ -101,7 +183,13 @@ export function documentExists(doc: CaseDocument): boolean {
  * actually delete it — leaving the bytes in the sandbox while the UI says it is
  * gone would be the worst of both.
  */
-export function deleteDocumentFile(doc: CaseDocument): void {
+export function deleteDocumentFile(doc: CaseDocument, stillReferenced = false): void {
+  // Two records can point at the same bytes: attaching the same order to a
+  // second case reuses the stored file instead of copying it again. Deleting
+  // one must not take the other's document with it, so the caller — which is
+  // the only thing that can see every record — says whether anything else
+  // still refers to this uri.
+  if (stillReferenced) return;
   try {
     const file = new File(doc.uri);
     if (file.exists) file.delete();

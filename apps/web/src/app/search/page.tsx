@@ -4,6 +4,7 @@ import { ACT_SLUG, parseOrderRuleRef, parseSectionRef } from "@nexlex/shared";
 
 import { MissingContentForm } from "@/components/missing-content-form";
 import { OrderRuleNotice } from "@/components/order-rule-notice";
+import { AppendixFormResults } from "@/components/appendix-form-results";
 import { OrderRuleResults } from "@/components/order-rule-results";
 import { SearchBox } from "@/components/search-box";
 import { SearchResults } from "@/components/search-results";
@@ -11,6 +12,7 @@ import { PageShell } from "@/components/site-chrome";
 import {
   askSections,
   findOrdersByNumber,
+  searchAppendixForms,
   searchOrderRules,
   searchSections,
 } from "@/features/acts/queries";
@@ -46,16 +48,22 @@ export default async function SearchPage({
   // Sections and Orders are searched together but reported separately — the
   // Orders were published behind an index nothing queried, so "rejection of
   // plaint" found only sections and Order VII Rule 11 was unreachable.
-  const [hits, ruleHits] = query
-    ? await Promise.all([searchSections(query), searchOrderRules(query)])
-    : [[], []];
+  const [hits, ruleHits, formHits] = query
+    ? await Promise.all([
+        searchSections(query),
+        searchOrderRules(query),
+        searchAppendixForms(query),
+      ])
+    : [[], [], []];
   // Plain FTS found nothing → let the grounded AI librarian interpret the
   // question (e.g. "anticipatory bail" → "bail to person apprehending arrest")
   // and re-search the real corpus. Results are always real sections (D-004).
   // Only when NOTHING was found. Firing on empty sections alone would spend an
   // AI call — and print "no exact match" — over a query the Orders answered.
   const assisted =
-    query && hits.length === 0 && ruleHits.length === 0 ? await askSections(query) : null;
+    query && hits.length === 0 && ruleHits.length === 0 && formHits.length === 0
+      ? await askSections(query)
+      : null;
 
   return (
     <PageShell>
@@ -86,6 +94,7 @@ export default async function SearchPage({
       ) : null}
 
       {query ? <OrderRuleResults hits={ruleHits} /> : null}
+      {query ? <AppendixFormResults hits={formHits} /> : null}
 
       {query && hits.length === 0 && assisted && assisted.results.length > 0 ? (
         <>
@@ -108,6 +117,7 @@ export default async function SearchPage({
       {query &&
       hits.length === 0 &&
       ruleHits.length === 0 &&
+      formHits.length === 0 &&
       (!assisted || assisted.results.length === 0) ? (
         <>
           {assisted ? <TrackEvent name="ask_ai_assisted" props={{ found: 0 }} /> : null}

@@ -1,7 +1,7 @@
 # Vidhara — Backlog
 
 > **Status**: Living document — the single list of what is not done. · **Last updated**: 2026-08-17 (D-068; founder-account run: key rotated, DMARC, Sentry, UptimeRobot, Search Console)
-> Compiled from decision-log D-001…D-069, launch-checklist, roadmap and a live check of the
+> Compiled from decision-log D-001…D-070, launch-checklist, roadmap and a live check of the
 > deployed site, DNS and Edge Functions on 2026-08-16. Where the docs and reality disagreed,
 > reality won and the discrepancy is noted.
 >
@@ -77,7 +77,7 @@ reminders (built, still inert — needs the Edge Function secrets above).
       default "Use existing Build Cache" silently ships the old one — the first redeploy did
       nothing. Source-map upload (`SENTRY_ORG`/`PROJECT`/`AUTH_TOKEN`) still not configured, so
       stack traces are minified.
-- [ ] **Sentry on the RN app** — still nothing.
+- [x] **Sentry on the RN app** — added in D-070; see §4 (never run on a device yet).
 - [x] **UptimeRobot** monitors on `/` and `/api/v1/health`. The health endpoint was a static
       `ok:true` that never touched Supabase, so the monitor would have stayed green through a total
       database outage; it now returns a real `db` readiness field and the keyword watches
@@ -97,18 +97,22 @@ reminders (built, still inert — needs the Edge Function secrets above).
 
 ## 4. Android / mobile
 
-- [ ] **`apps/mobile/src/lib/analytics.ts` is a stub** (`TODO(beta)` at line 42) — logs in dev,
-      no-ops in release. Every screen already calls `track()`; wiring `posthog-react-native` is
-      one file. Without it the Android cohort generates **zero** product data.
-- [ ] No Sentry in the RN app at all
+- [x] **Mobile analytics wired** (D-070) — `posthog-react-native`, same project as the web, dev
+      never sends. No native module added (all peer deps optional, AsyncStorage already present).
+      ⚠️ **Never run on a device** — the first `expo run:android` is the verification.
+      ⚠️ Mobile persists its distinct_id; the **web does not** (`persistence: "memory"`), so
+      retention is measurable on Android and not on the web. Still unsettled — see §3.
+- [x] **Sentry in the RN app** (D-070) — errors only, no screenshots or view hierarchy (the diary
+      holds privileged matter), inert without a DSN, disabled in dev. ⚠️ **Never run on a device.**
 - [ ] `expo run:android` on the physical device, then EAS build → Play closed track
 - [ ] **Untested paths** (D-048): the **camera** and **DocumentPicker** flows for case documents.
       A simulator has no camera. The gallery path is verified down to the filesystem; these two
       share `adopt()` with it but their pickers are unproven.
 - [ ] Permission usage strings unverified in situ — Expo Go shows its own wording, so the strings
       added in D-047 have never been seen by a user. Check on the first EAS build.
-- [ ] Case documents have **no dedupe and no size cap** — one 1.3 MB photo per attach, growing
-      unbounded in the app sandbox
+- [x] **Case documents bounded** (D-070) — 25 MB per file, 250 MB total, refused before the copy;
+      the same file attached twice reuses the stored bytes, and deletion is reference-aware so
+      removing one record cannot destroy another's document.
 - [ ] Mobile renders no schedules (D-036) — the Limitation Schedule browse page is web-only
 - [ ] Serif font not bundled via expo-font; native falls back to the system font (cosmetic)
 
@@ -163,7 +167,8 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
 
 ## 6. Product gaps named in their own entries
 
-- [ ] No on-demand `revalidatePath` route → content fixes lag up to 1h behind the ISR cache (D-017)
+- [x] **On-demand revalidation** — `POST /api/v1/revalidate`, secret-gated, bounded, inert
+      without `REVALIDATE_SECRET`. **Set that secret in Vercel** to switch it on.
 - [ ] Diary **sync** — genuinely needs accounts; the JSON export is the manual bridge (D-044)
 - [ ] s.12(3)'s separate judgment-copy exclusion is folded into one interval; an advocate who
       obtained copies separately must add the difference by hand (D-046)
@@ -192,9 +197,14 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
 
 ## 8. Technical debt
 
-- [ ] **No real ESLint config anywhere** — every workspace's `lint` script is `tsc --noEmit`.
-      Accepted at scaffold time for velocity; never paid off.
+- [x] **ESLint runs for both apps** (D-070) — narrow by design; the rule worth its keep forbids
+      referencing a server-only secret from anywhere that can ship to a browser.
 - [ ] No error boundaries or logger convention in either app
+- [ ] **Refactor localStorage/AsyncStorage hooks to `useSyncExternalStore`** — nine call sites read
+      storage inside an effect to stay SSR-safe (local-library, case-diary, cite-cache, useSession,
+      and the mobile equivalents). `react-hooks/set-state-in-effect` is switched OFF for exactly
+      those; `useSyncExternalStore` is the right primitive and the rule should come back on after.
+      A seven-file refactor with real regression risk, so it is its own piece of work (D-070).
 - [ ] `packages/db` types are hand-maintained: `gen:types` targets `--local` and the stored access
       token lacks the types endpoint (D-030)
 
@@ -205,8 +215,8 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
       sections matched on the digit. 78% of that Act, previously absent.
 - [x] **The Appendices are ingested (D-069)** — 9 appendices, 213 forms, rendered at
       `/acts/cpc/appendices` with their line breaks and dotted blanks preserved.
-- [ ] **Forms are not in full-text search** — their GIN index exists and is unused, exactly the gap
-      that had been left open for the Orders. Should not be left long.
+- [x] **Forms are in full-text search** (migration 0020, `search_appendix_forms`). Third result
+      group on /search, alongside sections and rules.
 - [ ] **Appendix A's sub-sections are unmodelled** — its numbering restarts (49 plaints, then
       defences from No. 1) and the print marks the groups with no heading the parser can rely on,
       so two forms cited "Appendix A, No. 1" are told apart only by position.

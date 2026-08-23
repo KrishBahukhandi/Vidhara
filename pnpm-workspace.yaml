@@ -12,3 +12,4 @@ allowBuilds:
   core-js: false # postinstall is a funding banner only
   esbuild: true
   sharp: true
+  unrs-resolver: true # native resolver behind eslint's import resolution

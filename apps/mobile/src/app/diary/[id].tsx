@@ -12,6 +12,8 @@ import {
   attachFromCamera,
   attachFromFiles,
   attachFromLibrary,
+  DocumentStoreFullError,
+  DocumentTooLargeError,
   documentExists,
   formatSize,
 } from "@/features/diary/documents";
@@ -336,6 +338,22 @@ function Documents({ c, diary }: { c: DiaryCase; diary: ReturnType<typeof useCas
       if (doc) {
         await diary.attachDocument(c.id, doc);
         track("diary_document_attached", {});
+      }
+    } catch (err) {
+      // A refused attach must say why. Silently doing nothing is how someone
+      // decides the button is broken and stops trusting the feature.
+      if (err instanceof DocumentTooLargeError) {
+        Alert.alert(
+          "File too large",
+          `That file is ${formatSize(err.bytes)}. Attachments are limited to 25 MB — photograph the pages separately, or attach a smaller scan.`,
+        );
+      } else if (err instanceof DocumentStoreFullError) {
+        Alert.alert(
+          "Not enough space",
+          `Case documents are using ${formatSize(err.totalBytes)} on this device. Delete a few attachments you no longer need, then try again.`,
+        );
+      } else {
+        Alert.alert("Couldn't attach", "Something went wrong copying that file. Please try again.");
       }
     } finally {
       setBusy(false);

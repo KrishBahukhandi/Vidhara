@@ -223,7 +223,14 @@ export function useCaseDiary(): DiaryApi {
     async (id: string, docId: string) => {
       const list = await read();
       const doc = list.find((c) => c.id === id)?.documents?.find((d) => d.id === docId);
-      if (doc) deleteDocumentFile(doc);
+      if (doc) {
+        // Deduplicated attachments share one file, so the bytes only go when
+        // the last record pointing at them does.
+        const stillReferenced = list.some((c) =>
+          (c.documents ?? []).some((d) => d.id !== docId && d.uri === doc.uri),
+        );
+        deleteDocumentFile(doc, stillReferenced);
+      }
       await write(
         list.map((c) =>
           c.id === id
