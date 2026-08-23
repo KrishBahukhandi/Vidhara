@@ -9,7 +9,6 @@
  * Without NEXT_PUBLIC_POSTHOG_KEY every call is a no-op (console.debug in dev),
  * so local/preview environments never pollute production data.
  */
-import posthog from "posthog-js";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef } from "react";
 
@@ -80,51 +79,87 @@ function isAnalyticsHost(): boolean {
   return host !== "localhost" && host !== "127.0.0.1" && !host.endsWith(".local");
 }
 
-let initialized = false;
+/**
+ * PostHog is loaded on demand, not imported at module scope, and from the
+ * `slim` build rather than the default one. Two separate wins:
+ *
+ *  - `slim` drops session recording, surveys, autocapture and web-vitals — none
+ *    of which we enable — halving the library (231 KB → 121 KB raw).
+ *  - The dynamic `import()` puts what remains in its own chunk that no longer
+ *    downloads or parses before first paint. Analytics is the least urgent
+ *    thing on a page whose job is to show a statute; it now loads after the
+ *    first event wants it, which is post-hydration by construction.
+ *
+ * Events fired before the chunk lands are queued, not dropped.
+ */
+type PostHogClient = import("posthog-js/dist/module.slim.no-external").PostHog;
 
-function ensureInit(): boolean {
-  if (initialized) return true;
-  if (!KEY || typeof window === "undefined" || !isAnalyticsHost()) return false;
+let client: PostHogClient | null = null;
+let loadStarted = false;
+// Bounded: if the chunk never arrives (blocked, offline) this must not grow
+// without limit on a long session.
+const MAX_QUEUED = 50;
+const queued: Array<[string, Record<string, unknown> | undefined]> = [];
 
-  posthog.init(KEY, {
-    api_host: HOST,
-    // Cookieless: no banner burden, ids reset when storage clears — accepted.
-    persistence: "memory",
-    autocapture: false, // schema'd events only; auto-clicks are noise
-    capture_pageview: false, // manual $pageview on route change (SPA-correct)
-    capture_pageleave: true,
-    person_profiles: "identified_only", // we never identify() — no anon person profiles (privacy + cost)
-  });
+function isEnabled(): boolean {
+  return Boolean(KEY) && typeof window !== "undefined" && isAnalyticsHost();
+}
 
-  // Beta invite links carry ?c=<cohort>; persist so the tag survives navigation.
-  try {
-    const fromUrl = new URLSearchParams(window.location.search).get("c");
-    if (fromUrl) localStorage.setItem(COHORT_STORAGE_KEY, fromUrl);
-    const cohort = localStorage.getItem(COHORT_STORAGE_KEY);
-    posthog.register({
-      platform: "web",
-      app_version: process.env.NEXT_PUBLIC_APP_VERSION ?? "dev",
-      ...(cohort ? { cohort } : {}),
+function load(): void {
+  if (loadStarted) return;
+  loadStarted = true;
+
+  void import("posthog-js/dist/module.slim.no-external")
+    .then(({ default: posthog }) => {
+      posthog.init(KEY, {
+        api_host: HOST,
+        // Cookieless: no banner burden, ids reset when storage clears — accepted.
+        persistence: "memory",
+        autocapture: false, // schema'd events only; auto-clicks are noise
+        capture_pageview: false, // manual $pageview on route change (SPA-correct)
+        capture_pageleave: true,
+        person_profiles: "identified_only", // we never identify() — no anon person profiles (privacy + cost)
+      });
+
+      // Beta invite links carry ?c=<cohort>; persist so the tag survives navigation.
+      let cohort: string | null = null;
+      try {
+        const fromUrl = new URLSearchParams(window.location.search).get("c");
+        if (fromUrl) localStorage.setItem(COHORT_STORAGE_KEY, fromUrl);
+        cohort = localStorage.getItem(COHORT_STORAGE_KEY);
+      } catch {
+        // Storage blocked — the cohort tag is optional, the rest is not.
+      }
+      posthog.register({
+        platform: "web",
+        app_version: process.env.NEXT_PUBLIC_APP_VERSION ?? "dev",
+        ...(cohort ? { cohort } : {}),
+      });
+
+      client = posthog;
+      for (const [name, props] of queued) posthog.capture(name, props);
+      queued.length = 0;
+    })
+    .catch(() => {
+      // Chunk failed to load. Analytics is not worth a broken page, and the
+      // queue must not pin memory for the rest of the session.
+      queued.length = 0;
     });
-  } catch {
-    posthog.register({
-      platform: "web",
-      app_version: process.env.NEXT_PUBLIC_APP_VERSION ?? "dev",
-    });
-  }
-
-  initialized = true;
-  return true;
 }
 
 export function track(name: EventName | "$pageview", props?: Record<string, unknown>): void {
-  if (!ensureInit()) {
+  if (!isEnabled()) {
     if (process.env.NODE_ENV === "development") {
       console.debug("[analytics disabled]", name, props ?? {});
     }
     return;
   }
-  posthog.capture(name, props);
+  if (client) {
+    client.capture(name, props);
+    return;
+  }
+  if (queued.length < MAX_QUEUED) queued.push([name, props]);
+  load();
 }
 
 function PageviewTracker() {

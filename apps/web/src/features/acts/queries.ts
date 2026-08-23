@@ -49,6 +49,31 @@ export async function listActs(): Promise<Act[]> {
   return data;
 }
 
+/** Published section count per act id, for the library index.
+ *
+ * One head-count per act rather than one grouped query: PostgREST has no
+ * GROUP BY, and the alternative — pulling all 5,594 section rows and counting
+ * them in JS, the way the sitemap has to — moves megabytes to produce 36
+ * integers. These are HEAD requests returning no rows at all, they run in
+ * parallel, and the page holding them is revalidated hourly. */
+export async function countSectionsByAct(actIds: string[]): Promise<Map<string, number>> {
+  const counts = new Map<string, number>();
+  if (!isContentConfigured) return counts;
+  const client = getServerClient();
+  await Promise.all(
+    actIds.map(async (id) => {
+      const { count, error } = await client
+        .from("act_sections")
+        .select("id", { count: "exact", head: true })
+        .eq("act_id", id);
+      // A missing count must not take the whole library page down with it —
+      // the count is a nicety, the list of acts is the page.
+      if (!error) counts.set(id, count ?? 0);
+    }),
+  );
+  return counts;
+}
+
 export async function getActBySlug(slug: string): Promise<Act | null> {
   if (!isContentConfigured) return null;
   const { data, error } = await getServerClient()

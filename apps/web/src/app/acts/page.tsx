@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { ActLibrary, type LibraryAct } from "@/components/act-library";
 import { PageShell } from "@/components/site-chrome";
-import { listActs } from "@/features/acts/queries";
+import { countSectionsByAct, listActs } from "@/features/acts/queries";
 
 export const revalidate = 3600;
 
@@ -12,14 +12,19 @@ export const metadata: Metadata = {
     "All 36 Indian bare acts, section by section: BNS, BNSS, BSA, IPC, CrPC, Evidence Act, the Constitution, Contract Act, CPC, NI Act, POCSO, Hindu Marriage, Limitation, Motor Vehicles and more — free.",
 };
 
-const STATUS_LABEL: Record<string, string> = {
-  active: "In force",
-  replaced: "Replaced",
-  repealed: "Repealed",
-};
-
 export default async function ActsPage() {
   const acts = await listActs();
+  const counts = await countSectionsByAct(acts.map((a) => a.id));
+
+  const libraryActs: LibraryAct[] = acts.map((act) => ({
+    id: act.id,
+    slug: act.slug,
+    abbreviation: act.abbreviation,
+    title: act.title,
+    year: act.year,
+    status: act.status,
+    sectionCount: counts.get(act.id) ?? 0,
+  }));
 
   return (
     <PageShell>
@@ -29,32 +34,13 @@ export default async function ActsPage() {
         mappings back to the codes they replace.
       </p>
 
-      <ul className="mt-8 grid gap-4 md:grid-cols-2">
-        {acts.map((act) => (
-          <li key={act.id}>
-            <Link
-              href={`/acts/${act.slug}`}
-              className="flex items-center gap-4 rounded-md border border-border bg-surface p-4 transition-colors hover:border-brand">
-              <span
-                className={`min-w-16 rounded-sm px-2 py-1 text-center text-small font-bold ${
-                  act.status === "active" ? "bg-brand text-on-brand" : "bg-border text-text-muted"
-                }`}>
-                {act.abbreviation}
-              </span>
-              <span>
-                <span className="block font-medium text-text">{act.title}</span>
-                <span className="block text-small text-text-muted">
-                  {act.year} · {STATUS_LABEL[act.status] ?? act.status}
-                </span>
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-
       {acts.length === 0 ? (
-        <p className="mt-8 text-body text-text-muted">The library is being ingested — check back shortly.</p>
-      ) : null}
+        <p className="mt-8 text-body text-text-muted">
+          The library is being ingested — check back shortly.
+        </p>
+      ) : (
+        <ActLibrary acts={libraryActs} />
+      )}
     </PageShell>
   );
 }

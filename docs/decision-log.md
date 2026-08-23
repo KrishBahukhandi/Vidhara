@@ -222,6 +222,29 @@ Context: the founder brought real data rather than a hunch. Three months in Sear
 **D-072 · 2026-08-17 · The section sign is gone. It is US/German convention, not Indian, and the founder's own Search Console data proves nobody types it.**
 Context: the founder asked whether "§" was necessary or mandatory, saying it caused confusion. It is neither. **§ is the section sign of United States and German legal writing.** Indian citation writes it out — "Section 302", "S. 302", "sec. 302"; India Code's own published bare acts use "Section"; judgments say "Section 302 IPC". **And the site's own arriving traffic settles it**: of the top queries in Search Console — "151 bns", "bns 180", "bns 151 section", "bns151", "section 151 bns", "134 bnss", "ipc75", "180 bns act", "section 151 of bns" — **not one uses the symbol.** Readers type "section" or nothing at all. There was also an inconsistency nobody had noticed: the page `<title>` already said "BNS **Section** 151" while the `<h1>` on the same page said "**§**151", so the tag that matches how people search and the heading that does not were disagreeing on the same page. **Convention adopted:** "Section N" wherever there is room — headings, prose, mapping cards, the copy-citation and share text, the OG card, the JSON-LD identifier — and "s. N" in compact list rows and prev/next chips, which is itself standard Indian shorthand. The copy-citation mattered most: an advocate pastes that straight into a pleading, and Indian pleadings do not contain "§". **Checked before touching anything: zero published sections contain § in their body text**, so there was no source-fidelity question at all — this is entirely our own chrome. **The database carried it too.** All **1,271** `law_mappings.change_summary_md` rows read "IPC §124 → BNS §151 per the official NCRB Sankalan table"; every one is our own generated summary rather than statute, so they were rewritten in place, and `ncrb-table.ts` was changed so a future ingest cannot reintroduce it. CLI diagnostics in the ingest scripts keep the symbol deliberately — a developer's console is not a reader's screen. **Verified:** zero § rendered on a section page, the landing page, a search results page or an act page; six packages typecheck; both apps lint clean; 125 ingest tests. **Worth recording for its own sake:** this was a founder's UI instinct that turned out to be supported by the product's own analytics. The queries had been sitting in Search Console saying the same thing.
 
+**D-073 · 2026-08-23 · Over half the site's JavaScript was observability. Cut it, and shelved the library by subject.**
+Context: Founder reported the site is slow and "the flow is not good, not soothing or easy". Measured
+on production rather than guessed: a section page pulled 314 KB of eager JS (brotli, q11), of which
+Sentry was 104 KB and PostHog 62 KB — 53% of the bundle served the two things a reader never sees.
+Sentry ships tracing and session-replay to the client whatever `tracesSampleRate` says, because
+tree-shaking cannot reach them; PostHog shipped its full build against a config that disables
+autocapture, replay and surveys.
+Decision: (a) `bundleSizeOptimizations` in `withSentryConfig` — excludeTracing + the three replay
+flags + excludeDebugStatements; safe precisely because errors-only was already the posture.
+(b) PostHog moved to `posthog-js/dist/module.slim.no-external` **and** behind a dynamic `import()`,
+with a bounded queue so events fired before the chunk lands are not dropped. Result measured the
+same way on both sides: **314 KB → 215 KB, −99 KB / −32%**, and PostHog's remaining 35 KB is no
+longer on the critical path at all.
+(c) Flow: `/acts` was 36 acts in one list ordered by status-then-year — which put IPC, CrPC and the
+Evidence Act *last*, below the Dowry Prohibition Act, on a site whose entire pitch is the criminal-law
+transition. Now shelved by subject with the old/new codes paired first, a filter over the whole set,
+and each act's section count. (d) The homepage's stats were hand-typed and had drifted to 8 acts /
+3,118 sections against a real 36 / 5,594 — it was underselling the corpus by 4.5×; they now read
+from the database under hourly ISR. (e) The feedback FAB was a ~200px pill permanently over the
+reading column on phones; it is a circle below `sm:` and PageShell pads to clear it.
+Revisit: if tracing is ever wanted, `excludeTracing` must come out first — the flag makes
+`Sentry.captureRouterTransitionStart` a no-op by design.
+
 ---
 
 *Template for future entries:*

@@ -4,6 +4,18 @@ import { ContinueReading } from "@/components/continue-reading";
 import { FakeDoor } from "@/components/fake-door";
 import { LandingLookup } from "@/components/landing-lookup";
 import { Reveal } from "@/components/reveal";
+import {
+  countPublishedMappings,
+  countPublishedSections,
+  listActs,
+} from "@/features/acts/queries";
+
+// The corpus grows; the homepage's claims about it must not be typed by hand.
+// They were, and drifted badly — the page advertised 8 acts and 3,118 sections
+// long after the library had reached 36 and 5,594, i.e. it undersold the
+// product by more than four times on the number a visitor is most likely to
+// judge it by. Read them instead, and let ISR keep them a hour fresh.
+export const revalidate = 3600;
 
 const STEPS = [
   {
@@ -23,29 +35,41 @@ const STEPS = [
   },
 ];
 
-const FEATURES = [
-  {
-    title: "The official mapping, free",
-    body: "Every IPC⇄BNS, CrPC⇄BNSS and Evidence⇄BSA section pairing — from the government's own NCRB concordance, not guesswork.",
-  },
-  {
-    title: "Bare acts, finally readable",
-    body: "3,000+ sections across 8 major acts, from the official Gazette — structured, searchable, and typeset for long study sessions.",
-  },
-  {
-    title: "Built for the transition",
-    body: "Your textbook says IPC 420; your exam says BNS 318. Open either one and the other is right there, both texts in full.",
-  },
-];
+const nf = new Intl.NumberFormat("en-IN");
 
-const STATS = [
-  { value: "3,118", label: "sections" },
-  { value: "1,271", label: "official mappings" },
-  { value: "8", label: "major acts" },
-  { value: "₹0", label: "no sign-up" },
-];
+function features(sectionCount: number, actCount: number) {
+  return [
+    {
+      title: "The official mapping, free",
+      body: "Every IPC⇄BNS, CrPC⇄BNSS and Evidence⇄BSA section pairing — from the government's own NCRB concordance, not guesswork.",
+    },
+    {
+      title: "Bare acts, finally readable",
+      body: `${nf.format(sectionCount)} sections across ${nf.format(actCount)} central acts, from the official Gazette — structured, searchable, and typeset for long study sessions.`,
+    },
+    {
+      title: "Built for the transition",
+      body: "Your textbook says IPC 420; your exam says BNS 318. Open either one and the other is right there, both texts in full.",
+    },
+  ];
+}
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [sectionCount, mappingCount, acts] = await Promise.all([
+    countPublishedSections(),
+    countPublishedMappings(),
+    listActs(),
+  ]);
+
+  const FEATURES = features(sectionCount, acts.length);
+
+  const STATS = [
+    { value: nf.format(sectionCount), label: "sections" },
+    { value: nf.format(mappingCount), label: "official mappings" },
+    { value: nf.format(acts.length), label: "central acts" },
+    { value: "₹0", label: "no sign-up" },
+  ];
+
   return (
     <main className="mx-auto flex w-full max-w-content flex-1 flex-col px-5 sm:px-6">
       {/* ── Hero ─────────────────────────────────────────────── */}
@@ -110,7 +134,7 @@ export default function HomePage() {
         </h2>
         <p className="mt-4 max-w-measure text-body text-text-muted">
           Cheating was IPC Section 420 for 160 years. Since 1 July 2024 it&rsquo;s BNS Section 318. Multiply that
-          by 3,000+ sections and you get every law student&rsquo;s daily friction. Vidhara turns
+          by thousands of sections and you get every law student&rsquo;s daily friction. Vidhara turns
           that lookup into a single tap.
         </p>
 

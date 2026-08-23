@@ -19,4 +19,15 @@ export default withSentryConfig(nextConfig, {
   silent: !process.env.CI,
   disableLogger: true,
   widenClientFileUpload: true,
+  // Sentry ships tracing and session-replay in the client bundle by default and
+  // tree-shaking cannot remove them on its own — these flags are how you do it.
+  // We run errors-only (`tracesSampleRate: 0`, no Replay integration), so all of
+  // this was 127 KB of downloaded-but-unreachable code on every page.
+  bundleSizeOptimizations: {
+    excludeTracing: true,
+    excludeReplayShadowDom: true,
+    excludeReplayIframe: true,
+    excludeReplayWorker: true,
+    excludeDebugStatements: true,
+  },
 });

@@ -101,6 +101,8 @@ export function SiteFooter() {
 /** Standard content column for SEO pages. */
 export function PageShell({ children }: { children: ReactNode }) {
   return (
-    <main className="mx-auto w-full max-w-content flex-1 px-5 py-10 sm:px-6">{children}</main>
+    // pb-24 clears the fixed FeedbackFab, which otherwise sits on top of the
+    // last line of every page.
+    <main className="mx-auto w-full max-w-content flex-1 px-5 pt-10 pb-24 sm:px-6">{children}</main>
   );
 }
