@@ -587,3 +587,47 @@ export async function searchAppendixForms(q: string): Promise<AppendixFormHit[]>
     snippet: f.snippet,
   }));
 }
+
+/**
+ * The text of the provisions on the OTHER side of a section's mappings.
+ *
+ * The mapping card names the counterpart and shows its marginal note, which
+ * tells a reader that IPC §124 became BNS §151 but not how the wording
+ * changed — half of the comparison this product exists to make. Search Console
+ * says the queries arriving are overwhelmingly bare references ("151 bns",
+ * "bns 180", "ipc75"): people looking up one section and, by the shape of the
+ * query, often the other.
+ *
+ * Fetched separately and rendered as a clearly-labelled block, never merged
+ * into the section's own body. Two provisions of two different Acts reading as
+ * one text is the exact failure D-032 found with State amendments.
+ */
+export async function getCounterpartTexts(
+  sectionIds: string[],
+): Promise<Map<string, { number: string; marginalNote: string; bodyMd: string; actSlug: string; actAbbreviation: string }>> {
+  const out = new Map<
+    string,
+    { number: string; marginalNote: string; bodyMd: string; actSlug: string; actAbbreviation: string }
+  >();
+  if (!isContentConfigured || sectionIds.length === 0) return out;
+  const { data, error } = await getServerClient()
+    .from("act_sections")
+    .select("id, number, marginal_note, body_md, acts!inner(slug, abbreviation)")
+    .in("id", sectionIds);
+  if (error) {
+    // The counterpart is an enrichment; the section itself must still render.
+    console.error("getCounterpartTexts:", error.message);
+    return out;
+  }
+  for (const row of data ?? []) {
+    const acts = row.acts as unknown as { slug: string; abbreviation: string };
+    out.set(row.id as string, {
+      number: row.number as string,
+      marginalNote: row.marginal_note as string,
+      bodyMd: row.body_md as string,
+      actSlug: acts.slug,
+      actAbbreviation: acts.abbreviation,
+    });
+  }
+  return out;
+}

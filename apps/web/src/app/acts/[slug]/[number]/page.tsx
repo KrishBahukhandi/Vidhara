@@ -6,6 +6,7 @@ import { AiExplain } from "@/components/ai-explain";
 import { BookmarkButton } from "@/components/bookmark-button";
 import { FeedbackWidget } from "@/components/feedback-widget";
 import { MarkdownLite } from "@/components/markdown-lite";
+import { CounterpartText } from "@/components/counterpart-text";
 import { MappingPanel } from "@/components/mapping-panel";
 import { RecordRecent } from "@/components/record-recent";
 import { SectionNav } from "@/components/section-nav";
@@ -15,6 +16,7 @@ import { SectionShare } from "@/components/section-share";
 import { PageShell } from "@/components/site-chrome";
 import {
   getAdjacentSections,
+  getCounterpartTexts,
   getMappingsForSection,
   getStateAmendmentsForSection,
   getSectionWithAct,
@@ -75,6 +77,14 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
     getAdjacentSections(section.act_id, section.sort_key),
     getStateAmendmentsForSection(section.id),
   ]);
+
+  // The provision on the other side of each mapping, in full. The card alone
+  // says IPC §124 became BNS §151 without saying how the wording changed —
+  // half the comparison this product exists to make.
+  const counterpartIds = mappings
+    .map((m) => (m.source_section_id === section.id ? m.target_section_id : m.source_section_id))
+    .filter((id): id is string => Boolean(id));
+  const counterparts = await getCounterpartTexts(counterpartIds);
   const isSample = section.provenance?.startsWith("dev-sample");
 
   const sectionUrl = `${SITE_URL}/acts/${slug}/${encodeURIComponent(section.number)}`;
@@ -192,9 +202,30 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
           <h2 id="mapping-heading" className="text-h2 font-semibold text-text">
             Old law ⇄ new law
           </h2>
-          {mappings.map((mapping) => (
-            <MappingPanel key={mapping.mapping_id} mapping={mapping} />
-          ))}
+          {mappings.map((mapping) => {
+            const otherId =
+              mapping.source_section_id === section.id
+                ? mapping.target_section_id
+                : mapping.source_section_id;
+            const other = otherId ? counterparts.get(otherId) : undefined;
+            return (
+              <div key={mapping.mapping_id}>
+                <MappingPanel mapping={mapping} />
+                {other ? (
+                  <CounterpartText
+                    actAbbreviation={other.actAbbreviation}
+                    actSlug={other.actSlug}
+                    number={other.number}
+                    marginalNote={other.marginalNote}
+                    bodyMd={other.bodyMd}
+                    // The counterpart is the earlier law when THIS section is
+                    // the mapping's target.
+                    isOlder={mapping.target_section_id === section.id}
+                  />
+                ) : null}
+              </div>
+            );
+          })}
         </section>
       ) : null}
 
