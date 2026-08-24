@@ -159,8 +159,13 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
       (`/server/api/discover/search/objects`, filter `f.identifier_collection=ACT,equals`), and a
       title search returns State adoptions first — the central Act is reached via their
       `dc.identifier.refact` pointer. **Worth a sweep to re-record every act's source URL.**
-- [ ] **ISA: 39 chapters carry no title at all** (largest remaining block; source IS on disk, so
-      this is measurable today). NDPS Chapter VA likewise, source not on disk.
+- [x] **ISA's 39 chapters named (D-076).** That act sets its chapter titles in sentence case flush
+      with the left margin, so neither the all-caps nor the centred test could see them — while its
+      11 Parts, set in caps, were named correctly all along. Recognised now by the geometry the
+      print itself uses: a heading and its title share a left edge the body does not. **Corpus
+      goes from 46 suspect divisions to 1.**
+- [ ] **NDPS Chapter VA is the last unnamed division** — source PDF not on disk, so it needs the
+      same re-fetch ITA got (India Code has migrated; see the entry above).
 - [ ] **ITA Chapter V — a founder's call, not a guess.** The same PDF prints "RECORDS **ANS**
       SECURE" in the body heading (p.12) and "RECORDS **AND** SECURE" in the Arrangement of
       Sections (p.1). D-074's cross-printing rule keys on letters alone and refuses — correctly,

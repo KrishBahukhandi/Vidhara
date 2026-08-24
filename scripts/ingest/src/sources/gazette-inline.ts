@@ -723,6 +723,9 @@ export function parseInlineAct(
   let pendingChapterNumber: string | null = null;
   let pendingChapterKind: "chapter" | "part" = "chapter";
   let pendingChapterTitle: string[] = [];
+  /** Left edge of the division heading awaiting a title — see the aligned-title
+   * branch below. Null when no heading is pending or it carried no geometry. */
+  let pendingChapterHeadingX: number | null = null;
 
   let currentNumber: string | null = null;
   let currentChapterForSection: string | undefined;
@@ -835,7 +838,12 @@ export function parseInlineAct(
     for (const word of new Set(text.toUpperCase().split(/[^A-Z]+/)))
       if (word.length >= 2) lineSupport.set(word, (lineSupport.get(word) ?? 0) + 1);
   };
-  const lettersOf = (text: string): string => text.replace(/[^A-Za-z]/g, "").toUpperCase();
+  // Case-SENSITIVE. Folding case makes two titles that are set differently look
+  // like two printings of one title: the Indian Succession Act names Part I
+  // "PRELIMINARY" and, inside Part V, a chapter "Preliminary", and a folded key
+  // let the Part's caps overwrite the chapter's sentence case. Different casing
+  // is different typesetting, which is exactly what this rule must not cross.
+  const lettersOf = (text: string): string => text.replace(/[^A-Za-z]/g, "");
   const recordTitleRendering = (raw: string): void => {
     // Brackets, asterisks and marker digits are printer's marks. Stripping
     // them here is what lets the IPC's bracketed heading copy and its clean
@@ -1034,6 +1042,7 @@ export function parseInlineAct(
     pendingChapterNumber = null;
     pendingChapterKind = "chapter";
     pendingChapterTitle = [];
+    pendingChapterHeadingX = null;
   };
 
   const pages = xhtml.split(/<page /).slice(1);
@@ -1393,6 +1402,7 @@ export function parseInlineAct(
         flushChapter();
         pendingChapterNumber = `${headingNumeral(chapterMatch[2]!)}${chapterMatch[3] ?? ""}`;
         pendingChapterKind = chapterMatch[1] === "PART" ? "part" : "chapter";
+        pendingChapterHeadingX = line[0]?.xMin ?? null;
         sawNumberedDivision = true;
         continue;
       }
@@ -1410,11 +1420,36 @@ export function parseInlineAct(
       // Section heading, ignoring any leading amendment bracket/marker.
       const headline = flat.replace(LEADING_MARKERS, "");
       const centred = (line[0]?.xMin ?? 0) >= CENTRED_HEADING_MIN_X;
-
+      /**
+       * A title set neither in caps nor centred, but flush with its own heading.
+       *
+       * The Indian Succession Act prints its chapter names in sentence case
+       * ("Of Onerous Bequests", "Special Rules for Parsi Intestates") hard
+       * against the left margin, so neither existing test could see them and
+       * all 39 of its chapters carried the generated "Chapter N" instead —
+       * while its 11 PARTS, whose names are set in caps, were named correctly.
+       *
+       * The page still says which is which. A division heading and its title
+       * share a left edge that the body does not use: in this act both sit at
+       * x=93.6 while a section opens at x=107.8 or x=127.6. Verified across all
+       * 50 of its divisions — every one aligns, to the same two decimal places.
+       *
+       * Restricted to the FIRST line after the heading, exactly as the centred
+       * rule is and for a sharper reason: this act's body CONTINUATION lines
+       * return to x=93.6 too, so an unrestricted match would read the opening
+       * paragraph of every chapter as part of its name. No title in the act
+       * wraps, so one line is all it needs.
+       */
+      const alignedWithHeading =
+        pendingChapterHeadingX !== null &&
+        Math.abs((line[0]?.xMin ?? -1) - pendingChapterHeadingX) < 1 &&
+        pendingChapterTitle.length === 0;
 
       if (
         pendingChapterNumber !== null &&
-        (CHAPTER_TITLE_LINE.test(flat) || (centred && pendingChapterTitle.length === 0)) &&
+        (CHAPTER_TITLE_LINE.test(flat) ||
+          alignedWithHeading ||
+          (centred && pendingChapterTitle.length === 0)) &&
         !NEXT_HEADING.test(normalizeChapterTitle(headline)) &&
         !SECTION_START.test(headline)
       ) {

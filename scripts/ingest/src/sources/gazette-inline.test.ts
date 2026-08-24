@@ -1554,3 +1554,61 @@ describe("page stamps and the I/1 confusion (D-075)", () => {
     expect(chapters[0]?.title).toBe("PRELIMINARY");
   });
 });
+
+describe("sentence-case titles set flush with their heading (D-076)", () => {
+  it("names a chapter whose title is neither capitalised nor centred", () => {
+    // The Indian Succession Act sets its chapter names in sentence case, hard
+    // against the left margin, so neither the all-caps test nor the centred one
+    // could see them and all 39 carried the generated "Chapter N". The page
+    // still says which is which: a heading and its title share a left edge the
+    // body does not use.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is hereby enacted as follows:—" },
+        { h: 10, text: "CHAPTER IX", x: 93 },
+        { h: 10, text: "Of Onerous Bequests", x: 93 },
+        { h: 10, text: "2. Onerous bequests.—Where a bequest imposes an obligation.", x: 127 },
+      ]),
+    );
+    const { chapters } = parseInlineAct(xml, {});
+    expect(chapters).toHaveLength(1);
+    expect(chapters[0]?.title).toBe("Of Onerous Bequests");
+  });
+
+  it("does not read a chapter's opening paragraph as part of its name", () => {
+    // That act's body CONTINUATION lines return to the same left edge as the
+    // headings, so the rule takes the FIRST line after a heading and no more.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is hereby enacted as follows:—" },
+        { h: 10, text: "CHAPTER V", x: 93 },
+        { h: 10, text: "Of Executors of their own Wrong", x: 93 },
+        { h: 10, text: "3. Executor of his own wrong.—A person who intermeddles with", x: 107 },
+        { h: 10, text: "the estate of the deceased, or does any other act which belongs to", x: 93 },
+      ]),
+    );
+    const { chapters, sections } = parseInlineAct(xml, {});
+    expect(chapters[0]?.title).toBe("Of Executors of their own Wrong");
+    expect(sections[0]?.bodyMd).toContain("the estate of the deceased");
+  });
+
+  it("keeps a Part's caps title off a chapter that shares its wording", () => {
+    // Renderings are keyed case-sensitively: this act names Part I
+    // "PRELIMINARY" and, inside Part V, a chapter "Preliminary". Folding case
+    // let the Part's typesetting overwrite the chapter's.
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is hereby enacted as follows:—" },
+        { h: 10, text: "PART I", x: 93 },
+        { h: 10, text: "PRELIMINARY", x: 93 },
+        { h: 10, text: "1. Short title.—This Act may be called the Test Act.", x: 127 },
+        { h: 10, text: "CHAPTER I", x: 93 },
+        { h: 10, text: "Preliminary", x: 93 },
+        { h: 10, text: "2. Application of Part.—This Part shall not apply.", x: 127 },
+      ]),
+    );
+    const { chapters } = parseInlineAct(xml, {});
+    expect(chapters.find((c) => c.kind === "part")?.title).toBe("PRELIMINARY");
+    expect(chapters.find((c) => c.kind === "chapter")?.title).toBe("Preliminary");
+  });
+});

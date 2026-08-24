@@ -119,11 +119,18 @@ for (const slug of Object.keys(NEW)) {
     // parse. So a repair must both leave everything-but-the-spaces alone AND
     // be repairing something — a shredded title, or one this parse can
     // separate further. Otherwise the bundle wins.
+    // A division the print left unnamed carries a name WE generated. There is
+    // no curation to protect and nothing of the act's to lose, so any real
+    // title the parse now reads is strictly better — this is how the Indian
+    // Succession Act's 39 chapters, all holding "Chapter N", get their names.
+    const bundleIsPlaceholder =
+      chapter.title ===
+      `${(chapter.kind ?? "chapter") === "part" ? "Part" : "Chapter"} ${chapter.number}`;
     const sameButForSpaces = unspaced(chapter.title) === unspaced(repaired.title);
     const bundleIsShredded = shreddedTokens(chapter.title) > 0;
     const separatesFurther = tokenCount(repaired.title) > tokenCount(chapter.title);
     const isRepair = bundleIsShredded || separatesFurther;
-    if ((sameButForSpaces && isRepair) || isShreddedForm(a, b)) {
+    if (bundleIsPlaceholder || (sameButForSpaces && isRepair) || isShreddedForm(a, b)) {
       console.log(`${slug} ${chapter.kind} ${chapter.number}\n    - ${chapter.title}\n    + ${repaired.title}`);
       chapter.title = repaired.title;
       chapter.sortOrder = repaired.sortOrder;

@@ -42,7 +42,7 @@
     },
     {
       "number": "I",
-      "title": "Chapter I",
+      "title": "Preliminary",
       "sortOrder": 6,
       "kind": "chapter",
       "partNumber": "V",
@@ -50,7 +50,7 @@
     },
     {
       "number": "II",
-      "title": "Chapter II",
+      "title": "Rules in cases of Intestates other than Parsis",
       "sortOrder": 7,
       "kind": "chapter",
       "partNumber": "V",
@@ -58,7 +58,7 @@
     },
     {
       "number": "III",
-      "title": "Chapter III",
+      "title": "Special Rules for Parsi Intestates",
       "sortOrder": 8,
       "kind": "chapter",
       "partNumber": "V",
@@ -72,7 +72,7 @@
     },
     {
       "number": "I",
-      "title": "Chapter I",
+      "title": "Introductory",
       "sortOrder": 10,
       "kind": "chapter",
       "partNumber": "VI",
@@ -80,7 +80,7 @@
     },
     {
       "number": "II",
-      "title": "Chapter II",
+      "title": "Of Wills and Codicils",
       "sortOrder": 11,
       "kind": "chapter",
       "partNumber": "VI",
@@ -88,7 +88,7 @@
     },
     {
       "number": "III",
-      "title": "Chapter III",
+      "title": "Of the Execution of unprivileged Wills",
       "sortOrder": 12,
       "kind": "chapter",
       "partNumber": "VI",
@@ -96,7 +96,7 @@
     },
     {
       "number": "IV",
-      "title": "Chapter IV",
+      "title": "Of privileged Wills",
       "sortOrder": 13,
       "kind": "chapter",
       "partNumber": "VI",
@@ -104,7 +104,7 @@
     },
     {
       "number": "V",
-      "title": "Chapter V",
+      "title": "Of the Attestation, Revocation, Alteration and Revival of Wills",
       "sortOrder": 14,
       "kind": "chapter",
       "partNumber": "VI",
@@ -112,7 +112,7 @@
     },
     {
       "number": "VI",
-      "title": "Chapter VI",
+      "title": "Of the construction of Wills",
       "sortOrder": 15,
       "kind": "chapter",
       "partNumber": "VI",
@@ -120,7 +120,7 @@
     },
     {
       "number": "VII",
-      "title": "Chapter VII",
+      "title": "Of void Bequests",
       "sortOrder": 16,
       "kind": "chapter",
       "partNumber": "VI",
@@ -128,7 +128,7 @@
     },
     {
       "number": "VIII",
-      "title": "Chapter VIII",
+      "title": "Of the vesting of Legacies",
       "sortOrder": 17,
       "kind": "chapter",
       "partNumber": "VI",
@@ -136,7 +136,7 @@
     },
     {
       "number": "IX",
-      "title": "Chapter IX",
+      "title": "Of Onerous Bequests",
       "sortOrder": 18,
       "kind": "chapter",
       "partNumber": "VI",
@@ -144,7 +144,7 @@
     },
     {
       "number": "X",
-      "title": "Chapter X",
+      "title": "Of Contingent Bequests",
       "sortOrder": 19,
       "kind": "chapter",
       "partNumber": "VI",
@@ -152,7 +152,7 @@
     },
     {
       "number": "XI",
-      "title": "Chapter XI",
+      "title": "Of Conditional Bequests",
       "sortOrder": 20,
       "kind": "chapter",
       "partNumber": "VI",
@@ -160,7 +160,7 @@
     },
     {
       "number": "XII",
-      "title": "Chapter XII",
+      "title": "Of Bequests with Directions as to Application or Enjoyment",
       "sortOrder": 21,
       "kind": "chapter",
       "partNumber": "VI",
@@ -168,7 +168,7 @@
     },
     {
       "number": "XIII",
-      "title": "Chapter XIII",
+      "title": "Of Bequests to an Executor",
       "sortOrder": 22,
       "kind": "chapter",
       "partNumber": "VI",
@@ -176,7 +176,7 @@
     },
     {
       "number": "XIV",
-      "title": "Chapter XIV",
+      "title": "Of Specific Legacies",
       "sortOrder": 23,
       "kind": "chapter",
       "partNumber": "VI",
@@ -184,7 +184,7 @@
     },
     {
       "number": "XV",
-      "title": "Chapter XV",
+      "title": "Of Demonstrative Legacies",
       "sortOrder": 24,
       "kind": "chapter",
       "partNumber": "VI",
@@ -192,7 +192,7 @@
     },
     {
       "number": "XVI",
-      "title": "Chapter XVI",
+      "title": "Of Ademption of Legacies",
       "sortOrder": 25,
       "kind": "chapter",
       "partNumber": "VI",
@@ -200,7 +200,7 @@
     },
     {
       "number": "XVII",
-      "title": "Chapter XVII",
+      "title": "Of the Payment of Liabilities in respect of the Subject of a Bequest",
       "sortOrder": 26,
       "kind": "chapter",
       "partNumber": "VI",
@@ -208,7 +208,7 @@
     },
     {
       "number": "XVIII",
-      "title": "Chapter XVIII",
+      "title": "Of Bequests of Things described in General Terms",
       "sortOrder": 27,
       "kind": "chapter",
       "partNumber": "VI",
@@ -216,7 +216,7 @@
     },
     {
       "number": "XIX",
-      "title": "Chapter XIX",
+      "title": "Of Bequests of the Interest or Produce of a Fund",
       "sortOrder": 28,
       "kind": "chapter",
       "partNumber": "VI",
@@ -224,7 +224,7 @@
     },
     {
       "number": "XX",
-      "title": "Chapter XX",
+      "title": "Of Bequests of Annuities",
       "sortOrder": 29,
       "kind": "chapter",
       "partNumber": "VI",
@@ -232,7 +232,7 @@
     },
     {
       "number": "XXI",
-      "title": "Chapter XXI",
+      "title": "Of Legacies to Creditors and Portioners",
       "sortOrder": 30,
       "kind": "chapter",
       "partNumber": "VI",
@@ -240,7 +240,7 @@
     },
     {
       "number": "XXII",
-      "title": "Chapter XXII",
+      "title": "Of Election",
       "sortOrder": 31,
       "kind": "chapter",
       "partNumber": "VI",
@@ -248,7 +248,7 @@
     },
     {
       "number": "XXIII",
-      "title": "Chapter XXIII",
+      "title": "Of Gifts in Contemplation of Death",
       "sortOrder": 32,
       "kind": "chapter",
       "partNumber": "VI",
@@ -274,7 +274,7 @@
     },
     {
       "number": "I",
-      "title": "Chapter I",
+      "title": "Of Grant of Probate and Letters of Administration",
       "sortOrder": 36,
       "kind": "chapter",
       "partNumber": "IX",
@@ -282,7 +282,7 @@
     },
     {
       "number": "II",
-      "title": "Chapter II",
+      "title": "Of Limited Grants",
       "sortOrder": 37,
       "kind": "chapter",
       "partNumber": "IX",
@@ -290,7 +290,7 @@
     },
     {
       "number": "III",
-      "title": "Chapter III",
+      "title": "Alteration and Revocation of Grants",
       "sortOrder": 38,
       "kind": "chapter",
       "partNumber": "IX",
@@ -298,7 +298,7 @@
     },
     {
       "number": "IV",
-      "title": "Chapter IV",
+      "title": "Of the Practice in granting and revoking Probates and",
       "sortOrder": 39,
       "kind": "chapter",
       "partNumber": "IX",
@@ -306,7 +306,7 @@
     },
     {
       "number": "V",
-      "title": "Chapter V",
+      "title": "Of Executors of their own Wrong",
       "sortOrder": 40,
       "kind": "chapter",
       "partNumber": "IX",
@@ -314,7 +314,7 @@
     },
     {
       "number": "VI",
-      "title": "Chapter VI",
+      "title": "Of the Powers of an Executor or Administrator",
       "sortOrder": 41,
       "kind": "chapter",
       "partNumber": "IX",
@@ -322,7 +322,7 @@
     },
     {
       "number": "VII",
-      "title": "Chapter VII",
+      "title": "Of the Duties of an Executor or Administrator",
       "sortOrder": 42,
       "kind": "chapter",
       "partNumber": "IX",
@@ -330,7 +330,7 @@
     },
     {
       "number": "VIII",
-      "title": "Chapter VIII",
+      "title": "Of Assent to a Legacy by Executor or Administrator",
       "sortOrder": 43,
       "kind": "chapter",
       "partNumber": "IX",
@@ -338,7 +338,7 @@
     },
     {
       "number": "IX",
-      "title": "Chapter IX",
+      "title": "Of the Payment and Apportionment of Annuities",
       "sortOrder": 44,
       "kind": "chapter",
       "partNumber": "IX",
@@ -346,7 +346,7 @@
     },
     {
       "number": "X",
-      "title": "Chapter X",
+      "title": "Of the Investment of Funds to provide for Legacies",
       "sortOrder": 45,
       "kind": "chapter",
       "partNumber": "IX",
@@ -354,7 +354,7 @@
     },
     {
       "number": "XI",
-      "title": "Chapter XI",
+      "title": "Of the Produce and Interest of Legacies",
       "sortOrder": 46,
       "kind": "chapter",
       "partNumber": "IX",
@@ -362,7 +362,7 @@
     },
     {
       "number": "XII",
-      "title": "Chapter XII",
+      "title": "Of the Refunding of Legacies",
       "sortOrder": 47,
       "kind": "chapter",
       "partNumber": "IX",
@@ -370,7 +370,7 @@
     },
     {
       "number": "XIII",
-      "title": "Chapter XIII",
+      "title": "Of the Liability of an Executor or Administrator for Devastation",
       "sortOrder": 48,
       "kind": "chapter",
       "partNumber": "IX",

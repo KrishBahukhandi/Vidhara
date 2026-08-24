@@ -332,6 +332,34 @@ since these are different words, not different spacing. Choosing between two pri
 statute is not a mechanical repair, so it is surfaced rather than guessed (D-011/ADR-6).
 Revisit: ISA's 39 untitled chapters are the largest remaining block and its source is on disk.
 
+**D-076 · 2026-08-24 · The Indian Succession Act's 39 chapters were unnamed because it sets its titles in sentence case, and the page says so geometrically.**
+Context: last of the 46 divisions D-075's re-scan turned up. ISA's 11 PARTS were named correctly
+and all 39 of its CHAPTERS carried the generated "Chapter N" — a split that pointed straight at the
+cause. Parts are set in caps ("INTESTATE SUCCESSION") and pass the all-caps test; chapters are set
+in sentence case ("Of Onerous Bequests", "Special Rules for Parsi Intestates") flush with the left
+margin, so they matched neither the all-caps test nor the centred one, which are the only two ways
+a title could be recognised.
+Decision: a third way in, and it is a property of the printed page rather than of the words — a
+division heading and its title share a left edge the body does not use. Measured across all 50 of
+the act's divisions: heading and title both at x=93.6, to the same two decimal places, every time,
+while a section opens at x=107.8 or x=127.6. Restricted to the FIRST line after the heading,
+exactly as the centred rule is and for a sharper reason: this act's body CONTINUATION lines return
+to x=93.6 too, so an unrestricted match would read the opening paragraph of every chapter into its
+name. No ISA title wraps, so one line suffices.
+**A bug in D-074 surfaced here and is fixed.** Its cross-printing rule keyed renderings on letters
+folded to upper case, which made two differently-typeset titles look like two printings of one:
+ISA names Part I "PRELIMINARY" and, inside Part V, a chapter "Preliminary", and the Part's caps
+overwrote the chapter's sentence case. The key is now case-sensitive — different casing is
+different typesetting, which is exactly what a rule about *spacing* must not cross.
+The bundle merge gained one category for this: a division whose title is the placeholder WE
+generated has no curation to protect and nothing of the act's to lose, so any real title the parse
+reads is strictly better. That is separate from the spacing gate, which still refuses anything that
+would change a word.
+Result: **39 titles recovered, and the corpus goes from 46 suspect divisions to 1.** Zero change to
+the seven other acts — same sections, same bodies, same marginal notes, same chapter assignments.
+The ISA bundle diff is 39 lines changed, all of them `"title"`.
+Revisit: NDPS Chapter VA is the last one, and its source is not on disk.
+
 ---
 
 *Template for future entries:*
