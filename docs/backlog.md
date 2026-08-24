@@ -130,25 +130,30 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
       2,240 sections: 0 notes changed, 0 text lost, 11 bodies restored, 2 watermark removals.
       **All seven source PDFs are now on disk** (`scripts/ingest/.sources/`, gitignored) and
       verified against provenance, so the next parser change can be regressed without re-fetching.
-- [ ] **25 chapter/part headings are mangled — the most visible text on every act page** (found
-      2026-08-23 while investigating the "site doesn't feel soothing" report; measured across all
-      461 group headings in the live corpus, so this is a count, not an impression).
-      Two distinct parser failures, both in heading extraction only — section bodies are unaffected:
-      - **11 collapsed to letter-spaced initials.** The Gazette sets some chapter headings in a
-        wide-tracked caps face; the extractor reads each tracked letter as its own word. IPC Ch. VII
-        renders as `O O R A, N A F` (for "OF OFFENCES RELATING TO THE ARMY, NAVY AND AIR FORCE") and
-        IPC Ch. XVIII as `O O D P M`. NI is worst hit — 7 of its chapters, e.g. Ch. XII
-        `OF C O M P E N S A T I O N`. Also ITA Ch. VII and TP Ch. IV.
-      - **14 run two words together at a line wrap** — `AGAINSTTHE`, `OFOFFENCES`, `CONTEMPTSOF`,
-        `RELATINGTO`, `DECENCYAND`, `HUSBANDOR`, `BILLSAND`, `PAYMENTAND`. IPC has 11 of the 14.
-      Full list: regenerate with the scan in this entry's commit, or re-derive from the act pages'
-      RSC payloads (`"title":…,"kind":"chapter"`).
-      **Fix belongs in the parser, not in a data patch** — a heading is statute text, so the words
-      must come back from the source PDF's word geometry (tracked-caps runs rejoined by x-gap;
-      wrap joins given the space the layout implies), never from recall (D-011/ADR-6). All seven
-      source PDFs are on disk from D-067, so this is regressable today.
-      Note: the 16 rows where `number` equals `title` (GCA, HMA, ARB, CPC, ICA "PRELIMINARY") are
-      **not** a defect — that is the `unnumbered` flag working as designed.
+- [x] **Chapter/part headings repaired (D-074): 25 mangled → 1.** Two parser failures, both in
+      heading extraction only. (a) A title carrying the print's amendment apparatus was recovered
+      by neither height test, because the recovery used a stricter pattern than the one that
+      decides downstream whether a line IS a title — IPC Ch. VII reached the database as
+      `O O R A, N A F`. (b) pdftotext's fixed advance-width rule cannot read these acts'
+      letter-spaced caps, so it emitted every glyph as its own word in some titles and dropped the
+      space between words in others. Fixed by re-deriving word boundaries from the gaps
+      themselves, per line, since tracking is constant within a line but not across acts.
+      Where BOTH printings of a title ran words together, the repair keys on the title's LETTERS
+      alone — so it can move a space and can never change a word — and takes the spacing from
+      whichever of the act's two printings has it, falling back to the act's own prose as the
+      witness for a split. **29 of 30 checked titles now exact**, 24 spacing-only repairs,
+      2 full recoveries, 0 regressions, 9 section bodies incidentally repaired
+      (`money s o expended` → `money so expended`). Published to IPC/NI/TP.
+- [x] **NI sections 61–77 were filed under the wrong chapter** — found by the same fix. Chapter V
+      "OF PRESENTMENT" was invisible while its heading was letter-spaced, so its eighteen sections
+      (§61 *Presentment for acceptance* onward) sat under Chapter IV "Of Negotiation". The act now
+      has its full 17 divisions.
+- [ ] **Two headings still need their source.** IPC Ch. XIV reads `DECENCYAND` — pdftotext emits
+      `ECENCYAND` as one token in *both* printings, so the space is absent from the text layer and
+      cannot be recovered from it; needs a different extraction (or a different edition), not a
+      guess. ITA Ch. VII reads `E S C` and its source PDF is **not on disk** — blocked on a
+      re-fetch, like the other source-blocked items below. Neither may be written from recall
+      (D-011/ADR-6).
 - [ ] **CPC's 38 missing illustration lines did NOT come back** — that act fails for a different
       reason D-067's fix does not reach. Measure it next; the source is on disk.
 - [ ] **ISA §281 still truncated** — needs D-062's `--rule-delimited` mode, not run in D-067.

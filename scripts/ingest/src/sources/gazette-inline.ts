@@ -34,6 +34,7 @@ import { deriveSortKey } from "../sort-key";
 
 interface Word {
   xMin: number;
+  xMax: number;
   yMin: number;
   baseline: number;
   height: number;
@@ -427,6 +428,97 @@ function decodeEntities(s: string): string {
     .replace(/&#(\d+);/g, (_, code: string) => String.fromCodePoint(Number(code)));
 }
 
+/**
+ * Widest gap, as a fraction of type height, that still sits INSIDE a word.
+ *
+ * Chapter titles in these prints are set in letter-spaced caps, and pdftotext
+ * decides word boundaries on a fixed advance-width rule that this tracking
+ * defeats — so it emits every glyph as its own `<word>`. The NI Act's Chapter
+ * XII arrives as `O F C O M P E N S A T I O N`, and seven of its sixteen
+ * chapters read that way in the database.
+ *
+ * The geometry separates the two cases cleanly. Measured over 3,695 gaps on
+ * heading lines across all seven source PDFs on disk, gap/height is bimodal:
+ * intra-word gaps run from −0.06 (glyphs whose boxes overlap) to about 0.14,
+ * real spaces start around 0.20, and the valley between holds almost nothing.
+ * 0.15 sits in that valley.
+ *
+ * Applied ONLY between two lone glyphs. Whole words that pdftotext already
+ * resolved are never merged, so a heading that arrives correctly cannot be
+ * damaged by this — and the drop-cap case ("A RMY") is left to
+ * normalizeChapterTitle, which has handled it since D-050.
+ */
+const TRACKED_GLYPH_MAX_GAP = 0.15;
+/** Two gap clusters count as separate only once this far apart; below it the
+ * line has a single cluster and its lone glyphs are all one word. */
+const TRACKED_GAP_MIN_JUMP = 0.04;
+/** No threshold may class a gap this wide as inside a word — a clear space
+ * stays a space even if a line's gaps happen to cluster oddly. */
+const TRACKED_GAP_CEILING = 0.2;
+
+/**
+ * Where this line stops being one word, as a fraction of type height.
+ *
+ * The corpus-wide valley (TRACKED_GLYPH_MAX_GAP) is right on average and
+ * wrong on individual lines, because tracking varies by act and by heading.
+ * The Transfer of Property Act's Chapter VIII sets its spaces at 0.09 — well
+ * below the corpus figure — so a fixed 0.15 swallowed them and produced
+ * "OFT RANSFERS"; its Chapter IV tracks wide enough the other way that 0.15
+ * fell *inside* a word and split IMMOVEABLE into "IMMOVE ABLE".
+ *
+ * But each line carries its own answer, and not only in its lone glyphs: the
+ * pairs pdftotext DID resolve calibrate both ends. "T"|"RANSFERS" is a drop
+ * cap against its own word (inside), "RANSFERS"|"OF" is a real space
+ * (between). So every gap in the line is evidence, the two clusters separate
+ * cleanly, and the boundary is the midpoint of the gap between them.
+ *
+ * Scanning from the smallest gap upward and taking the FIRST significant jump
+ * matters: inside-a-word gaps are always the smallest cluster, while spaces
+ * spread out above them (a line often has both word spaces at 0.09 and a wider
+ * one at 0.28). The largest jump can therefore sit between two kinds of space
+ * and put the boundary above them both.
+ */
+function trackedGapThreshold(gaps: number[]): number {
+  if (gaps.length < 2) return TRACKED_GLYPH_MAX_GAP;
+  const sorted = [...gaps].sort((a, b) => a - b);
+  for (let i = 0; i < sorted.length - 1; i++) {
+    if (sorted[i + 1]! - sorted[i]! < TRACKED_GAP_MIN_JUMP) continue;
+    const boundary = (sorted[i]! + sorted[i + 1]!) / 2;
+    // A word boundary is never a NEGATIVE gap: a space cannot be narrower than
+    // nothing. Glyph boxes do overlap, though, and one outlier at the bottom of
+    // the range is enough to open the first significant jump down there — the
+    // NI Act's "OF INTERNATIONAL LAW" has an L over an A at −0.15, which put
+    // the boundary at −0.10 and left the whole title in single letters.
+    if (boundary < 0) continue;
+    return Math.min(boundary, TRACKED_GAP_CEILING);
+  }
+  // One cluster: no boundary inside this line at all.
+  return TRACKED_GLYPH_MAX_GAP;
+}
+
+/** A line's text, with word boundaries the print implies rather than the ones
+ * pdftotext's advance-width rule produced. See TRACKED_GLYPH_MAX_GAP. */
+function joinLineWords(line: Word[]): string {
+  const gapAt = (i: number): number => {
+    const a = line[i - 1]!;
+    const b = line[i]!;
+    return (b.xMin - a.xMax) / Math.max(1, Math.min(a.height, b.height));
+  };
+  const isLonePair = (i: number): boolean =>
+    line[i - 1]!.text.length === 1 && line[i]!.text.length === 1;
+
+  const gaps: number[] = [];
+  for (let i = 1; i < line.length; i++) gaps.push(gapAt(i));
+  const threshold = trackedGapThreshold(gaps);
+
+  let out = "";
+  for (let i = 0; i < line.length; i++) {
+    if (i > 0 && !(isLonePair(i) && gapAt(i) <= threshold)) out += " ";
+    out += line[i]!.text;
+  }
+  return out.replace(/\s+/g, " ").trim();
+}
+
 function groupIntoLines(words: Word[]): Word[][] {
   const sorted = [...words].sort((a, b) => a.baseline - b.baseline || a.xMin - b.xMin);
   const lines: Word[][] = [];
@@ -630,11 +722,201 @@ export function parseInlineAct(
     // why it can no longer end at the first body-height line.
     illustrationMode = false;
   };
+  /**
+   * Every rendering of a title the document prints, keyed by its letters alone.
+   *
+   * These acts print each chapter title TWICE — once in the Arrangement of
+   * Sections at the front, once as the chapter heading itself — and the two
+   * printings fail differently. pdftotext's advance-width rule drops the space
+   * between two words in one copy and keeps it in the other, so the IPC's
+   * Chapter X arrives from the body as "OF CONTEMPTSOF THE LAWFUL AUTHORITYOF
+   * PUBLIC SERVANTS" while the contents page prints it correctly. Eleven IPC
+   * chapters and four in NI/TP differ this way.
+   *
+   * Keying on letters ALONE is the whole safety argument: two renderings can
+   * only compete when they say exactly the same thing, so choosing between
+   * them can move a space but can never change, add or drop a word. The one
+   * with more spaces is the one the print separated. Nothing is inferred and
+   * nothing is written from outside the document (D-011/ADR-6).
+   */
+  const titleRenderings = new Map<string, string>();
+  /** How many lines of the act use each word as a word — see titleWordSupport. */
+  const lineSupport = new Map<string, number>();
+  const recordLineWords = (text: string): void => {
+    for (const word of new Set(text.toUpperCase().split(/[^A-Z]+/)))
+      if (word.length >= 2) lineSupport.set(word, (lineSupport.get(word) ?? 0) + 1);
+  };
+  const lettersOf = (text: string): string => text.replace(/[^A-Za-z]/g, "").toUpperCase();
+  const recordTitleRendering = (raw: string): void => {
+    // Brackets, asterisks and marker digits are printer's marks. Stripping
+    // them here is what lets the IPC's bracketed heading copy and its clean
+    // contents-page copy compete on equal terms.
+    const text = normalizeChapterTitle(raw.replace(TITLE_APPARATUS, " ")).trim();
+    const key = lettersOf(text);
+    if (key.length < 6) return;
+    const spaces = (t: string): number => (t.match(/ /g) ?? []).length;
+    const held = titleRenderings.get(key);
+    if (!held || spaces(text) > spaces(held)) titleRenderings.set(key, text);
+  };
+
+  /**
+   * How many of the act's division titles write each word as a word.
+   *
+   * Presence alone cannot decide this: a merged token is itself a "word" of
+   * whatever title carries it, and the same merge often recurs — the IPC
+   * prints OFFENCESRELATING in two chapter names — so any fixed threshold
+   * protects the very defect it exists to repair.
+   *
+   * Support does decide it. OFFENCES is written plainly in eleven of the
+   * IPC's titles and RELATING in five, against two for OFFENCESRELATING, so
+   * the split is better evidenced than the whole by the act's own hand. The
+   * rule is therefore comparative: separate a token only when BOTH halves are
+   * attested in strictly more titles than the token is. That is what keeps
+   * JUSTICE and PRELIMINARY — whose halves are attested nowhere — intact.
+   */
+  const titleWordSupport = (exclude: string): Map<string, number> => {
+    // The act's ORDINARY PROSE is the larger and better-spaced witness. Titles
+    // are set in the tracked caps that cause this defect in the first place,
+    // so words like PAYMENT, NAVY and DECENCY appear in only one title each —
+    // too thin to outweigh a merge — while the sections themselves write them
+    // plainly many times over. Counting both makes the comparison decisive and
+    // strictly safer: a correct word gains support and becomes harder to split.
+    const support = new Map<string, number>(lineSupport);
+    for (const [key, rendering] of titleRenderings) {
+      // A title may not vouch for its own words: that is how OFFENCESRELATING
+      // came to look like a word of the act.
+      if (key === exclude) continue;
+      for (const word of new Set(rendering.toUpperCase().split(/[^A-Z]+/)))
+        if (word.length >= 2) support.set(word, (support.get(word) ?? 0) + 1);
+    }
+    // Closed-class joiners are words in any English legal title, whatever this
+    // act's own titles happen to use.
+    for (const joiner of ["OF", "AND", "TO", "THE", "OR", "BY", "IN", "FOR"])
+      support.set(joiner, Math.max(support.get(joiner) ?? 0, Number.MAX_SAFE_INTEGER));
+    return support;
+  };
+  /** Shorter than this, a merge is not worth guessing at. */
+  const MIN_MERGED_LENGTH = 6;
+  const splitMerged = (
+    word: string,
+    support: Map<string, number>,
+    floor: number,
+  ): string[] | null => {
+    for (let cut = 2; cut <= word.length - 2; cut++) {
+      const head = word.slice(0, cut);
+      const tail = word.slice(cut);
+      if ((support.get(head) ?? 0) <= floor) continue;
+      if ((support.get(tail) ?? 0) > floor) return [head, tail];
+      const rest = splitMerged(tail, support, floor);
+      if (rest) return [head, ...rest];
+    }
+    return null;
+  };
+  /**
+   * Letter-spacing leaves the mirror-image defect: fragments where a word
+   * should be ("OF CROSSED C HEQU E S"). Where the geometry could not close a
+   * gap — tracking too wide, or a glyph box overlapping its neighbour — the
+   * act's own usage still can.
+   *
+   * Same comparative logic, inverted: join two neighbours when the joined form
+   * is better attested than the weaker of them. A real pair of words never
+   * qualifies, because the document does not contain PUBLICHEALTH; a fragment
+   * pair does, because it contains CHEQUES many times and CHEQU never.
+   */
+  const rejoinFragments = (tokens: string[], support: Map<string, number>): string[] | null => {
+    const letters = (t: string): string => t.replace(/[^A-Za-z]/g, "").toUpperCase();
+    // "A" and "I" are words; every other lone letter is a piece of one.
+    const isFragmentLetter = (t: string): boolean =>
+      /^[A-Za-z]$/.test(t) && !/^[AI]$/i.test(t);
+    const at = (t: string): number => support.get(letters(t)) ?? 0;
+    for (let i = 0; i < tokens.length - 1; i++) {
+      const left = tokens[i]!;
+      const right = tokens[i + 1]!;
+      // Never join across the print's own punctuation.
+      if (!/[A-Za-z]$/.test(left) || !/^[A-Za-z]/.test(right)) continue;
+      const joined = left + right;
+      // Either the join is better attested, or one side is a lone letter that
+      // cannot be a word and the other is unattested — a fragment still has to
+      // find its word before the pair can be attested as anything. Restricted
+      // to lone letters on purpose: "join any two tokens the act happens not
+      // to use" glues real words together in any act whose prose is thin.
+      // Which side has to be beaten depends on whether a lone letter is a word.
+      // "A" and "I" are; every other single letter is a fragment of one. So a
+      // stray letter is measured against the STRONGER neighbour — the CPC's
+      // prose carries one "aJudicial", enough to clear a floor of zero and glue
+      // the article onto the word — while a genuine fragment is measured
+      // against the weaker, which is how the "S" of CHEQUES finds its way home.
+      const floorFor =
+        isFragmentLetter(left) || isFragmentLetter(right)
+          ? Math.min(at(left), at(right))
+          : Math.max(at(left), at(right));
+      const betterAttested = (support.get(letters(joined)) ?? 0) > floorFor;
+      const neitherIsAWord =
+        Math.max(at(left), at(right)) === 0 &&
+        (isFragmentLetter(left) || isFragmentLetter(right));
+      if (betterAttested || neitherIsAWord) {
+        return [...tokens.slice(0, i), joined, ...tokens.slice(i + 2)];
+      }
+    }
+    return null;
+  };
+
+  const separateMergedWords = (title: string): string => {
+    const support = titleWordSupport(lettersOf(title));
+    let tokens = title.split(" ").filter(Boolean);
+
+    // A run of lone glyphs is one tracked word the geometry could not close —
+    // "R E A S O N A B L E T I M E". Collapse the whole run before weighing
+    // anything: joining it pairwise stalls as soon as two glyphs happen to
+    // spell a short word of their own (RE, AS, ON), which is exactly what the
+    // NI Act's titles do.
+    const isLoneGlyph = (t: string): boolean => /^[A-Za-z]$/.test(t);
+    const collapsed: string[] = [];
+    for (let i = 0; i < tokens.length; ) {
+      let run = i;
+      while (run < tokens.length && isLoneGlyph(tokens[run]!)) run++;
+      if (run - i >= 3) {
+        collapsed.push(tokens.slice(i, run).join(""));
+        i = run;
+      } else {
+        collapsed.push(tokens[i]!);
+        i++;
+      }
+    }
+    tokens = collapsed;
+
+    // Rejoin first: a fragment must become a word before it can be weighed
+    // against one, and splitting a fragment is never right.
+    for (let pass = 0; pass < 40; pass++) {
+      const rejoined = rejoinFragments(tokens, support);
+      if (!rejoined) break;
+      tokens = rejoined;
+    }
+
+    return tokens
+      .map((token) => {
+        const letters = token.replace(/[^A-Za-z]/g, "").toUpperCase();
+        if (letters.length < MIN_MERGED_LENGTH) return token;
+        const parts = splitMerged(letters, support, support.get(letters) ?? 0);
+        if (!parts) return token;
+        // Keep whatever punctuation rode along with the token.
+        const lead = (/^[^A-Za-z]*/.exec(token) ?? [""])[0];
+        const tail = (/[^A-Za-z]*$/.exec(token) ?? [""])[0];
+        return lead + parts.join(" ") + tail;
+      })
+      .join(" ");
+  };
+
   const flushChapter = () => {
     if (pendingChapterNumber === null) return;
-    const title =
+    const parsed =
       normalizeChapterTitle(pendingChapterTitle.join(" ")) ||
       `${pendingChapterKind === "part" ? "Part" : "Chapter"} ${pendingChapterNumber}`;
+    // Title repairs need the WHOLE act's evidence — the printing with the
+    // spaces may be hundreds of pages further on, and a word only counts as a
+    // word once two titles have used it. So the raw parse is stored here and
+    // repaired in one pass below, after the last line has been read.
+    const title = parsed;
     const isPart = pendingChapterKind === "part";
     // An unnumbered division has no number to be keyed by, and several can sit
     // in one act (the Hindu Marriage Act has six), so its TITLE is its key —
@@ -674,19 +956,14 @@ export function parseInlineAct(
       const yMin = Number(m[2]);
       const yMax = Number(m[4]);
       if (yMax - yMin < MIN_WORD_HEIGHT) continue; // drop superscript markers
-      words.push({ xMin: Number(m[1]), yMin, baseline: yMax, height: yMax - yMin, text: decodeEntities(m[5] ?? "") });
+      words.push({ xMin: Number(m[1]), xMax: Number(m[3]), yMin, baseline: yMax, height: yMax - yMin, text: decodeEntities(m[5] ?? "") });
     }
 
     for (const line of groupIntoLines(words)) {
       // Legacy view: body-height words only — everything below routes through
       // the illustration/footnote branch and NEVER reaches the pipeline.
-      const bodyHeight = line
-        .filter((w) => w.height >= MIN_BODY_HEIGHT)
-        .map((w) => w.text)
-        .join(" ")
-        .replace(/\s+/g, " ")
-        .trim();
-      const fullLine = line.map((w) => w.text).join(" ").replace(/\s+/g, " ").trim();
+      const bodyHeight = joinLineWords(line.filter((w) => w.height >= MIN_BODY_HEIGHT));
+      const fullLine = joinLineWords(line);
       // A chapter title is set in small caps with an enlarged first letter, so
       // the height filter alone truncated the Limitation Act's part titles to
       // "P", "CO", "A", "M" — and dropped its PART II heading's title outright.
@@ -722,14 +999,50 @@ export function parseInlineAct(
           // A title is being collected — either for a heading already seen, or
           // for one waiting above the enactment formula. The Penal Code sets
           // its "I NTRODUCTION" at 10pt + 8.2pt, so the filter leaves "I".
+          //
+          // Tested with CHAPTER_TITLE_LINE, not ALL_CAPS_LINE, so that the
+          // predicate deciding whether to RECOVER the small type is the same
+          // one that decides downstream whether the recovered line IS a title.
+          // While they differed, a title carrying the print's amendment
+          // apparatus was recovered by neither: ALL_CAPS_LINE admits no
+          // brackets, so IPC Chapter VII — set as "O F O FFENCES … A RMY, 4[N
+          // AVY AND A IR F ORCE]" — kept only its 10pt drop caps and reached
+          // the database as "O O R A, N A F". Eleven headings across IPC, NI,
+          // TP and ITA were shredded this way, and NI's letter-spaced titles
+          // ("OF C O M P E N S A T I O N") have no two adjacent capitals for
+          // the strict pattern to match at all.
           ((pendingChapterNumber !== null || preambleDivision !== null) &&
-            ALL_CAPS_LINE.test(fullLine)))
+            CHAPTER_TITLE_LINE.test(fullLine)))
           ? fullLine
           : bodyHeight;
+      // Record any all-caps line that could be a title, wherever it is printed
+      // — the Arrangement of Sections at the front is the copy that often has
+      // the spaces the body's copy lost, and it is read before `started`.
+      if (flat && CHAPTER_TITLE_LINE.test(flat)) {
+        const asTitle = normalizeChapterTitle(flat.replace(LEADING_MARKERS, ""));
+        // "CHAPTER XIX" alone is the heading, not a title. Recorded, it becomes
+        // a rendering of the synthesised placeholder "Chapter XIX" — same
+        // letters — and replaces it, shouting the name of every untitled
+        // division in the corpus.
+        if (asTitle && !NEXT_HEADING.test(asTitle)) recordTitleRendering(asTitle);
+      }
+
+      // PROSE only. A title is the defective witness — the tracked caps that
+      // merge and shred its words are exactly what is being repaired — so
+      // letting titles vote gives ALLA and DECENCYAND a support of their own
+      // and protects the defect. Body text has ordinary word spacing.
+      if (flat && /[a-z]/.test(flat)) recordLineWords(flat);
+
       const isSmallLine = !flat;
       if (isSmallLine) {
         const full = fullLine;
-        if (!full || !started) continue;
+        if (!full) continue;
+        // The contents pages are set small in several of these acts, so their
+        // copy of a title is only visible on this path.
+        if (!/[a-z]/.test(full) && CHAPTER_TITLE_LINE.test(full)) {
+          recordTitleRendering(full.replace(LEADING_MARKERS, ""));
+        }
+        if (!started) continue;
         // A small-type "Illustrations" heading opens a block too (ICA prints
         // one at 7.2pt); body-height headings are handled below.
         if (isIllustrationHeading(full)) {
@@ -1111,5 +1424,22 @@ export function parseInlineAct(
       "document ended inside a State-amendment region — check the tail was meant to be skipped",
     );
   }
+  // Now that every printing has been seen: prefer the copy of each title that
+  // the act spaced, then separate any pair both copies ran together.
+  for (const chapter of chapters) {
+    // A division the print left untitled carries a name we generated, not one
+    // the act wrote. There is nothing in it to repair, and treating it as text
+    // turned "Chapter XIX" into "ChapterXIX".
+    if (chapter.title === `${chapter.kind === "part" ? "Part" : "Chapter"} ${chapter.number}`)
+      continue;
+    const repaired = separateMergedWords(
+      titleRenderings.get(lettersOf(chapter.title)) ?? chapter.title,
+    );
+    if (repaired === chapter.title) continue;
+    // An unnumbered division is keyed by its own title, so the key moves with it.
+    if (chapter.unnumbered && chapter.number === chapter.title) chapter.number = repaired;
+    chapter.title = repaired;
+  }
+
   return { sections, chapters, diagnostics, stateAmendments };
 }

@@ -18,7 +18,7 @@
     },
     {
       "number": "II",
-      "title": "OF NOTES, BILLSAND C HEQUES",
+      "title": "OF NOTES, BILLS AND CHEQUES",
       "sortOrder": 2,
       "kind": "chapter"
     },
@@ -35,75 +35,81 @@
       "kind": "chapter"
     },
     {
-      "number": "VI",
-      "title": "OF PAYMENTAND INTEREST",
+      "number": "V",
+      "title": "OF PRESENTMENT",
       "sortOrder": 5,
+      "kind": "chapter"
+    },
+    {
+      "number": "VI",
+      "title": "OF PAYMENT AND INTEREST",
+      "sortOrder": 6,
       "kind": "chapter"
     },
     {
       "number": "VII",
       "title": "OF DISCHARGE FROM LIABILITY ON NOTES, BILLS AND CHEQUES",
-      "sortOrder": 6,
+      "sortOrder": 7,
       "kind": "chapter"
     },
     {
       "number": "VIII",
       "title": "OF NOTICE OF DISHONOUR",
-      "sortOrder": 7,
-      "kind": "chapter"
-    },
-    {
-      "number": "IX",
-      "title": "OF N O T ING A N D P R O T E S T",
       "sortOrder": 8,
       "kind": "chapter"
     },
     {
-      "number": "X",
-      "title": "OF R E A S O N A B L E T I M E",
+      "number": "IX",
+      "title": "OF NOTING AND PROTEST",
       "sortOrder": 9,
+      "kind": "chapter"
+    },
+    {
+      "number": "X",
+      "title": "OF REASONABLE TIME",
+      "sortOrder": 10,
       "kind": "chapter"
     },
     {
       "number": "XI",
       "title": "OF ACCEPTANCE AND PAYMENT FOR HONOUR AND REFERENCE IN CASE OF NEED",
-      "sortOrder": 10,
-      "kind": "chapter"
-    },
-    {
-      "number": "XII",
-      "title": "OF C O M P E N S A T I O N",
       "sortOrder": 11,
       "kind": "chapter"
     },
     {
-      "number": "XIII",
-      "title": "S P E C I A L R U L E SOF E V I D E N C E",
+      "number": "XII",
+      "title": "OF COMPENSATION",
       "sortOrder": 12,
       "kind": "chapter"
     },
     {
-      "number": "XIV",
-      "title": "OF CROSSED C H E Q U E S",
+      "number": "XIII",
+      "title": "SPECIAL RULES OF EVIDENCE",
       "sortOrder": 13,
       "kind": "chapter"
     },
     {
-      "number": "XV",
-      "title": "OF B I L L S I N S E T S",
+      "number": "XIV",
+      "title": "OF CROSSED CHEQUES",
       "sortOrder": 14,
       "kind": "chapter"
     },
     {
-      "number": "XVI",
-      "title": "OF I N T E R N A T I O N A L L A W",
+      "number": "XV",
+      "title": "OF BILLS IN SETS",
       "sortOrder": 15,
+      "kind": "chapter"
+    },
+    {
+      "number": "XVI",
+      "title": "OF INTERNATIONAL LAW",
+      "sortOrder": 16,
       "kind": "chapter"
     },
     {
       "number": "XVII",
       "title": "OF PENALTIES IN CASE OF DISHONOUR OF CERTAIN CHEQUES FOR INSUFFICIENCY OF FUNDS IN THE ACCOUNTS",
-      "sortOrder": 16,
+      "sortOrder": 17,
       "kind": "chapter"
     }
   ],
@@ -476,109 +482,109 @@
     },
     {
       "number": "61",
-      "chapterNumber": "IV",
+      "chapterNumber": "V",
       "marginalNote": "Presentment for acceptance",
       "bodyMd": "A bill of exchange payable after sight must, if no time or place is specified therein for presentment, be presented to the drawee thereof for acceptance, if he can, after reasonable search, be found, by a person entitled to demand acceptance, within a reasonable time after it is drawn, and in business hours on a business day. In default of such presentment, no party thereto is liable thereon to the person making such default. If the drawee cannot, after reasonable search, be found, the bill is dishonoured. If the bill is directed to the drawee at a particular place, it must be presented at that place; and if at the due date for presentment he cannot, after reasonable search, be found there, the till is dishonoured. [Where authorized by agreement or usage, a presentment through the post office by means of a registered letter is sufficient.]"
     },
     {
       "number": "62",
-      "chapterNumber": "IV",
+      "chapterNumber": "V",
       "marginalNote": "Presentment of promissory note for sight",
       "bodyMd": "A promissory note, payable at a certain period after sight, must be presented to the maker thereof for sight (if he can after reasonable search be found) by a person entitled to demand payment, within a reasonable time after it is made and in business hours on a business day. In default of such presentment, no party thereto is liable thereon to the person making such default."
     },
     {
       "number": "63",
-      "chapterNumber": "IV",
+      "chapterNumber": "V",
       "marginalNote": "Drawee’s time for deliberation",
       "bodyMd": "The holder must, if so required by the drawee of a bill of exchange presented to him for acceptance, allow the drawee [forty-eight] hours (exclusive of public holidays) to consider whether he will accept it."
     },
     {
       "number": "64",
-      "chapterNumber": "IV",
+      "chapterNumber": "V",
       "marginalNote": "Presentment for payment",
       "bodyMd": "[(1)] Promissory notes, bills of exchange and cheques must be presented for payment to the maker, acceptor or drawee thereof respectively, by or on behalf of the holder as hereinafter provided. In default of such presentment, the other parties thereto are not liable thereon to such holder. [Where authorized by agreement or usage, a presentment through the post office by means of a registered letter is sufficient.] Exception.—Where a promissory note is payable on demand and is not payable at a specified place, no presentment is necessary in order to charge the maker thereof. [(2) Notwithstanding anything contained in section 6, where an electronic image of a truncated cheque is presented for payment, the drawee bank is entitled to demand any further information regarding the truncated cheque from the bank holding the truncated cheque in case of any reasonable suspicion about the genuineness of the apparent tenor of instrument, and if the suspicion is that of any fraud, forgery, tampering or destruction of the instrument, it is entitled to further demand the presentment of the truncated cheque itself for verification: Provided that the truncated cheque so demanded by the drawee bank shall be retained by it, if the payment is made accordingly.]"
     },
     {
       "number": "65",
-      "chapterNumber": "IV",
+      "chapterNumber": "V",
       "marginalNote": "Hours for presentment",
       "bodyMd": "Presentment for payment must be made during the usual hours of business and, if at a banker's within banking hours."
     },
     {
       "number": "66",
-      "chapterNumber": "IV",
+      "chapterNumber": "V",
       "marginalNote": "Presentment for payment of instrument payable after date or sight",
       "bodyMd": "A promissory note or bill of exchange, made payable at a specified period after date or sight thereof, must be presented for payment at maturity."
     },
     {
       "number": "67",
-      "chapterNumber": "IV",
+      "chapterNumber": "V",
       "marginalNote": "Presentment for payment of promissory note payable by instalments",
       "bodyMd": "A promissory note payable by instalments must be presented for payment on the third day after the date fixed for payment of each instalment; and non-payment on such presentment has the same effect as non-payment of a note at maturity."
     },
     {
       "number": "68",
-      "chapterNumber": "IV",
+      "chapterNumber": "V",
       "marginalNote": "Presentment for payment of instrument payable at specified place and not elsewhere",
       "bodyMd": "A promissory note, bill of exchange or cheque made, drawn or accepted payable at a specified place and not elsewhere must, in order to charge any party thereto, be presented for payment at that place."
     },
     {
       "number": "69",
-      "chapterNumber": "IV",
+      "chapterNumber": "V",
       "marginalNote": "Instrument payable at specified place",
       "bodyMd": "A promissory note or bill of exchange made, drawn or accepted payable at a specified place must, in order to charge the maker or drawer thereof, be presented for payment at that place."
     },
     {
       "number": "70",
-      "chapterNumber": "IV",
+      "chapterNumber": "V",
       "marginalNote": "Presentment where no exclusive place specified",
       "bodyMd": "A promissory note or bill of exchange, not made payable as mentioned in sections 68 and 69, must be presented for payment at the place of business (if any), or at the usual residence, of the maker, drawee or acceptor thereof, as the case may be."
     },
     {
       "number": "71",
-      "chapterNumber": "IV",
+      "chapterNumber": "V",
       "marginalNote": "Presentment when maker, etc., has no known place of business or residence",
       "bodyMd": "If the maker, drawee or acceptor of a negotiable instrument has no known place of business or fixed residence, and no place is specified in the instrument for presentment for acceptance or payment such presentment may be made to him in person wherever he can be found."
     },
     {
       "number": "72",
-      "chapterNumber": "IV",
+      "chapterNumber": "V",
       "marginalNote": "Presentment of cheque to charge drawer",
       "bodyMd": "[Subject to the provisions of section 84,] a cheque must, in order to charge the drawer, be presented at the bank upon which it is drawn before the relation between the drawer and his banker has been altered to the prejudice of the drawer."
     },
     {
       "number": "73",
-      "chapterNumber": "IV",
+      "chapterNumber": "V",
       "marginalNote": "Presentment of cheque to charge any other person",
       "bodyMd": "A cheque must, in order to charge any person except the drawer, be presented within a reasonable time after delivery thereof by such person."
     },
     {
       "number": "74",
-      "chapterNumber": "IV",
+      "chapterNumber": "V",
       "marginalNote": "Presentment of instrument payable on demand",
       "bodyMd": "Subject to the provisions of section 31, a negotiable instrument payable on demand must be presented for payment within a reasonable time after it is received by the holder."
     },
     {
       "number": "75",
-      "chapterNumber": "IV",
+      "chapterNumber": "V",
       "marginalNote": "Presentment by or to agent, representative of deceased, or assignee of insolvent",
       "bodyMd": "Presentment for acceptance or payment may be made to the duly authorized agent of the drawee, maker or accept or, as the case may be, or, where the drawee, maker or acceptor has died, to his legal representative, or, where he has been declared an insolvent, to his assignee."
     },
     {
       "number": "75A",
-      "chapterNumber": "IV",
+      "chapterNumber": "V",
       "marginalNote": "Excuse for delay in presentment for acceptance or payment",
       "bodyMd": "Delay in presentment [for acceptance or payment] is excused if the delay is caused by circumstances beyond the control of the holder, and not imputable to his default, misconduct or negligence. When the cause of delay ceases to operate, presentment must be made within a reasonable time.]"
     },
     {
       "number": "76",
-      "chapterNumber": "IV",
+      "chapterNumber": "V",
       "marginalNote": "When presentment unnecessary",
       "bodyMd": "No presentment for payment is necessary, and the instrument is dishonoured at the due date for presentment, in any of the following cases:— (a) if the maker, drawee or acceptor intentionally prevents the presentment of the instrument, or, if the instrument being payable at his place of business, he closes such place on a business day during the usual business hours, or, if the instrument being payable at some other specified place, neither he nor any person authorized to pay it attends at such place during the usual business hours, or, if the instrument not being payable at any specified place, he cannot after due search be found; (b) as against any party sought to be charged therewith, if he has engaged to pay notwithstanding non-presentment; (c) as against any party if, after maturity, with knowledge that the instrument has not been presented— he makes a part payment on account of the amount due on the instrument, or promises to pay the amount due thereon in whole or in part, or otherwise waives his right to take advantage of any default in presentment for payment; (d) as against the drawer, if the drawer could not suffer damage from the want of such presentment."
     },
     {
       "number": "77",
-      "chapterNumber": "IV",
+      "chapterNumber": "V",
       "marginalNote": "Liability of banker for negligently dealing with bill presented for payment",
       "bodyMd": "When a bill of exchange, accepted payable at a specified bank, has been duly presented there for payment and dishonoured, if the banker so negligently or improperly keeps, deals with or delivers back such bill as to cause loss to the holder, he must compensate the holder for such loss."
     },

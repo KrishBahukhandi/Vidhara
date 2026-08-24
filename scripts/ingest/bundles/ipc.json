@@ -48,37 +48,37 @@
     },
     {
       "number": "VI",
-      "title": "OF OFFENCES AGAINSTTHE STATE",
+      "title": "OF OFFENCES AGAINST THE STATE",
       "sortOrder": 7,
       "kind": "chapter"
     },
     {
       "number": "VII",
-      "title": "O O R A, N A F",
+      "title": "OF OFFENCES RELATING TO THE ARMY, NAVY AND AIR FORCE",
       "sortOrder": 8,
       "kind": "chapter"
     },
     {
       "number": "VIII",
-      "title": "OFOFFENCES AGAINSTTHE PUBLIC TRANQUILLITY",
+      "title": "OF OFFENCES AGAINST THE PUBLIC TRANQUILLITY",
       "sortOrder": 9,
       "kind": "chapter"
     },
     {
       "number": "IX",
-      "title": "OFOFFENCES BY OR RELATING TO PUBLIC SERVANTS",
+      "title": "OF OFFENCES BY OR RELATING TO PUBLIC SERVANTS",
       "sortOrder": 10,
       "kind": "chapter"
     },
     {
       "number": "IXA",
-      "title": "OF OFFENCESRELATING TO ELECTIONS",
+      "title": "OF OFFENCES RELATING TO ELECTIONS",
       "sortOrder": 11,
       "kind": "chapter"
     },
     {
       "number": "X",
-      "title": "OF CONTEMPTSOF THE LAWFUL AUTHORITYOF PUBLIC SERVANTS",
+      "title": "OF CONTEMPTS OF THE LAWFUL AUTHORITY OF PUBLIC SERVANTS",
       "sortOrder": 12,
       "kind": "chapter"
     },
@@ -90,25 +90,25 @@
     },
     {
       "number": "XII",
-      "title": "OF OFFENCES RELATINGTO COINAND GOVERNMENT STAMPS",
+      "title": "OF OFFENCES RELATING TO COIN AND GOVERNMENT STAMPS",
       "sortOrder": 14,
       "kind": "chapter"
     },
     {
       "number": "XIII",
-      "title": "OF OFFENCESRELATINGTO WEIGHTSAND MEASURES",
+      "title": "OF OFFENCES RELATING TO WEIGHTS AND MEASURES",
       "sortOrder": 15,
       "kind": "chapter"
     },
     {
       "number": "XIV",
-      "title": "OF OFFENCESAFFECTINGTHE PUBLIC HEALTH, SAFETY, CONVENIENCE, DECENCYAND MORALS",
+      "title": "OF OFFENCES AFFECTING THE PUBLIC HEALTH, SAFETY, CONVENIENCE, DECENCYAND MORALS",
       "sortOrder": 16,
       "kind": "chapter"
     },
     {
       "number": "XV",
-      "title": "OF OFFENCESRELATING TO RELIGION",
+      "title": "OF OFFENCES RELATING TO RELIGION",
       "sortOrder": 17,
       "kind": "chapter"
     },
@@ -126,7 +126,7 @@
     },
     {
       "number": "XVIII",
-      "title": "O O D P M",
+      "title": "OF OFFENCES RELATING TO DOCUMENTS AND TO PROPERTY MARKS",
       "sortOrder": 20,
       "kind": "chapter"
     },
@@ -138,13 +138,13 @@
     },
     {
       "number": "XX",
-      "title": "OFOFFENCES RELATINGTO MARRIAGE",
+      "title": "OF OFFENCES RELATING TO MARRIAGE",
       "sortOrder": 22,
       "kind": "chapter"
     },
     {
       "number": "XXA",
-      "title": "OFCRUELTY BY HUSBANDOR RELATIVESOF HUSBAND",
+      "title": "OF CRUELTY BY HUSBAND OR RELATIVES OF HUSBAND",
       "sortOrder": 23,
       "kind": "chapter"
     },

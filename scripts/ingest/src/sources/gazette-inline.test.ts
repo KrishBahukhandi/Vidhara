@@ -1367,3 +1367,121 @@ describe("illustrations whose continuation is set at footnote height (D-067)", (
     expect(body).not.toMatch(/Christian Council/);
   });
 });
+
+/**
+ * Lays a line out glyph by glyph with explicit gaps, so a test can reproduce
+ * the letter-spaced caps these acts set their chapter titles in. `wordGap`
+ * separates words; `glyphGap` is the tracking inside one.
+ */
+function tracked(
+  text: string,
+  { y = 50, h = 10, x = 200, glyphGap = 0.2, wordGap = 3 } = {},
+): string {
+  const out: string[] = [];
+  let cursor = x;
+  for (const char of text) {
+    if (char === " ") {
+      cursor += wordGap;
+      continue;
+    }
+    const width = 6;
+    out.push(`<word xMin="${cursor}" yMin="${y}" xMax="${cursor + width}" yMax="${y + h}">${char}</word>`);
+    cursor += width + glyphGap;
+  }
+  return out.join("\n");
+}
+
+describe("letter-spaced chapter titles (D-074)", () => {
+  it("rejoins a title pdftotext split into single glyphs", () => {
+    // The NI Act's Chapter XII arrives as "O F C O M P E N S A T I O N": the
+    // tracking defeats pdftotext's advance-width rule, so every glyph becomes
+    // its own <word>. The geometry still says where the words are.
+    const xml = doc(
+      [
+        lines([{ h: 10, text: "WHEREAS it is enacted as follows:—" }], 50),
+        lines([{ h: 10, text: "CHAPTER XII" }], 64),
+        tracked("OF COMPENSATION", { y: 78 }),
+        lines([{ h: 10, text: "117. Rules as to compensation.—The compensation payable shall be determined." }], 92),
+      ].join("\n"),
+    );
+    const { chapters } = parseInlineAct(xml, {});
+    expect(chapters).toHaveLength(1);
+    expect(chapters[0]?.title).toBe("OF COMPENSATION");
+  });
+
+  it("does not glue two properly spaced words together", () => {
+    const xml = doc(
+      [
+        lines([{ h: 10, text: "WHEREAS it is enacted as follows:—" }], 50),
+        lines([{ h: 10, text: "CHAPTER II" }], 64),
+        tracked("OF PUBLIC HEALTH", { y: 78 }),
+        lines([{ h: 10, text: "3. Scope.—This chapter applies to public health and to nothing else." }], 92),
+      ].join("\n"),
+    );
+    const { chapters } = parseInlineAct(xml, {});
+    expect(chapters[0]?.title).toBe("OF PUBLIC HEALTH");
+  });
+
+  it("recovers a small-caps title carrying the print's amendment brackets", () => {
+    // ALL_CAPS_LINE admits no brackets, so a title set as "4[N AVY…]" was
+    // recovered by neither test and reached the database as its drop caps
+    // alone. The looser CHAPTER_TITLE_LINE is the one that decides, downstream,
+    // whether the line IS a title — so it is the one that must decide here.
+    const xml = doc(
+      [
+        lines([{ h: 10, text: "WHEREAS it is enacted as follows:—" }], 50),
+        lines([{ h: 10, text: "CHAPTER VII" }], 64),
+        // Drop caps at body height, the rest of the small caps below it.
+        [
+          `<word xMin="200" yMin="78" xMax="208" yMax="88">O</word>`,
+          `<word xMin="208.4" yMin="79.4" xMax="213" yMax="87.5">F</word>`,
+          `<word xMin="216" yMin="79.4" xMax="260" yMax="87.5">OFFENCES</word>`,
+          `<word xMin="263" yMin="77.5" xMax="266" yMax="87.5">4</word>`,
+          `<word xMin="268" yMin="78" xMax="277" yMax="88">[N</word>`,
+          `<word xMin="279" yMin="79.4" xMax="300" yMax="87.5">AVY</word>`,
+          `<word xMin="303" yMin="78" xMax="307" yMax="88">]</word>`,
+        ].join("\n"),
+        lines([{ h: 10, text: "131. Abetting mutiny.—Whoever abets the committing of mutiny shall be punished." }], 92),
+      ].join("\n"),
+    );
+    const { chapters } = parseInlineAct(xml, {});
+    expect(chapters[0]?.title).toBe("OF OFFENCES NAVY");
+  });
+
+  it("takes the spacing from whichever printing of a title has it", () => {
+    // Every one of these acts prints its titles twice — contents page and
+    // chapter heading — and pdftotext drops the space in one copy but not the
+    // other. Keyed on letters alone, the choice can move a space and can never
+    // change a word.
+    const xml = doc(
+      [
+        // Contents page, printed first, with the space intact.
+        lines([{ h: 10, text: "ARRANGEMENT OF SECTIONS" }], 20),
+        lines([{ h: 10, text: "CHAPTER VI" }], 34),
+        lines([{ h: 10, text: "OF OFFENCES AGAINST THE STATE" }], 48, ),
+        lines([{ h: 10, text: "WHEREAS it is enacted as follows:—" }], 62),
+        lines([{ h: 10, text: "CHAPTER VI" }], 76),
+        // The body's own copy ran two words together.
+        lines([{ h: 10, text: "OF OFFENCES AGAINSTTHE STATE" }], 90),
+        lines([{ h: 10, text: "121. Waging war.—Whoever wages war against the State shall be punished." }], 104),
+      ].join("\n"),
+    );
+    const { chapters } = parseInlineAct(xml, {});
+    expect(chapters.at(-1)?.title).toBe("OF OFFENCES AGAINST THE STATE");
+  });
+
+  it("leaves an untitled division with its generated name", () => {
+    // "CHAPTER XIX" is the heading, not a title. Recorded as a rendering it has
+    // the same letters as the synthesised "Chapter XIX" and replaced it,
+    // shouting the name of every untitled division in the corpus.
+    const xml = doc(
+      [
+        lines([{ h: 10, text: "WHEREAS it is enacted as follows:—" }], 50),
+        lines([{ h: 10, text: "CHAPTER XIX" }], 64),
+        lines([{ h: 10, text: "5. Short title.—This Act may be called the Test Act, 1900." }], 78),
+      ].join("\n"),
+    );
+    const { chapters } = parseInlineAct(xml, {});
+    expect(chapters[0]?.title).toBe("Chapter XIX");
+  });
+});

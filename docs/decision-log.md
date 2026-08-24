@@ -245,6 +245,49 @@ reading column on phones; it is a circle below `sm:` and PageShell pads to clear
 Revisit: if tracing is ever wanted, `excludeTracing` must come out first — the flag makes
 `Sentry.captureRouterTransitionStart` a no-op by design.
 
+**D-074 · 2026-08-24 · The most visible text on every act page was mangled, and one act had eighteen sections under the wrong chapter.**
+Context: while investigating the founder's report that the site "is not soothing", I read all 461
+division headings in the live corpus rather than a sample. **25 were mangled** — the navigation
+spine of every act page. Two distinct parser failures, both confined to heading extraction; section
+bodies were never affected.
+(a) **The recovery test and the acceptance test disagreed.** A small-caps title is recovered from
+the height filter only if the line "reads as a title", and that check used `ALL_CAPS_LINE`, which
+admits no brackets — while the test that decides downstream whether the line IS a title,
+`CHAPTER_TITLE_LINE`, was written specifically to tolerate the print's amendment apparatus. So a
+title carrying a bracket was recovered by neither, and IPC Chapter VII reached the database as its
+drop caps alone: `O O R A, N A F`. Eleven headings were shredded this way. Making the two the same
+test is the whole fix.
+(b) **pdftotext cannot read letter-spaced caps.** Its word boundaries come from a fixed
+advance-width rule that this tracking defeats, so it emitted every glyph as its own word in some
+titles (`OF C O M P E N S A T I O N`) and dropped the space between words in others
+(`OFFENCESRELATINGTO`) — the same cause, both directions. Measured over 3,695 gaps on heading lines
+across all seven source PDFs, gap/height is cleanly bimodal, so the boundaries are recoverable from
+the geometry. Per line, not per corpus: tracking is constant within a line but varies by act, and a
+fixed threshold that suits the IPC falls inside the Transfer of Property Act's words.
+**Where both printings ran words together**, geometry has nothing left to say, and this is where
+the safety argument matters. These acts print every title TWICE — Arrangement of Sections and the
+chapter heading — and the two fail differently. The repair keys candidate renderings on their
+LETTERS ALONE, so two renderings compete only when they say exactly the same thing: the choice can
+move a space and can never change, add or drop a word (D-011/ADR-6). Where both copies merge, the
+act's own prose is the witness, under a comparative rule — separate a token only when both halves
+are attested in strictly more places than the whole. That is what keeps JUSTICE out of "JUST ICE".
+**Result: 29 of 30 checked titles exact** (from 6). Corpus-wide: 24 spacing-only repairs, 2 full
+recoveries, **0 regressions**, 0 chapters lost. Nine section bodies were incidentally repaired by
+the same geometry — `money s o expended` → `money so expended`, `health o r safety` → `health or
+safety`.
+**And the real find:** NI Chapter V "OF PRESENTMENT" was invisible while its heading was
+letter-spaced, so **eighteen sections (§61–77, beginning with *Presentment for acceptance*) were
+filed under Chapter IV "Of Negotiation"** — a browsing-correctness defect nobody would have
+reported, because each section reads correctly on its own page.
+The bundle merge refuses rather than guesses: it preserved CrPC's curated "THE CHARGE" over the
+parse's "A.—Form of charges", refused a change that would have turned "TRIAL BEFORE A COURT" into
+"ACOURT", and skipped adding CrPC VIIA/XXIA because no section moved into them. 29 refusals in all.
+Remaining: IPC Ch. XIV `DECENCYAND` — pdftotext emits `ECENCYAND` as one token in *both* printings,
+so the space is absent from the text layer and needs a different extraction, not a guess. ITA
+Ch. VII `E S C` — source PDF not on disk.
+Revisit: the same two failures will exist in any act ingested from a Gazette PDF with tracked
+headings; the fix is in the shared inline parser, so new acts get it for free.
+
 ---
 
 *Template for future entries:*
