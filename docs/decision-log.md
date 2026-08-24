@@ -288,6 +288,50 @@ Ch. VII `E S C` — source PDF not on disk.
 Revisit: the same two failures will exist in any act ingested from a Gazette PDF with tracked
 headings; the fix is in the shared inline parser, so new acts get it for free.
 
+**D-075 · 2026-08-24 · Re-fetched the IT Act. Its heading was one of six broken in that act, India Code had migrated domains, and the stamp on the new PDF is why the first fix could not reach it.**
+Context: D-074 left ITA Chapter VII reading `E S C` and recorded it as blocked on a source. Founder
+asked for the re-fetch. Three findings, in order of how much they matter.
+**First, a correction to D-074's own reporting.** Its corpus scan flagged headings with two or more
+lone letters, so it counted ITA's `E S C` and missed every heading that was broken a different way.
+Re-scanned on four signatures — lone letters, a single-letter title, the synthesised
+"Chapter N" placeholder, and the keyword left in the title — the real figure was **46 suspect
+divisions, not 1**: six in ITA, thirty-nine in ISA, one in NDPS. A detector tuned to the defect you
+already found will only ever find that defect again.
+**Second, India Code has migrated** from indiacode.nic.in to indiacode.gov.in. Every recorded
+`handle/123456789/…` URL now 504s or reports "No item found", which silently breaks the provenance
+trail of every bundle in the corpus. The new site is DSpace 7; its REST API is the reliable route,
+and the central Act is not the record the title search returns — three "The Information Technology
+Act, 2000" items are State adoptions (Chhattisgarh, Rajasthan), and the central one is reached
+through their `dc.identifier.refact` pointer, `AC_CEN_45_76_00001_200021_1517807324077`.
+**Third, the new rendering is stamped**, and that stamp is why the heading resisted D-074's fix.
+"IndiaCode" is set diagonally across every page in five glyph runs — `In` `di` `aC` `od` at
+19–27pt and `e` at 11.79pt — which pdftotext reports as ordinary words. They land wherever the
+diagonal crosses a line, so Chapter VII extracted as "di ELECTRONIC SIGNATURE CERTIFICATES" and the
+small run reached section bodies as "the e Official Gazette". FURNITURE cannot help: it matches
+whole lines and this is a fragment inside a real one.
+Decision: drop a token when it repeats on ≥60% of pages, at a size larger than the document's
+modal height, at a size almost nothing else uses, and it contains a letter. Every clause earns its
+place — a height cap alone would delete the CPC's Appendix forms (genuine text to 59pt); "repeats
+every page" alone would delete "of" and "by"; without the letter test it deletes the Contract Act's
+run-in heading dash, which begins half its sections. Separately, `CHAPTER 1` is now read as
+`CHAPTER I`: that act's capital I extracts as the digit, and across every source PDF on disk there
+is exactly one digit-numbered division heading — this one — while the same act's contents page
+prints "CHAPTER I" for the same chapter.
+Result: **ITA 6 broken → 0**; all fourteen divisions verified against the source's own text. Zero
+change to the seven other acts on disk — same sections, same chapters, same bodies.
+**The re-fetched PDF is a better witness for headings and a worse one for text**, so only headings
+were taken from it. It is not byte-identical to the 2026-08-03 fetch (577,085 bytes against a
+recorded 462,882 — the repository's own metadata still says 462,882, so the stamp is applied on
+download), and its footnotes leak into 19 section bodies. Section text is untouched and still comes
+from the original parse; the bundle's provenance records both fetches and which parts came from
+which.
+Open, and a founder's call rather than mine: ITA Chapter V reads "RECORDS **ANS** SECURE" in the
+body heading (p.12) and "RECORDS **AND** SECURE" in the Arrangement of Sections (p.1) of the same
+PDF. The cross-printing rule from D-074 keys on letters alone and therefore refuses — correctly,
+since these are different words, not different spacing. Choosing between two printings of the same
+statute is not a mechanical repair, so it is surfaced rather than guessed (D-011/ADR-6).
+Revisit: ISA's 39 untitled chapters are the largest remaining block and its source is on disk.
+
 ---
 
 *Template for future entries:*

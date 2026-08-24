@@ -1485,3 +1485,72 @@ describe("letter-spaced chapter titles (D-074)", () => {
     expect(chapters[0]?.title).toBe("Chapter XIX");
   });
 });
+
+describe("page stamps and the I/1 confusion (D-075)", () => {
+  /** A page carrying the repository's diagonal "IndiaCode" stamp across it. */
+  const stamped = (bodyLines: Array<{ h: number; text: string; x?: number }>, stampY: number) =>
+    [
+      lines(bodyLines),
+      // 19pt glyph runs — the stamp, once per page, wherever the diagonal falls.
+      `<word xMin="300" yMin="${stampY}" xMax="330" yMax="${stampY + 19}">di</word>`,
+    ].join("\n");
+
+  it("drops a stamp that repeats on every page", () => {
+    // India Code serves its PDFs with "IndiaCode" set diagonally in 19-27pt, and
+    // pdftotext reports the glyph runs as words. They land inside real lines:
+    // the IT Act's Chapter VII heading extracted as "di ELECTRONIC SIGNATURE
+    // CERTIFICATES", and a smaller run reached section bodies as "the e Act".
+    const page = (n: number) =>
+      stamped(
+        [
+          { h: 10, text: "CHAPTER VII" },
+          { h: 10, text: "ELECTRONIC SIGNATURE CERTIFICATES" },
+          { h: 10, text: `${n}. Certifying authority to issue.—The authority may issue a certificate.` },
+        ],
+        64,
+      );
+    const xml = doc(
+      [lines([{ h: 10, text: "WHEREAS it is enacted as follows:—" }]), stamped([], 200)].join("\n"),
+      page(35),
+      page(36),
+      page(37),
+    );
+    const { chapters, sections } = parseInlineAct(xml, {});
+    expect(chapters[0]?.title).toBe("ELECTRONIC SIGNATURE CERTIFICATES");
+    expect(sections.some((s) => s.bodyMd?.includes("di"))).toBe(false);
+  });
+
+  it("keeps large type that does not repeat", () => {
+    // The CPC's Appendix forms set genuine text up to 59pt, so a height cap
+    // alone would delete statute. What marks a stamp is that it repeats.
+    const big = (y: number, text: string) =>
+      `<word xMin="200" yMin="${y}" xMax="320" yMax="${y + 20}">${text}</word>`;
+    const xml = doc(
+      [lines([{ h: 10, text: "WHEREAS it is enacted as follows:—" }]), big(200, "Appearance")].join("\n"),
+      lines([{ h: 10, text: "2. Forms.—The forms in the appendix shall be used." }]),
+      lines([{ h: 10, text: "3. Scope.—This applies generally." }]),
+      lines([{ h: 10, text: "4. Extent.—It extends to the whole of India." }]),
+    );
+    const { sections } = parseInlineAct(xml, {});
+    expect(sections.map((s) => s.number)).toEqual(["2", "3", "4"]);
+  });
+
+  it("reads a lone digit 1 in a division heading as the numeral I", () => {
+    // The IT Act's first chapter is set in a face whose capital I extracts as
+    // the digit, so "CHAPTER 1" matched nothing, the act lost Chapter I, and
+    // the PRELIMINARY line below became an unnumbered division that swallowed
+    // the stray keyword — a chapter both numbered and titled "CHAPTER PRELIMINARY".
+    const xml = doc(
+      lines([
+        { h: 10, text: "WHEREAS it is enacted as follows:—" },
+        { h: 10, text: "CHAPTER 1" },
+        { h: 10, text: "PRELIMINARY" },
+        { h: 10, text: "1. Short title.—This Act may be called the Test Act, 2000." },
+      ]),
+    );
+    const { chapters } = parseInlineAct(xml, {});
+    expect(chapters).toHaveLength(1);
+    expect(chapters[0]?.number).toBe("I");
+    expect(chapters[0]?.title).toBe("PRELIMINARY");
+  });
+});

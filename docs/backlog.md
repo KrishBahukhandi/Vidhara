@@ -148,12 +148,26 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
       "OF PRESENTMENT" was invisible while its heading was letter-spaced, so its eighteen sections
       (§61 *Presentment for acceptance* onward) sat under Chapter IV "Of Negotiation". The act now
       has its full 17 divisions.
-- [ ] **Two headings still need their source.** IPC Ch. XIV reads `DECENCYAND` — pdftotext emits
-      `ECENCYAND` as one token in *both* printings, so the space is absent from the text layer and
-      cannot be recovered from it; needs a different extraction (or a different edition), not a
-      guess. ITA Ch. VII reads `E S C` and its source PDF is **not on disk** — blocked on a
-      re-fetch, like the other source-blocked items below. Neither may be written from recall
-      (D-011/ADR-6).
+- [x] **ITA re-fetched and repaired (D-075): 6 broken divisions → 0.** D-074 reported one; its
+      scan only looked for headings with two or more lone letters, so it missed single-letter
+      titles, missing titles and the keyword-in-title case. A four-signature re-scan put the real
+      corpus figure at **46 suspect divisions**. ITA's six are fixed and published, every title
+      verified against the source's own text.
+- [ ] **India Code has migrated to `indiacode.gov.in`** — every `handle/123456789/…` URL recorded
+      in a bundle's provenance now 504s or reports "No item found", so the provenance trail of the
+      whole corpus points at dead URLs. The DSpace 7 REST API is the reliable route
+      (`/server/api/discover/search/objects`, filter `f.identifier_collection=ACT,equals`), and a
+      title search returns State adoptions first — the central Act is reached via their
+      `dc.identifier.refact` pointer. **Worth a sweep to re-record every act's source URL.**
+- [ ] **ISA: 39 chapters carry no title at all** (largest remaining block; source IS on disk, so
+      this is measurable today). NDPS Chapter VA likewise, source not on disk.
+- [ ] **ITA Chapter V — a founder's call, not a guess.** The same PDF prints "RECORDS **ANS**
+      SECURE" in the body heading (p.12) and "RECORDS **AND** SECURE" in the Arrangement of
+      Sections (p.1). D-074's cross-printing rule keys on letters alone and refuses — correctly,
+      since these are different words rather than different spacing. Pick one.
+- [ ] **IPC Ch. XIV reads `DECENCYAND`** — pdftotext emits `ECENCYAND` as one token in *both*
+      printings, so the space is absent from the text layer and needs a different extraction, not
+      a guess (D-011/ADR-6).
 - [ ] **CPC's 38 missing illustration lines did NOT come back** — that act fails for a different
       reason D-067's fix does not reach. Measure it next; the source is on disk.
 - [ ] **ISA §281 still truncated** — needs D-062's `--rule-delimited` mode, not run in D-067.

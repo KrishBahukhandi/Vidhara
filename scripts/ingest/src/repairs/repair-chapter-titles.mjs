@@ -29,7 +29,17 @@ import path from "node:path";
 const ROOT = path.resolve(import.meta.dirname, "../..");
 const WRITE = process.argv.includes("--write");
 const OLD = JSON.parse(readFileSync("/tmp/snap-old.json", "utf8"));
-const NEW = JSON.parse(readFileSync("/tmp/snap-new.json", "utf8"));
+const NEW = JSON.parse(readFileSync(process.env.SNAP_NEW ?? "/tmp/snap-new.json", "utf8"));
+/**
+ * Acts whose SOURCE was re-fetched, so there is no old parse to compare the
+ * bundle against and the "did a human curate this?" gate cannot run. Their
+ * division list is rebuilt from the fresh parse instead — titles and section
+ * assignment only. Section TEXT is never touched here, which matters for the
+ * IT Act specifically: India Code now serves a stamped rendering whose
+ * footnotes leak into 19 bodies, so the fresh parse is a better witness for
+ * headings and a worse one for text. Every rebuilt title is printed for review.
+ */
+const REBUILD = new Set((process.env.REBUILD_CHAPTERS ?? "").split(",").filter(Boolean));
 
 const letters = (s) => (s ?? "").replace(/[^A-Za-z]/g, "").toUpperCase();
 /** Everything but the spaces. Two titles equal here differ ONLY in spacing, so
@@ -64,6 +74,36 @@ for (const slug of Object.keys(NEW)) {
   }
   const fresh = NEW[slug];
   const before = OLD[slug];
+
+  if (REBUILD.has(slug)) {
+    const freshByNumber = new Map(fresh.sections.map((x) => [x.number, x.chapterNumber ?? ""]));
+    let refiled = 0;
+    for (const section of bundle.sections) {
+      const now = freshByNumber.get(section.number);
+      if (now === undefined || now === (section.chapterNumber ?? "")) continue;
+      console.log(`${slug} s.${section.number}: chapter "${section.chapterNumber ?? ""}" -> "${now}"`);
+      section.chapterNumber = now;
+      refiled++;
+    }
+    console.log(`${slug} REBUILDS its ${fresh.chapters.length} divisions from the re-fetched source:`);
+    for (const c of fresh.chapters) console.log(`    ${c.kind} ${String(c.number).padEnd(8)} ${c.title}`);
+    bundle.chapters = fresh.chapters.map((c) => ({
+      number: c.number,
+      title: c.title,
+      sortOrder: c.sortOrder,
+      kind: c.kind,
+      ...(c.partNumber ? { partNumber: c.partNumber } : {}),
+    }));
+    sectionsRefiled += refiled;
+    titlesFixed += fresh.chapters.length;
+    if (WRITE) writeFileSync(bundlePath, `${JSON.stringify(bundle, null, 2)}\n`);
+    continue;
+  }
+
+  if (!before) {
+    console.log(`${slug}: no baseline parse — skipped (pass REBUILD_CHAPTERS=${slug} to rebuild)`);
+    continue;
+  }
   const freshByKey = new Map(fresh.chapters.map((c) => [key(c), c]));
   const bundleByKey = new Map(bundle.chapters.map((c) => [key(c), c]));
 

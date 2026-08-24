@@ -260,7 +260,26 @@ function canonicalState(raw: string): string {
   );
 }
 // Constitution uses PART headings; other acts CHAPTER. Both fold to chapters.
-const CHAPTER_HEADING = /^(CHAPTER|PART)\s*([IVXLCDM]+)([A-Z])?$/;
+/**
+ * A bare division heading. Accepts a lone `1` for `I`: the IT Act's first
+ * chapter is set in a face whose capital I extracts as the digit, so its body
+ * heading reads "CHAPTER 1", matched nothing, and the act lost Chapter I
+ * entirely — the following "PRELIMINARY" line was then read as an UNNUMBERED
+ * division and took the stray keyword with it, giving a chapter both numbered
+ * and titled "CHAPTER PRELIMINARY".
+ *
+ * Narrow on purpose. `1` is accepted only as the WHOLE numeral, and across
+ * every source PDF on disk there is exactly one digit-numbered division
+ * heading — this one — while the same act's contents page prints "CHAPTER I"
+ * for the same chapter. So this is a glyph confusion with direct evidence in
+ * the document, not an act that numbers its chapters in Arabic. An act that
+ * genuinely did would need `2` onward too, and should be handled then, with
+ * its own source in hand.
+ */
+const CHAPTER_HEADING = /^(CHAPTER|PART)\s*([IVXLCDM]+|1)([A-Z])?$/;
+/** The numeral a division heading match names, with the `1`/`I` confusion
+ * above resolved. */
+const headingNumeral = (numeral: string): string => (numeral === "1" ? "I" : numeral);
 /**
  * The same heading with its TITLE run onto the same line, usually because an
  * amendment inserted the chapter and the bracket swallowed the line break:
@@ -517,6 +536,76 @@ function joinLineWords(line: Word[]): string {
     out += line[i]!.text;
   }
   return out.replace(/\s+/g, " ").trim();
+}
+
+/** A stamp must sit on at least this share of the document's pages. */
+const WATERMARK_MIN_PAGE_SHARE = 0.6;
+/** …and be set larger than the type the document is actually set in. Only just
+ * larger: India Code's stamp spells "IndiaCode" across five glyph runs whose
+ * sizes range from 11.79pt to 27.11pt against a 9.94pt body, and a comfortable
+ * multiple would have kept the smallest of them — which is the one that landed
+ * inside section bodies, giving "the e Official Gazette". */
+const WATERMARK_MIN_HEIGHT_RATIO = 1.1;
+/** …at a size almost nothing else in the document uses. This is what separates
+ * a stamp from ordinary words, which repeat on every page too but share the
+ * body's own height. */
+const WATERMARK_MAX_HEIGHT_SHARE = 0.01;
+
+/**
+ * Tokens belonging to a page stamp rather than to the act.
+ *
+ * India Code now serves its PDFs with "IndiaCode" set diagonally across every
+ * page in 19–27pt, and pdftotext reports those glyph runs — `In`, `di`, `aC`,
+ * `od` — as ordinary words. They land wherever the diagonal crosses a line, so
+ * the IT Act's Chapter VII heading extracts as "di ELECTRONIC SIGNATURE
+ * CERTIFICATES". FURNITURE cannot help: it matches whole lines, and this is a
+ * fragment *inside* a real one.
+ *
+ * A height cap alone would be wrong — the CPC's Appendix forms set genuine
+ * text up to 59pt. What separates a stamp from big text is that a stamp
+ * repeats: the same token, at the same size, on nearly every page, while the
+ * CPC's "Appearance" occurs once. So the signature is structural, and the rule
+ * needs no per-act list of watermarks to maintain.
+ */
+function watermarkTokens(pages: string[]): Set<string> {
+  const heightCount = new Map<number, number>();
+  const pagesPerToken = new Map<string, Set<number>>();
+  pages.forEach((pageXml, pageIndex) => {
+    for (const m of pageXml.matchAll(WORD_TAG)) {
+      const height = Math.round((Number(m[4]) - Number(m[2])) * 100) / 100;
+      heightCount.set(height, (heightCount.get(height) ?? 0) + 1);
+      const key = `${m[5] ?? ""}|${height}`;
+      const seen = pagesPerToken.get(key) ?? new Set<number>();
+      seen.add(pageIndex);
+      pagesPerToken.set(key, seen);
+    }
+  });
+  // The height the document is actually set in — its most common, not its mean,
+  // which footnotes and headings would drag around.
+  let bodyHeight = 0;
+  let commonest = 0;
+  for (const [height, count] of heightCount) {
+    if (count > commonest) {
+      commonest = count;
+      bodyHeight = height;
+    }
+  }
+  const totalWords = [...heightCount.values()].reduce((sum, n) => sum + n, 0);
+  const stamps = new Set<string>();
+  if (pages.length < 4) return stamps; // too few pages for "every page" to mean anything
+  for (const [key, seen] of pagesPerToken) {
+    const text = key.slice(0, key.lastIndexOf("|"));
+    const height = Number(key.slice(key.lastIndexOf("|") + 1));
+    // A stamp spells something. The Contract Act sets its run-in heading dash
+    // at 13.28pt on 40 of its 53 pages, which meets every other test here and
+    // is the separator that begins half its sections.
+    if (!/[A-Za-z]/.test(text)) continue;
+    if (height < bodyHeight * WATERMARK_MIN_HEIGHT_RATIO) continue;
+    if ((heightCount.get(height) ?? 0) > totalWords * WATERMARK_MAX_HEIGHT_SHARE) continue;
+    if (seen.size < pages.length * WATERMARK_MIN_PAGE_SHARE) continue;
+    stamps.add(key);
+  }
+  return stamps;
 }
 
 function groupIntoLines(words: Word[]): Word[][] {
@@ -947,7 +1036,10 @@ export function parseInlineAct(
     pendingChapterTitle = [];
   };
 
-  for (const pageXml of xhtml.split(/<page /).slice(1)) {
+  const pages = xhtml.split(/<page /).slice(1);
+  const stamps = watermarkTokens(pages);
+
+  for (const pageXml of pages) {
     if (ended) break;
     /** Footnotes claim the rest of the page's small text once they start. */
     let footnotesStarted = false;
@@ -956,6 +1048,8 @@ export function parseInlineAct(
       const yMin = Number(m[2]);
       const yMax = Number(m[4]);
       if (yMax - yMin < MIN_WORD_HEIGHT) continue; // drop superscript markers
+      // Page stamps are not statute text at any size — see watermarkTokens.
+      if (stamps.has(`${m[5] ?? ""}|${Math.round((yMax - yMin) * 100) / 100}`)) continue;
       words.push({ xMin: Number(m[1]), xMax: Number(m[3]), yMin, baseline: yMax, height: yMax - yMin, text: decodeEntities(m[5] ?? "") });
     }
 
@@ -1105,7 +1199,7 @@ export function parseInlineAct(
         const bare = CHAPTER_HEADING.exec(above);
         const inline = bare ? null : CHAPTER_HEADING_INLINE.exec(above);
         const seen = bare ?? inline;
-        if (seen && `${seen[2]}${seen[3] ?? ""}` === "I") {
+        if (seen && `${headingNumeral(seen[2]!)}${seen[3] ?? ""}` === "I") {
           preambleDivision = {
             number: "I",
             kind: seen[1] === "PART" ? "part" : "chapter",
@@ -1297,7 +1391,7 @@ export function parseInlineAct(
       if (chapterMatch) {
         flush();
         flushChapter();
-        pendingChapterNumber = `${chapterMatch[2]}${chapterMatch[3] ?? ""}`;
+        pendingChapterNumber = `${headingNumeral(chapterMatch[2]!)}${chapterMatch[3] ?? ""}`;
         pendingChapterKind = chapterMatch[1] === "PART" ? "part" : "chapter";
         sawNumberedDivision = true;
         continue;
