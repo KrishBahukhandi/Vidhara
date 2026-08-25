@@ -540,12 +540,6 @@ function joinLineWords(line: Word[]): string {
 
 /** A stamp must sit on at least this share of the document's pages. */
 const WATERMARK_MIN_PAGE_SHARE = 0.6;
-/** …and be set larger than the type the document is actually set in. Only just
- * larger: India Code's stamp spells "IndiaCode" across five glyph runs whose
- * sizes range from 11.79pt to 27.11pt against a 9.94pt body, and a comfortable
- * multiple would have kept the smallest of them — which is the one that landed
- * inside section bodies, giving "the e Official Gazette". */
-const WATERMARK_MIN_HEIGHT_RATIO = 1.1;
 /** …at a size almost nothing else in the document uses. This is what separates
  * a stamp from ordinary words, which repeat on every page too but share the
  * body's own height. */
@@ -600,7 +594,14 @@ function watermarkTokens(pages: string[]): Set<string> {
     // at 13.28pt on 40 of its 53 pages, which meets every other test here and
     // is the separator that begins half its sections.
     if (!/[A-Za-z]/.test(text)) continue;
-    if (height < bodyHeight * WATERMARK_MIN_HEIGHT_RATIO) continue;
+    // Any size but the body's. "Larger than the body" was the obvious test and
+    // it was wrong: India Code's stamp spells "IndiaCode" across five glyph
+    // runs from 11.79pt to 27.11pt, and whether the smallest of them is above
+    // or below the body depends on the act — 11.79 clears the IT Act's 9.94
+    // body but sits under the NDPS Act's 12.22, where it went on landing in
+    // section bodies as "and it applies also— e (a)". Rarity and the letter
+    // test below are what do the actual separating.
+    if (height === bodyHeight) continue;
     if ((heightCount.get(height) ?? 0) > totalWords * WATERMARK_MAX_HEIGHT_SHARE) continue;
     if (seen.size < pages.length * WATERMARK_MIN_PAGE_SHARE) continue;
     stamps.add(key);

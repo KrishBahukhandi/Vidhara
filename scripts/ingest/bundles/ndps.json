@@ -48,7 +48,7 @@
     },
     {
       "number": "VA",
-      "title": "Chapter VA",
+      "title": "FORFEITURE OF ILLEGALLY ACQUIRED PROPERTY",
       "sortOrder": 7,
       "kind": "chapter"
     },
@@ -817,5 +817,5 @@
       "bodyMd": "(1) If any difficulty arises in giving effect to the provisions of this Act, the Central Government may, by order published in the Official Gazette, make such provisions not inconsistent with the provisions of this Act as appear to it to be necessary or expedient for removing the difficulty: Provided that no such order shall be made after the expiry of a period of three years from the date on which this Act receives the assent of the President. (2) Every order made under this section shall, as soon as may be after it is made, be laid before the Houses of Parliament."
     }
   ],
-  "provenance": "Official India Code text: The Narcotic Drugs and Psychotropic Substances Act, 1985 (61 of 1985), English PDF (bitstream 123456789/1791/5/a1985-61.pdf, 719,612 bytes, sha256 ef1b3991…) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-07-29. The same handle also carries a Hindi edition (H1985-61.pdf) — the English 'a'-prefixed file is the one ingested. Extracted via pdftotext 26.07 -bbox and @nexlex/ingest inline parser. Automated parse; footnotes/amendment history excluded; spot-verified; full clause-level proofread pending."
+  "provenance": "Official India Code text: The Narcotic Drugs and Psychotropic Substances Act, 1985 (61 of 1985), English PDF (bitstream 123456789/1791/5/a1985-61.pdf, 719,612 bytes, sha256 ef1b3991…) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-07-29. The same handle also carries a Hindi edition (H1985-61.pdf) — the English 'a'-prefixed file is the one ingested. Extracted via pdftotext 26.07 -bbox and @nexlex/ingest inline parser. Automated parse; footnotes/amendment history excluded; spot-verified; full clause-level proofread pending. Chapter VA's heading re-derived 2026-08-25 from a fresh fetch of the same Act: indiacode.gov.in bitstream 7e871cae-4f33-42ca-bcc4-0fe75bd4e65f (a1985-61.pdf), 994,959 bytes, sha256 76ce71e4b6bde49c…, via the migrated India Code (the .nic.in handle above no longer resolves; the repository reports the bitstream as 719,612 bytes — matching the 2026-07-29 fetch — and serves a larger, stamped rendering). SECTION TEXT IS UNCHANGED and still comes from the 2026-07-29 parse: this rendering carries an “IndiaCode” page stamp and leaks footnote text into 38 bodies, so it is a better witness for headings and a worse one for text."
 }

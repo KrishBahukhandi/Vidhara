@@ -360,6 +360,34 @@ the seven other acts — same sections, same bodies, same marginal notes, same c
 The ISA bundle diff is 39 lines changed, all of them `"title"`.
 Revisit: NDPS Chapter VA is the last one, and its source is not on disk.
 
+**D-077 · 2026-08-25 · NDPS Chapter VA named. The stamp filter was keyed to the wrong side of the body height, and only a second stamped act could show it.**
+Context: the last unnamed division in the corpus. Its source was not on disk, so it needed the same
+re-fetch the IT Act got. Two things worth recording.
+**The re-fetch confirms the pattern D-075 found.** India Code's repository metadata reports the
+bitstream at 719,612 bytes — exactly matching the 2026-07-29 provenance — and serves 994,959. The
+stamp is applied on download, not stored, so no recorded byte count or hash in this corpus will
+ever match a fresh fetch again.
+**And the stamp filter was subtly wrong.** D-075 required a stamp token to be TALLER than the
+document's modal height, which held for the IT Act, whose body is 9.94pt against the stamp's
+smallest run at 11.79pt. The NDPS Act is set at 12.22pt, so that same 11.79pt `e` sits *under* its
+body and sailed through — landing in 38 section bodies as "and it applies also— e (a)". The height
+condition is now "any size but the body's": rarity (a size almost nothing else uses) and the letter
+test were always the clauses doing the real separating, and the height comparison was carrying
+weight it could not bear. Verified across all nine source PDFs — flags exactly the five stamp
+fragments in the two stamped acts and nothing in the seven unstamped ones, with zero change to any
+act's sections, bodies, notes or chapter assignments.
+Result: **the corpus reaches 0 suspect divisions of 478**, from 46 when D-075 re-scanned it
+properly. Chapter VA is "FORFEITURE OF ILLEGALLY ACQUIRED PROPERTY", read from the source; the
+bundle diff is one line.
+Headings only, again: this rendering leaks footnote text into 38 bodies (§5 grew from 825 to 8,418
+characters in the fresh parse), so section text is untouched and still comes from the 2026-07-29
+parse. That is now the settled shape of a re-fetch from the migrated India Code — take the
+headings, leave the text — and it should stay that way until the stamped rendering's footnote
+handling is solved.
+Revisit: two spacing defects remain and both are source-level, not parser-level — IPC Ch. XIV's
+`DECENCYAND`, which pdftotext merges in both printings, and ITA Ch. V's `ANS`/`AND` disagreement
+between the same PDF's two printings.
+
 ---
 
 *Template for future entries:*

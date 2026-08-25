@@ -1535,6 +1535,44 @@ describe("page stamps and the I/1 confusion (D-075)", () => {
     expect(sections.map((s) => s.number)).toEqual(["2", "3", "4"]);
   });
 
+  it("drops a stamp fragment SMALLER than the body type", () => {
+    // "Larger than the body" was the obvious test and it was wrong. India
+    // Code's stamp spells "IndiaCode" across glyph runs from 11.79pt to
+    // 27.11pt, and whether the smallest clears the body depends on the act:
+    // it sits above the IT Act's 9.94pt body and below the NDPS Act's 12.22pt,
+    // where it kept landing in section bodies as "and it applies also— e (a)".
+    // Rarity and the letter test are what separate a stamp from real words, so
+    // the document has to be big enough for "rare" to mean something.
+    const filler = "the said officer may in any such case make an order in writing";
+    const stampFragment = (y: number) =>
+      `<word xMin="400" yMin="${y}" xMax="406" yMax="${y + 9}">z</word>`;
+    const page = (n: number) =>
+      [
+        lines([
+          { h: 12, text: `${n}. Power to make orders.—Where it appears necessary` },
+          ...Array.from({ length: 12 }, () => ({ h: 12, text: filler })),
+        ]),
+        stampFragment(400),
+      ].join("\n");
+    const xml = doc(
+      [
+        lines([
+          { h: 12, text: "WHEREAS it is hereby enacted as follows:—" },
+          ...Array.from({ length: 12 }, () => ({ h: 12, text: filler })),
+        ]),
+        stampFragment(400),
+      ].join("\n"),
+      page(2),
+      page(3),
+      page(4),
+    );
+    const { sections } = parseInlineAct(xml, {});
+    expect(sections).toHaveLength(3);
+    expect(sections.some((s) => /\bz\b/.test(s.bodyMd ?? ""))).toBe(false);
+    // and the real text around where it fell is intact
+    expect(sections[0]?.bodyMd).toContain("the said officer may in any such case");
+  });
+
   it("reads a lone digit 1 in a division heading as the numeral I", () => {
     // The IT Act's first chapter is set in a face whose capital I extracts as
     // the digit, so "CHAPTER 1" matched nothing, the act lost Chapter I, and

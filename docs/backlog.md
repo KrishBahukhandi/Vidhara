@@ -164,8 +164,10 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
       11 Parts, set in caps, were named correctly all along. Recognised now by the geometry the
       print itself uses: a heading and its title share a left edge the body does not. **Corpus
       goes from 46 suspect divisions to 1.**
-- [ ] **NDPS Chapter VA is the last unnamed division** — source PDF not on disk, so it needs the
-      same re-fetch ITA got (India Code has migrated; see the entry above).
+- [x] **NDPS Chapter VA named (D-077) — the corpus is at 0 suspect divisions of 478.** Re-fetched
+      like ITA. Also fixed the stamp filter, which required a stamp to be TALLER than the body:
+      true for ITA (9.94pt body) but not NDPS (12.22pt), so the stamp's smallest run sat under it
+      and reached 38 bodies. The test is now "any size but the body's".
 - [ ] **ITA Chapter V — a founder's call, not a guess.** The same PDF prints "RECORDS **ANS**
       SECURE" in the body heading (p.12) and "RECORDS **AND** SECURE" in the Arrangement of
       Sections (p.1). D-074's cross-printing rule keys on letters alone and refuses — correctly,
