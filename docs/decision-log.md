@@ -472,6 +472,48 @@ left for its own entry.
 Revisit: migration 0021 is written but NOT applied — the Supabase MCP has no DDL permission in this
 session and no direct connection string exists, so it needs a hand. Nothing renders until it does.
 
+**D-080 · 2026-08-25 · The CrPC's classification schedule. Its columns are centred, so the method that read the BNSS could not see them at all.**
+Context: D-079 shipped the BNSS's schedule and recorded the CrPC as a separate problem. It is, and
+the reason turned out to be more basic than the Ditto count suggested.
+**The two prints disagree about how a table is laid out.** The BNSS left-aligns its cells, so its
+columns announce themselves by where cells begin — which is what D-079's parser keys on. The CrPC
+CENTRES them: its section numbers sit anywhere between x=54 and x=72 around a centre of 66, and its
+repeated cells are a centred "Ditto", 1,042 of them against 181 spelled-out values. There are no
+left edges to find, so a cell-start parser reads its classifications one column out, and no
+threshold fixes that.
+Decision: find the boundaries from OCCUPANCY instead. The header's "1 2 3 4 5 6" gives six centres,
+which cannot be boundaries — midway between two centres often falls inside a column, because a wide
+column's text runs far past its own centre — but they do bracket each gutter, and within that
+bracket the least-covered x IS the boundary. Occupancy has no preference between left-aligned and
+centred text; it only asks where the page is empty. The same code now reads both prints, and BNSS's
+output is unchanged to the row.
+Four further defects, each of which silently dropped whole sections:
+ · **The Part II heading is drop-capped** — "II.—C" + "LASSIFICATION" — so the terminator never
+   matched and the table ran on through the State amendments and the entire Second Schedule of
+   forms, 39 pages of prose read as a six-column table. Headings are now matched with whitespace
+   removed.
+ · **Part II can begin part-way down a page that still carries Part I**, so excluding that page
+   whole lost IPC 503–511, including 506, criminal intimidation. The page is read and cut at the
+   heading's own line.
+ · **Section numbers carry the print's amendment apparatus.** "1[376" reaches column 1 as "[376"
+   once the superscript falls below the height filter, and arrives in pieces ("[" then "[376").
+   That is how IPC 354, 376 and 506 were all missing while 354A and 376A came through. Stripping it
+   needs the monotonic-section guard alongside, or every page's "1. Subs. by Act…" footnote reads
+   as section 1.
+ · **A section number can sit on its own baseline**, centred against a multi-line cell, so its
+   row's first line has already been taken as a continuation of the row above. IPC 354, 363, 376A
+   and 507 all arrived with no classification until a row could reclaim that line.
+Result: **CrPC 387 rows, 345 asserted, 2 empty**; BNSS unchanged at 440/419/0. Spot-checked across
+the schedule against the print: IPC 302 murder (Cognizable, Non-bailable, Court of Session), 420
+cheating, 304A, 279, 323, 354, 376, 498A, 341, 384, 406, 409, 447, 506 — all correct.
+**Verification is weaker for the CrPC than for the BNSS, and that is worth stating.** Where the
+BNSS spells every value out, most CrPC values come from resolving Ditto, so they depend on the row
+sequence being complete — one missed row shifts every value after it, silently and plausibly.
+Checked two ways: on rows the print spells out, column assignment agrees 101 of 110 (the nine
+disagreements are artifacts of the cross-checker, which reads `-layout` output that splits
+"Non-" from "cognizable" across lines); and no row the print shows is missing from the parse.
+Revisit: migration 0021 is still unapplied, so neither act's classifications are live.
+
 ---
 
 *Template for future entries:*

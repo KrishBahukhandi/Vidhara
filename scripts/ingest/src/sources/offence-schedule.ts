@@ -117,8 +117,17 @@ const COLUMNS = 6;
 /** Part I opens under this; Part II ("against other laws") ends it — those rows
  * are keyed by punishment range rather than by section and have no section page
  * to attach to. Dashes vary between the two prints, hence the class. */
-const PART_ONE = /OFFENCES\s+UNDER\s+THE\s+(INDIAN\s+PENAL\s+CODE|BHARATIYA\s+NYAYA\s+SANHITA)/i;
-const PART_TWO = /CLASSIFICATION\s+OF\s+OFFENCES\s+AGAINST\s+OTHER\s+LAWS/i;
+/**
+ * Matched against the page with ALL whitespace removed, because these headings
+ * are drop-capped: the CrPC sets Part II's as "II.—C" + "LASSIFICATION", so a
+ * pattern with \s+ between the words never fires. Missing the terminator does
+ * not merely lose Part II — it runs the table on through the State amendments
+ * to the First Schedule and the whole of the Second Schedule of forms, 39
+ * pages of prose read as a six-column table.
+ */
+const PART_ONE = /OFFENCESUNDERTHE(INDIANPENALCODE|BHARATIYANYAYASANHITA)/i;
+const PART_TWO = /CLASSIFICATIONOFOFFENCESAGAINSTOTHERLAWS/i;
+const squashed = (pageXml: string): string => pageXml.replace(/<[^>]+>/g, " ").replace(/\s+/g, "");
 /** The column-number row, reprinted at the top of every page of the table. It
  * is also the only reliable proof that a page IS the table: both prints name
  * Part I in their Arrangement of Sections hundreds of pages earlier, and
@@ -184,6 +193,20 @@ function stampTokens(pages: string[]): Set<string> {
 const SECTION_NUMBER = /^(\d{1,3}[A-Z]{0,2})(?:\(([0-9a-z]+)\))?\.?$/;
 const DITTO = /^(ditto|do)\.?$/i;
 /**
+ * The print's amendment apparatus around a section number.
+ *
+ * A section inserted or substituted by a later Act is set with a superscript
+ * marker and a bracket — "1[354", "3[376AB" — and the superscript is below the
+ * height filter, so column 1 arrives as "[354". Left in place it matches no
+ * section pattern, and the row is dropped: that is how IPC 354 (assault on a
+ * woman), 376 (rape) and 506 (criminal intimidation) were all missing while
+ * their lettered neighbours 354A and 376A came through.
+ */
+// Repeated, because the bracket can arrive in pieces: IPC 376 is set as
+// "1[376" and reaches column 1 as two tokens, "[" and "[376".
+const SECTION_LEADING_APPARATUS = /^(?:\d*\s*[[*]+\s*)+/;
+const SECTION_TRAILING_APPARATUS = /[\s*\]]+$/;
+/**
  * The values these three columns are allowed to take.
  *
  * One section often carries SEVERAL printed rows — a graver form of the same
@@ -212,6 +235,14 @@ const VALUE_PATTERNS: RegExp[] = [
   /^cognizable\.?(\s*\([^)]*\)\.?)?/i,
   /^non-\s*bailable\.?(\s*\([^)]*\)\.?)?/i,
   /^bailable\.?(\s*\([^)]*\)\.?)?/i,
+  // "Ditto" is a VALUE, not a special case of an empty cell. Treating it as
+  // one — resolving only cells that are exactly "Ditto" — lost every row where
+  // anything else shared the cell, and in the CrPC that is most of them: it
+  // sets 1,042 Dittos against 181 spelled-out values, and rows like IPC 158
+  // ("Being hired to take part in an unlawful assembly") are Ditto in all
+  // three columns at once.
+  /^ditto\.?/i,
+  /^do\.?(?=\s|$)/i,
   /^court of session\.?/i,
   /^magistrate of the first class\.?/i,
   /^any magistrate\.?/i,
@@ -301,80 +332,64 @@ function toLines(words: Word[]): Word[][] {
 }
 
 /**
- * Cell-start positions and their weights for one set of lines.
+ * Where one column ends and the next begins, for one set of lines.
  *
- * Every word that opens a line, or follows a gap wide enough to be a cell
- * boundary, votes for a position; the votes cluster on the column edges.
+ * The header's "1 2 3 4 5 6" gives six CENTRES. They cannot be used as
+ * boundaries — midway between two centres often falls inside a column, because
+ * a wide column's text runs far past its own centre — but they do bracket
+ * each gutter: whatever separates column i from column i+1 lies somewhere
+ * between their centres. Within that bracket the least-covered x IS the
+ * boundary.
+ *
+ * This is what carries BOTH prints, and they are laid out differently enough
+ * that nothing simpler does. The BNSS left-aligns its cells, so its columns
+ * announce themselves by where cells start. The CrPC CENTRES them — its
+ * section numbers sit between x=54 and x=72 around a centre of 66, and its
+ * repeated cells are a centred "Ditto", 1,042 of them against 181 spelled-out
+ * values — so it has no left edges to find, and a parser built on cell-starts
+ * reads its classifications one column out. Occupancy has no such preference:
+ * it only asks where the page is empty.
  */
-function cellStartClusters(lines: Word[][]): { left: number; weight: number }[] {
-  const votes = new Map<number, number>();
+function columnBoundaries(lines: Word[][]): number[] | null {
+  const header = lines.find((line) => {
+    const tokens = line.map((w) => w.text.trim()).filter(Boolean);
+    return tokens.length === COLUMNS && tokens.every((t, i) => t === String(i + 1));
+  });
+  if (!header) return null;
+  const centres = header.map((w) => (w.xMin + w.xMax) / 2);
+
+  const occupancy = new Map<number, number>();
   for (const line of lines) {
-    let previousEnd: number | null = null;
     for (const w of line) {
-      if (previousEnd === null || w.xMin - previousEnd > CELL_GAP) {
-        const key = Math.round(w.xMin);
-        votes.set(key, (votes.get(key) ?? 0) + 1);
+      for (let x = Math.round(w.xMin); x <= Math.round(w.xMax); x++) {
+        occupancy.set(x, (occupancy.get(x) ?? 0) + 1);
       }
-      previousEnd = w.xMax;
     }
   }
-  const positions = [...votes.entries()].sort((a, b) => a[0] - b[0]);
-  const clusters: { left: number; weight: number }[] = [];
-  for (const [x, n] of positions) {
-    const last = clusters[clusters.length - 1];
-    // A cluster is named by its LEFTMOST position: that is the column's true
-    // edge, while heavier positions inside it are ordinary text.
-    if (last && x - last.left <= COLUMN_CLUSTER) last.weight += n;
-    else clusters.push({ left: x, weight: n });
-  }
-  return clusters;
-}
 
-/**
- * The six columns of the table as a whole.
- *
- * Taken over every page at once, because no single page is reliable: one page
- * may set a column that few of its cells wrap in, leaving a real edge with a
- * single vote that a stray cell-start elsewhere outranks. Across the schedule
- * the six are unmistakable (BNSS: 72, 107, 225, 324, 387, 454, carrying 430 to
- * 1,631 votes each) and every per-page variant sits within a few points of one.
- */
-function globalColumns(allLines: Word[][]): number[] {
-  const chosen: number[] = [];
-  for (const c of cellStartClusters(allLines).sort((a, b) => b.weight - a.weight)) {
-    if (chosen.length === COLUMNS) break;
-    if (chosen.some((x) => Math.abs(x - c.left) < MIN_COLUMN_SEPARATION)) continue;
-    chosen.push(c.left);
-  }
-  return chosen.sort((a, b) => a - b);
-}
-
-/**
- * This page's six edges: the table's columns, moved to where this page put them.
- *
- * The widths are not constant through the schedule — the BNSS sets column 4 at
- * x=294 on its first page and x=333 four pages later — so each page's own
- * cell-starts decide, but only ever by choosing WITHIN a column the whole table
- * agrees exists. That is what stops a single stray vote from becoming a seventh
- * column and shifting every classification on the page one place left, which is
- * how sections 66 to 71 first came out with punishment text under "cognizable".
- */
-function pageColumns(lines: Word[][], columns: number[]): number[] {
-  const best = columns.map(() => ({ left: 0, weight: -1 }));
-  for (const c of cellStartClusters(lines)) {
-    let nearest = 0;
-    for (let i = 1; i < columns.length; i++) {
-      if (Math.abs(c.left - columns[i]!) < Math.abs(c.left - columns[nearest]!)) nearest = i;
+  const boundaries: number[] = [];
+  for (let i = 0; i < COLUMNS - 1; i++) {
+    const from = Math.round(centres[i]!) + 1;
+    const to = Math.round(centres[i + 1]!) - 1;
+    if (to <= from) return null;
+    let at = from;
+    let least = Number.POSITIVE_INFINITY;
+    for (let x = from; x <= to; x++) {
+      const here = occupancy.get(x) ?? 0;
+      if (here < least) {
+        least = here;
+        at = x;
+      }
     }
-    if (c.weight > best[nearest]!.weight) best[nearest] = { left: c.left, weight: c.weight };
+    boundaries.push(at);
   }
-  // A column this page gave no evidence for keeps the table's own position.
-  return best.map((b, i) => (b.weight > 0 ? b.left : columns[i]!));
+  return boundaries;
 }
 
-function columnOf(x: number, edges: number[]): number {
+/** Which column a word sits in, given the five boundaries between six columns. */
+function columnOf(x: number, boundaries: number[]): number {
   let index = 0;
-  for (let i = 0; i < edges.length; i++) if (x + COLUMN_SLACK >= edges[i]!) index = i;
+  while (index < boundaries.length && x >= boundaries[index]!) index++;
   return index;
 }
 
@@ -387,7 +402,7 @@ export function parseOffenceSchedule(xhtml: string): OffenceScheduleResult {
   let firstPage = -1;
   let lastPage = pages.length;
   for (let i = 0; i < pages.length; i++) {
-    const flat = pages[i]!.replace(/<[^>]+>/g, " ");
+    const flat = squashed(pages[i]!);
     if (firstPage < 0 && PART_ONE.test(flat) && hasColumnNumberRow(toLines(pageWords(pages[i]!)))) {
       firstPage = i;
     }
@@ -404,26 +419,72 @@ export function parseOffenceSchedule(xhtml: string): OffenceScheduleResult {
   // — page 1 of the BNSS table carries five paragraphs of notes set across the
   // full table width, which otherwise arrive as cell text in columns 4 to 6.
   const stamps = stampTokens(pages.slice(firstPage, lastPage));
-  const bodies = pages.slice(firstPage, lastPage).map((page) => {
-    const all = toLines(pageWords(page, stamps));
-    const header = columnNumberRowIndex(all);
-    return header >= 0 ? all.slice(header + 1) : all;
+  // Boundaries are found PER PAGE. The widths are not constant through the
+  // schedule — the BNSS sets column 4 at x=294 on its first page and x=333 four
+  // pages later — and each page carries its own header row to bracket them
+  // with. A page without one (a continuation) inherits the last that had one.
+  // Part II can begin PART-WAY DOWN a page that still carries the last rows of
+  // Part I — the CrPC prints IPC 503 to 511 above its "II.—CLASSIFICATION OF
+  // OFFENCES AGAINST OTHER LAWS" heading, so excluding that page whole lost
+  // nine sections including 506, criminal intimidation. The page is read, and
+  // cut at the heading's own line.
+  const wholePage = pages.slice(firstPage, lastPage + 1).map((page, index) => {
+    const lines = toLines(pageWords(page, stamps));
+    if (index < lastPage - firstPage) return lines;
+    const heading = lines.findIndex((line) =>
+      PART_TWO.test(line.map((w) => w.text).join("").replace(/\s+/g, "")),
+    );
+    return heading >= 0 ? lines.slice(0, heading) : lines;
   });
-  const columns = globalColumns(bodies.flat());
-  if (columns.length < COLUMNS) {
-    return { rows: [], diagnostics: [`found ${columns.length} columns, need ${COLUMNS}`] };
+  const region: { lines: Word[][]; edges: number[] }[] = [];
+  let lastBoundaries: number[] | null = null;
+  let inherited = 0;
+  for (const all of wholePage) {
+    const found = columnBoundaries(all);
+    if (found) lastBoundaries = found;
+    else inherited++;
+    if (!lastBoundaries) continue; // nothing to measure against yet
+    const header = columnNumberRowIndex(all);
+    region.push({ lines: header >= 0 ? all.slice(header + 1) : all, edges: lastBoundaries });
   }
-  const region = bodies.map((lines) => ({ lines, edges: pageColumns(lines, columns) }));
+  if (region.length === 0) {
+    return { rows: [], diagnostics: ["no page in the schedule carried a column-number row"] };
+  }
   diagnostics.push(
-    `pages ${firstPage + 1}–${lastPage}; table columns ${columns.join(", ")}`,
+    `pages ${firstPage + 1}–${lastPage}; ${region.length} read` +
+      (inherited > 0 ? `, ${inherited} inheriting the previous page's columns` : "") +
+      `; last boundaries ${lastBoundaries!.join(", ")}`,
   );
 
+  interface Block {
+    section: string;
+    subsection?: string;
+    /** The row's lines, each already split into six cells. Kept as lines rather
+     * than concatenated so that the last one can be handed back — see the
+     * bare-number case below. */
+    lines: string[][];
+  }
   const blocks: { section: string; subsection?: string; cells: string[] }[] = [];
-  let current: { section: string; subsection?: string; cells: string[] } | null = null;
+  let current: Block | null = null;
+  /**
+   * Section numbers ascend through the schedule, so a number that goes
+   * backwards is not a row. Footnotes are what this keeps out: every page ends
+   * with "1. Subs. by Act …" set at the left margin, and once amendment
+   * brackets are stripped from column 1 that marker reads as section 1 — the
+   * same guard gazette-inline relies on, for the same reason.
+   */
+  let highestSection = 0;
+  const baseOf = (n: string): number => Number.parseInt(n, 10);
 
   const commit = () => {
     if (!current) return;
-    blocks.push(current);
+    const cells = Array.from({ length: COLUMNS }, (_, c) =>
+      current!.lines
+        .map((line) => line[c]!)
+        .filter(Boolean)
+        .join(" "),
+    );
+    blocks.push({ section: current.section, subsection: current.subsection, cells });
     current = null;
   };
 
@@ -440,41 +501,62 @@ export function parseOffenceSchedule(xhtml: string): OffenceScheduleResult {
       // A chapter banner inside the schedule spans the table and opens no row.
       if (/^CHAPTER\b/i.test(flat) && !SECTION_NUMBER.test(cells[0]!.trim())) continue;
 
-      const head = cells[0]!.trim();
+      const head = cells[0]!
+        .trim()
+        .replace(SECTION_LEADING_APPARATUS, "")
+        .replace(SECTION_TRAILING_APPARATUS, "");
       const sectionMatch = SECTION_NUMBER.exec(head);
-      if (sectionMatch) {
+      if (sectionMatch && baseOf(sectionMatch[1]!) >= highestSection) {
+        highestSection = baseOf(sectionMatch[1]!);
+        // A number ALONE on its line belongs to a row whose text is around it:
+        // the print centres it against a multi-line cell, so it lands between
+        // that row's first and second lines and the first has already been
+        // taken as a continuation of the row above. IPC 354, 363, 376A and 507
+        // are set this way, and all four arrived with no classification at all.
+        const numberOnly = cells.slice(1).every((c) => !c.trim());
+        const seed: string[][] = [cells];
+        if (numberOnly && current && current.lines.length > 1) {
+          const previous = current.lines[current.lines.length - 1]!;
+          const opensARow = previous[1] && (previous[3] || previous[4] || previous[5]);
+          if (opensARow) {
+            current.lines.pop();
+            seed.push(previous);
+          }
+        }
         commit();
-        current = {
-          section: sectionMatch[1]!,
-          subsection: sectionMatch[2],
-          cells: [...cells],
-        };
+        current = { section: sectionMatch[1]!, subsection: sectionMatch[2], lines: seed };
         continue;
       }
       if (!current) continue;
-      // A continuation line: append only where this row already reaches.
-      for (let c = 1; c < COLUMNS; c++) {
-        if (!cells[c]) continue;
-        current.cells[c] = current.cells[c] ? `${current.cells[c]} ${cells[c]}` : cells[c]!;
-      }
+      current.lines.push(cells);
     }
   }
   commit();
 
-  // Ditto means the row above — resolve before anything reads these.
-  const carried: Record<number, string> = {};
-  for (const block of blocks) {
+  // Ditto means "as the row above", so it is resolved against the last real
+  // value seen in that column — which is what the word means, and what a row
+  // lifted onto its own section page needs in order to say anything at all.
+  const carried: Record<number, string[]> = { 3: [], 4: [], 5: [] };
+  const resolved = blocks.map((block) => {
+    const out: Record<number, string[]> = {};
     for (const column of [3, 4, 5]) {
-      const value = block.cells[column]!.trim();
-      if (!value || DITTO.test(value.replace(/[.\s]+$/, ""))) block.cells[column] = carried[column] ?? "";
-      else carried[column] = value;
+      const values = valuesIn(block.cells[column]!);
+      const isDitto = (v: string) => /^(ditto|do)\.?$/i.test(v.trim());
+      if (values.length > 0 && values.every(isDitto)) {
+        out[column] = carried[column] ?? [];
+      } else {
+        const real = values.filter((v) => !isDitto(v));
+        out[column] = real;
+        if (real.length > 0) carried[column] = real;
+      }
     }
-  }
+    return { block, cells: out };
+  });
 
-  const rows: OffenceClassification[] = blocks.map((block) => {
-    const cognizable = valuesIn(block.cells[3]!);
-    const bailable = valuesIn(block.cells[4]!);
-    const court = valuesIn(block.cells[5]!);
+  const rows: OffenceClassification[] = resolved.map(({ block, cells }) => {
+    const cognizable = cells[3]!;
+    const bailable = cells[4]!;
+    const court = cells[5]!;
     const hasTiers = cognizable.length > 1 || bailable.length > 1 || court.length > 1;
     const only = (values: string[], negative: RegExp, positive: RegExp): boolean | null => {
       if (values.length !== 1) return null;

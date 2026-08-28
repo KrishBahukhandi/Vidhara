@@ -225,10 +225,18 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
       `cd scripts/ingest && pnpm exec tsx src/cli.ts classify-offences .sources/bnss.xhtml --schedule bnss --subject bns --publish --status published`
       Nothing renders until the table exists; the query fails soft, so section pages are unaffected
       meanwhile.
-- [ ] **The CrPC's classification schedule is a SEPARATE problem** — it sets repeated cells as a
-      centred "Ditto" (1,042 of them against 181 spelled-out values; the BNSS uses none), so the
-      cell-start signal that carries the BNSS is largely absent. Needs a Ditto-aware anchor, not a
-      wider tolerance. Until it lands, IPC section pages show no classification while BNS ones do.
+- [~] **CrPC classification parsed too (D-080) — 387 rows, 345 asserted, 2 empty.** Its columns
+      are CENTRED where the BNSS's are left-aligned, so boundaries now come from occupancy between
+      the header's centres rather than from where cells start; the same code reads both prints and
+      BNSS is unchanged to the row. Also fixed: a drop-capped Part II heading that let the table
+      run 39 pages into the Second Schedule, Part I's last rows sharing a page with that heading
+      (IPC 503–511), amendment brackets on section numbers (IPC 354/376/506), and numbers printed
+      on their own baseline (IPC 354/363/376A/507).
+      **Blocked on the same hand-run step as the BNSS** — migration 0021, then:
+      `pnpm exec tsx src/cli.ts classify-offences .sources/crpc.xhtml --schedule crpc --subject ipc --publish --status published`
+      Verification is weaker here than for the BNSS: most CrPC values come from resolving "Ditto",
+      so they depend on the row sequence being complete. Column assignment agrees 101/110 on rows
+      the print spells out, and no printed row is missing from the parse.
 
 ## 6. Product gaps named in their own entries
 
