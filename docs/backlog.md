@@ -1,6 +1,6 @@
 # Vidhara — Backlog
 
-> **Status**: Living document — the single list of what is not done. · **Last updated**: 2026-08-17 (D-068; founder-account run: key rotated, DMARC, Sentry, UptimeRobot, Search Console)
+> **Status**: Living document — the single list of what is not done. · **Last updated**: 2026-08-25 (D-078; web perf + the heading repairs — corpus at 0 defective divisions of 478)
 > Compiled from decision-log D-001…D-070, launch-checklist, roadmap and a live check of the
 > deployed site, DNS and Edge Functions on 2026-08-16. Where the docs and reality disagreed,
 > reality won and the discrepancy is noted.
@@ -18,6 +18,8 @@
 | `https://vidhara-web-lyart.vercel.app` | still 200 — kept alive so shared links do not rot |
 | `/api/v1/health` | `{"ok":true,…,"db":"up"}` — now a real readiness check (D-066 session) |
 | Corpus | **36 acts / 5,594 sections**, content-qa **0 SEV1**, SEV2 **14** (D-067) |
+| Division headings | **478 divisions, 0 defective** (D-078) — verified on lone letters, single-letter titles, missing titles, keyword-in-title and run-together words |
+| `/api/v1/revalidate` | **503** — `REVALIDATE_SECRET` unset in Vercel; see §6 for the two-minute fix |
 | `hearing-reminders?action=status` | `{"configured":false}` — Edge Function secrets still unset |
 | Git tags | `v0.1.0`, `v0.2.0` — no `v0.5.0` |
 | DNS: Resend DKIM / SPF / MX | all three resolve ✓ (domain verified) |
@@ -212,8 +214,27 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
 
 ## 6. Product gaps named in their own entries
 
-- [x] **On-demand revalidation** — `POST /api/v1/revalidate`, secret-gated, bounded, inert
-      without `REVALIDATE_SECRET`. **Set that secret in Vercel** to switch it on.
+- [~] **On-demand revalidation** — `POST /api/v1/revalidate` is built, bounded and secret-gated,
+      and it is **still returning 503 in production** because `REVALIDATE_SECRET` was never set.
+      This is the last founder-only item on the content path, and it is not cosmetic: every
+      content repair currently waits behind ISR's hourly timer, which cost six separate
+      cache-waits during the D-074…D-078 heading work alone. For a corpus where a wrong section
+      is a Sev-0 (D-011), an hour of knowingly serving wrong text is the wrong default.
+
+      **To switch it on** (≈2 minutes, and nothing in the repo needs to change):
+      1. Generate a secret locally — `openssl rand -hex 32`. Do not paste it into a chat, a
+         commit, or an issue; it is a cache-eviction primitive.
+      2. Vercel → the Vidhara project → Settings → Environment Variables → Add.
+         Name **`REVALIDATE_SECRET`**, value from step 1, scope **Production** (Preview too if
+         you want to test there). **No `NEXT_PUBLIC_` prefix** — that prefix is what would
+         compile it into the client bundle and hand it to every visitor.
+      3. Redeploy, and **untick "Use existing Build Cache"** — env vars are read at build time,
+         and D-068 lost a Sentry rollout to exactly this.
+      4. Verify: a POST with a wrong secret must return **401**, and with no secret **503**.
+         Once it returns 401 rather than 503, the route is live.
+      After that a publish can invalidate the pages it touched instead of waiting an hour:
+      `POST /api/v1/revalidate` with header `x-revalidate-secret` and body
+      `{"paths":["/acts/ipc"]}` (≤100 paths per call).
 - [ ] Diary **sync** — genuinely needs accounts; the JSON export is the manual bridge (D-044)
 - [ ] s.12(3)'s separate judgment-copy exclusion is folded into one interval; an advocate who
       obtained copies separately must add the difference by hand (D-046)
