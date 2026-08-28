@@ -388,6 +388,41 @@ Revisit: two spacing defects remain and both are source-level, not parser-level 
 `DECENCYAND`, which pdftotext merges in both printings, and ITA Ch. V's `ANS`/`AND` disagreement
 between the same PDF's two printings.
 
+**D-078 · 2026-08-25 · The last two headings, decided rather than derived — and a measurement that showed the IPC's fused words are the Gazette's, not pdftotext's.**
+Context: the two defects D-074/D-077 left open, both of which the automated rules refuse by design.
+Founder asked for them completed, so they are decided here, in writing, with the evidence.
+**The measurement first, because it changed what the IPC case even is.** I had recorded
+`DECENCYAND` as an extraction defect — "the space is absent from the text layer". That was only
+half right, and the half that matters is the other one. Fitting per-glyph advance widths by least
+squares over the act's 105 distinct small-cap tokens predicts `ECENCYAND`'s box to within 0.6pt of
+observed, against controls (ORALS, UBLIC, EALTH, ONVENIENCE…) that fit to ±0.7 and a real
+inter-word space on that line measuring **2.75pt**. There is no space in the box. The same fit run
+over `GAINSTTHE`, `ONTEMPTSOF`, `OINAND`, `EIGHTSAND`, `ELATINGTO` and the rest gives the same
+answer: **the Gazette's body chapter headings genuinely run those words together**, and what D-074
+did was not un-merge an extraction artefact but prefer the contents page, which sets them properly.
+Worth having straight, because it means these are defects of the print and every future one will
+need a second printing or a decision — never a better parser.
+Decision: two reviewed corrections, applied by hand in
+`scripts/ingest/src/repairs/repair-heading-typos.mjs`, each carrying its expected before-value so
+the script refuses rather than overwrites, and each cited in its bundle's provenance.
+ · **ITA Ch. V** takes the Arrangement of Sections reading (p.1, "RECORDS AND SECURE") over the
+   body heading (p.12, "RECORDS ANS SECURE"). Both are this PDF, they disagree, ANS is not a word.
+ · **IPC Ch. XIV** gains a space in "DECENCY AND". Both printings fuse it, so there is no second
+   witness; the evidence is the line itself — a comma-list whose every other member is a standalone
+   noun (HEALTH, SAFETY, CONVENIENCE, … MORALS) — plus the eleven headings in the same act already
+   separated from the parallel copy. Leaving one of twelve fused would have been an inconsistency
+   of ours, not the print's.
+Neither was fixed by loosening D-074's cross-printing rule, which keys on letters and therefore
+cannot change a word. That property is worth more than the two lines it refused, so the judgement
+sits in a reviewed patch where it can be read and reversed, not in an automated rule where it would
+silently generalise.
+**The corpus is at 0 defective divisions of 478**, verified on all five signatures — lone letters,
+single-letter titles, missing titles, keyword-in-title, and run-together words — with hyphenated
+compounds (CURRENCY-NOTES, AUDITOR-GENERAL, CO-OPERATIVE) and particles (WITHIN, ANOTHER) excluded,
+which is what the first scan of this kind got wrong.
+Revisit: nothing outstanding on headings. The remaining item is not ours — `REVALIDATE_SECRET` is
+still unset in Vercel, so every content repair waits up to an hour behind ISR.
+
 ---
 
 *Template for future entries:*

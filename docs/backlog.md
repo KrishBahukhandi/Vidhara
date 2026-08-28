@@ -168,13 +168,13 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
       like ITA. Also fixed the stamp filter, which required a stamp to be TALLER than the body:
       true for ITA (9.94pt body) but not NDPS (12.22pt), so the stamp's smallest run sat under it
       and reached 38 bodies. The test is now "any size but the body's".
-- [ ] **ITA Chapter V — a founder's call, not a guess.** The same PDF prints "RECORDS **ANS**
-      SECURE" in the body heading (p.12) and "RECORDS **AND** SECURE" in the Arrangement of
-      Sections (p.1). D-074's cross-printing rule keys on letters alone and refuses — correctly,
-      since these are different words rather than different spacing. Pick one.
-- [ ] **IPC Ch. XIV reads `DECENCYAND`** — pdftotext emits `ECENCYAND` as one token in *both*
-      printings, so the space is absent from the text layer and needs a different extraction, not
-      a guess (D-011/ADR-6).
+- [x] **The last two headings decided (D-078) — corpus at 0 defective divisions of 478.** ITA
+      Ch. V takes the contents-page reading ("RECORDS AND SECURE"); IPC Ch. XIV gains its space in
+      "DECENCY AND". Both are reviewed corrections in
+      `scripts/ingest/src/repairs/repair-heading-typos.mjs`, cited in provenance, and neither
+      loosened the cross-printing rule. **Correction to D-074's framing:** measuring per-glyph
+      advance widths shows the IPC's fused headings are fused in the PRINT, not by pdftotext — so
+      that class of defect will always need a second printing or a decision, never a better parser.
 - [ ] **CPC's 38 missing illustration lines did NOT come back** — that act fails for a different
       reason D-067's fix does not reach. Measure it next; the source is on disk.
 - [ ] **ISA §281 still truncated** — needs D-062's `--rule-delimited` mode, not run in D-067.
