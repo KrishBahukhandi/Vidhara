@@ -17,6 +17,8 @@ import { readFileSync, writeFileSync } from "node:fs";
 import process from "node:process";
 
 import { emitSqlFromRaw } from "./emit-sql";
+import { publishClassifications } from "./publish-classifications";
+import { parseOffenceSchedule } from "./sources/offence-schedule";
 import { publishBundle, publishSchedule, type PublishOptions } from "./publish";
 import { scheduleBundleSchema } from "./schema";
 import { parseGazetteBBox } from "./sources/gazette-bbox";
@@ -33,6 +35,65 @@ function loadBundle(path: string): unknown {
     console.error(`Could not read bundle "${path}": ${(error as Error).message}`);
     process.exit(1);
   }
+}
+
+/**
+ * Read a First Schedule's classification of offences and, with --publish, store
+ * it. Prints the diagnostics and a sample first: this table is read as fact on
+ * a section page, so it should be looked at before it is published, and the
+ * parser reports what it could not recognise rather than guessing.
+ */
+async function classifyOffencesCommand(inputPath: string, flags: string[]): Promise<void> {
+  const at = (flag: string) => {
+    const i = flags.indexOf(flag);
+    return i >= 0 ? flags[i + 1] : undefined;
+  };
+  const scheduleSlug = at("--schedule");
+  const subjectSlug = at("--subject");
+  if (!scheduleSlug || !subjectSlug) {
+    console.error(
+      "Usage: ingest classify-offences <bbox.xhtml> --schedule <bnss> --subject <bns> " +
+        "[--publish] [--status published] [--provenance '…']",
+    );
+    process.exit(1);
+  }
+
+  const result = parseOffenceSchedule(readFileSync(inputPath, "utf8"));
+  for (const d of result.diagnostics) console.log(`  · ${d}`);
+  const asserted = result.rows.filter((r) => !r.hasTiers);
+  console.log(
+    `\n${result.rows.length} rows — ${asserted.length} state one classification, ` +
+      `${result.rows.length - asserted.length} carry more than one and are left unasserted.`,
+  );
+  for (const row of result.rows.slice(0, 5)) {
+    const label = row.subsection ? `${row.section}(${row.subsection})` : row.section;
+    console.log(`   ${label.padEnd(9)} ${row.cognizable.join(" / ")} | ${row.bailable.join(" / ")} | ${row.court.join(" / ")}`);
+  }
+  if (result.rows.length === 0) {
+    console.error("Nothing parsed — refusing to publish.");
+    process.exit(1);
+  }
+  if (!flags.includes("--publish")) {
+    console.log("\nDry run. Pass --publish to store this.");
+    return;
+  }
+
+  const statusFlag = at("--status") ?? "draft";
+  if (!["draft", "reviewed", "published"].includes(statusFlag)) {
+    console.error(`Invalid --status "${statusFlag}"`);
+    process.exit(1);
+  }
+  const outcome = await publishClassifications(result.rows, {
+    scheduleSlug,
+    subjectSlug,
+    reviewStatus: statusFlag as "draft" | "reviewed" | "published",
+    provenance: at("--provenance") ?? `${scheduleSlug.toUpperCase()} First Schedule, automated parse`,
+  });
+  console.log(
+    `Published: ${outcome.published} classification(s) of ${subjectSlug.toUpperCase()} ` +
+      `sections from the ${scheduleSlug.toUpperCase()} First Schedule` +
+      (outcome.removed > 0 ? `; ${outcome.removed} stale row(s) removed` : ""),
+  );
 }
 
 function printReport(errors: string[], warnings: string[]): void {
@@ -110,14 +171,19 @@ async function main(): Promise<void> {
   if (
     !command ||
     !bundlePath ||
-    !["validate", "publish", "parse-gazette", "parse-ncrb", "parse-schedule", "publish-schedule", "emit-sql"].includes(
+    !["validate", "publish", "parse-gazette", "parse-ncrb", "parse-schedule", "publish-schedule", "classify-offences", "emit-sql"].includes(
       command,
     )
   ) {
     console.error(
-      "Usage: ingest <parse-gazette|parse-schedule|validate|publish|publish-schedule|emit-sql> <file> [--meta m.json] [--out f] [--status s] [--publish-act]",
+      "Usage: ingest <parse-gazette|parse-schedule|classify-offences|validate|publish|publish-schedule|emit-sql> <file> [--meta m.json] [--out f] [--status s] [--publish-act]",
     );
     process.exit(1);
+  }
+
+  if (command === "classify-offences") {
+    await classifyOffencesCommand(bundlePath, flags);
+    return;
   }
 
   if (command === "parse-gazette") {

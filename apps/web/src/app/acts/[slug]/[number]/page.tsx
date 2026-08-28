@@ -8,6 +8,7 @@ import { FeedbackWidget } from "@/components/feedback-widget";
 import { MarkdownLite } from "@/components/markdown-lite";
 import { CounterpartText } from "@/components/counterpart-text";
 import { MappingPanel } from "@/components/mapping-panel";
+import { OffenceClassificationPanel } from "@/components/offence-classification";
 import { RecordRecent } from "@/components/record-recent";
 import { SectionNav } from "@/components/section-nav";
 import { SectionProvenance } from "@/components/section-provenance";
@@ -18,6 +19,7 @@ import {
   getAdjacentSections,
   getCounterpartTexts,
   getMappingsForSection,
+  getOffenceClassifications,
   getStateAmendmentsForSection,
   getSectionWithAct,
 } from "@/features/acts/queries";
@@ -72,10 +74,11 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
   const section = await getSectionWithAct(slug, decodeURIComponent(number));
   if (!section) notFound();
 
-  const [mappings, adjacent, stateAmendments] = await Promise.all([
+  const [mappings, adjacent, stateAmendments, classifications] = await Promise.all([
     getMappingsForSection(section.id),
     getAdjacentSections(section.act_id, section.sort_key),
     getStateAmendmentsForSection(section.id),
+    getOffenceClassifications(slug, section.number),
   ]);
 
   // The provision on the other side of each mapping, in full. The card alone
@@ -196,6 +199,8 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
           <MarkdownLite>{section.body_md}</MarkdownLite>
         </div>
       </article>
+
+      <OffenceClassificationPanel rows={classifications} />
 
       {mappings.length > 0 ? (
         <section className="mt-10 space-y-4" aria-labelledby="mapping-heading">

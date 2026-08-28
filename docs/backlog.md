@@ -212,6 +212,24 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
 - [ ] Breadth is the growth lever (D-049) — 36 acts against competitors' 880–1,500. Expansion
       should be **demand-driven off the report-a-miss rows**, not guessed.
 
+- [~] **Offence classification — cognizable / bailable / which court (D-079).** The one fact a
+      bare-act reader cannot get from the section's own text, and the question every visitor asks
+      next: every query this site ranks for is a bare section lookup. **BNSS parsed: 440 rows, 419
+      stating one classification, 21 held back as uncertain, 0 empty**, spot-checked against the
+      print. Parser, publisher, CLI (`ingest classify-offences`), query and section-page panel are
+      all written and typecheck clean.
+      **BLOCKED on one hand-run step:** `supabase/migrations/0021_offence_classifications.sql` is
+      written but NOT applied — the Supabase MCP has no DDL permission in this session and there is
+      no direct connection string. Paste it into the Supabase SQL editor (or `supabase db push`
+      once linked), then:
+      `cd scripts/ingest && pnpm exec tsx src/cli.ts classify-offences .sources/bnss.xhtml --schedule bnss --subject bns --publish --status published`
+      Nothing renders until the table exists; the query fails soft, so section pages are unaffected
+      meanwhile.
+- [ ] **The CrPC's classification schedule is a SEPARATE problem** — it sets repeated cells as a
+      centred "Ditto" (1,042 of them against 181 spelled-out values; the BNSS uses none), so the
+      cell-start signal that carries the BNSS is largely absent. Needs a Ditto-aware anchor, not a
+      wider tolerance. Until it lands, IPC section pages show no classification while BNS ones do.
+
 ## 6. Product gaps named in their own entries
 
 - [~] **On-demand revalidation** — `POST /api/v1/revalidate` is built, bounded and secret-gated,

@@ -74,6 +74,102 @@ export async function countSectionsByAct(actIds: string[]): Promise<Map<string, 
   return counts;
 }
 
+/** One row of a First Schedule's classification of offences. */
+export interface OffenceClassification {
+  sectionNumber: string;
+  subsection: string | null;
+  cognizable: string[];
+  bailable: string[];
+  court: string[];
+  isCognizable: boolean | null;
+  isBailable: boolean | null;
+  hasTiers: boolean;
+  scheduleActAbbreviation: string;
+}
+
+/**
+ * How a section's offence is classified — cognizable, bailable, and which court.
+ *
+ * Printed in the First Schedule of the PROCEDURAL code and about a section of
+ * the SUBSTANTIVE one, so a BNS section page is served by the BNSS's schedule.
+ * A section can return several rows: sub-sections that are classified
+ * differently ("64(1)" and "64(2)"), in the order the schedule prints them.
+ *
+ * Fail-soft on purpose. This is an enhancement to a page whose job is to show
+ * the statute, so a missing table or a bad query must leave the section
+ * readable rather than take it down — the same posture countSectionsByAct
+ * takes for the library's counts.
+ */
+interface ClassificationRow {
+  section_number: string;
+  subsection: string | null;
+  cognizable: string[] | null;
+  bailable: string[] | null;
+  court: string[] | null;
+  is_cognizable: boolean | null;
+  is_bailable: boolean | null;
+  has_tiers: boolean;
+  schedule_act_abbreviation: string;
+}
+
+/**
+ * The shape this one query needs, spelled out.
+ *
+ * `Tables<>` is generated from the LIVE schema, so a view introduced by a
+ * migration that has not been applied yet is unknown to it and the typed
+ * client rejects the name. Declaring the chain here keeps the call site fully
+ * checked rather than reaching for `any`; delete this and let the generated
+ * types take over once 0021 is applied and `generate_typescript_types` has
+ * been re-run.
+ */
+interface ClassificationQuery {
+  from(view: "v_offence_classifications"): {
+    select(columns: string): {
+      eq(
+        column: string,
+        value: string,
+      ): {
+        eq(
+          column: string,
+          value: string,
+        ): {
+          order(
+            column: string,
+            options: { ascending: boolean },
+          ): Promise<{ data: ClassificationRow[] | null; error: unknown }>;
+        };
+      };
+    };
+  };
+}
+
+export async function getOffenceClassifications(
+  actSlug: string,
+  sectionNumber: string,
+): Promise<OffenceClassification[]> {
+  if (!isContentConfigured) return [];
+  const { data, error } = await (getServerClient() as unknown as ClassificationQuery)
+    .from("v_offence_classifications")
+    .select(
+      "section_number, subsection, cognizable, bailable, court, is_cognizable, is_bailable, has_tiers, schedule_act_abbreviation, sort_order",
+    )
+    .eq("act_slug", actSlug)
+    .eq("section_number", sectionNumber)
+    .order("sort_order", { ascending: true });
+  if (error || !data) return [];
+  return data.map((row) => ({
+    sectionNumber: row.section_number,
+    subsection: row.subsection,
+    cognizable: row.cognizable ?? [],
+    bailable: row.bailable ?? [],
+    court: row.court ?? [],
+    isCognizable: row.is_cognizable,
+    isBailable: row.is_bailable,
+    hasTiers: row.has_tiers,
+    scheduleActAbbreviation: row.schedule_act_abbreviation,
+  }));
+}
+
 export async function getActBySlug(slug: string): Promise<Act | null> {
   if (!isContentConfigured) return null;
   const { data, error } = await getServerClient()

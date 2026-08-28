@@ -423,6 +423,55 @@ which is what the first scan of this kind got wrong.
 Revisit: nothing outstanding on headings. The remaining item is not ours — `REVALIDATE_SECRET` is
 still unset in Vercel, so every content repair waits up to an hour behind ISR.
 
+**D-079 · 2026-08-25 · The BNSS's classification of offences — cognizable, bailable, which court — parsed, and why the CrPC's is a different problem.**
+Context: the founder asked what the corpus most needs. It is not breadth: every query the site
+ranks for is a bare section lookup ("151 bns", "134 bnss"), a section page already answers those
+well, and with 2 profiles and 0 feedback rows there is no demand signal to expand against. What a
+section page cannot answer is the question a reader asks next — may the police arrest without a
+warrant, is bail a matter of right, which court tries this. That is in the First Schedule of the
+procedural code, and none of the corpus's 36 acts carried it.
+**Whose sections these are matters.** The CrPC's First Schedule classifies IPC sections and the
+BNSS's classifies BNS sections: a row is printed in the procedural code and is about the
+substantive one, so it attaches to a BNS or IPC section page and cites a different act as its
+source.
+**Only columns 1, 4, 5 and 6 are taken.** Columns 2 and 3 are the print's own precis of a section
+whose authoritative text this corpus already carries in full — the schedule itself calls them
+"merely as indication of the substance of the section" — and unlike the three classifications they
+could not be validated against anything.
+Three findings shaped the parser, each of which silently corrupts the table if missed:
+ · **Columns are found by where cells START, and per page.** The header's centred "1 2 3 4 5 6" sits
+   far from the text it labels, so a boundary derived from it lands *inside* column 3 and drags
+   punishment text into the cognizable column. And the widths are not constant: column 4 is at
+   x=294 on the first page and x=333 four pages later. The columns are therefore identified once
+   over the whole schedule (72, 107, 225, 324, 387, 454) and each page picks WITHIN them — without
+   that constraint a single stray cell-start at x=298 became a seventh column and shifted every
+   classification on its page one place left, which is how sections 66 to 71 came out with
+   punishment text under "cognizable".
+ · **The contents page lies**, exactly as it does for the Limitation Act (schedule-table.ts): both
+   acts name Part I in their Arrangement of Sections hundreds of pages early, and entering there
+   parses the whole Act as a six-column table. A page is the table only if it carries the
+   column-number row, and everything above that row on a page is heading or explanatory note.
+ · **Sub-sections are named in column 1.** "64(1)" is rape and "64(2)" is rape by a police officer.
+   A pattern accepting only a bare number dropped every such row — and with them section 64 itself,
+   punishment for rape, absent from the table entirely. Fixing that took the parse from 198 rows to
+   440.
+Decision: publish only what the schedule states. `is_cognizable`/`is_bailable` are set ONLY where
+the print gives one unconditional answer; a conditional row ("According as offence abetted is
+cognizable or non-cognizable") and a section whose rows disagree both yield null and are rendered
+as the schedule's own words rather than a verdict. A section label the print repeats — the BNSS
+sets "61(2)" over two rows with different classifications — disqualifies itself from being asserted
+rather than having one of the two picked.
+Result: **440 rows, 419 stating one classification, 21 held back, 0 empty.** Verified by spot-check
+against the print across the whole schedule: BNS 103 murder (Cognizable, Non-bailable, Court of
+Session), 318 cheating tiered correctly across its sub-sections, 351 criminal intimidation, 64 rape.
+**The CrPC is a different problem, not the same one twice.** It sets repeated cells as a centred
+"Ditto" — 1,042 of them against 181 spelled-out cognizable values, where the BNSS uses none at all
+— so the "cells start at their column's left edge" signal that carries the BNSS is largely absent
+and what remains sits mid-column. That needs a Ditto-aware anchor, not a wider tolerance, and is
+left for its own entry.
+Revisit: migration 0021 is written but NOT applied — the Supabase MCP has no DDL permission in this
+session and no direct connection string exists, so it needs a hand. Nothing renders until it does.
+
 ---
 
 *Template for future entries:*
