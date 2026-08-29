@@ -412,7 +412,8 @@ export function parseOffenceSchedule(xhtml: string): OffenceScheduleResult {
   const pages = xhtml.split(/<page /).slice(1);
 
   // Confine to Part I. Part II classifies by punishment range rather than by
-  // section, so it has nothing to attach to and is left for another day.
+  // section, so it keys to nothing this function can return — parseOffenceRules
+  // reads it separately.
   let firstPage = -1;
   let lastPage = pages.length;
   for (let i = 0; i < pages.length; i++) {
@@ -622,4 +623,265 @@ export function parseOffenceSchedule(xhtml: string): OffenceScheduleResult {
   diagnostics.push(`${rows.length} sections; ${tiered.length} carry more than one classification`);
 
   return { rows, diagnostics };
+}
+
+/* ------------------------------------------------------------------------ *
+ * Part II — classification of offences against OTHER laws.
+ * ------------------------------------------------------------------------ */
+
+/**
+ * One band of the residual rule.
+ *
+ * Part I answers "how is BNS 318 classified?" by naming the section. Part II
+ * answers the same question for the other thirty-four Acts in this corpus —
+ * NDPS, POCSO, the IT Act, the Prevention of Corruption Act — none of which
+ * carries a schedule of its own. It does it by PUNISHMENT rather than by
+ * section: three bands, from death down to fine only, and an offence falls in
+ * whichever band its punishment puts it.
+ *
+ * That is why this is stored as a rule and not applied as one. Deciding which
+ * band a given section falls into means reading its punishment clause and
+ * classifying it, and punishment clauses are not a closed vocabulary — they
+ * carry provisos, alternatives, enhanced terms for repeat offenders, and
+ * minimum terms that differ from maximum ones. A parser that guessed would be
+ * inventing law, which is exactly what D-011 forbids. The reader has the
+ * section's punishment in front of them; what they lack is the rule, so the
+ * rule is what this supplies.
+ */
+export interface OffenceRule {
+  /** Column 1 — the punishment band, as printed. The operative criterion. */
+  punishment: string;
+  /** Column 2 — "Cognizable" or "Non-cognizable", Ditto resolved. */
+  cognizable: string;
+  /** Column 3 — "Bailable" or "Non-bailable", Ditto resolved. */
+  bailable: string;
+  /** Column 4 — the court. */
+  court: string;
+}
+
+export interface OffenceRulesResult {
+  rules: OffenceRule[];
+  diagnostics: string[];
+}
+
+/** Part II's four columns: offence, cognizable, bailable, court. */
+const RULE_COLUMNS = 4;
+/**
+ * The words that head Part II's four columns.
+ *
+ * Part I is entered on its "1 2 3 4 5 6" row, which is both a bracket for the
+ * gutters and proof the page is the table. Part II has no such row in the CrPC
+ * — the BNSS prints "1 2 3 4", the CrPC prints nothing — so the column labels
+ * themselves have to serve. Only the FIRST word of each label is anchored on:
+ * the third column is headed "Bailable or non-bailable" across two lines, and
+ * its "or" and "non-" sit past x=372, so anchoring on the whole label would put
+ * a boundary inside the column it was meant to bound.
+ */
+const RULE_HEADINGS = [/^offence$/i, /^cognizable$/i, /^bailable$/i, /^by$/i];
+/** A row of Part II opens with this. Nothing else on the page does. */
+const RULE_ROW_START = /^if\s+punishable\b/i;
+/**
+ * How far below a row's last line a line may sit and still continue it.
+ *
+ * Part II ends and the page keeps going: the CrPC follows it with "1. Subs. by
+ * Act 13 of 2013 …" and a page number, the BNSS with the repository's stamp.
+ * Nothing distinguishes those as text once they are cut into columns — the
+ * footnote's marker reads as a column-1 cell and would be appended to the last
+ * band's punishment. What does distinguish them is the 94pt of white space
+ * above the footnote against a 9–13pt leading inside the table.
+ */
+const RULE_LINE_GAP = 20;
+
+/** Boundaries between Part II's four columns, bracketed by the label row. */
+function ruleColumnBoundaries(header: Word[], body: Word[][]): number[] | null {
+  const anchors: number[] = [];
+  for (const heading of RULE_HEADINGS) {
+    const word = header.find((w) => heading.test(w.text.trim()));
+    if (!word) return null;
+    anchors.push(word.xMin);
+  }
+  // Ascending and distinct, or the label row was not what it looked like.
+  for (let i = 1; i < anchors.length; i++) {
+    if (anchors[i]! <= anchors[i - 1]!) return null;
+  }
+
+  // Occupancy over the BODY only. The header wraps ("Bailable or non-" over
+  // "bailable"), and counting those lines pulls the profile's minimum away
+  // from the gutter the body actually leaves.
+  const occupancy = new Map<number, number>();
+  for (const line of body) {
+    for (const w of line) {
+      for (let x = Math.round(w.xMin); x <= Math.round(w.xMax); x++) {
+        occupancy.set(x, (occupancy.get(x) ?? 0) + 1);
+      }
+    }
+  }
+
+  const boundaries: number[] = [];
+  for (let i = 0; i < RULE_COLUMNS - 1; i++) {
+    const from = Math.round(anchors[i]!) + 1;
+    const to = Math.round(anchors[i + 1]!);
+    if (to <= from) return null;
+
+    // The WIDEST run at the minimum, not the first one. Part I has hundreds of
+    // rows per page, so its gutter is the only place the profile ever reaches
+    // zero. Part II has three, and three short lines leave accidental zeroes
+    // wherever their ragged right edges happen not to line up: between the
+    // CrPC's anchors the profile is empty at x=308, in the white space after
+    // "more than" on two of the three bands, as well as across the real gutter
+    // at 323–339. Taking the first put the boundary at 308 and cut "7 years"
+    // off the end of two bands, leaving "imprisonment for more than." A gutter
+    // is not merely empty, it is the WIDEST empty, and its middle is the edge.
+    let least = Number.POSITIVE_INFINITY;
+    for (let x = from; x <= to; x++) least = Math.min(least, occupancy.get(x) ?? 0);
+
+    let bestFrom = from;
+    let bestTo = from;
+    let runFrom = -1;
+    for (let x = from; x <= to + 1; x++) {
+      const atLeast = x <= to && (occupancy.get(x) ?? 0) === least;
+      if (atLeast && runFrom < 0) runFrom = x;
+      if (!atLeast && runFrom >= 0) {
+        if (x - 1 - runFrom >= bestTo - bestFrom) {
+          bestFrom = runFrom;
+          bestTo = x - 1;
+        }
+        runFrom = -1;
+      }
+    }
+    boundaries.push(Math.round((bestFrom + bestTo) / 2));
+  }
+  return boundaries;
+}
+
+/** The single value a Part II cell holds, or "" if it holds none. */
+function ruleValue(cell: string, carried: string): string {
+  const values = valuesIn(cell);
+  if (values.length === 0) return "";
+  const value = values[0]!;
+  return DITTO.test(value) ? carried : value;
+}
+
+export function parseOffenceRules(xhtml: string): OffenceRulesResult {
+  const diagnostics: string[] = [];
+  const pages = xhtml.split(/<page /).slice(1);
+
+  // The heading alone is not proof: both prints name Part II in their
+  // Arrangement of Sections hundreds of pages before they print it. The table
+  // itself is what is looked for — a page carrying the heading AND at least two
+  // of its bands.
+  let found: { lines: Word[][]; page: number } | null = null;
+  const stamps = stampTokens(pages);
+  for (let i = 0; i < pages.length; i++) {
+    if (!PART_TWO.test(squashed(pages[i]!))) continue;
+    const lines = toLines(pageWords(pages[i]!, stamps));
+    const heading = lines.findIndex((line) =>
+      PART_TWO.test(line.map((w) => w.text).join("").replace(/\s+/g, "")),
+    );
+    if (heading < 0) continue;
+    const below = lines.slice(heading + 1);
+    const bands = below.filter((line) =>
+      RULE_ROW_START.test(line.map((w) => w.text).join(" ").replace(/\s+/g, " ").trim()),
+    ).length;
+    if (bands < 2) continue;
+    found = { lines: below, page: i + 1 };
+    break;
+  }
+  if (!found) {
+    return { rules: [], diagnostics: ["no 'CLASSIFICATION OF OFFENCES AGAINST OTHER LAWS' table"] };
+  }
+
+  // Split the region at the first band. Above it is the label row and, in the
+  // BNSS, a "1 2 3 4" row; below it is the table proper.
+  const firstBand = found.lines.findIndex((line) =>
+    RULE_ROW_START.test(line.map((w) => w.text).join(" ").replace(/\s+/g, " ").trim()),
+  );
+  const headerLines = found.lines.slice(0, firstBand);
+  const header = headerLines.find((line) => RULE_HEADINGS.every((h) => line.some((w) => h.test(w.text.trim()))));
+  if (!header) {
+    return { rules: [], diagnostics: [`page ${found.page}: no Offence/Cognizable/Bailable/By label row`] };
+  }
+
+  // Cut the body where the leading breaks — see RULE_LINE_GAP.
+  const body: Word[][] = [];
+  let previous = Number.NEGATIVE_INFINITY;
+  for (const line of found.lines.slice(firstBand)) {
+    const baseline = line[0]!.baseline;
+    if (body.length > 0 && baseline - previous > RULE_LINE_GAP) break;
+    body.push(line);
+    previous = baseline;
+  }
+
+  const edges = ruleColumnBoundaries(header, body);
+  if (!edges) {
+    return { rules: [], diagnostics: [`page ${found.page}: could not bracket Part II's columns`] };
+  }
+  diagnostics.push(`page ${found.page}; ${body.length} lines; boundaries ${edges.join(", ")}`);
+
+  interface Band {
+    lines: string[][];
+  }
+  const bands: Band[] = [];
+  for (const line of body) {
+    const cells = Array.from({ length: RULE_COLUMNS }, () => "");
+    for (const w of line) {
+      const c = columnOf(w.xMin, edges);
+      cells[c] = cells[c] ? `${cells[c]} ${w.text}` : w.text;
+    }
+    const flat = cells.join(" ").replace(/\s+/g, " ").trim();
+    if (!flat) continue;
+    if (/^1\s+2\s+3\s+4$/.test(flat)) continue;
+    if (RULE_ROW_START.test(cells[0]!.trim())) bands.push({ lines: [cells] });
+    else if (bands.length > 0) bands[bands.length - 1]!.lines.push(cells);
+    else diagnostics.push(`ignored before the first band: ${flat}`);
+  }
+
+  const rules: OffenceRule[] = [];
+  const carried = ["", "", ""];
+  for (const band of bands) {
+    const joined = Array.from({ length: RULE_COLUMNS }, (_, c) =>
+      band.lines
+        .map((line) => line[c]!)
+        .filter(Boolean)
+        .join(" ")
+        .replace(/\s+/g, " ")
+        .trim(),
+    );
+    const punishment = joined[0]!
+      .replace(SECTION_LEADING_APPARATUS, "")
+      .replace(/[\s*\]]+$/, "")
+      .trim();
+    const values = [1, 2, 3].map((c, i) => {
+      const value = ruleValue(joined[c]!, carried[i]!);
+      if (value) carried[i] = value;
+      return value;
+    });
+    rules.push({
+      punishment: /[.;:,]$/.test(punishment) ? punishment : `${punishment}.`,
+      cognizable: values[0]!,
+      bailable: values[1]!,
+      court: values[2]!,
+    });
+  }
+
+  // Refuse rather than publish a half-read rule. Three bands, each with a
+  // punishment and all three classifications, drawn from the closed vocabulary
+  // — anything else means the columns slipped, and a slipped Part II would say
+  // that offences punishable by death are bailable.
+  const COGNIZABLE = /^(non-)?cognizable$/i;
+  const BAILABLE = /^(non-)?bailable$/i;
+  const COURT = /^(court of session|magistrate of the first class|any magistrate)$/i;
+  const complaints: string[] = [];
+  if (rules.length !== 3) complaints.push(`expected 3 bands, read ${rules.length}`);
+  rules.forEach((r, i) => {
+    if (!RULE_ROW_START.test(r.punishment)) complaints.push(`band ${i + 1}: punishment reads "${r.punishment}"`);
+    if (!COGNIZABLE.test(r.cognizable)) complaints.push(`band ${i + 1}: cognizable reads "${r.cognizable}"`);
+    if (!BAILABLE.test(r.bailable)) complaints.push(`band ${i + 1}: bailable reads "${r.bailable}"`);
+    if (!COURT.test(r.court)) complaints.push(`band ${i + 1}: court reads "${r.court}"`);
+  });
+  if (complaints.length > 0) {
+    return { rules: [], diagnostics: [...diagnostics, ...complaints, "refused: Part II did not validate"] };
+  }
+
+  return { rules, diagnostics };
 }

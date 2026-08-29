@@ -12,7 +12,7 @@
  */
 import { createClient } from "@supabase/supabase-js";
 
-import type { OffenceClassification } from "./sources/offence-schedule";
+import type { OffenceClassification, OffenceRule } from "./sources/offence-schedule";
 
 export interface PublishClassificationsOptions {
   /** Act whose First Schedule this is — BNSS, CrPC. */
@@ -72,6 +72,59 @@ export async function publishClassifications(
     .gt("sort_order", payload.length)
     .select("id");
   if (staleError) throw new Error(`removing stale classifications: ${staleError.message}`);
+
+  return { published: payload.length, removed: stale?.length ?? 0 };
+}
+
+/**
+ * Publish Part II's residual rule to offence_classification_rules.
+ *
+ * One schedule, three bands. Unlike Part I there is no subject act: the rule is
+ * about offences under every OTHER law, which is why it is stored against the
+ * schedule alone and read by every act page that has no schedule of its own.
+ */
+export async function publishClassificationRules(
+  rules: OffenceRule[],
+  options: { scheduleSlug: string; reviewStatus: "draft" | "reviewed" | "published"; provenance: string },
+): Promise<{ published: number; removed: number }> {
+  const url = process.env.SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !serviceKey) {
+    throw new Error("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set (scripts/ingest/.env)");
+  }
+  const db = createClient(url, serviceKey, { auth: { persistSession: false } });
+
+  const { data: act, error: actError } = await db
+    .from("acts")
+    .select("id")
+    .eq("slug", options.scheduleSlug)
+    .maybeSingle();
+  if (actError) throw new Error(`looking up act "${options.scheduleSlug}": ${actError.message}`);
+  if (!act) throw new Error(`act "${options.scheduleSlug}" is not in the corpus — publish it first`);
+
+  const payload = rules.map((rule, index) => ({
+    schedule_act_id: act.id,
+    punishment: rule.punishment,
+    cognizable: rule.cognizable,
+    bailable: rule.bailable,
+    court: rule.court,
+    sort_order: index + 1,
+    review_status: options.reviewStatus,
+    provenance: options.provenance,
+  }));
+
+  const { error } = await db
+    .from("offence_classification_rules")
+    .upsert(payload, { onConflict: "schedule_act_id,sort_order" });
+  if (error) throw new Error(`publishing classification rules: ${error.message}`);
+
+  const { data: stale, error: staleError } = await db
+    .from("offence_classification_rules")
+    .delete()
+    .eq("schedule_act_id", act.id)
+    .gt("sort_order", payload.length)
+    .select("id");
+  if (staleError) throw new Error(`removing stale classification rules: ${staleError.message}`);
 
   return { published: payload.length, removed: stale?.length ?? 0 };
 }

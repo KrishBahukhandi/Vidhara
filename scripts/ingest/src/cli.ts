@@ -17,8 +17,8 @@ import { readFileSync, writeFileSync } from "node:fs";
 import process from "node:process";
 
 import { emitSqlFromRaw } from "./emit-sql";
-import { publishClassifications } from "./publish-classifications";
-import { parseOffenceSchedule } from "./sources/offence-schedule";
+import { publishClassificationRules, publishClassifications } from "./publish-classifications";
+import { parseOffenceRules, parseOffenceSchedule } from "./sources/offence-schedule";
 import { publishBundle, publishSchedule, type PublishOptions } from "./publish";
 import { scheduleBundleSchema } from "./schema";
 import { parseGazetteBBox } from "./sources/gazette-bbox";
@@ -58,7 +58,8 @@ async function classifyOffencesCommand(inputPath: string, flags: string[]): Prom
     process.exit(1);
   }
 
-  const result = parseOffenceSchedule(readFileSync(inputPath, "utf8"));
+  const xhtml = readFileSync(inputPath, "utf8");
+  const result = parseOffenceSchedule(xhtml);
   for (const d of result.diagnostics) console.log(`  · ${d}`);
   const asserted = result.rows.filter((r) => !r.hasTiers);
   console.log(
@@ -69,6 +70,18 @@ async function classifyOffencesCommand(inputPath: string, flags: string[]): Prom
     const label = row.subsection ? `${row.section}(${row.subsection})` : row.section;
     console.log(`   ${label.padEnd(9)} ${row.cognizable.join(" / ")} | ${row.bailable.join(" / ")} | ${row.court.join(" / ")}`);
   }
+  // Part II — the residual rule for offences under OTHER laws. Parsed from the
+  // same file and published in the same run, because they are one schedule and
+  // a corpus carrying only half of it answers only the two Acts that have a
+  // Part I of their own.
+  const partTwo = parseOffenceRules(xhtml);
+  console.log("\nPart II — offences against other laws:");
+  for (const d of partTwo.diagnostics) console.log(`  · ${d}`);
+  for (const rule of partTwo.rules) {
+    console.log(`   ${rule.punishment}`);
+    console.log(`      ${rule.cognizable} | ${rule.bailable} | ${rule.court}`);
+  }
+
   if (result.rows.length === 0) {
     console.error("Nothing parsed — refusing to publish.");
     process.exit(1);
@@ -93,6 +106,25 @@ async function classifyOffencesCommand(inputPath: string, flags: string[]): Prom
     `Published: ${outcome.published} classification(s) of ${subjectSlug.toUpperCase()} ` +
       `sections from the ${scheduleSlug.toUpperCase()} First Schedule` +
       (outcome.removed > 0 ? `; ${outcome.removed} stale row(s) removed` : ""),
+  );
+
+  // Part II refuses rather than guesses (see parseOffenceRules), so an empty
+  // result is a diagnostic worth printing but not a reason to fail a run whose
+  // Part I is sound.
+  if (partTwo.rules.length === 0) {
+    console.warn("Part II did not parse — nothing published for offences against other laws.");
+    return;
+  }
+  const ruleOutcome = await publishClassificationRules(partTwo.rules, {
+    scheduleSlug,
+    reviewStatus: statusFlag as "draft" | "reviewed" | "published",
+    provenance:
+      at("--provenance") ?? `${scheduleSlug.toUpperCase()} First Schedule, automated parse`,
+  });
+  console.log(
+    `Published: ${ruleOutcome.published} band(s) of the ${scheduleSlug.toUpperCase()} ` +
+      `First Schedule's Part II` +
+      (ruleOutcome.removed > 0 ? `; ${ruleOutcome.removed} stale band(s) removed` : ""),
   );
 }
 

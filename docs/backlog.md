@@ -225,9 +225,20 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
       one lands a few points off the row's first line. Raising the line tolerance to 6pt (leading is
       9.24pt in the CrPC, 12.6pt in the BNSS) fixed both — and revealed that IPC 373 and 374 had
       been carrying each other's bail status, which no empty-row count would ever have shown.
-- [ ] **Part II of both schedules is not ingested** — the "offences against other laws" table keyed
-      by punishment range rather than by section. It has no section page to attach to, so it needs
-      a surface of its own before it is worth parsing.
+- [x] **Part II of both schedules is LIVE (D-084) — both schedules are now complete.** The
+      "offences against other laws" table, keyed by punishment band rather than by section. It is
+      the only classification the other 34 Acts here have: Part I covers the BNS and the IPC, Part
+      II covers NDPS, POCSO, the PC Act, and the NI Act whose s. 138 fills more cause lists than
+      anything else in the country. 6 bands live (3 BNSS, 3 CrPC) via migration 0022.
+      **Stored as a rule and applied by the reader, never by us.** Placing a section in a band
+      means reading its punishment clause and classifying it — NDPS 20 alone spans all three bands
+      — which is model inference dressed as data (ADR-6/D-011). The panel shows the rule beside
+      the punishment the reader can already see, collapsed by default, with a link to s. 5 of both
+      codes, which saves any special or local law providing to the contrary.
+      The two prints parse to identical bands despite different column geometry and the CrPC's use
+      of Ditto; the UI says so only because it checks it at render time.
+- [ ] Residual rule shows on BSA and IEA section pages, which create no offences to classify.
+      Harmless while collapsed; scope it if an "Act creates offences" fact ever comes from source.
 
 ## 6. Product gaps named in their own entries
 

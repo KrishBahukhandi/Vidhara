@@ -8,7 +8,7 @@ import { FeedbackWidget } from "@/components/feedback-widget";
 import { MarkdownLite } from "@/components/markdown-lite";
 import { CounterpartText } from "@/components/counterpart-text";
 import { MappingPanel } from "@/components/mapping-panel";
-import { OffenceClassificationPanel } from "@/components/offence-classification";
+import { OffenceClassificationPanel, OffenceRulePanel } from "@/components/offence-classification";
 import { RecordRecent } from "@/components/record-recent";
 import { SectionNav } from "@/components/section-nav";
 import { SectionProvenance } from "@/components/section-provenance";
@@ -16,12 +16,14 @@ import { StateAmendments } from "@/components/state-amendments";
 import { SectionShare } from "@/components/section-share";
 import { PageShell } from "@/components/site-chrome";
 import {
+  actHasOwnSchedule,
   getAdjacentSections,
   getCounterpartTexts,
   getMappingsForSection,
+  getOffenceClassificationRules,
   getOffenceClassifications,
-  getStateAmendmentsForSection,
   getSectionWithAct,
+  getStateAmendmentsForSection,
 } from "@/features/acts/queries";
 import { TrackEvent } from "@/lib/analytics";
 import { SITE_URL } from "@/lib/site";
@@ -74,12 +76,17 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
   const section = await getSectionWithAct(slug, decodeURIComponent(number));
   if (!section) notFound();
 
-  const [mappings, adjacent, stateAmendments, classifications] = await Promise.all([
+  const [mappings, adjacent, stateAmendments, classifications, hasOwnSchedule] = await Promise.all([
     getMappingsForSection(section.id),
     getAdjacentSections(section.act_id, section.sort_key),
     getStateAmendmentsForSection(section.id),
     getOffenceClassifications(slug, section.number),
+    actHasOwnSchedule(slug),
   ]);
+  // Part II — shown only where Part I does not reach, which is every Act but
+  // the BNS and the IPC. It answers by punishment rather than by section, so it
+  // is a rule the reader applies, not a verdict this page states.
+  const rules = await getOffenceClassificationRules(slug, hasOwnSchedule);
 
   // The provision on the other side of each mapping, in full. The card alone
   // says IPC §124 became BNS §151 without saying how the wording changed —
@@ -201,6 +208,10 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
       </article>
 
       <OffenceClassificationPanel rows={classifications} />
+
+      {rules ? (
+        <OffenceRulePanel rules={rules} actAbbreviation={section.acts.abbreviation} />
+      ) : null}
 
       {mappings.length > 0 ? (
         <section className="mt-10 space-y-4" aria-labelledby="mapping-heading">

@@ -612,6 +612,46 @@ Republished: 827 rows, 0 empty, verified as `anon`.
 Revisit: Part II of both schedules is still unparsed — it classifies by punishment range rather
 than by section, so it has no section page to attach to and needs a surface of its own first.
 
+**D-084 · 2026-08-29 · Part II is a rule, not a verdict — so it is published as a rule and applied by the reader.**
+Context: D-083 closed Part I at 827 rows and left Part II — "CLASSIFICATION OF OFFENCES AGAINST
+OTHER LAWS" — as the last piece of both schedules, noting it "has no section page to attach to".
+That framing was half right. It has no section to attach to because it keys to PUNISHMENT, not to a
+section: three bands, death down to fine only. But it is not therefore unattachable. It is the only
+classification the other thirty-four Acts in this corpus have — NDPS, POCSO, the PC Act, and the NI
+Act whose s. 138 fills more cause lists than anything else in the country. Part I covers exactly
+two Acts. Part II covers all the rest.
+**The temptation was to apply it.** Read a section's punishment, place it in a band, print
+"Cognizable · Non-bailable · Court of Session" on NDPS 20 the way Part I does on BNS 103. That is
+model inference dressed as data and ADR-6/D-011 forbids it — and NDPS 20 is the proof, not a
+hypothetical: one section, three punishment tiers, spanning all three bands. Punishment clauses
+carry provisos, alternatives, enhanced terms for repeat offenders, minimums that differ from
+maximums. And the rule is residual in the statute's own words: s. 5 of both codes saves any special
+or local law providing to the contrary, which several of the Acts it serves do.
+Decision: store the three bands as a rule against the schedule that prints them (0022,
+`offence_classification_rules`), and render the rule with the punishment the reader can already see
+on the same page. The panel says what the schedule says and stops; it does not place the section.
+It is collapsed by default, because it is the same three bands on every section of thirty-odd Acts
+and most sections are not offences at all. It carries a link to s. 5 as a rider, not a footnote.
+Scope is taken from the data — an Act with any Part I row is classified section by section and does
+not get the residual rule — rather than from a hardcoded ["bns", "ipc"] that would go stale
+silently the day a third schedule is ingested.
+Parsing notes: Part II has no "1 2 3 4" row in the CrPC, so the column labels bracket the gutters
+instead, anchored on the FIRST word of each label ("Bailable or non-bailable" spans two columns'
+worth of x if taken whole). And the gutter is the WIDEST run at the occupancy minimum, not the
+first: three short lines leave accidental zeroes wherever their ragged right edges fail to line up,
+and taking the first put the CrPC's boundary at x=308 — inside column 1 — cutting "7 years" off two
+of the three bands. The parser refuses rather than publishes a Part II that does not validate
+against the closed vocabulary; a slipped column here would say offences punishable by death are
+bailable.
+Result: **both schedules are now complete.** 6 bands live (3 BNSS, 3 CrPC), and the two prints —
+independently typeset, different column geometry, the CrPC using Ditto where the BNSS spells values
+out — parse to byte-identical bands. That agreement is the strongest evidence the parse is right,
+and the UI states it only because it is CHECKED at render time rather than asserted.
+Revisit: the residual rule now shows on BSA and IEA section pages, which create no offences to
+classify. Harmless while collapsed, but if an "Act creates offences" fact ever becomes available
+from source, scope it with that.
+
+
 ---
 
 *Template for future entries:*

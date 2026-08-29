@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { parseOffenceSchedule } from "./offence-schedule";
+import { parseOffenceRules, parseOffenceSchedule } from "./offence-schedule";
 
 /** One bbox word. */
 const w = (x: number, y: number, text: string, width = text.length * 5, h = 10) =>
@@ -134,5 +134,98 @@ describe("offence schedule (D-079/D-080)", () => {
     );
     const { rows } = parseOffenceSchedule(xml);
     expect(rows).toHaveLength(0);
+  });
+});
+
+describe("offence schedule Part II — offences against other laws (D-084)", () => {
+  /** Part II's four columns at their canonical x positions. */
+  function band(y: number, cells: [string, string, string, string]) {
+    const at = [55, 340, 400, 470];
+    return cells
+      .map((c, i) => (c ? c.split(" ").map((t, j) => w(at[i]! + j * 8, y, t, 6)).join("\n") : ""))
+      .filter(Boolean)
+      .join("\n");
+  }
+  /** The label row. Only the first word of each label is anchored on. */
+  const labels = (y: number) =>
+    [
+      w(180, y, "Offence", 40),
+      w(340, y, "Cognizable", 50),
+      w(400, y, "Bailable", 40),
+      w(470, y, "By", 12),
+      w(486, y, "what", 20),
+      w(510, y, "court", 24),
+      w(538, y, "triable", 28),
+    ].join("\n");
+  const heading = (y: number) => w(150, y, "II.—CLASSIFICATION OF OFFENCES AGAINST OTHER LAWS", 300);
+
+  const threeBands = (y: number) =>
+    [
+      band(y, ["If punishable with death", "Cognizable.", "Non-bailable.", "Court of Session."]),
+      band(y + 14, ["If punishable with 5 years", "Ditto.", "Ditto.", "Magistrate of the first class."]),
+      band(y + 28, ["If punishable with fine only", "Non-cognizable.", "Bailable.", "Any Magistrate."]),
+    ].join("\n");
+
+  it("reads the three bands and resolves their Dittos", () => {
+    const { rules, diagnostics } = parseOffenceRules(
+      doc(page([heading(40), labels(60), threeBands(80)].join("\n"))),
+    );
+    expect(diagnostics).not.toContain("refused: Part II did not validate");
+    expect(rules).toHaveLength(3);
+    expect(rules[0]).toEqual({
+      punishment: "If punishable with death.",
+      cognizable: "Cognizable",
+      bailable: "Non-bailable",
+      court: "Court of Session",
+    });
+    // Both of the middle band's Dittos mean the band above it.
+    expect(rules[1]).toMatchObject({ cognizable: "Cognizable", bailable: "Non-bailable" });
+    expect(rules[2]).toMatchObject({ cognizable: "Non-cognizable", bailable: "Bailable" });
+  });
+
+  it("does not read the Arrangement of Sections as the table", () => {
+    // Both prints name Part II hundreds of pages before they print it.
+    const { rules } = parseOffenceRules(
+      doc(page([heading(40), w(60, 60, "223", 20)].join("\n")), page([heading(40), labels(60), threeBands(80)].join("\n"))),
+    );
+    expect(rules).toHaveLength(3);
+  });
+
+  it("stops at the footnotes below the table", () => {
+    // The CrPC follows Part II with "1. Subs. by Act 13 of 2013 …" 94pt down.
+    const { rules } = parseOffenceRules(
+      doc(
+        page(
+          [
+            heading(40),
+            labels(60),
+            threeBands(80),
+            band(190, ["1. Subs. by Act 13 of 2013, s. 24, for the word", "", "", ""]),
+          ].join("\n"),
+        ),
+      ),
+    );
+    expect(rules).toHaveLength(3);
+    expect(rules[2]!.punishment).toBe("If punishable with fine only.");
+  });
+
+  it("refuses a Part II whose columns slipped", () => {
+    // A boundary inside column 2 puts a punishment where a classification
+    // belongs. Publishing that would say offences punishable by death are
+    // bailable, so nothing is published at all.
+    const { rules, diagnostics } = parseOffenceRules(
+      doc(
+        page(
+          [
+            heading(40),
+            labels(60),
+            band(80, ["If punishable with death", "Imprisonment for life.", "Non-bailable.", "Court of Session."]),
+            band(94, ["If punishable with fine only", "Fine.", "Bailable.", "Any Magistrate."]),
+          ].join("\n"),
+        ),
+      ),
+    );
+    expect(rules).toHaveLength(0);
+    expect(diagnostics).toContain("refused: Part II did not validate");
   });
 });

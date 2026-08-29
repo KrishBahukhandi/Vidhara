@@ -811,3 +811,139 @@ export async function getCounterpartTexts(
   }
   return out;
 }
+
+/** One band of Part II — the residual rule for offences under other laws. */
+export interface OffenceClassificationRule {
+  punishment: string;
+  cognizable: string;
+  bailable: string;
+  court: string;
+}
+
+export interface OffenceClassificationRules {
+  rules: OffenceClassificationRule[];
+  /** The schedule these came from — "BNSS" or "CrPC". */
+  scheduleActAbbreviation: string;
+  /** The other code's schedule, where it sets out these bands in the same
+   * terms. Null when it does not, or when it could not be read. */
+  agreesWith: string | null;
+}
+
+interface RuleRow {
+  punishment: string;
+  cognizable: string;
+  bailable: string;
+  court: string;
+  sort_order: number;
+  schedule_act_slug: string;
+  schedule_act_abbreviation: string;
+}
+
+interface RuleQuery {
+  from(view: "v_offence_classification_rules"): {
+    select(columns: string): {
+      order(
+        column: string,
+        options: { ascending: boolean },
+      ): Promise<{ data: RuleRow[] | null; error: unknown }>;
+    };
+  };
+}
+
+/**
+ * How offences under an Act that has no First Schedule of its own are classified.
+ *
+ * Part I (getOffenceClassifications) can name sections because the BNSS's
+ * schedule classifies the BNS section by section. No other Act in this corpus
+ * has that — not NDPS, not POCSO, not the NI Act whose section 138 is the most
+ * litigated offence in the country — and Part II is what covers them all, by
+ * punishment rather than by section.
+ *
+ * TWO THINGS THIS DELIBERATELY DOES NOT DO.
+ *
+ * It does not decide which band a section falls in. That means reading a
+ * punishment clause and classifying it, and punishment clauses are not a closed
+ * vocabulary — provisos, alternatives, enhanced terms for repeat offenders,
+ * minimum terms that differ from maximum ones. A derived answer would be this
+ * site inventing law (ADR-6/D-011). The reader has the punishment above them on
+ * the same page; what they lack is the rule.
+ *
+ * And it does not show for an Act that Part I already covers. The scope is
+ * taken from the data rather than from a list: an Act with any Part I row is
+ * classified section by section, and the residual rule is not its rule.
+ */
+export async function getOffenceClassificationRules(
+  actSlug: string,
+  hasOwnSchedule: boolean,
+): Promise<OffenceClassificationRules | null> {
+  if (!isContentConfigured || hasOwnSchedule) return null;
+  const { data, error } = await (getServerClient() as unknown as RuleQuery)
+    .from("v_offence_classification_rules")
+    .select("punishment, cognizable, bailable, court, sort_order, schedule_act_slug, schedule_act_abbreviation")
+    .order("sort_order", { ascending: true });
+  if (error || !data || data.length === 0) return null;
+
+  // A CrPC reader is in the pre-2024 frame and is served by the CrPC's own
+  // schedule; everyone else by the BNSS's, which is the one in force.
+  const preferred = actSlug === "crpc" ? "crpc" : "bnss";
+  const mine = data.filter((r) => r.schedule_act_slug === preferred);
+  const other = data.filter((r) => r.schedule_act_slug !== preferred);
+  if (mine.length === 0) return null;
+
+  const bands = (rows: RuleRow[]): OffenceClassificationRule[] =>
+    rows.map((r) => ({
+      punishment: r.punishment,
+      cognizable: r.cognizable,
+      bailable: r.bailable,
+      court: r.court,
+    }));
+  const rules = bands(mine);
+  // Whether the two codes agree is CHECKED, not asserted. They do today —
+  // which is itself the strongest evidence the parse is right, two
+  // independently typeset prints reaching the same three bands — but a claim
+  // that they agree must not outlive the fact.
+  const otherBands = bands(other);
+  const agrees =
+    otherBands.length === rules.length &&
+    otherBands.every(
+      (b, i) =>
+        b.punishment === rules[i]!.punishment &&
+        b.cognizable === rules[i]!.cognizable &&
+        b.bailable === rules[i]!.bailable &&
+        b.court === rules[i]!.court,
+    );
+
+  return {
+    rules,
+    scheduleActAbbreviation: mine[0]!.schedule_act_abbreviation,
+    agreesWith: agrees && other[0] ? other[0].schedule_act_abbreviation : null,
+  };
+}
+
+interface ScheduleProbe {
+  from(view: "v_offence_classifications"): {
+    select(
+      columns: string,
+      options: { count: "exact"; head: true },
+    ): {
+      eq(column: string, value: string): Promise<{ count: number | null; error: unknown }>;
+    };
+  };
+}
+
+/**
+ * Whether this Act is classified section by section by some First Schedule.
+ *
+ * A count rather than a hardcoded ["bns", "ipc"]: the answer is a fact about
+ * what has been published, and a list would go stale the day a third schedule
+ * is ingested — silently, by showing the residual rule on an Act that no longer
+ * needs it. Head-only, so no rows cross the wire.
+ */
+export async function actHasOwnSchedule(actSlug: string): Promise<boolean> {
+  if (!isContentConfigured) return false;
+  const { count, error } = await (getServerClient() as unknown as ScheduleProbe)
+    .from("v_offence_classifications")
+    .select("id", { count: "exact", head: true })
+    .eq("act_slug", actSlug);
+  return !error && (count ?? 0) > 0;
+}
