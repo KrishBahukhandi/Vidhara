@@ -583,6 +583,35 @@ baseline in a shape the reclaim rule does not reach. Part II of both schedules, 
 punishment range rather than by section, remains unparsed: it has no section page to attach to and
 needs a surface of its own first.
 
+**D-083 · 2026-08-29 · The last two empty rows were not two rows — they were a wrong idea about what a line is.**
+Context: D-082 left CrPC rows for IPC 376A and 507 yielding no classification, filed as "section
+numbers on their own baseline in a shape the reclaim rule does not reach". Looking properly, the
+reclaim rule was the wrong tool: nothing needed reclaiming, because those lines were never separate
+lines.
+**A cell is set vertically CENTRED against its row.** A row that runs to five lines puts a short
+cell on a baseline of its own, a few points off the row's first line — the CrPC prints IPC 376A's
+entire classification 5.04pt ABOVE its section number, and IPC 507's three Dittos 3.96pt above.
+With the line tolerance at 3pt those became separate lines, so the classification was attributed to
+the row before and the row itself came out empty.
+Decision: raise the tolerance to 6. The bound is the leading — 9.24pt in the CrPC, 12.6pt in the
+BNSS — so 6 separates "same row, different baseline" from "the next line down" with room in both
+prints, and it is a description of how the table is typeset rather than a patch for two sections.
+Result: **both acts now have zero empty rows.** BNSS is unchanged to the row (440, byte-identical
+output). CrPC changed exactly four rows, and two of them were not the ones being fixed:
+ · 376A and 507 gained their classifications.
+ · **373 and 374 were WRONG and are now right.** Their centred classification lines had been
+   attributed one row off, so the two sections carried each other's bail status — 373 read Bailable
+   and 374 Non-bailable, with no court for either. The print gives 374 "Ditto | Bailable | Any
+   Magistrate" and 373 all-Ditto from 372. Both now match. Neither appeared in any empty-row count,
+   so nothing would have surfaced them; they were found only because a fix elsewhere moved them.
+**And the nine CrPC cross-check disagreements are settled.** They were the checker's fault, as
+suspected but not previously demonstrated: its three-line window bleeds into the following row. IPC
+136 is `Ditto Ditto Ditto Ditto` — carried from 135, Cognizable — and the "Non-cognizable" the
+checker attributed to it belongs to 137 on the next line. The parser was right in every case.
+Republished: 827 rows, 0 empty, verified as `anon`.
+Revisit: Part II of both schedules is still unparsed — it classifies by punishment range rather
+than by section, so it has no section page to attach to and needs a surface of its own first.
+
 ---
 
 *Template for future entries:*

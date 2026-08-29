@@ -93,8 +93,22 @@ const WORD_TAG =
 
 /** Words this tall are the repository's page stamp, not table text (D-077). */
 const MAX_TEXT_HEIGHT = 14;
-/** Same baseline within this many points is the same visual line. */
-const LINE_TOLERANCE = 3;
+/**
+ * Baselines this close belong to the same printed row.
+ *
+ * Larger than it looks like it should be, because a cell's text is set
+ * vertically CENTRED against a row that may run to five lines, so a short cell
+ * lands on a baseline of its own a few points off the row's first line. The
+ * CrPC puts IPC 376A's whole classification 5.04pt above its section number,
+ * and IPC 507's three Dittos 3.96pt above; read as separate lines, both rows
+ * came out with no classification at all.
+ *
+ * The bound is the leading, which is 9.24pt in the CrPC and 12.6pt in the BNSS
+ * — so 6 separates "same row, different baseline" from "the next line down"
+ * with room to spare in both prints, and is checked by the fact that neither
+ * act's row count moves.
+ */
+const LINE_TOLERANCE = 6;
 /** A word starting this far after the previous word's end begins a new cell. */
 const CELL_GAP = 6;
 /** Cell-start positions within this distance are the same column. */

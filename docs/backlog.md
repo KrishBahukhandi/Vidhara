@@ -220,8 +220,11 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
       `v_offence_classifications` and rendered on IPC 302, 109 and BNS 318.
       Conditional rows ("According as offence abetted is…") and sections whose rows disagree show
       the schedule's own words with no verdict — 61 rows are held back that way on purpose.
-- [ ] **Two schedule rows still yield nothing** — CrPC's IPC 376A and 507. Both are rows whose
-      section number sits on its own baseline in a shape the reclaim rule does not reach.
+- [x] **Zero empty schedule rows (D-083).** IPC 376A and 507 were not two stubborn rows but a
+      wrong idea about what a line is: a cell is set vertically centred against its row, so a short
+      one lands a few points off the row's first line. Raising the line tolerance to 6pt (leading is
+      9.24pt in the CrPC, 12.6pt in the BNSS) fixed both — and revealed that IPC 373 and 374 had
+      been carrying each other's bail status, which no empty-row count would ever have shown.
 - [ ] **Part II of both schedules is not ingested** — the "offences against other laws" table keyed
       by punishment range rather than by section. It has no section page to attach to, so it needs
       a surface of its own before it is worth parsing.
