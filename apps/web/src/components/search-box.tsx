@@ -8,6 +8,12 @@ import { ACT_SLUG, parseSectionRef } from "@nexlex/shared";
  * One search box, two behaviours (architecture.md §8): a confident section
  * ref ("420 IPC") navigates straight to the section; anything else goes to
  * /search full-text results.
+ *
+ * The second behaviour used to be invisible until it happened — you typed, you
+ * submitted, and only then discovered whether the box had understood you as a
+ * citation or as a phrase. Since `parseSectionRef` runs client-side, the answer
+ * is known on every keystroke, so it is shown: the box says where Enter goes
+ * before Enter is pressed.
  */
 export function SearchBox({ initialQuery = "", autoFocus = false }: { initialQuery?: string; autoFocus?: boolean }) {
   const router = useRouter();
@@ -24,7 +30,11 @@ export function SearchBox({ initialQuery = "", autoFocus = false }: { initialQue
     router.push(`/search?q=${encodeURIComponent(trimmed)}`);
   };
 
+  const ref = parseSectionRef(query.trim());
+  const destination = ref?.act ? `${ref.act} Section ${ref.section}` : null;
+
   return (
+    <div>
     <form
       className="flex gap-2"
       onSubmit={(e) => {
@@ -48,8 +58,14 @@ export function SearchBox({ initialQuery = "", autoFocus = false }: { initialQue
       <button
         type="submit"
         className="inline-flex h-11 items-center rounded-md bg-brand px-5 font-medium text-on-brand transition-opacity hover:opacity-90">
-        Search
+        {destination ? "Go" : "Search"}
       </button>
     </form>
+    {destination ? (
+      <p className="animate-fade mt-2 text-small text-text-muted">
+        Enter goes to <span className="font-medium text-text">{destination}</span>
+      </p>
+    ) : null}
+    </div>
   );
 }

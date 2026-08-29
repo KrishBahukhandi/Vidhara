@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { useReadingMode } from "@/lib/use-reading-mode";
+
 /**
  * Floating feedback control — pinned bottom-right on every page so the
  * suggestions channel is always one tap away (a footer link alone gets ~zero
@@ -18,6 +20,7 @@ import { usePathname } from "next/navigation";
  */
 export function FeedbackFab() {
   const pathname = usePathname();
+  const reading = useReadingMode();
   if (pathname === "/feedback") return null;
 
   return (
@@ -25,7 +28,8 @@ export function FeedbackFab() {
       href="/feedback"
       aria-label="Suggest an improvement"
       title="Suggest an improvement"
-      className="lift fixed bottom-4 right-4 z-40 inline-flex h-11 w-11 items-center justify-center gap-2 rounded-full bg-brand text-small font-medium text-on-brand shadow-lg hover:opacity-95 sm:bottom-6 sm:right-6 sm:w-auto sm:pl-4 sm:pr-5"
+      data-reading={reading}
+      className="lift yields fixed bottom-4 right-4 z-40 inline-flex h-11 w-11 items-center justify-center gap-2 rounded-full bg-brand text-small font-medium text-on-brand shadow-lg hover:opacity-95 sm:bottom-6 sm:right-6 sm:w-auto sm:pl-4 sm:pr-5"
       // Lift above the phone's gesture bar without distorting the pill's height.
       style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
       <span aria-hidden className="text-body leading-none">

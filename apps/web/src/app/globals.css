@@ -4,6 +4,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Cross-document view transitions: navigating from a search result to a section,
+   or along prev/next, cross-fades instead of flashing white. design.md §7 asks
+   for orientation transitions of 200ms or less, so that is what this is — short
+   enough to feel like the page moved rather than reloaded.
+
+   Cross-document rather than a client-side router animation on purpose: these
+   pages are server-rendered and mostly reached cold, so the transition has to
+   survive a real navigation. Browsers without support simply navigate, which is
+   what they do today. */
+@view-transition {
+  navigation: auto;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -66,6 +79,18 @@
     transform: translateY(0);
   }
 
+  /* A floating control that yields while the reader is moving down the page.
+     Transform only, so it never costs a layout; see use-reading-mode.ts. */
+  .yields {
+    transition:
+      transform 0.22s cubic-bezier(0.2, 0, 0, 1),
+      opacity 0.22s cubic-bezier(0.2, 0, 0, 1);
+  }
+  .yields[data-reading="true"] {
+    transform: translateY(140%);
+    opacity: 0;
+  }
+
   /* A card that lifts a touch on hover — the one flourish, used everywhere. */
   .lift {
     transition:
@@ -85,9 +110,28 @@
   }
 }
 
+/* The transition itself: a plain cross-fade. No slide — the pages being moved
+   between are documents of different lengths, and sliding them implies a spatial
+   relationship that is not there. Reading text never moves. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 180ms;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
 /* Accessibility: honour reduced-motion everywhere — no rise, no lift, no smooth
-   scroll. Content is fully visible (never trapped at opacity 0). */
+   scroll, no page transition. Content is fully visible (never trapped at
+   opacity 0). */
 @media (prefers-reduced-motion: reduce) {
+  /* A view transition cannot be disabled by shortening it — the snapshot still
+     animates — so it is switched off outright. */
+  @view-transition {
+    navigation: none;
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
   html {
     scroll-behavior: auto;
   }
@@ -102,6 +146,13 @@
   }
   .lift:hover {
     transform: none;
+  }
+  /* The controls stay where they are rather than sliding away. */
+  .yields,
+  .yields[data-reading="true"] {
+    transform: none;
+    opacity: 1;
+    transition: none;
   }
   *,
   *::before,

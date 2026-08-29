@@ -3,8 +3,8 @@ import type { MetadataRoute } from "next";
 import {
   listActs,
   listAllSectionPaths,
-  listAppendices,
-  listOrders,
+  listAppendicesByAct,
+  listOrdersByAct,
 } from "@/features/acts/queries";
 import { SITE_URL } from "@/lib/site";
 
@@ -29,43 +29,44 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [acts, sectionPaths] = await Promise.all([listActs(), listAllSectionPaths()]);
 
   // The CPC's First Schedule is its own list of pages — 57 Orders that nothing
-  // else links to deeply.
-  const orderEntries: MetadataRoute.Sitemap = [];
-  for (const act of acts) {
-    const orders = await listOrders(act.slug);
-    if (orders.length === 0) continue;
-    orderEntries.push({
-      url: `${SITE_URL}/acts/${act.slug}/orders`,
+  // else links to deeply — and its Appendices are the forms.
+  //
+  // Two queries for the whole corpus, not two per act. Asking each of the 36
+  // acts individually was 72 round trips to discover what one query says: only
+  // the CPC has either. Sequentially that walked the sitemap up to Next's
+  // 60-second export limit; making them concurrent instead put 72 more requests
+  // against a pool the rest of the build is already using, and the export then
+  // failed all three attempts — a failed deploy on Vercel either way.
+  const [ordersByAct, appendicesByAct] = await Promise.all([
+    listOrdersByAct(),
+    listAppendicesByAct(),
+  ]);
+
+  const orderEntries: MetadataRoute.Sitemap = [...ordersByAct].flatMap(([slug, orders]) => [
+    {
+      url: `${SITE_URL}/acts/${slug}/orders`,
       changeFrequency: "monthly" as const,
       priority: 0.7,
-    });
-    for (const o of orders) {
-      orderEntries.push({
-        url: `${SITE_URL}/acts/${act.slug}/orders/${o.sortOrder}`,
-        changeFrequency: "monthly" as const,
-        priority: 0.6,
-      });
-    }
-  }
-
-  // The Appendices — the forms — are their own small set of pages.
-  const appendixEntries: MetadataRoute.Sitemap = [];
-  for (const act of acts) {
-    const appendices = await listAppendices(act.slug);
-    if (appendices.length === 0) continue;
-    appendixEntries.push({
-      url: `${SITE_URL}/acts/${act.slug}/appendices`,
+    },
+    ...orders.map((o) => ({
+      url: `${SITE_URL}/acts/${slug}/orders/${o.sortOrder}`,
       changeFrequency: "monthly" as const,
       priority: 0.6,
-    });
-    for (const a of appendices) {
-      appendixEntries.push({
-        url: `${SITE_URL}/acts/${act.slug}/appendices/${a.letter}`,
-        changeFrequency: "monthly" as const,
-        priority: 0.5,
-      });
-    }
-  }
+    })),
+  ]);
+
+  const appendixEntries: MetadataRoute.Sitemap = [...appendicesByAct].flatMap(([slug, appendices]) => [
+    {
+      url: `${SITE_URL}/acts/${slug}/appendices`,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    },
+    ...appendices.map((a) => ({
+      url: `${SITE_URL}/acts/${slug}/appendices/${a.letter}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
+  ]);
 
   // `lastModified` comes from each section's own updated_at, which the
   // act_sections touch trigger maintains — so a content repair (and this

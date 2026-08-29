@@ -518,6 +518,40 @@ export interface OrderRule {
 }
 
 /** Orders of an act's First Schedule, in printed order, with rule counts. */
+/**
+ * Every published Order in the corpus, grouped by act slug — for the sitemap.
+ *
+ * One query instead of one per act. Asking all 36 acts individually meant 72
+ * round trips (Orders and Appendices) to discover what one query says: only the
+ * CPC has either. Sequentially that took the sitemap towards Next's 60-second
+ * export limit; in parallel it put 72 more concurrent requests against a
+ * connection pool that the rest of the build is already using, and the export
+ * failed all three attempts — which on Vercel is a failed deploy.
+ */
+export async function listOrdersByAct(): Promise<Map<string, OrderSummary[]>> {
+  const byAct = new Map<string, OrderSummary[]>();
+  if (!isContentConfigured) return byAct;
+  const { data, error } = await getServerClient()
+    .from("act_orders")
+    .select("id, number, title, sort_order, acts!inner(slug), act_order_rules(count)")
+    .eq("review_status", "published")
+    .order("sort_order", { ascending: true });
+  if (error) throw new Error(`listOrdersByAct: ${error.message}`);
+  for (const o of data ?? []) {
+    const slug = (o.acts as unknown as { slug: string }).slug;
+    const list = byAct.get(slug) ?? [];
+    list.push({
+      id: o.id as string,
+      number: o.number as string,
+      title: o.title as string,
+      sortOrder: o.sort_order as number,
+      ruleCount: (o.act_order_rules as unknown as { count: number }[])?.[0]?.count ?? 0,
+    });
+    byAct.set(slug, list);
+  }
+  return byAct;
+}
+
 export async function listOrders(actSlug: string): Promise<OrderSummary[]> {
   if (!isContentConfigured) return [];
   const { data, error } = await getServerClient()
@@ -632,6 +666,31 @@ export interface AppendixForm {
   number: string;
   title: string;
   bodyMd: string;
+}
+
+/** Every published Appendix, grouped by act slug — see listOrdersByAct. */
+export async function listAppendicesByAct(): Promise<Map<string, AppendixSummary[]>> {
+  const byAct = new Map<string, AppendixSummary[]>();
+  if (!isContentConfigured) return byAct;
+  const { data, error } = await getServerClient()
+    .from("act_appendices")
+    .select("id, letter, title, sort_order, acts!inner(slug), act_appendix_forms(count)")
+    .eq("review_status", "published")
+    .order("sort_order", { ascending: true });
+  if (error) throw new Error(`listAppendicesByAct: ${error.message}`);
+  for (const a of data ?? []) {
+    const slug = (a.acts as unknown as { slug: string }).slug;
+    const list = byAct.get(slug) ?? [];
+    list.push({
+      id: a.id as string,
+      letter: a.letter as string,
+      title: a.title as string,
+      sortOrder: a.sort_order as number,
+      formCount: (a.act_appendix_forms as unknown as { count: number }[])?.[0]?.count ?? 0,
+    });
+    byAct.set(slug, list);
+  }
+  return byAct;
 }
 
 export async function listAppendices(actSlug: string): Promise<AppendixSummary[]> {

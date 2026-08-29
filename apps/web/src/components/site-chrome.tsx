@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { AccountLink } from "@/components/account-link";
 import { MobileNav } from "@/components/mobile-nav";
+import { SearchPalette } from "@/components/search-palette";
 import { NAV_LINKS } from "@/lib/nav";
 
 export function SiteHeader() {
@@ -15,7 +16,14 @@ export function SiteHeader() {
           Vidhara
         </Link>
 
-        <nav className="hidden items-center gap-6 md:flex" aria-label="Primary">
+        {/* Search sits outside the nav list: it is not a destination, it is the
+            way to every destination, and on a corpus whose every ranking query
+            is a section lookup it is the most-used control on the page. */}
+        <div className="ml-auto mr-3 flex items-center md:ml-0 md:mr-0 md:order-2">
+          <SearchPalette />
+        </div>
+
+        <nav className="hidden items-center gap-6 md:flex md:order-3" aria-label="Primary">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}

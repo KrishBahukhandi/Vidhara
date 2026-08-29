@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { track } from "@/lib/analytics";
+import { useReadingMode } from "@/lib/use-reading-mode";
 
 /** Render the model's markdown-ish output: "- " / "* " bullets and **bold**. */
 function ExplanationText({ text }: { text: string }) {
@@ -46,6 +47,7 @@ function ExplanationText({ text }: { text: string }) {
  */
 export function AiExplain({ slug, number, act }: { slug: string; number: string; act: string }) {
   const [open, setOpen] = useState(false);
+  const reading = useReadingMode();
   const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [text, setText] = useState("");
   const [message, setMessage] = useState("");
@@ -97,12 +99,19 @@ export function AiExplain({ slug, number, act }: { slug: string; number: string;
         type="button"
         onClick={onOpen}
         aria-label="Explain this section in plain language"
-        className="lift fixed bottom-20 right-4 z-40 inline-flex h-11 items-center gap-2 rounded-full bg-brand pl-4 pr-5 text-small font-medium text-on-brand shadow-lg hover:opacity-95 sm:bottom-24 sm:right-6"
+        title="Explain this section in plain language"
+        // A circle on phones, a labelled pill from sm: up — the same shape the
+        // feedback control takes, and for the same reason. At 108px wide over a
+        // 335px reading column this sat on top of the statute: on BNS 151 it
+        // covered "by means of criminal force" mid-sentence. An overlay may
+        // hover beside the law; it may not hide it.
+        data-reading={reading}
+        className="lift yields fixed bottom-20 right-4 z-40 inline-flex h-11 w-11 items-center justify-center gap-2 rounded-full bg-brand text-small font-medium text-on-brand shadow-lg hover:opacity-95 sm:bottom-24 sm:right-6 sm:w-auto sm:pl-4 sm:pr-5"
         style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
         <span aria-hidden className="text-body leading-none">
           ✨
         </span>
-        Explain
+        <span className="hidden sm:inline">Explain</span>
       </button>
 
       {open ? (

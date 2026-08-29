@@ -514,6 +514,49 @@ disagreements are artifacts of the cross-checker, which reads `-layout` output t
 "Non-" from "cognizable" across lines); and no row the print shows is missing from the parse.
 Revisit: migration 0021 is still unapplied, so neither act's classifications are live.
 
+**D-081 · 2026-08-29 · Search from anywhere, answering before you submit — and the build had been failing on the sitemap.**
+Context: founder asked for the search and the flow to be better. Looking at it rather than guessing
+turned up four things, one of which was not a UX problem at all.
+**Search was behind a door.** `SearchBox` existed only on /search, and the header merely linked
+there — so looking anything up cost a page load before you could type. On a corpus where every
+query the site ranks for is a bare section lookup ("151 bns", "134 bnss", "ipc75"), that is the
+main thing people come to do, and it was two navigations deep.
+**And it answered only after you submitted.** `parseSectionRef` is pure and lives in
+`packages/shared`, so the destination of "420 ipc" is knowable on every keystroke, client-side,
+with no request at all. The box was making people submit and wait to discover whether it had
+understood them as a citation or as a phrase.
+Decision: a search palette on every page, opened by `/` or ⌘K or the header control, that resolves
+a section reference as you type and shows where Enter goes before Enter is pressed. Recently read
+and saved sections fill the rest from localStorage, so the useful rows cost nothing and work
+offline; full-text search is the LAST row, because it is the only one needing the network and for
+the queries people actually type it is rarely what they wanted. Verified: "420 ipc", "bns 103" and
+the advocate shorthand "u/s 154 crpc" all resolve instantly; arrows wrap; Esc closes and restores
+both focus and page scroll; it is a real combobox with `aria-activedescendant`.
+Three further UX defects, all found by measuring rather than by opinion:
+ · **The Explain control sat on top of the statute.** At 108x44 over a 335px reading column it
+   covered "by means of criminal force or the show of" on BNS 151. It is a circle on phones now,
+   like the feedback control.
+ · **On a phone the corner IS the column**, so no shrinking fixes an overlay entirely. Both
+   controls now yield while the reader scrolls down and return on scroll-up or after half a second
+   of stillness.
+ · **There were no loading states anywhere.** Section pages render on demand (D-017), so every tap
+   showed the previous page, motionless — which on a phone reads as a dropped tap. Route skeletons
+   now stand in, shaped like the page and deliberately still: a shimmer would animate the layout of
+   reading text, which design.md §7 forbids.
+Navigation also cross-fades now (180ms, inside design.md's ≤200ms budget), cross-document because
+these pages are server-rendered and mostly reached cold. Reduced motion disables the transition
+outright — shortening it does not help, the snapshot still animates.
+**The find that mattered most was not UX.** The production build was FAILING: /sitemap.xml exceeded
+Next's 60-second export limit three times and exited non-zero, which on Vercel is a failed deploy.
+It had been passing on the third attempt for some time, so it was already borderline. The cause was
+that the sitemap asked all 36 acts individually for Orders and Appendices — 72 round trips to learn
+what one query says, which is that only the CPC has either. Making them concurrent made it worse
+(72 more requests against a pool the rest of the build is using); two bulk queries fixed it. Build
+now exits 0 with zero sitemap warnings.
+Revisit: the search palette offers sections the reader has already seen. Suggesting sections they
+have NOT seen needs either a client-side index or a debounced endpoint, and is worth doing only
+once there is traffic to justify the payload.
+
 ---
 
 *Template for future entries:*
