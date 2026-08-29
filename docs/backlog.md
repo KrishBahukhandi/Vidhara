@@ -212,31 +212,19 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
 - [ ] Breadth is the growth lever (D-049) — 36 acts against competitors' 880–1,500. Expansion
       should be **demand-driven off the report-a-miss rows**, not guessed.
 
-- [~] **Offence classification — cognizable / bailable / which court (D-079).** The one fact a
-      bare-act reader cannot get from the section's own text, and the question every visitor asks
-      next: every query this site ranks for is a bare section lookup. **BNSS parsed: 440 rows, 419
-      stating one classification, 21 held back as uncertain, 0 empty**, spot-checked against the
-      print. Parser, publisher, CLI (`ingest classify-offences`), query and section-page panel are
-      all written and typecheck clean.
-      **BLOCKED on one hand-run step:** `supabase/migrations/0021_offence_classifications.sql` is
-      written but NOT applied — the Supabase MCP has no DDL permission in this session and there is
-      no direct connection string. Paste it into the Supabase SQL editor (or `supabase db push`
-      once linked), then:
-      `cd scripts/ingest && pnpm exec tsx src/cli.ts classify-offences .sources/bnss.xhtml --schedule bnss --subject bns --publish --status published`
-      Nothing renders until the table exists; the query fails soft, so section pages are unaffected
-      meanwhile.
-- [~] **CrPC classification parsed too (D-080) — 387 rows, 345 asserted, 2 empty.** Its columns
-      are CENTRED where the BNSS's are left-aligned, so boundaries now come from occupancy between
-      the header's centres rather than from where cells start; the same code reads both prints and
-      BNSS is unchanged to the row. Also fixed: a drop-capped Part II heading that let the table
-      run 39 pages into the Second Schedule, Part I's last rows sharing a page with that heading
-      (IPC 503–511), amendment brackets on section numbers (IPC 354/376/506), and numbers printed
-      on their own baseline (IPC 354/363/376A/507).
-      **Blocked on the same hand-run step as the BNSS** — migration 0021, then:
-      `pnpm exec tsx src/cli.ts classify-offences .sources/crpc.xhtml --schedule crpc --subject ipc --publish --status published`
-      Verification is weaker here than for the BNSS: most CrPC values come from resolving "Ditto",
-      so they depend on the row sequence being complete. Column assignment agrees 101/110 on rows
-      the print spells out, and no printed row is missing from the parse.
+- [x] **Offence classification is LIVE (D-079/D-080/D-082) — 827 rows, 766 stating one answer.**
+      The one fact a bare-act reader cannot get from the section's own text, now on every IPC and
+      BNS section page: whether the police may arrest without a warrant, whether bail is a matter
+      of right, and which court tries it. 440 BNS rows from the BNSS First Schedule, 387 IPC rows
+      from the CrPC's. Migration 0021 applied; verified as `anon` through
+      `v_offence_classifications` and rendered on IPC 302, 109 and BNS 318.
+      Conditional rows ("According as offence abetted is…") and sections whose rows disagree show
+      the schedule's own words with no verdict — 61 rows are held back that way on purpose.
+- [ ] **Two schedule rows still yield nothing** — CrPC's IPC 376A and 507. Both are rows whose
+      section number sits on its own baseline in a shape the reclaim rule does not reach.
+- [ ] **Part II of both schedules is not ingested** — the "offences against other laws" table keyed
+      by punishment range rather than by section. It has no section page to attach to, so it needs
+      a surface of its own before it is worth parsing.
 
 ## 6. Product gaps named in their own entries
 

@@ -557,6 +557,32 @@ Revisit: the search palette offers sections the reader has already seen. Suggest
 have NOT seen needs either a client-side index or a debounced endpoint, and is worth doing only
 once there is traffic to justify the payload.
 
+**D-082 · 2026-08-29 · The classifications are live. The migration was never blocked — I had been sending the wrong project id.**
+Context: D-079 and D-080 both ended "migration 0021 written but not applied — the Supabase MCP has
+no DDL permission in this session". That was wrong, and worth recording as an error rather than
+quietly fixing. The MCP was refusing because every call carried a project id that does not belong
+to this account; the NexLex project is `eubyvglzkbzfeznocilg`, which `list_projects` returns and
+which accepted the migration first time. Two entries told the founder a hand-run step was needed
+when none was. **Check what the tool can see before concluding it cannot act.**
+Applied and published: **827 classifications — 440 BNS sections from the BNSS First Schedule, 387
+IPC sections from the CrPC's.** 766 state one answer; 61 are held back because the schedule gives a
+condition or the section's rows disagree.
+Verified end to end rather than at the database: readable as `anon` through
+`v_offence_classifications` (so RLS is right, not merely present), and rendered on three pages
+chosen for what they prove —
+ · **IPC 302** states the plain case: Cognizable / Non-bailable / Court of Session, each with the
+   term of art spelled out ("police may arrest without a warrant").
+ · **IPC 109** is the abetment case, and shows the schedule's own conditional wording with no
+   verdict and no gloss — an abetment section genuinely has no classification of its own, and the
+   page now says so instead of inventing one.
+ · **BNS 318** is the sub-sectioned case: 318(2) and (3) non-cognizable and bailable before any
+   Magistrate, 318(4) cognizable and non-bailable before a Magistrate of the first class, each
+   labelled by sub-section rather than collapsed into one answer.
+Revisit: two CrPC rows (IPC 376A, 507) still yield nothing — their section numbers sit on their own
+baseline in a shape the reclaim rule does not reach. Part II of both schedules, which classifies by
+punishment range rather than by section, remains unparsed: it has no section page to attach to and
+needs a surface of its own first.
+
 ---
 
 *Template for future entries:*
