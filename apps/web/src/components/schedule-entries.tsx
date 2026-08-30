@@ -83,15 +83,21 @@ export function ScheduleEntries({ entries }: { entries: ScheduleEntry[] }) {
       <div className="mt-6 space-y-10">
         {lists.map((list) => (
           <section key={list.number ?? "all"} aria-labelledby={`list-${list.number ?? "all"}`}>
-            {/* A group with a title is one of the Seventh's Lists; one without
-                is a Part, whose own title the print sets in small caps below
-                the size this parse reads. A schedule with neither is one flat
-                run and needs no heading at all. */}
+            {/* Three kinds of group, and the print names each differently.
+                "List I—Union List" in the Seventh; a bare "PART A" in the
+                Second and Fifth, whose own title is set in small caps below the
+                size this parse reads; and "I. THE STATES" in the First, which
+                is a division of the schedule rather than a List. The last is
+                told by its heading being set in capitals. */}
             {list.number ? (
               <h2
                 id={`list-${list.number}`}
                 className="sticky top-14 z-10 -mx-1 bg-bg/90 px-1 py-2 font-serif text-h3 font-semibold text-text backdrop-blur-sm">
-                {list.title ? `List ${list.number} — ${list.title}` : `Part ${list.number}`}
+                {!list.title
+                  ? `Part ${list.number}`
+                  : list.title === list.title.toUpperCase()
+                    ? `${list.number}. ${list.title}`
+                    : `List ${list.number} — ${list.title}`}
                 <span className="ml-2 text-small font-normal text-text-muted">
                   {list.entries.length}
                 </span>

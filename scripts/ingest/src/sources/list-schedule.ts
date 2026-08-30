@@ -134,6 +134,25 @@ export interface ListScheduleOptions {
    * a List or a Part.
    */
   sectionHeading?: RegExp;
+  /**
+   * Where the body begins on a row's OPENING line, matched word by word.
+   *
+   * A two-column table aligns its columns on continuation lines but runs them
+   * together on the line that opens a row: the First Schedule sets "[10.]
+   * [Odisha] The territories which immediately…" with "The" at x=94 against a
+   * right column that starts at 107, because the name is short and the body
+   * follows it by an ordinary word space. No gutter can separate that line —
+   * the columns genuinely overlap on it — so the opening line is split on
+   * CONTENT and every line after it on geometry.
+   *
+   * Matched against the REMAINDER of the line from each word on, not against
+   * a single word: for the First Schedule the pattern is /^\[*The territor/,
+   * and all thirty-six of its cells open "The territories…" or "The
+   * territory…". A single-word "The" would cut the Andaman and Nicobar
+   * Islands' own name in half. A row whose opening line does not match keeps
+   * the geometric split, and the gates report the label that results.
+   */
+  rowBodyStarts?: RegExp;
 }
 
 interface Word {
@@ -220,23 +239,38 @@ const GUTTER_FROM = 50;
 const GUTTER_TO = 150;
 
 function gutterOf(lines: Line[]): number | null {
-  const covered = new Set<number>();
+  const covered = new Map<number, number>();
   for (const line of lines) {
     for (const w of line.words) {
-      for (let x = Math.floor(w.xMin); x <= Math.ceil(w.xMax); x++) covered.add(x);
+      for (let x = Math.floor(w.xMin); x <= Math.ceil(w.xMax); x++) {
+        covered.set(x, (covered.get(x) ?? 0) + 1);
+      }
     }
   }
+
+  // The LEAST-covered x, not an uncovered one. A gutter is rarely empty: one
+  // word of a long State name overhangs it — "Nadu]" runs from x=88 to x=108
+  // against a right column starting at 107 — and a single such word left page
+  // 286 with no empty run at all, so the whole page read as one column. The
+  // same reading offence-schedule.ts settled on, for the same reason.
+  let least = Number.POSITIVE_INFINITY;
+  for (let x = GUTTER_FROM; x <= GUTTER_TO; x++) least = Math.min(least, covered.get(x) ?? 0);
+
   let best: [number, number] | null = null;
   let run: number | null = null;
   for (let x = GUTTER_FROM; x <= GUTTER_TO + 1; x++) {
-    const empty = x <= GUTTER_TO && !covered.has(x);
-    if (empty && run === null) run = x;
-    if (!empty && run !== null) {
+    const atLeast = x <= GUTTER_TO && (covered.get(x) ?? 0) === least;
+    if (atLeast && run === null) run = x;
+    if (!atLeast && run !== null) {
       if (!best || x - run > best[1] - best[0]) best = [run, x - 1];
       run = null;
     }
   }
-  return best ? best[1] + 1 : null;
+  // The LEFT edge of the widest such run. The right column starts hard against
+  // the gutter's right edge, so anything further in claims its first word: with
+  // the midpoint, "The" of "The territories…" fell into Odisha's and Tripura's
+  // names. The left column is ragged and loses nothing by the same choice.
+  return best ? best[0] : null;
 }
 
 /** A dot-leader row whose number carries no stop: "31 Jammu and Kashmir……4]". */
@@ -290,7 +324,7 @@ const FURNITURE = [
  * the same page-scoped latch gazette-inline uses, for the same reason.
  */
 const FOOTNOTE_START =
-  /^\d{1,2}\s*\.\s+.*(Subs\.|Ins\.|Omitted|Rep\.|Added|w\.e\.f\.|by Act|by s\.|, ibid|renumbered)/i;
+  /^\d{1,2}\s*\.\s+.*(Subs\.|Ins\.|Omitted|Rep\.|Added|deleted|w\.e\.f\.|by Act|by s\.|, ibid|renumbered)/i;
 const PAGE_FOOT = 0.6;
 /** Small enough to be a superscript marker rather than any kind of text. */
 const MIN_LEGIBLE_HEIGHT = 6.5;
@@ -442,7 +476,17 @@ export function parseListSchedule(
     if (!open) return;
     const entry: ScheduleEntry = {
       ...open,
-      label: open.label?.replace(/\s+/g, " ").trim(),
+      // A label is a NAME — a State, an office, a marginal note — and the
+      // apparatus an amendment wraps it in carries nothing once it stands
+      // alone: "] Karnataka]]" is not a fact about Karnataka, and neither is
+      // the "[ [*" trailing West Bengal. Stripped at the ENDS only. An entry
+      // the print has omitted still shows it, because there the asterisks are
+      // the BODY and the renderer marks them as the omission they are.
+      label: open.label
+        ?.replace(/\s+/g, " ")
+        .replace(/^[[\]*\s]+/, "")
+        .replace(/[[\]*\s]+$/, "")
+        .trim(),
       text: open.text.replace(/\s+/g, " ").trim(),
     };
     if (options.splitHeading) {
@@ -486,13 +530,49 @@ export function parseListSchedule(
       continue;
     }
 
+    if (!authority) {
+      const cite = AUTHORITY.exec(line);
+      if (cite?.[1]) {
+        authority = cite[1].replace(/\s+/g, " ");
+        continue;
+      }
+    }
+
     if (usable) {
-      const opener = ENTRY_START.exec(left.replace(LEADING_ASTERISK, "").replace(LEADING_APPARATUS, ""));
+      // An opening line runs the columns together, so where a body-opening
+      // pattern is given the WHOLE line is read and split on content; the
+      // geometric split is right for every line after it.
+      const whole = join(row.words);
+      const source = options.rowBodyStarts ? whole : left;
+      const opener = ENTRY_START.exec(
+        source.replace(LEADING_ASTERISK, "").replace(LEADING_APPARATUS, ""),
+      );
       const base = opener?.[1] ? Number.parseInt(opener[1], 10) : 0;
       if (opener?.[1] && opener[2] && base >= highest) {
         closeEntry();
         highest = base;
-        open = { number: opener[1], label: opener[2], text: right };
+        let label = opener[2];
+        let body = options.rowBodyStarts ? "" : right;
+        if (options.rowBodyStarts) {
+          const words = opener[2].split(/\s+/);
+          let at = -1;
+          for (let i = 0; i < words.length; i++) {
+            if (options.rowBodyStarts.test(words.slice(i).join(" "))) {
+              at = i;
+              break;
+            }
+          }
+          if (at >= 0) {
+            label = words.slice(0, at).join(" ");
+            body = words.slice(at).join(" ");
+          } else {
+            // No body on this line: the name stands alone and the body starts
+            // on the next.
+            label = opener[2];
+            body = "";
+          }
+        }
+        open = { number: opener[1], label, text: body };
         continue;
       }
       if (open) {

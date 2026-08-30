@@ -302,3 +302,121 @@ describe("the other shapes a schedule takes (D-088)", () => {
     expect(lists[0]?.entries.map((e) => e.number)).toEqual(["1", "2"]);
   });
 });
+
+describe("a two-column schedule (D-089)", () => {
+  /** Lays a row out as the First Schedule sets one: number and name in a
+   * narrow left column, territories in a wide right one. */
+  const row = (y: number, num: string, name: string, body: string, bodyX = 107) =>
+    [
+      ...(num ? [word(44, y, 7.24, num)] : []),
+      ...(name ? name.split(" ").map((w, i) => word(63 + i * 26, y, 7.24, w)) : []),
+      ...body.split(" ").map((w, i) => word(bodyX + i * 22, y, 8.1, w)),
+    ].join("\n");
+
+  const doc2 = (...pages: string[]) =>
+    `<?xml version="1.0"?>\n<html><body>\n${pages.map((c) => `<page width="360" height="504">\n${c}\n</page>`).join("\n")}\n</body></html>`;
+
+  const OPTS = {
+    heading: /FIRSTSCHEDULE/i,
+    endsBefore: /SECONDSCHEDULE/i,
+    twoColumnAt: "auto" as const,
+    minHeight: 6.5,
+    sectionHeading: /^(I|II)\.\s*THE\s+(STATES|UNION\s+TERRITORIES)$/i,
+    rowBodyStarts: /^\[*The territor/,
+  };
+
+  it("keeps a wrapping name out of the territories beside it", () => {
+    // "Andhra" sits on one line and "Pradesh" on the next, each beside a
+    // different line of the territories. Read as lines the columns interleave.
+    const xhtml = doc2(
+      [
+        word(133, 60, 8.1, "FIRST"),
+        word(160, 60, 8.1, "SCHEDULE"),
+        word(145, 74, 8.1, "[Articles"),
+        word(175, 74, 8.1, "1"),
+        word(184, 74, 8.1, "and"),
+        word(200, 74, 8.1, "4]"),
+        word(146, 88, 8.1, "I."),
+        word(153, 88, 8.1, "THE"),
+        word(173, 88, 8.1, "STATES"),
+        row(104, "1.", "Andhra", "The territories specified in section 3"),
+        row(118, "", "Pradesh", "of the Andhra State Act, 1953."),
+        row(132, "2.", "Assam", "The territories comprised in Assam."),
+      ].join("\n"),
+      [word(133, 60, 8.1, "SECOND"), word(165, 60, 8.1, "SCHEDULE")].join("\n"),
+    );
+    const { authority, lists } = parseListSchedule(xhtml, OPTS);
+    expect(authority).toBe("Articles 1 and 4");
+    expect(lists).toHaveLength(1);
+    expect(lists[0]?.number).toBe("I");
+    expect(lists[0]?.entries[0]).toMatchObject({
+      number: "1",
+      label: "Andhra Pradesh",
+      text: "The territories specified in section 3 of the Andhra State Act, 1953.",
+    });
+    expect(lists[0]?.entries[1]?.label).toBe("Assam");
+  });
+
+  it("splits an opening line on content, where the columns genuinely overlap", () => {
+    // A short name lets the body start at x=94 against a column at 107: no
+    // gutter separates that line, because on it the columns do not exist.
+    const xhtml = doc2(
+      [
+        word(133, 60, 8.1, "FIRST"),
+        word(160, 60, 8.1, "SCHEDULE"),
+        row(104, "10.", "[Odisha]", "The territories which were comprised", 94),
+        row(118, "", "", "in the Province of Orissa."),
+        row(132, "11.", "Punjab", "The territories specified in section 11."),
+      ].join("\n"),
+      [word(133, 60, 8.1, "SECOND"), word(165, 60, 8.1, "SCHEDULE")].join("\n"),
+    );
+    const { lists } = parseListSchedule(xhtml, OPTS);
+    expect(lists[0]?.entries[0]).toMatchObject({
+      number: "10",
+      label: "Odisha",
+      text: "The territories which were comprised in the Province of Orissa.",
+    });
+  });
+
+  it("does not cut a name that itself begins with the body's opening word", () => {
+    // "The Andaman and Nicobar Islands" opens with "The"; matching one word
+    // took the name apart. The pattern is tested against the remainder.
+    const xhtml = doc2(
+      [
+        word(133, 60, 8.1, "FIRST"),
+        word(160, 60, 8.1, "SCHEDULE"),
+        row(104, "2.", "The Andaman and Nicobar Islands", "The territories of the islands.", 200),
+      ].join("\n"),
+      [word(133, 60, 8.1, "SECOND"), word(165, 60, 8.1, "SCHEDULE")].join("\n"),
+    );
+    const { lists } = parseListSchedule(xhtml, OPTS);
+    expect(lists[0]?.entries[0]).toMatchObject({
+      label: "The Andaman and Nicobar Islands",
+      text: "The territories of the islands.",
+    });
+  });
+
+  it("finds a gutter that one long word overhangs", () => {
+    // "Nadu]" runs from x=88 to x=108 against a right column starting at 107.
+    // Requiring an EMPTY column left page 286 reading as one.
+    const xhtml = doc2(
+      [
+        word(133, 60, 8.1, "FIRST"),
+        word(160, 60, 8.1, "SCHEDULE"),
+        // A name whose last word crosses the gutter.
+        word(44, 104, 7.24, "7."),
+        word(61, 104, 7.24, "Tamil"),
+        word(88, 104, 7.24, "Nadu]"),
+        ...["The", "territories", "of", "Madras"].map((w, i) => word(110 + i * 24, 104, 8.1, w)),
+        ...["comprised", "in", "the", "Province"].map((w, i) => word(107 + i * 24, 118, 8.1, w)),
+      ].join("\n"),
+      [word(133, 60, 8.1, "SECOND"), word(165, 60, 8.1, "SCHEDULE")].join("\n"),
+    );
+    const { lists } = parseListSchedule(xhtml, OPTS);
+    expect(lists[0]?.entries[0]).toMatchObject({
+      number: "7",
+      label: "Tamil Nadu",
+      text: "The territories of Madras comprised in the Province",
+    });
+  });
+});

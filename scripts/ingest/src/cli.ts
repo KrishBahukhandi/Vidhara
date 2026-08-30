@@ -149,6 +149,7 @@ async function listScheduleCommand(inputPath: string, flags: string[]): Promise<
       "Usage: ingest list-schedule <bbox.xhtml> --act constitution --slug seventh " +
         "--title 'Seventh Schedule' --heading SEVENTHSCHEDULE --ends-before EIGHTHSCHEDULE " +
         "[--group-by list|part|none] [--split-heading] [--roman] [--closing-note '^Explanation'] " +
+        "[--two-column auto] [--section-heading '…'] [--row-body-starts '…'] " +
         "[--subtitle '…'] " +
         "[--sort-order 7] [--min-height 7.7] [--max-height 11] " +
         "[--publish] [--status published] [--provenance '…']",
@@ -170,6 +171,9 @@ async function listScheduleCommand(inputPath: string, flags: string[]): Promise<
     splitHeading: flags.includes("--split-heading"),
     romanNumerals: flags.includes("--roman"),
     closingNote: at("--closing-note") ? new RegExp(at("--closing-note")!, "i") : undefined,
+    twoColumnAt: at("--two-column") === "auto" ? "auto" : at("--two-column") ? Number(at("--two-column")) : undefined,
+    sectionHeading: at("--section-heading") ? new RegExp(at("--section-heading")!, "i") : undefined,
+    rowBodyStarts: at("--row-body-starts") ? new RegExp(at("--row-body-starts")!) : undefined,
   });
   for (const d of result.diagnostics) console.log(`  \u00b7 ${d}`);
   console.log(`\nAuthority: ${result.authority ?? "(none found)"}`);

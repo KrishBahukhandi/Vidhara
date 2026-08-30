@@ -862,6 +862,44 @@ is missing is why a third of the rows do not open, which is most likely names th
 lines or rows whose number sits in the right column.
 
 
+**D-089 · 2026-08-30 · The First Schedule's columns do not exist on the line that opens a row.**
+Context: D-088 published eleven Schedules and left the First out on purpose, at 12 of ~28 States,
+recording that a table which looks complete and is not is worse than an absent one. Four things were
+wrong, and the last of them is why geometry alone could never finish it.
+ · **The left column is set SMALLER than the right, and not consistently.** The State names run at
+   7.24pt on some pages and 8.10pt on others, against territories always at 8.10pt — and Arunachal
+   Pradesh's name is 6.80pt. A body window starting at 7.7pt dropped every name on those pages, which
+   is why the rows did not open. 7.24pt is also the footnote size, so the window cannot simply be
+   lowered on its own; what makes it safe is that footnotes are excluded by the page-foot LATCH
+   rather than by height.
+ · **The gutter is never empty.** One word of a long name overhangs it — "Nadu]" runs from x=88 to
+   x=108 against a right column starting at 107 — and a single such word left page 286 with no empty
+   run at all, so the whole page read as one column. It is the least-covered x, not an uncovered one:
+   the same reading offence-schedule.ts settled on for the same reason, and taking the run's LEFT
+   edge rather than its middle, because the right column starts hard against it.
+ · **The footnote latch missed a verb.** Page 289's block opens "1. Entry 15 relating to Jammu and
+   Kashmir DELETED by…", and "deleted" was not in the list, so the latch armed one line late and two
+   lines of footnote landed in Manipur's name.
+ · **And the columns genuinely overlap on the line that opens a row.** The print aligns them on
+   continuation lines and runs them together on the first: "[10.] [Odisha] The territories which…"
+   puts "The" at x=94 against a column that starts at 107, because the name is short and the body
+   follows it by an ordinary word space. No gutter can separate that line. So the opening line is
+   split on CONTENT — every one of the schedule's 36 cells opens "The territories…" or "The
+   territory…" — and every line after it on geometry. Matched against the REMAINDER rather than a
+   single word, because "The Andaman and Nicobar Islands" opens with "The" and a one-word test took
+   its own name apart.
+Result: **all twelve Schedules are live — 699 entries.** The First is complete: 28 States and 8
+Union territories, every name clean, no footnote residue. Union territory 5 is absent because the
+print does not set it — Daman and Diu merged into Dadra and Nagar Haveli in 2020 — and the
+numbering skips it there too.
+A label is stripped of the apparatus at its ends: "] Karnataka]]" is not a fact about Karnataka, and
+neither is the "[ [*" trailing West Bengal. An entry the print has OMITTED still shows its asterisks,
+because there they are the body, and the renderer marks them as the omission they are.
+Revisit: nothing outstanding on the Schedules. The three-column tables inside the Sixth Schedule's
+paragraph 20 (the tribal areas) are carried as part of that paragraph's text, which is where the
+print puts them, but they would read better as a table of their own.
+
+
 ---
 
 *Template for future entries:*

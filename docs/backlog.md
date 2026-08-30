@@ -293,11 +293,18 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
       ("[5.] Gujarati."), a symbol-font footnote marker at U+F02A that both opened entries and
       closed an authority note, a footnote that changes size as it wraps, page furniture landing
       mid-entry, and a closing rider glued to the last entry.
-- [ ] **The First Schedule is not published, deliberately (D-088).** It is a two-column table whose
-      left column wraps — "Andhra" on one line, "Pradesh" on the next, each beside a different line
-      of the territories — and whose gutter moves from x=82 to x=134 across its ten pages. The
-      two-column mode and per-page gutter are written and tested; they reach 12 of ~28 States and 6
-      of 9 Union territories. A table that looks complete and is not is worse than an absent one.
+- [x] **All twelve Schedules are live (D-089) — 699 entries.** The First is complete: 28 States and
+      8 Union territories, every name clean, no footnote residue. (UT 5 is absent because the print
+      does not set it — Daman and Diu merged into Dadra and Nagar Haveli in 2020.)
+      Four things were wrong, and the last is why geometry alone could never finish it: the left
+      column is set SMALLER than the right and not consistently (7.24pt, 8.10pt, and 6.80pt for
+      Arunachal Pradesh); the gutter is never empty, because one word of a long name overhangs it;
+      the footnote latch was missing the verb "deleted"; and **the columns genuinely overlap on the
+      line that opens a row** — a short name lets the body start at x=94 against a column at 107. So
+      the opening line is split on content and every line after it on geometry.
+- [ ] The three-column tables inside the Sixth Schedule's paragraph 20 (the tribal areas) are
+      carried as part of that paragraph's text, which is where the print puts them, but they would
+      read better as a table of their own.
 - [ ] **SCST §23 and PCA §31 absorb their Act's trailing Statement of Objects and Reasons.** The
       last section runs on into the appendix. MV §217A and HMA §30 were fixed by D-085/D-086; these
       two remain and need their acts re-ingested.
