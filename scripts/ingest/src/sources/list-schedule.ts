@@ -27,17 +27,28 @@
  */
 
 export interface ScheduleEntry {
-  /** As printed: "1", "2A", "97". */
+  /** As printed: "1", "2A", "97", or a Roman numeral for a Form. */
   number: string;
+  /**
+   * What the reader scans for, where the schedule gives one: the marginal note
+   * of a paragraph ("Interpretation"), or the office whose oath a Form sets
+   * out. Null for a bare numbered subject, as in the Seventh.
+   */
+  label?: string;
   /** The entry's text, wrapped lines joined. */
   text: string;
 }
 
 export interface ScheduleList {
-  /** "I", "II", "III". */
-  number: string;
-  /** "Union List", "State List", "Concurrent List". */
-  title: string;
+  /**
+   * "I", "II", "III" for the Seventh's Lists; "A", "B" for a Schedule that
+   * groups its paragraphs into Parts. Null where the schedule is one flat run
+   * of entries, as the Eighth, Ninth, Eleventh and Twelfth are.
+   */
+  number: string | null;
+  /** "Union List". Null for a Part, whose title the print sets in small caps
+   * below the body height this parser reads. */
+  title: string | null;
   entries: ScheduleEntry[];
 }
 
@@ -49,18 +60,85 @@ export interface ListScheduleResult {
 }
 
 export interface ListScheduleOptions {
-  /** The schedule's own heading, matched against squashed page text. */
+  /**
+   * The schedule's own heading, matched against a WHOLE LINE with brackets and
+   * spaces removed — not against the page's text anywhere.
+   *
+   * Every page of a schedule carries a running header naming it, and the
+   * Eighth's is "(Eighth Schedule)". Matched loosely, that header is a heading
+   * too, and the parser began on the schedule's SECOND page: the Eighth came
+   * out with one entry, being everything from "18. Santhali" on. Requiring the
+   * heading to BE the line excludes the header, whose parentheses survive the
+   * strip.
+   */
   heading: RegExp;
-  /** The heading that follows it — where this schedule stops. */
+  /** The heading that follows it — where this schedule stops. Matched the same
+   * way, so a running header cannot end the schedule early either. */
   endsBefore: RegExp;
   /** Smallest word height that is body type. */
   minHeight?: number;
   /** Largest. Above this is the repository's page watermark, not text. */
   maxHeight?: number;
+  /**
+   * How the schedule groups its entries, if at all.
+   *
+   * "list" — "List I—Union List" (the Seventh).
+   * "part" — "PART A" (the Second and Fifth). The Part's own title is set in
+   *          small caps below body height, so only the letter is taken.
+   * "none" — one flat run (the Eighth, Ninth, Eleventh, Twelfth). Default.
+   */
+  groupBy?: "list" | "part" | "none";
+  /**
+   * Entries open with a marginal note, run in and closed by a dash:
+   * "1. Interpretation.—In this Schedule…". True for the Fifth, Sixth and
+   * Tenth, which are paragraph schedules and read like sections.
+   */
+  splitHeading?: boolean;
+  /**
+   * Entries are numbered with Roman numerals standing alone on their own line,
+   * as the Third Schedule numbers its Forms of Oath.
+   */
+  romanNumerals?: boolean;
+  /**
+   * A rider that closes the schedule rather than belonging to its last entry.
+   *
+   * The Ninth Schedule ends "Explanation:—Any acquisition made under the
+   * Rajasthan Tenancy Act, 1955 … shall … be void." That governs the whole
+   * schedule, but it follows entry 284 and was joined to it, where it reads as
+   * if it were about the West Bengal Land Reforms Tribunal Act. Matched, it
+   * becomes an entry of its own, numbered as the print names it.
+   *
+   * Opt-in, because "Explanation" opens a line inside ordinary paragraphs too
+   * — the Fifth, Sixth and Tenth are full of them — and cutting there would
+   * truncate the paragraph that contained it.
+   */
+  closingNote?: RegExp;
+  /**
+   * The schedule is a TWO-COLUMN table, split at this x.
+   *
+   * The First Schedule sets the State's name in a narrow left column and its
+   * territories in a wide right one, and the name wraps: "Andhra" sits on one
+   * line and "Pradesh" on the next, each beside a different line of the
+   * territories. Read as lines, the two columns interleave — the first State
+   * came out as "Andhra [The territories specified in sub-section (1) of
+   * section 3 of Pradesh the Andhra State Act, 1953…".
+   *
+   * Given rather than derived: it is one measured number per schedule, and an
+   * occupancy profile would have to be computed per page against a table whose
+   * left column is often only one word wide.
+   */
+  twoColumnAt?: number | "auto";
+  /**
+   * A section heading that opens a group: "I. THE STATES", "II. THE UNION
+   * TERRITORIES". Used where a schedule divides itself by something other than
+   * a List or a Part.
+   */
+  sectionHeading?: RegExp;
 }
 
 interface Word {
   xMin: number;
+  xMax: number;
   baseline: number;
   height: number;
   text: string;
@@ -77,7 +155,13 @@ const LINE_TOLERANCE = 4;
 /** "List I—Union List". The dash is an em dash in this print. */
 const LIST_HEADING = /^List\s+([IVX]+)\s*[—–―-]\s*(.+?)\s*$/;
 /** "(Article 246)" — the provision the schedule is made under. */
-const AUTHORITY = /^\(\s*(Articles?\s+[^)]+)\)$/i;
+/**
+ * "(Article 246)", "[Articles 102(2) and 191(2)]" — the provision the schedule
+ * is made under. Bracketed in most, parenthesised in a few, and its own content
+ * carries parentheses, so it runs lazily to the LAST closing bracket rather
+ * than excluding them.
+ */
+const AUTHORITY = /^[([]\s*(Articles?\s[\s\S]*?)\s*[)\]]$/i;
 /**
  * An entry opens with its number. The leading class strips what an amendment
  * puts in front of it: a bracket, or a bracket and the digits of a superscript
@@ -89,8 +173,14 @@ const AUTHORITY = /^\(\s*(Articles?\s+[^)]+)\)$/i;
  * carry: List I entry 33, and List II entries 11, 19, 20, 29 and 36. That left
  * a gap in the numbering with nothing to explain it, which is the one thing
  * storing an omitted entry is for.
+ *
+ * A CLOSING BRACKET MAY FOLLOW THE STOP, because an amendment can bracket the
+ * number alone: the Eighth Schedule sets sixteen of its twenty-two languages
+ * as "[5.] Gujarati.", "[ [9.] Konkani.]". Leading apparatus strips what comes
+ * before the number; this is what comes after it, and without it the Eighth
+ * parsed to six entries.
  */
-const ENTRY_START = /^(\d{1,3}[A-Z]?)(?:\.\s+|\s*(?=\*))(\S[\s\S]*)$/;
+const ENTRY_START = /^(\d{1,3}[A-Z]?)(?:\.\s*\]?\s*|\s*(?=\*))(\S[\s\S]*)$/;
 /**
  * What an amendment puts in FRONT of an entry number: an opening bracket, and
  * the digits of a superscript marker where the print sets one at body height.
@@ -100,9 +190,113 @@ const ENTRY_START = /^(\d{1,3}[A-Z]?)(?:\.\s+|\s*(?=\*))(\S[\s\S]*)$/;
  * stop — "[33* * * * *]" became "* * * *]" and opened nothing.
  */
 const LEADING_APPARATUS = /^(?:\d{1,2}\s*(?=\[)|[[\s])+/;
+/**
+ * A footnote marker set as an asterisk BEFORE the number, which the Tenth
+ * Schedule uses: "*7. Bar of jurisdiction of courts.—…".
+ *
+ * Stripped on its own, ahead of LEADING_APPARATUS and only at the very start of
+ * the line. Folding asterisks into that rule instead let it eat the number of
+ * an omitted entry all over again — "[33* * * * *]" has digits followed by an
+ * asterisk, which is the shape it must not touch.
+ *
+ * The class covers the PRIVATE USE AREA as well as the asterisk and daggers,
+ * because a symbol font renders the marker there rather than as any of them:
+ * the Ninth Schedule's entries 91 and 100 open with U+F02A and were the only
+ * two of its 284 missing until this matched them.
+ */
+/**
+ * Where a two-column table's gutter falls on one page.
+ *
+ * Measured rather than fixed because it moves: across the First Schedule's ten
+ * pages the left column ends anywhere from x=82 to x=134, depending on how long
+ * the State names on that page happen to be. A fixed split put "The" of the
+ * territories into Gujarat's name and cut Himachal Pradesh's in half.
+ *
+ * The gutter is the widest run of x that no word covers, looked for only in the
+ * left part of the page — beyond that the right column's own ragged edges leave
+ * wider gaps than the gutter does.
+ */
+const GUTTER_FROM = 50;
+const GUTTER_TO = 150;
 
-const squashed = (page: string): string =>
-  page.replace(/<[^>]+>/g, " ").replace(/\s+/g, "");
+function gutterOf(lines: Line[]): number | null {
+  const covered = new Set<number>();
+  for (const line of lines) {
+    for (const w of line.words) {
+      for (let x = Math.floor(w.xMin); x <= Math.ceil(w.xMax); x++) covered.add(x);
+    }
+  }
+  let best: [number, number] | null = null;
+  let run: number | null = null;
+  for (let x = GUTTER_FROM; x <= GUTTER_TO + 1; x++) {
+    const empty = x <= GUTTER_TO && !covered.has(x);
+    if (empty && run === null) run = x;
+    if (!empty && run !== null) {
+      if (!best || x - run > best[1] - best[0]) best = [run, x - 1];
+      run = null;
+    }
+  }
+  return best ? best[1] + 1 : null;
+}
+
+/** A dot-leader row whose number carries no stop: "31 Jammu and Kashmir……4]". */
+const DOT_LEADER_ROW = /^(\d{1,3}[A-Z]?)[.\]\s]+(\S[\s\S]*)$/;
+const LEADING_ASTERISK = /^[*\u2020\u2021\uf000-\uf0ff]+\s*/;
+/** "PART A" — the grouping the Second and Fifth Schedules use. */
+const PART_HEADING = /^PART\s+([A-Z])\s*$/;
+/** A Form's number in the Third Schedule: a Roman numeral, alone on its line. */
+const ROMAN_HEADING = /^([IVX]{1,6})$/;
+/**
+ * A paragraph's marginal note, run in and closed by a dash — the same shape
+ * gazette-inline splits a section's note on, and for the same reason: these
+ * schedules are drafted as sections and read as them.
+ */
+const HEADING_SPLIT = /^(.{3,190}?)\.\s*(?:[—–]+|―)\s*([\s\S]*)$/;
+
+/**
+ * Page furniture: what sits on a page because it is a page, not because it is
+ * part of the schedule.
+ *
+ * A schedule runs across page breaks and its entries wrap over them, so the
+ * page number and the running header land in the middle of whatever entry was
+ * open. The Eighth Schedule's entry 17 came out as "Sanskrit. 325 326 THE
+ * CONSTITUTION OF INDIA (Eighth Schedule)".
+ *
+ * Listed rather than detected, because the alternative — dropping any line
+ * that repeats across most pages, as D-077 does for the watermark — would also
+ * drop a schedule that legitimately repeats a short line, and these three
+ * shapes are the whole of it in this document.
+ */
+const FURNITURE = [
+  // A table reprints its column headings on every page it runs across.
+  /^(Name|Territories|Extent)$/,
+  /^Name\s+(Territories|Extent)$/,
+  /^\d{1,4}$/,
+  // The page number shares the running header's line as often as not, on
+  // either side of it, so it is optional at both ends rather than a line of
+  // its own: "326 THE CONSTITUTION OF INDIA".
+  /^\d{0,4}\s*THE CONSTITUTION OF INDIA\s*\d{0,4}$/i,
+  /^\d{0,4}\s*\([A-Za-z ]+Schedule\)\s*\d{0,4}$/i,
+];
+
+/**
+ * A footnote's first line, and where on the page a block of them may begin.
+ *
+ * The height window is not enough on its own: this print sets a footnote's
+ * FIRST line at 7.24pt but wraps it at 8.9pt, which is inside the body window,
+ * so the Fourth Schedule's entry 9 came out as "Kerala …… 9 ‘Fou" with the tail
+ * of "‘Fourth Schedule’ (w.e.f. 1-11-1956)" attached. Once a footnote-shaped
+ * line appears in the bottom of a page, the rest of that page is footnote —
+ * the same page-scoped latch gazette-inline uses, for the same reason.
+ */
+const FOOTNOTE_START =
+  /^\d{1,2}\s*\.\s+.*(Subs\.|Ins\.|Omitted|Rep\.|Added|w\.e\.f\.|by Act|by s\.|, ibid|renumbered)/i;
+const PAGE_FOOT = 0.6;
+/** Small enough to be a superscript marker rather than any kind of text. */
+const MIN_LEGIBLE_HEIGHT = 6.5;
+
+/** A line reduced to what a heading test should see: no brackets, no spaces. */
+const bare = (line: string): string => line.replace(/[[\]\s]/g, "");
 
 function decode(s: string): string {
   return s
@@ -114,32 +308,67 @@ function decode(s: string): string {
     .replace(/&#(\d+);/g, (_, c: string) => String.fromCodePoint(Number(c)));
 }
 
-function pageLines(page: string, min: number, max: number): string[] {
+interface Line {
+  text: string;
+  words: Word[];
+}
+
+function pageLines(page: string, min: number, max: number): Line[] {
+  const height = Number(/height="([\d.]+)"/.exec(page)?.[1] ?? 0) || 0;
+  // Collected BELOW the body window as well as inside it, because the line
+  // that arms the footnote latch is itself too small to be body: this print
+  // sets a footnote's first line at 7.24pt and wraps it at 8.9pt. Filtering to
+  // the window first left only the wrap, which is not footnote-shaped, so the
+  // latch never armed and the wrap was read as statute.
   const words: Word[] = [];
   for (const m of page.matchAll(WORD_TAG)) {
-    const height = Number(m[4]) - Number(m[2]);
-    if (height < min || height > max) continue;
+    const tall = Number(m[4]) - Number(m[2]);
+    if (tall < MIN_LEGIBLE_HEIGHT || tall > max) continue;
     words.push({
       xMin: Number(m[1]),
+      xMax: Number(m[3]),
       baseline: Number(m[4]),
-      height,
+      height: tall,
       text: decode(m[5] ?? ""),
     });
   }
   words.sort((a, b) => a.baseline - b.baseline || a.xMin - b.xMin);
 
-  const lines: string[] = [];
+  const lines: Line[] = [];
   let current: Word[] = [];
   let base = Number.NEGATIVE_INFINITY;
+  /** Once the footnotes start, the rest of the page is footnote. */
+  let footnotes = false;
   const push = () => {
     if (current.length === 0) return;
     const text = current
       .sort((a, b) => a.xMin - b.xMin)
       .map((w) => w.text)
       .join(" ")
+      // Zero-width and other format characters survive trim() and are
+      // invisible in a diff, so a line that looked exactly like an authority
+      // note — "[Articles 75(4), 99, … and 219]" — did not match a pattern
+      // anchored on its closing bracket. The Third Schedule lost its citation
+      // that way.
+      .replace(/[\u200b-\u200f\u2060\ufeff]/g, "")
+      // Footnote markers rendered from a symbol font land in the PRIVATE USE
+      // AREA, and they attach at either end: U+F02A opens the Ninth Schedule's
+      // entries 91 and 100 and CLOSES the Third's authority note, where it
+      // survived trim() and stopped a pattern anchored on the closing bracket.
+      // Daggers go with them. The literal asterisk does NOT — a run of them is
+      // how this print sets an omitted entry, which is content.
+      .replace(/[\u2020\u2021\uf000-\uf0ff]/g, "")
+      .replace(/\u00a0/g, " ")
       .replace(/\s+/g, " ")
       .trim();
-    if (text) lines.push(text);
+    const tallest = Math.max(...current.map((w) => w.height));
+    const atFoot = height > 0 && base / height >= PAGE_FOOT;
+    if (text && atFoot && FOOTNOTE_START.test(text)) footnotes = true;
+    // Below the body window it is footnote or apparatus either way — it was
+    // read only so that it could arm the latch.
+    if (text && !footnotes && tallest >= min) {
+      lines.push({ text, words: current.filter((w) => w.height >= min) });
+    }
     current = [];
   };
   for (const w of words) {
@@ -160,43 +389,118 @@ export function parseListSchedule(
   const max = options.maxHeight ?? DEFAULT_MAX_HEIGHT;
   const pages = xhtml.split(/<page /).slice(1);
 
+  // Read every page once: the heading tests need lines, not raw markup.
+  const byPage = pages.map((page) => pageLines(page, min, max));
+  const whole = (pattern: RegExp) =>
+    new RegExp(`^(?:${pattern.source})$`, pattern.flags.includes("i") ? "i" : "");
+  const headingLine = whole(options.heading);
+  const endLine = whole(options.endsBefore);
+  const carries = (lines: Line[], pattern: RegExp) => lines.some((l) => pattern.test(bare(l.text)));
+
   // The heading is printed in the contents as well as over the schedule, so the
   // LAST page that carries it is the schedule itself — the same trap the
   // offence-schedule parser records for Part I.
   let first = -1;
-  for (let i = 0; i < pages.length; i++) {
-    if (options.heading.test(squashed(pages[i]!))) first = i;
-  }
+  for (let i = 0; i < byPage.length; i++) if (carries(byPage[i]!, headingLine)) first = i;
   if (first < 0) return { authority: null, lists: [], diagnostics: ["schedule heading not found"] };
-  let last = pages.length;
-  for (let i = first + 1; i < pages.length; i++) {
-    if (options.endsBefore.test(squashed(pages[i]!))) {
+  let last = byPage.length;
+  for (let i = first + 1; i < byPage.length; i++) {
+    if (carries(byPage[i]!, endLine)) {
       last = i;
       break;
     }
   }
   diagnostics.push(`pages ${first + 1}–${last}`);
 
-  const lines: string[] = [];
-  for (let i = first; i < last; i++) lines.push(...pageLines(pages[i]!, min, max));
+  // Carries the page's own gutter with each line, since it moves page to page.
+  const lines: (Line & { gutter: number | null })[] = [];
+  for (let i = first; i < last; i++) {
+    const page = byPage[i]!;
+    const gutter = options.twoColumnAt === "auto" ? gutterOf(page) : null;
+    for (const line of page) lines.push({ ...line, gutter });
+  }
 
+  const groupBy = options.groupBy ?? "none";
   let authority: string | null = null;
   const lists: ScheduleList[] = [];
   let open: ScheduleEntry | null = null;
-  /** Entry numbers ascend within a List; one that goes backwards is not an
+  /** Entry numbers ascend within a group; one that goes backwards is not an
    * entry opening but a wrapped line that happens to start with a numeral. */
   let highest = 0;
 
+  /** A schedule with no Lists or Parts still has one run of entries to put
+   * them in; it simply has no name. */
+  const currentList = (): ScheduleList => {
+    const last = lists[lists.length - 1];
+    if (last) return last;
+    const only: ScheduleList = { number: null, title: null, entries: [] };
+    lists.push(only);
+    return only;
+  };
+
   const closeEntry = () => {
     if (!open) return;
-    const list = lists[lists.length - 1];
-    if (list) list.entries.push({ ...open, text: open.text.replace(/\s+/g, " ").trim() });
+    const entry: ScheduleEntry = {
+      ...open,
+      label: open.label?.replace(/\s+/g, " ").trim(),
+      text: open.text.replace(/\s+/g, " ").trim(),
+    };
+    if (options.splitHeading) {
+      const split = HEADING_SPLIT.exec(entry.text);
+      if (split?.[1] && split[2]) {
+        entry.label = split[1].replace(/\s+/g, " ").trim();
+        entry.text = split[2].trim();
+      }
+    }
+    currentList().entries.push(entry);
     open = null;
   };
 
-  for (const raw of lines) {
-    const line = raw.trim();
+  const twoColumn = options.twoColumnAt !== undefined;
+  const join = (words: Word[]) =>
+    words
+      .map((w) => w.text)
+      .join(" ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+  for (const row of lines) {
+    // In a two-column schedule the LEFT column is the entry's label and the
+    // RIGHT is its text, and they must be kept apart before anything else
+    // looks at the line.
+    const split =
+      options.twoColumnAt === "auto" ? row.gutter : (options.twoColumnAt as number | undefined);
+    const usable = twoColumn && split !== null && split !== undefined;
+    const left = usable ? join(row.words.filter((w) => w.xMin < split!)) : "";
+    const right = usable ? join(row.words.filter((w) => w.xMin >= split!)) : "";
+    const line = (twoColumn ? left || right : row.text).trim();
     if (!line) continue;
+    if (FURNITURE.some((re) => re.test(left || line))) continue;
+    if (twoColumn && right && FURNITURE.some((re) => re.test(right))) continue;
+
+    if (options.sectionHeading?.test(line)) {
+      closeEntry();
+      const m = /^([IVX]+)\.\s*(.+)$/.exec(line);
+      lists.push({ number: m?.[1] ?? line, title: m?.[2] ?? null, entries: [] });
+      highest = 0;
+      continue;
+    }
+
+    if (usable) {
+      const opener = ENTRY_START.exec(left.replace(LEADING_ASTERISK, "").replace(LEADING_APPARATUS, ""));
+      const base = opener?.[1] ? Number.parseInt(opener[1], 10) : 0;
+      if (opener?.[1] && opener[2] && base >= highest) {
+        closeEntry();
+        highest = base;
+        open = { number: opener[1], label: opener[2], text: right };
+        continue;
+      }
+      if (open) {
+        if (left) open.label = `${open.label ?? ""} ${left}`.trim();
+        if (right) open.text += open.text ? ` ${right}` : right;
+      }
+      continue;
+    }
 
     if (!authority) {
       const cite = AUTHORITY.exec(line);
@@ -206,20 +510,61 @@ export function parseListSchedule(
       }
     }
 
-    const heading = LIST_HEADING.exec(line);
-    if (heading?.[1] && heading[2]) {
+    if (groupBy === "list") {
+      const heading = LIST_HEADING.exec(line);
+      if (heading?.[1] && heading[2]) {
+        closeEntry();
+        lists.push({ number: heading[1], title: heading[2], entries: [] });
+        highest = 0;
+        continue;
+      }
+      // Everything before the first List heading is the schedule's own heading
+      // and its authority note.
+      if (lists.length === 0) continue;
+    } else if (groupBy === "part") {
+      const part = PART_HEADING.exec(line);
+      if (part?.[1]) {
+        closeEntry();
+        lists.push({ number: part[1], title: null, entries: [] });
+        highest = 0;
+        continue;
+      }
+    }
+
+    const stripped = line.replace(LEADING_ASTERISK, "").replace(LEADING_APPARATUS, "");
+
+    if (options.closingNote?.test(stripped)) {
       closeEntry();
-      lists.push({ number: heading[1], title: heading[2], entries: [] });
-      highest = 0;
+      // Named by what the print calls it — "Explanation" closes the Ninth,
+      // "Total" closes the Fourth's table — so the row reads as the print
+      // reads rather than as a number the schedule does not give it.
+      open = { number: /^[A-Za-z]+/.exec(stripped)?.[0] ?? "Note", text: stripped };
+      // Nothing after a closing rider opens an entry.
+      highest = Number.POSITIVE_INFINITY;
       continue;
     }
 
-    // Everything before the first List heading is the schedule's own heading
-    // and its authority note.
-    if (lists.length === 0) continue;
+    if (options.romanNumerals) {
+      const roman = ROMAN_HEADING.exec(stripped);
+      if (roman?.[1]) {
+        closeEntry();
+        open = { number: roman[1], text: "" };
+        continue;
+      }
+      if (open) {
+        open.text += open.text ? ` ${line}` : line;
+        continue;
+      }
+      continue;
+    }
 
-    const stripped = line.replace(LEADING_APPARATUS, "");
-    const start = ENTRY_START.exec(stripped);
+    // A row of a DOT-LEADER table may drop the stop after its number — the
+    // Fourth Schedule sets "[31 Jammu and Kashmir………4]" against "1. Andhra
+    // Pradesh………[11]" — and the leader itself is proof the line is a row, so
+    // the looser shape is safe here and nowhere else.
+    const start =
+      ENTRY_START.exec(stripped) ??
+      (/\.{3,}/.test(stripped) ? DOT_LEADER_ROW.exec(stripped) : null);
     const base = start?.[1] ? Number.parseInt(start[1], 10) : 0;
     if (start?.[1] && start[2] && base >= highest) {
       closeEntry();
@@ -232,12 +577,13 @@ export function parseListSchedule(
     }
 
     if (open) open.text += ` ${line}`;
-    else diagnostics.push(`line before the first entry of List ${lists.at(-1)?.number}: ${line.slice(0, 60)}`);
+    else diagnostics.push(`before the first entry: ${line.slice(0, 60)}`);
   }
   closeEntry();
 
   for (const list of lists) {
-    diagnostics.push(`List ${list.number} (${list.title}): ${list.entries.length} entries`);
+    const name = list.number ? `${groupBy === "part" ? "Part" : "List"} ${list.number}` : "entries";
+    diagnostics.push(`${name}${list.title ? ` (${list.title})` : ""}: ${list.entries.length}`);
   }
   return { authority, lists, diagnostics };
 }

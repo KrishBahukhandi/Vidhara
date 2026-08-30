@@ -281,10 +281,23 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
       asterisks, and **no List has a gap in its numbering**.
       Schedules also went into the sitemap, which had never carried them, so the Limitation Act's
       Schedule had been unfindable too.
-- [ ] **Eleven Schedules remain.** The Eighth (languages), Ninth (laws immune from challenge), Tenth
-      (anti-defection) and Twelfth (municipal functions) are list-shaped and should need only the
-      D-087 parser with different boundaries. The First (States and territories), Second (salaries)
-      and Sixth (tribal areas) are tables and will need their own shapes.
+- [x] **Eleven of the twelve Schedules are live (D-088) — 663 entries.** Second 10 · Third 8 ·
+      Fourth 32 · Fifth 7 · Sixth 25 · Seventh 219 · Eighth 22 · Ninth 286 · Tenth 7 · Eleventh 29 ·
+      Twelfth 18, each with the article it is made under and no footnote residue.
+      They looked like five different documents and are one: every entry is a number, an optional
+      label and a body. What differs is what the label is — a marginal note in the Fifth and Tenth,
+      the office an oath is for in the Third — and whether entries are grouped. 0024 adds the label
+      and makes the grouping nullable; the parser gained modes rather than siblings.
+      Six silent defects fixed on the way, each of which produced a schedule that looked complete:
+      a running header read as a heading (the Eighth parsed as ONE entry), a bracketed number
+      ("[5.] Gujarati."), a symbol-font footnote marker at U+F02A that both opened entries and
+      closed an authority note, a footnote that changes size as it wraps, page furniture landing
+      mid-entry, and a closing rider glued to the last entry.
+- [ ] **The First Schedule is not published, deliberately (D-088).** It is a two-column table whose
+      left column wraps — "Andhra" on one line, "Pradesh" on the next, each beside a different line
+      of the territories — and whose gutter moves from x=82 to x=134 across its ten pages. The
+      two-column mode and per-page gutter are written and tested; they reach 12 of ~28 States and 6
+      of 9 Union territories. A table that looks complete and is not is worse than an absent one.
 - [ ] **SCST §23 and PCA §31 absorb their Act's trailing Statement of Objects and Reasons.** The
       last section runs on into the appendix. MV §217A and HMA §30 were fixed by D-085/D-086; these
       two remain and need their acts re-ingested.

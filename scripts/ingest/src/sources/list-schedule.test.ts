@@ -27,7 +27,11 @@ const page = (content: string) => `<page width="360" height="504">\n${content}\n
 const doc = (...pages: string[]) =>
   `<?xml version="1.0"?>\n<html><body>\n${pages.map(page).join("\n")}\n</body></html>`;
 
-const OPTIONS = { heading: /SEVENTHSCHEDULE/i, endsBefore: /EIGHTHSCHEDULE/i };
+const OPTIONS = {
+  heading: /SEVENTHSCHEDULE/i,
+  endsBefore: /EIGHTHSCHEDULE/i,
+  groupBy: "list" as const,
+};
 
 describe("list-shaped schedules (D-087)", () => {
   it("reads three Lists, their titles and their entries", () => {
@@ -154,5 +158,147 @@ describe("list-shaped schedules (D-087)", () => {
       "Police subject to the provisions of entry 2. of List I and nothing further.",
     );
     expect(diagnostics.some((d) => d.includes('ignored non-ascending "2."'))).toBe(true);
+  });
+});
+
+describe("the other shapes a schedule takes (D-088)", () => {
+  const wrap = (body: string, head = "EIGHTH SCHEDULE") =>
+    doc(
+      lines([{ text: head, x: 133 }, { text: "(Article 344)", x: 150 }].concat([])) + "\n" + body,
+      lines([{ text: "NINTH SCHEDULE", x: 136 }]),
+    );
+  const OPTS = { heading: /EIGHTHSCHEDULE/i, endsBefore: /NINTHSCHEDULE/i };
+
+  it("reads a flat schedule that has no Lists at all", () => {
+    // The Eighth, Ninth, Eleventh and Twelfth are one run of numbered entries.
+    const { lists, authority } = parseListSchedule(
+      wrap(lines([{ text: "1. Assamese.", x: 60 }, { text: "2. Bengali.", x: 60 }], 100)),
+      OPTS,
+    );
+    expect(authority).toBe("Article 344");
+    expect(lists).toHaveLength(1);
+    expect(lists[0]?.number).toBeNull();
+    expect(lists[0]?.entries.map((e) => e.text)).toEqual(["Assamese.", "Bengali."]);
+  });
+
+  it("reads a number the print has bracketed on its own", () => {
+    // Sixteen of the Eighth Schedule's twenty-two languages are set this way,
+    // and requiring the text to follow the stop directly left six of them.
+    const { lists } = parseListSchedule(
+      wrap(lines([{ text: "[5.] Gujarati.", x: 62 }, { text: "[ [9.] Konkani.]", x: 62 }], 100)),
+      OPTS,
+    );
+    expect(lists[0]?.entries.map((e) => `${e.number}=${e.text}`)).toEqual([
+      "5=Gujarati.",
+      "9=Konkani.]",
+    ]);
+  });
+
+  it("reads a number behind a symbol-font footnote marker", () => {
+    // U+F02A, not an asterisk. It is how the Ninth Schedule marks entries 91
+    // and 100, the only two of its 284 that went missing.
+    const { lists } = parseListSchedule(
+      wrap(lines([{ text: " 91. The Monopolies Act, 1969.", x: 50 }], 100)),
+      OPTS,
+    );
+    expect(lists[0]?.entries[0]).toMatchObject({ number: "91", text: "The Monopolies Act, 1969." });
+  });
+
+  it("groups by Part, and splits a paragraph's marginal note from its text", () => {
+    const { lists } = parseListSchedule(
+      wrap(
+        lines(
+          [
+            { text: "PART A", x: 163 },
+            { text: "1. Interpretation.—In this Schedule the expression “State” applies.", x: 60 },
+            { text: "PART B", x: 163 },
+            { text: "4. Tribes Advisory Council.—There shall be established a Council.", x: 60 },
+          ],
+          100,
+        ),
+      ),
+      { ...OPTS, groupBy: "part", splitHeading: true },
+    );
+    expect(lists.map((l) => l.number)).toEqual(["A", "B"]);
+    expect(lists[0]?.entries[0]).toMatchObject({
+      number: "1",
+      label: "Interpretation",
+      text: "In this Schedule the expression “State” applies.",
+    });
+    expect(lists[1]?.entries[0]?.label).toBe("Tribes Advisory Council");
+  });
+
+  it("numbers Forms with the Roman numerals the print gives them", () => {
+    const { lists } = parseListSchedule(
+      wrap(
+        lines(
+          [
+            { text: "I", x: 178 },
+            { text: "Form of oath of office for a Minister for the Union:—", x: 60 },
+            { text: "“I, A. B., do swear in the name of God.”", x: 83 },
+            { text: "II", x: 177 },
+            { text: "Form of oath of secrecy for a Minister for the Union:—", x: 60 },
+          ],
+          100,
+        ),
+      ),
+      { ...OPTS, romanNumerals: true },
+    );
+    expect(lists[0]?.entries.map((e) => e.number)).toEqual(["I", "II"]);
+    expect(lists[0]?.entries[0]?.text).toContain("do swear in the name of God");
+  });
+
+  it("gives a closing rider its own row, named as the print names it", () => {
+    // The Ninth ends with an Explanation governing the whole schedule. Joined
+    // to entry 284 it read as if it were about the West Bengal Act.
+    const { lists } = parseListSchedule(
+      wrap(
+        lines(
+          [
+            { text: "1. The Bihar Land Reforms Act, 1950.", x: 50 },
+            { text: "Explanation:—Any acquisition made in contravention shall be void.", x: 50 },
+          ],
+          100,
+        ),
+      ),
+      { ...OPTS, closingNote: /^Explanation\s*[:.]/i },
+    );
+    expect(lists[0]?.entries.map((e) => e.number)).toEqual(["1", "Explanation"]);
+    expect(lists[0]?.entries[1]?.text).toMatch(/^Explanation:—Any acquisition/);
+  });
+
+  it("drops the page furniture a schedule wraps around", () => {
+    // A page number and running header land in whatever entry was open: the
+    // Eighth's entry 17 came out "Sanskrit. 325 326 THE CONSTITUTION OF INDIA".
+    const { lists } = parseListSchedule(
+      wrap(
+        lines(
+          [
+            { text: "17. Sanskrit.", x: 60 },
+            { text: "325", x: 170 },
+            { text: "326 THE CONSTITUTION OF INDIA", x: 40 },
+            { text: "(Eighth Schedule)", x: 150 },
+            { text: "18. Santhali.", x: 60 },
+          ],
+          100,
+        ),
+      ),
+      OPTS,
+    );
+    expect(lists[0]?.entries.map((e) => e.text)).toEqual(["Sanskrit.", "Santhali."]);
+  });
+
+  it("does not take a running header for the schedule's own heading", () => {
+    // "(Eighth Schedule)" repeats on every page. Matched loosely it is a
+    // heading too, and the parser began a page late.
+    const { lists } = parseListSchedule(
+      doc(
+        lines([{ text: "EIGHTH SCHEDULE", x: 133 }, { text: "1. Assamese.", x: 60 }]),
+        lines([{ text: "(Eighth Schedule)", x: 150 }, { text: "2. Bengali.", x: 60 }]),
+        lines([{ text: "NINTH SCHEDULE", x: 136 }]),
+      ),
+      OPTS,
+    );
+    expect(lists[0]?.entries.map((e) => e.number)).toEqual(["1", "2"]);
   });
 });

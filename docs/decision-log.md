@@ -810,6 +810,58 @@ parser with different boundaries; the First (States and territories), Second (sa
 (tribal areas administration) are tables and will need their own shapes.
 
 
+**D-088 · 2026-08-30 · Eleven of the twelve Schedules are one shape wearing five costumes. The twelfth is a different garment.**
+Context: D-087 ingested the Seventh and left eleven. Surveying them, they look like five different
+documents — the Eighth is a list of 22 languages, the Ninth a list of 286 Acts, the Fifth and Tenth
+are paragraphs with marginal notes drafted exactly like sections, the Third is eight Forms of oath
+numbered in Roman, the Fourth a table of Rajya Sabha seats with dot leaders, the First a two-column
+table of States and their territories.
+Decision: they are one shape, not five. Every entry is **a number, an optional label, and a body** —
+what differs is what the label IS (a marginal note in the Fifth, the office an oath is for in the
+Third, the State in the First), whether entries are grouped, and how the number is written. So 0024
+adds a nullable `label` to 0023's table, makes the List columns nullable, and re-keys on
+`coalesce(list_number, '')` so an ungrouped schedule still cannot publish a number twice. A Part is a
+List by another name and reuses those columns. The parser gains modes rather than siblings:
+`groupBy: list | part | none`, `splitHeading`, `romanNumerals`, `closingNote`, `twoColumnAt`.
+Result: **eleven schedules live, 663 entries**, each with the article it is made under, and no
+footnote residue in any of them. Second 10 · Third 8 · Fourth 32 · Fifth 7 · Sixth 25 · Seventh 219
+· Eighth 22 · Ninth 286 · Tenth 7 · Eleventh 29 · Twelfth 18.
+Six defects, every one of them silent — each produced a schedule that looked complete:
+ · **A running header is a heading too.** Every page of a schedule names it, and the Eighth's says
+   "(Eighth Schedule)". Matched against page text, that started the parse on the schedule's SECOND
+   page and the Eighth came out as one entry, being everything from "18. Santhali" on. Headings are
+   now matched as a WHOLE LINE with brackets stripped, which the parentheses fail.
+ · **A bracketed number.** Sixteen of the Eighth's twenty-two languages are set "[5.] Gujarati.", and
+   requiring text directly after the stop left six.
+ · **A symbol-font footnote marker.** Not an asterisk — U+F02A, from the PRIVATE USE AREA. It opens
+   the Ninth's entries 91 and 100 (the only two of 284 that went missing) and CLOSES the Third's
+   authority note, where it survived `trim()` and defeated a pattern anchored on the closing bracket.
+   Those glyphs are now stripped wherever they appear. The literal asterisk is NOT, because a run of
+   them is how this print sets an omitted entry, which is content.
+ · **A footnote that changes size as it wraps.** The first line is 7.24pt and the wrap is 8.9pt,
+   which is inside the body window: the Fourth's entry 9 read "Kerala …… 9 ‘Fou". The page-foot latch
+   now reads BELOW the body window, because the line that arms it is itself too small to be body.
+ · **Page furniture.** A schedule wraps across page breaks and the page number and running header
+   land in whatever entry was open — the Eighth's 17 was "Sanskrit. 325 326 THE CONSTITUTION OF
+   INDIA".
+ · **A rider that belongs to the schedule, not its last entry.** The Ninth ends with an Explanation
+   about acquisitions under the Rajasthan Tenancy Act; joined to entry 284 it read as if it were
+   about the West Bengal Land Reforms Tribunal Act. It gets its own row, named as the print names it,
+   and the Fourth's "Total" row with it.
+**The First Schedule is NOT published, and that is the finding.** It is a genuine two-column table
+whose left column wraps: "Andhra" sits on one line and "Pradesh" on the next, each beside a
+different line of the territories, so read as lines the two columns interleave — the first State
+came out as "Andhra [The territories specified in sub-section (1) of section 3 of Pradesh the Andhra
+State Act, 1953…". A column split fixes that, and the gutter has to be measured per page, because
+across its ten pages the left column ends anywhere from x=82 to x=134 depending on how long that
+page's State names are. With both in place it reaches 12 of ~28 States and 6 of 9 Union territories.
+That is a table that looks complete and is not, which is worse than an absent one, so it stays out
+until the remaining rows are accounted for.
+Revisit: the First Schedule. The two-column mode and the per-page gutter are written and tested; what
+is missing is why a third of the rows do not open, which is most likely names that wrap to three
+lines or rows whose number sits in the right column.
+
+
 ---
 
 *Template for future entries:*

@@ -25,6 +25,34 @@ export interface PublishListScheduleOptions {
   provenance: string;
 }
 
+const ROMAN: Record<string, number> = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000 };
+
+/**
+ * A sort key for a number that may not be one.
+ *
+ * deriveSortKey handles "1", "2A", "92C" — the shapes act sections take — and
+ * THROWS on anything else. Two things here are not those: the Third Schedule
+ * numbers its Forms in Roman ("I" to "VIII"), and a closing rider is named by
+ * what the print calls it ("Explanation", "Total"). Both need to sort, and a
+ * rider closes its schedule, so it sorts after everything in it.
+ */
+function sortKeyFor(number: string): number {
+  try {
+    return deriveSortKey(number);
+  } catch {
+    if (/^[IVXLCDM]+$/.test(number)) {
+      let total = 0;
+      for (let i = 0; i < number.length; i++) {
+        const here = ROMAN[number[i]!]!;
+        const next = ROMAN[number[i + 1]!];
+        total += next && next > here ? -here : here;
+      }
+      return total;
+    }
+    return 1_000_000;
+  }
+}
+
 export async function publishListSchedule(
   parsed: ListScheduleResult,
   options: PublishListScheduleOptions,
@@ -74,39 +102,27 @@ export async function publishListSchedule(
       list_title: list.title,
       list_order: listIndex + 1,
       number: entry.number,
-      sort_key: deriveSortKey(entry.number),
+      sort_key: sortKeyFor(entry.number),
+      label: entry.label ?? null,
       body: entry.text,
     })),
   );
   if (payload.length === 0) throw new Error("nothing parsed — refusing to publish an empty schedule");
 
-  const { error } = await db
+  // REPLACED, not upserted. 0024 made the key a coalesced expression index, so
+  // that a schedule with no Lists still cannot publish the same entry number
+  // twice — and an expression index cannot be an upsert's conflict target.
+  // Replacing is also the stricter reading of D-052: an entry the parse no
+  // longer produces cannot survive, whatever its key.
+  const { data: removedRows, error: clearError } = await db
     .from("act_schedule_entries")
-    .upsert(payload, { onConflict: "schedule_id,list_number,number" });
+    .delete()
+    .eq("schedule_id", schedule.id)
+    .select("id");
+  if (clearError) throw new Error(`clearing entries: ${clearError.message}`);
+
+  const { error } = await db.from("act_schedule_entries").insert(payload);
   if (error) throw new Error(`publishing entries: ${error.message}`);
 
-  // An entry the parse no longer produces must not stay live. Compared on the
-  // (List, number) pairs actually published, because the numbering restarts in
-  // each List and a bare number is not unique.
-  const keep = new Set(payload.map((row) => `${row.list_number}|${row.number}`));
-  const { data: existing, error: readError } = await db
-    .from("act_schedule_entries")
-    .select("id, list_number, number")
-    .eq("schedule_id", schedule.id);
-  if (readError) throw new Error(`reading existing entries: ${readError.message}`);
-  const stale = (existing ?? []).filter(
-    (row: { list_number: string; number: string }) => !keep.has(`${row.list_number}|${row.number}`),
-  );
-  if (stale.length > 0) {
-    const { error: deleteError } = await db
-      .from("act_schedule_entries")
-      .delete()
-      .in(
-        "id",
-        stale.map((row: { id: string }) => row.id),
-      );
-    if (deleteError) throw new Error(`removing stale entries: ${deleteError.message}`);
-  }
-
-  return { scheduleId: schedule.id, entries: payload.length, removed: stale.length };
+  return { scheduleId: schedule.id, entries: payload.length, removed: removedRows?.length ?? 0 };
 }

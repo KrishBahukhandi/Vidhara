@@ -445,18 +445,25 @@ export async function listSchedulesByAct(slug: string): Promise<ActSchedule[]> {
 
 /** One entry of a list-shaped schedule (0023) — the Seventh Schedule's Lists. */
 export interface ScheduleEntry {
-  listNumber: string;
-  listTitle: string;
+  /** "I"/"II" for a List, "A"/"B" for a Part, null where the schedule is one
+   * flat run of entries. */
+  listNumber: string | null;
+  /** "Union List". Null for a Part, whose title the print sets too small to
+   * read alongside the body. */
+  listTitle: string | null;
   listOrder: number;
   number: string;
+  /** The marginal note of a paragraph, or the office an oath is for. */
+  label: string | null;
   body: string;
 }
 
 interface EntryRow {
-  list_number: string;
-  list_title: string;
+  list_number: string | null;
+  list_title: string | null;
   list_order: number;
   number: string;
+  label: string | null;
   body: string;
 }
 
@@ -515,7 +522,7 @@ export async function getSchedule(
   // of these comes back empty and the page renders whichever it got.
   const { data: entryRows, error: entriesError } = await (client as unknown as EntryQuery)
     .from("act_schedule_entries")
-    .select("list_number, list_title, list_order, number, body")
+    .select("list_number, list_title, list_order, number, label, body")
     .eq("schedule_id", schedule.id)
     .order("list_order", { ascending: true })
     .order("sort_key", { ascending: true });
@@ -532,6 +539,7 @@ export async function getSchedule(
       listTitle: row.list_title,
       listOrder: row.list_order,
       number: row.number,
+      label: row.label,
       body: row.body,
     })),
   };

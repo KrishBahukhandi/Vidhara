@@ -148,17 +148,28 @@ async function listScheduleCommand(inputPath: string, flags: string[]): Promise<
     console.error(
       "Usage: ingest list-schedule <bbox.xhtml> --act constitution --slug seventh " +
         "--title 'Seventh Schedule' --heading SEVENTHSCHEDULE --ends-before EIGHTHSCHEDULE " +
-        "[--subtitle '…'] [--sort-order 7] [--min-height 7.7] [--max-height 11] " +
+        "[--group-by list|part|none] [--split-heading] [--roman] [--closing-note '^Explanation'] " +
+        "[--subtitle '…'] " +
+        "[--sort-order 7] [--min-height 7.7] [--max-height 11] " +
         "[--publish] [--status published] [--provenance '…']",
     );
     process.exit(1);
   }
 
+  const groupBy = (at("--group-by") ?? "none") as "list" | "part" | "none";
+  if (!["list", "part", "none"].includes(groupBy)) {
+    console.error(`Invalid --group-by "${groupBy}" — list, part or none`);
+    process.exit(1);
+  }
   const result = parseListSchedule(readFileSync(inputPath, "utf8"), {
     heading: new RegExp(heading, "i"),
     endsBefore: new RegExp(endsBefore, "i"),
     minHeight: at("--min-height") ? Number(at("--min-height")) : undefined,
     maxHeight: at("--max-height") ? Number(at("--max-height")) : undefined,
+    groupBy,
+    splitHeading: flags.includes("--split-heading"),
+    romanNumerals: flags.includes("--roman"),
+    closingNote: at("--closing-note") ? new RegExp(at("--closing-note")!, "i") : undefined,
   });
   for (const d of result.diagnostics) console.log(`  \u00b7 ${d}`);
   console.log(`\nAuthority: ${result.authority ?? "(none found)"}`);
@@ -175,14 +186,15 @@ async function listScheduleCommand(inputPath: string, flags: string[]): Promise<
   const complaints: string[] = [];
   if (result.lists.length === 0) complaints.push("no lists found");
   for (const list of result.lists) {
-    if (list.entries.length === 0) complaints.push(`List ${list.number} has no entries`);
+    const where = list.number ? `${groupBy === "part" ? "Part" : "List"} ${list.number}` : "schedule";
+    if (list.entries.length === 0) complaints.push(`${where} has no entries`);
     const seen = new Set<string>();
     for (const entry of list.entries) {
-      if (seen.has(entry.number)) complaints.push(`List ${list.number}: duplicate entry ${entry.number}`);
+      if (seen.has(entry.number)) complaints.push(`${where}: duplicate entry ${entry.number}`);
       seen.add(entry.number);
-      if (!entry.text.trim()) complaints.push(`List ${list.number}: entry ${entry.number} is empty`);
+      if (!entry.text.trim()) complaints.push(`${where}: entry ${entry.number} is empty`);
       if (/Subs\. by|Ins\. by|w\.e\.f\./.test(entry.text)) {
-        complaints.push(`List ${list.number}: entry ${entry.number} retains footnote apparatus`);
+        complaints.push(`${where}: entry ${entry.number} retains footnote apparatus`);
       }
     }
   }
