@@ -5,6 +5,7 @@ import {
   listAllSectionPaths,
   listAppendicesByAct,
   listOrdersByAct,
+  listSchedulePaths,
 } from "@/features/acts/queries";
 import { SITE_URL } from "@/lib/site";
 
@@ -37,9 +38,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 60-second export limit; making them concurrent instead put 72 more requests
   // against a pool the rest of the build is already using, and the export then
   // failed all three attempts — a failed deploy on Vercel either way.
-  const [ordersByAct, appendicesByAct] = await Promise.all([
+  const [ordersByAct, appendicesByAct, schedulesByAct] = await Promise.all([
     listOrdersByAct(),
     listAppendicesByAct(),
+    listSchedulePaths(),
   ]);
 
   const orderEntries: MetadataRoute.Sitemap = [...ordersByAct].flatMap(([slug, orders]) => [
@@ -54,6 +56,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     })),
   ]);
+
+  // Schedules that are tables or lists rather than sections — the Limitation
+  // Act's, and the Constitution's Seventh, whose three Lists answer "who may
+  // legislate on this?" and are among the most searched-for text in the
+  // document. Nothing else links to them deeply.
+  const scheduleEntries: MetadataRoute.Sitemap = [...schedulesByAct].flatMap(([slug, schedules]) =>
+    schedules.map((schedule) => ({
+      url: `${SITE_URL}/acts/${slug}/schedule/${schedule.slug}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
+  );
 
   const appendixEntries: MetadataRoute.Sitemap = [...appendicesByAct].flatMap(([slug, appendices]) => [
     {
@@ -84,6 +98,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...staticEntries,
     ...orderEntries,
     ...appendixEntries,
+    ...scheduleEntries,
     ...acts.map((act) => ({
       url: `${SITE_URL}/acts/${act.slug}`,
       // An act page is a list of its sections, so it is as fresh as its

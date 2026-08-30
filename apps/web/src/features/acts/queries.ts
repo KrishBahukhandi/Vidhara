@@ -443,10 +443,56 @@ export async function listSchedulesByAct(slug: string): Promise<ActSchedule[]> {
   return data;
 }
 
+/** One entry of a list-shaped schedule (0023) — the Seventh Schedule's Lists. */
+export interface ScheduleEntry {
+  listNumber: string;
+  listTitle: string;
+  listOrder: number;
+  number: string;
+  body: string;
+}
+
+interface EntryRow {
+  list_number: string;
+  list_title: string;
+  list_order: number;
+  number: string;
+  body: string;
+}
+
+/**
+ * The shape this one query needs, spelled out.
+ *
+ * `Tables<>` is generated from the LIVE schema, so a table introduced by a
+ * migration the generator has not seen is unknown to it. Declaring the chain
+ * here keeps the call site checked rather than reaching for `any`; delete it
+ * once 0023 has been through `generate_typescript_types`.
+ */
+interface EntryQuery {
+  from(table: "act_schedule_entries"): {
+    select(columns: string): {
+      eq(
+        column: string,
+        value: string,
+      ): {
+        order(
+          column: string,
+          options: { ascending: boolean },
+        ): {
+          order(
+            column: string,
+            options: { ascending: boolean },
+          ): Promise<{ data: EntryRow[] | null; error: unknown }>;
+        };
+      };
+    };
+  };
+}
+
 export async function getSchedule(
   actSlug: string,
   scheduleSlug: string,
-): Promise<{ schedule: ActSchedule; articles: ScheduleArticle[] } | null> {
+): Promise<{ schedule: ActSchedule; articles: ScheduleArticle[]; entries: ScheduleEntry[] } | null> {
   if (!isContentConfigured) return null;
   const client = getServerClient();
   const { data: schedule, error } = await client
@@ -465,11 +511,28 @@ export async function getSchedule(
     .order("sort_key", { ascending: true });
   if (articlesError) throw new Error(`getSchedule articles: ${articlesError.message}`);
 
+  // A schedule is columnar (0011) or entry-shaped (0023), never both, so one
+  // of these comes back empty and the page renders whichever it got.
+  const { data: entryRows, error: entriesError } = await (client as unknown as EntryQuery)
+    .from("act_schedule_entries")
+    .select("list_number, list_title, list_order, number, body")
+    .eq("schedule_id", schedule.id)
+    .order("list_order", { ascending: true })
+    .order("sort_key", { ascending: true });
+  if (entriesError) throw new Error(`getSchedule entries: ${String(entriesError)}`);
+
   return {
     schedule,
     articles: articles.map((article) => ({
       ...article,
       rows: article.rows as unknown as ScheduleRow[],
+    })),
+    entries: (entryRows ?? []).map((row) => ({
+      listNumber: row.list_number,
+      listTitle: row.list_title,
+      listOrder: row.list_order,
+      number: row.number,
+      body: row.body,
     })),
   };
 }
@@ -946,4 +1009,30 @@ export async function actHasOwnSchedule(actSlug: string): Promise<boolean> {
     .select("id", { count: "exact", head: true })
     .eq("act_slug", actSlug);
   return !error && (count ?? 0) > 0;
+}
+
+/**
+ * Every published schedule's canonical path, keyed by act.
+ *
+ * One query for the whole corpus, not one per act — the shape D-073 settled on
+ * for the sitemap after 72 per-act round trips walked it into Next's
+ * 60-second export limit. Distinct from listSchedulesByAct(slug), which serves
+ * one act's page.
+ */
+export async function listSchedulePaths(): Promise<Map<string, { slug: string }[]>> {
+  const byAct = new Map<string, { slug: string }[]>();
+  if (!isContentConfigured) return byAct;
+  const { data, error } = await getServerClient()
+    .from("act_schedules")
+    .select("slug, acts!inner(slug)")
+    .eq("review_status", "published")
+    .order("sort_order", { ascending: true });
+  if (error) throw new Error(`listSchedulesByAct: ${error.message}`);
+  for (const row of data ?? []) {
+    const act = (row.acts as unknown as { slug: string }).slug;
+    const list = byAct.get(act) ?? [];
+    list.push({ slug: row.slug as string });
+    byAct.set(act, list);
+  }
+  return byAct;
 }

@@ -18,6 +18,8 @@ import process from "node:process";
 
 import { emitSqlFromRaw } from "./emit-sql";
 import { publishClassificationRules, publishClassifications } from "./publish-classifications";
+import { publishListSchedule } from "./publish-list-schedule";
+import { parseListSchedule } from "./sources/list-schedule";
 import { parseOffenceRules, parseOffenceSchedule } from "./sources/offence-schedule";
 import { publishBundle, publishSchedule, type PublishOptions } from "./publish";
 import { scheduleBundleSchema } from "./schema";
@@ -128,6 +130,92 @@ async function classifyOffencesCommand(inputPath: string, flags: string[]): Prom
   );
 }
 
+/**
+ * A schedule that is a numbered list grouped into named lists — the
+ * Constitution's Seventh, and the shape several of its others take too.
+ */
+async function listScheduleCommand(inputPath: string, flags: string[]): Promise<void> {
+  const at = (flag: string): string | undefined => {
+    const i = flags.indexOf(flag);
+    return i >= 0 ? flags[i + 1] : undefined;
+  };
+  const actSlug = at("--act");
+  const slug = at("--slug");
+  const title = at("--title");
+  const heading = at("--heading");
+  const endsBefore = at("--ends-before");
+  if (!actSlug || !slug || !title || !heading || !endsBefore) {
+    console.error(
+      "Usage: ingest list-schedule <bbox.xhtml> --act constitution --slug seventh " +
+        "--title 'Seventh Schedule' --heading SEVENTHSCHEDULE --ends-before EIGHTHSCHEDULE " +
+        "[--subtitle '…'] [--sort-order 7] [--min-height 7.7] [--max-height 11] " +
+        "[--publish] [--status published] [--provenance '…']",
+    );
+    process.exit(1);
+  }
+
+  const result = parseListSchedule(readFileSync(inputPath, "utf8"), {
+    heading: new RegExp(heading, "i"),
+    endsBefore: new RegExp(endsBefore, "i"),
+    minHeight: at("--min-height") ? Number(at("--min-height")) : undefined,
+    maxHeight: at("--max-height") ? Number(at("--max-height")) : undefined,
+  });
+  for (const d of result.diagnostics) console.log(`  \u00b7 ${d}`);
+  console.log(`\nAuthority: ${result.authority ?? "(none found)"}`);
+  const total = result.lists.reduce((n, l) => n + l.entries.length, 0);
+  console.log(`${result.lists.length} list(s), ${total} entries.`);
+  for (const list of result.lists) {
+    const first = list.entries[0];
+    console.log(`   List ${list.number} — ${list.title}: ${list.entries.length}` +
+      (first ? `, opening "${first.number}. ${first.text.slice(0, 54)}…"` : ""));
+  }
+
+  // The gates. A list schedule that parsed to nothing, or whose numbering does
+  // not ascend, is a parse that went wrong somewhere it cannot be seen.
+  const complaints: string[] = [];
+  if (result.lists.length === 0) complaints.push("no lists found");
+  for (const list of result.lists) {
+    if (list.entries.length === 0) complaints.push(`List ${list.number} has no entries`);
+    const seen = new Set<string>();
+    for (const entry of list.entries) {
+      if (seen.has(entry.number)) complaints.push(`List ${list.number}: duplicate entry ${entry.number}`);
+      seen.add(entry.number);
+      if (!entry.text.trim()) complaints.push(`List ${list.number}: entry ${entry.number} is empty`);
+      if (/Subs\. by|Ins\. by|w\.e\.f\./.test(entry.text)) {
+        complaints.push(`List ${list.number}: entry ${entry.number} retains footnote apparatus`);
+      }
+    }
+  }
+  if (complaints.length > 0) {
+    for (const c of complaints) console.error(`  \u2716 ${c}`);
+    console.error("\nRefusing to publish — the parse did not validate.");
+    process.exit(1);
+  }
+
+  if (!flags.includes("--publish")) {
+    console.log("\nDry run. Pass --publish to store this.");
+    return;
+  }
+  const statusFlag = at("--status") ?? "draft";
+  if (!["draft", "reviewed", "published"].includes(statusFlag)) {
+    console.error(`Invalid --status "${statusFlag}"`);
+    process.exit(1);
+  }
+  const outcome = await publishListSchedule(result, {
+    actSlug,
+    slug,
+    title,
+    subtitle: at("--subtitle"),
+    sortOrder: Number(at("--sort-order") ?? 0),
+    reviewStatus: statusFlag as "draft" | "reviewed" | "published",
+    provenance: at("--provenance") ?? `${title}, automated parse`,
+  });
+  console.log(
+    `Published: ${outcome.entries} entries of the ${title} to ${actSlug.toUpperCase()}` +
+      (outcome.removed > 0 ? `; ${outcome.removed} stale entr(ies) removed` : ""),
+  );
+}
+
 function printReport(errors: string[], warnings: string[]): void {
   for (const error of errors) console.error(`  ✖ ${error}`);
   for (const warning of warnings) console.warn(`  ⚠ ${warning}`);
@@ -203,18 +291,23 @@ async function main(): Promise<void> {
   if (
     !command ||
     !bundlePath ||
-    !["validate", "publish", "parse-gazette", "parse-ncrb", "parse-schedule", "publish-schedule", "classify-offences", "emit-sql"].includes(
+    !["validate", "publish", "parse-gazette", "parse-ncrb", "parse-schedule", "publish-schedule", "classify-offences", "list-schedule", "emit-sql"].includes(
       command,
     )
   ) {
     console.error(
-      "Usage: ingest <parse-gazette|parse-schedule|classify-offences|validate|publish|publish-schedule|emit-sql> <file> [--meta m.json] [--out f] [--status s] [--publish-act]",
+      "Usage: ingest <parse-gazette|parse-schedule|list-schedule|classify-offences|validate|publish|publish-schedule|emit-sql> <file> [--meta m.json] [--out f] [--status s] [--publish-act]",
     );
     process.exit(1);
   }
 
   if (command === "classify-offences") {
     await classifyOffencesCommand(bundlePath, flags);
+    return;
+  }
+
+  if (command === "list-schedule") {
+    await listScheduleCommand(bundlePath, flags);
     return;
   }
 

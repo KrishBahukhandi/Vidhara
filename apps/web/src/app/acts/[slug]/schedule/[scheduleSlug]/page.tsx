@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { ScheduleEntries } from "@/components/schedule-entries";
 import { ScheduleTable } from "@/components/schedule-table";
 import { PageShell } from "@/components/site-chrome";
 import { getActBySlug, getSchedule } from "@/features/acts/queries";
@@ -35,7 +36,9 @@ export default async function SchedulePage({ params }: { params: Promise<Params>
   const [act, result] = await Promise.all([getActBySlug(slug), getSchedule(slug, scheduleSlug)]);
   if (!act || !result) notFound();
 
-  const { schedule, articles } = result;
+  const { schedule, articles, entries } = result;
+  // A schedule is columnar (0011) or entry-shaped (0023), never both.
+  const isEntryShaped = entries.length > 0;
 
   return (
     <PageShell>
@@ -58,7 +61,7 @@ export default async function SchedulePage({ params }: { params: Promise<Params>
         ) : null}
       </h1>
       <p className="mt-1 text-small text-text-muted">
-        {act.abbreviation} · {articles.length} articles
+        {act.abbreviation} · {isEntryShaped ? `${entries.length} entries` : `${articles.length} articles`}
         {schedule.authority_note ? ` · [${schedule.authority_note}]` : ""}
       </p>
 
@@ -72,7 +75,9 @@ export default async function SchedulePage({ params }: { params: Promise<Params>
         </p>
       ) : null}
 
-      {articles.length === 0 ? (
+      {isEntryShaped ? (
+        <ScheduleEntries entries={entries} />
+      ) : articles.length === 0 ? (
         <p className="mt-8 text-body text-text-muted">
           This schedule is still being ingested.
         </p>
@@ -80,10 +85,19 @@ export default async function SchedulePage({ params }: { params: Promise<Params>
         <ScheduleTable articles={articles} columnLabels={schedule.column_labels} />
       )}
 
+      {/* The closing note is about what the schedule does NOT settle, so it is
+          per-schedule: a limitation period is a starting point for a
+          computation, while a legislative entry is a starting point for a
+          question about competence that the courts have spent 75 years on. */}
       <p className="mt-8 text-small text-text-faint">
-        Reproduced from the official India Code text. A period is only a starting point — sections 4
-        to 24 of the Act govern how it is computed, and the {act.abbreviation} sections page carries
-        those. Verify against the bare act before filing.
+        {isEntryShaped
+          ? `Reproduced from the official India Code text. An entry names a subject; whether a
+             particular law falls within it is a question of pith and substance that the courts
+             decide, and articles 246 to 254 govern what happens when Lists overlap. Verify against
+             the bare text before relying on it.`
+          : `Reproduced from the official India Code text. A period is only a starting point —
+             sections 4 to 24 of the Act govern how it is computed, and the ${act.abbreviation}
+             sections page carries those. Verify against the bare act before filing.`}
       </p>
     </PageShell>
   );

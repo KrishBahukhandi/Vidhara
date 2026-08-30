@@ -269,8 +269,22 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
       wherever footnotes dominate the page. Every other print keeps the defaults, byte-identically.
       Faithful differences, checked against the print: art. 238 is not set as a numbered article in
       this consolidation and there is no PART VIII heading, so there are 47 divisions, not 48.
-- [ ] **The Constitution's twelve Schedules are still out of scope**, as they were in the 2020 pass.
-      The Seventh (the Union, State and Concurrent Lists) is the one readers actually ask for.
+- [x] **The Seventh Schedule is live (D-087) — 219 entries**: 101 Union, 66 State, 52 Concurrent, at
+      /acts/constitution/schedule/seventh. It answers "who may legislate on X?", which is the
+      question the Constitution gets asked most, and the page is built as a filter rather than a
+      document: type "education" and the answer is Concurrent List entry 25, with the State List
+      shown as empty so the reader can see where the subject actually sits.
+      New parser (`list-schedule.ts`) and table (0023 `act_schedule_entries`) under the existing
+      `act_schedules` parent — the Limitation Act's article table could not serve, being NOT NULL on
+      three columns this schedule does not have and keyed in a way that collides three times over
+      once numbering restarts per List. All 11 omitted entries are kept with the print's own
+      asterisks, and **no List has a gap in its numbering**.
+      Schedules also went into the sitemap, which had never carried them, so the Limitation Act's
+      Schedule had been unfindable too.
+- [ ] **Eleven Schedules remain.** The Eighth (languages), Ninth (laws immune from challenge), Tenth
+      (anti-defection) and Twelfth (municipal functions) are list-shaped and should need only the
+      D-087 parser with different boundaries. The First (States and territories), Second (salaries)
+      and Sixth (tribal areas) are tables and will need their own shapes.
 - [ ] **SCST §23 and PCA §31 absorb their Act's trailing Statement of Objects and Reasons.** The
       last section runs on into the appendix. MV §217A and HMA §30 were fixed by D-085/D-086; these
       two remain and need their acts re-ingested.

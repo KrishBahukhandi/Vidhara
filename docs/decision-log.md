@@ -767,6 +767,49 @@ Seventh's legislative lists, which is the one readers ask for. SCST §23 and PCA
 their Act's trailing Statement of Objects and Reasons; MV and HMA were fixed here and by D-085.
 
 
+**D-087 · 2026-08-30 · The Seventh Schedule is a lookup, not a document, so the filter is the page.**
+Context: D-086 brought the Constitution's articles up to the 2026 consolidation and left its twelve
+Schedules out of scope, as the 2020 pass had. The Seventh is the one that matters most: three Lists
+— Union, State, Concurrent — of the subjects Parliament and the State Legislatures may legislate on.
+Every question about who may make a law on a given subject is answered by an entry number in one of
+them, and the corpus had none of it.
+Decision: a new parser (`list-schedule.ts`) for a schedule that is a numbered list grouped into
+named lists, and a new table (0023, `act_schedule_entries`) under the existing `act_schedules`
+parent. **Not act_schedule_articles.** That table was built for the Limitation Act (D-036) and is
+shaped hard around its three columns — description, period and commencement are all NOT NULL, and
+its key is (schedule, number). This schedule has ONE column of text and repeats its numbering in
+each List: entry 1 is defence in List I, public order in List II and criminal law in List III, so
+that key collides three ways and two of three columns would be stored empty. The same reasoning
+D-036 used to keep the Limitation Schedule out of act_sections, one level down. The PARENT is
+shared, so one act can carry both shapes and the reader reaches both at the same URL pattern.
+Parsing was straightforward once D-086 had measured the print: four type tiers that do not overlap
+— 8.10pt body, 7.24pt footnotes, 5.40pt superscripts, and the repository's watermark at 11.79pt and
+above — so a height window separates them exactly. Two things did not fall out:
+ · **An omitted entry is set two ways in the same schedule.** "[92. * * * * * *]" carries a full
+   stop and "[33* * * * *]" does not. Requiring one dropped six entries the print does carry — List
+   I entry 33 and List II entries 11, 19, 20, 29 and 36 — and left a gap in the numbering with
+   nothing to explain it, which is the one thing storing an omitted entry is for. All 11 omitted
+   entries are now kept with the print's own asterisks, and **no List has a gap in its numbering**.
+ · **The leading-apparatus strip was eating the number.** Allowing a digit run before an asterisk as
+   well as before a bracket turned "[33* * * * *]" into "* * * *]", which opened nothing. A digit run
+   is stripped only when a bracket follows it.
+Result: **219 entries live** — 101 in the Union List, 66 in the State List, 52 in the Concurrent
+List — at /acts/constitution/schedule/seventh.
+**The page is a filter, not a document.** Nobody reads 219 entries in order; the question is always
+"who may legislate on X?". Typing "education" answers it in one step: Concurrent List entry 25, with
+the Union List's related entries 64 and 66 alongside and the State List shown as empty, so it is
+clear where the subject actually sits. Client-side, because the whole set is ~90KB that has already
+been sent and a round trip per keystroke would be slower and would break with the network. An
+omitted entry renders muted and labelled rather than at full weight, where an asterisk row reads as
+missing data instead of as the omission it is.
+Schedules also went into the sitemap, which had never carried them — so the Limitation Act's
+Schedule had been unfindable too. 5,728 URLs now.
+Revisit: eleven Schedules remain. The Eighth (languages), Ninth (laws immune from challenge), Tenth
+(anti-defection) and Twelfth (municipal functions) are list-shaped and should need only the new
+parser with different boundaries; the First (States and territories), Second (salaries) and Sixth
+(tribal areas administration) are tables and will need their own shapes.
+
+
 ---
 
 *Template for future entries:*
