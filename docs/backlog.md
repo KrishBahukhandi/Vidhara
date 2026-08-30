@@ -255,12 +255,25 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
       with no preceding full stop matching nothing (10 sections, 4 acts).
       Six acts were re-fetched — India Code has migrated to indiacode.gov.in and split every Act
       into per-section items; whole-Act PDFs are in the CENTRAL community's "Acts" collection.
-- [ ] **Constitution is the last act with inline footnotes** (1 section). Fixing it means
-      re-ingesting from the **2026 English consolidation** now on India Code, which would also close
-      the 105th/106th Amendment gap recorded above — worth doing deliberately, not as a side effect.
-- [ ] **MV §217A, SCST §23 and PCA §31 absorb their Act's trailing Statement of Objects and
-      Reasons.** The last section of an act runs on into the appendix. HMA §30 was fixed by D-085's
-      re-ingest; these three remain.
+- [x] **Constitution re-ingested from the 2026 English consolidation (D-086) — and the corpus now
+      has NO inline footnotes at all, 0 of 5,614 sections.** 504 articles against 487.
+      **The 105th and 106th Amendments are in**: arts. 330A, 332A and 334A (reservation of seats for
+      women), and art. 342A grows from 729 to 1,221 characters. Arts. 243I and 243O — the Finance
+      Commission for Panchayats, and the bar to interference by courts in electoral matters — were
+      simply missing from the 2020 parse. Arts. 379–391 are now carried as the print carries them.
+      The re-ingest exercised four constants that were all measured on a 9–10pt corpus: this print
+      is set on a 360×504 page with 8.10–8.96pt body, 6.80–7.24pt footnotes, 6.26pt small-caps
+      heading text and 5.4pt superscripts. The body and word floors are now passed per act
+      (`--min-body-height 7.7 --min-word-height 6`) rather than derived — deriving them fixed the
+      Constitution and broke the IPC, ICA and TP, because a page's modal height IS the footnote tier
+      wherever footnotes dominate the page. Every other print keeps the defaults, byte-identically.
+      Faithful differences, checked against the print: art. 238 is not set as a numbered article in
+      this consolidation and there is no PART VIII heading, so there are 47 divisions, not 48.
+- [ ] **The Constitution's twelve Schedules are still out of scope**, as they were in the 2020 pass.
+      The Seventh (the Union, State and Concurrent Lists) is the one readers actually ask for.
+- [ ] **SCST §23 and PCA §31 absorb their Act's trailing Statement of Objects and Reasons.** The
+      last section runs on into the appendix. MV §217A and HMA §30 were fixed by D-085/D-086; these
+      two remain and need their acts re-ingested.
 
 ## 6. Product gaps named in their own entries
 

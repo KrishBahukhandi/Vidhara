@@ -181,6 +181,16 @@ function longestAscendingRun(entries: string[]): string[] {
 export interface StripOptions {
   /** Fraction of page height below which a footnote block may begin. */
   pageFoot?: number;
+  /**
+   * What counts as body height, matching the parser's own floor.
+   *
+   * This filter only ever removes lines the PARSER would read as body — a
+   * footnote set smaller than that is already handled by the footnote latch and
+   * must be left alone. So the two have to agree: with 8.6 hardcoded here and
+   * the parser running at 7.7 for the 2026 Constitution, this would have gone
+   * looking for footnotes among lines the parser had already excluded.
+   */
+  minBodyHeight?: number;
   /** The PDF brackets its footnotes with drawn rules — see RULE_LINE. */
   ruleDelimited?: boolean;
 }
@@ -190,6 +200,7 @@ export function stripBodyHeightFootnotes(
   options: StripOptions = {},
 ): { filtered: string; dropped: string[] } {
   const pageFoot = options.pageFoot ?? DEFAULT_PAGE_FOOT;
+  const bodyHeight = options.minBodyHeight ?? MIN_BODY_HEIGHT;
   const dropped: string[] = [];
   const parts = xhtml.split(/(<page\b)/);
   const out: string[] = [];
@@ -204,7 +215,7 @@ export function stripBodyHeightFootnotes(
     let filtered = chunk;
     let inFootnotes = false;
     for (const [y, row] of [...groupRows(chunk).entries()].sort((a, b) => a[0] - b[0])) {
-      if (Math.max(...row.map((w) => w.height)) < MIN_BODY_HEIGHT) continue;
+      if (Math.max(...row.map((w) => w.height)) < bodyHeight) continue;
       const text = row.map((w) => w.text).join(" ").replace(/\s+/g, " ").trim();
 
       if (options.ruleDelimited) {

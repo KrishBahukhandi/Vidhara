@@ -714,6 +714,59 @@ effect of a footnote fix. Separately, MV §217A, SCST §23 and PCA §31 still ab
 trailing Statement of Objects and Reasons.
 
 
+**D-086 · 2026-08-30 · The Constitution was not a footnote fix. It was a print set smaller than every constant we had.**
+Context: D-085 left the Constitution as the last act carrying amendment footnotes inside its statute
+text, and the backlog separately recorded that the ingested copy was the consolidation "as on 9th
+December 2020" — the 105th and 106th Amendments not incorporated. India Code now publishes a 2026
+English consolidation, which closes both at once. Re-ingesting it turned out to exercise every
+type-size assumption in the parser.
+**The 2026 print is set on a 360×504 page**, not the 595×842 the rest of the corpus uses, and its
+type is scaled to match: body 8.96pt on some pages and 8.10pt on others, footnotes 6.80–7.24pt,
+small-caps chapter headings 8.10pt for the capitals and 6.26pt for the rest, superscripts 5.4–5.8pt.
+Four constants, each measured on a 9–10pt corpus, each wrong here:
+ · **MIN_BODY_HEIGHT clamps UP to 8.6**, which is above the 8.10pt pages. Those pages were dropped
+   whole — the Preamble and the enactment formula among them — so `started` never became true and
+   all 470 pages parsed as nothing at all.
+ · **MIN_WORD_HEIGHT drops everything under 7** as a superscript marker. Here 6.26pt is the body of
+   a small-caps heading: "C HAPTER I.—T HE E XECUTIVE" reached the parser as "C I.—T E X", and all
+   22 chapter divisions were lost.
+ · **SCHEDULE_START was tested unstripped.** The Constitution opens its schedules "1 [FIRST
+   SCHEDULE" — an amendment marker and a bracket — so the heading was not seen and the parse ran a
+   hundred pages on through every Schedule, taking the Second Schedule's "PART C" and "PART D" for
+   divisions of the Act and pouring schedule text into article 395 (9,276 characters for a
+   238-character article).
+ · **SECTION_START allowed no space inside a number.** Article 243ZI is set "243 ZI." while every
+   neighbour is closed up, so it was read as more of 243ZH's definitions.
+Decision: make the two floors explicit per act rather than derived. Deriving them was tried first —
+bounding the clamp by the page's own modal height — and it fixed the Constitution while putting
+footnotes straight into the bodies of the IPC, the Contract Act and the Transfer of Property Act,
+whose footnote-heavy pages then measured 8.15pt. A page's modal height IS the footnote tier wherever
+footnotes dominate the page, so it cannot be the thing that decides what a footnote is. The floors
+are passed as `--min-body-height 7.7 --min-word-height 6`, checked by the same acceptance gates as
+`--page-foot`, and every other print keeps the defaults and parses byte-identically. The other two
+are ordinary fixes and apply everywhere.
+Result: **504 articles against 487, 47 divisions, and no inline footnotes anywhere in the corpus —
+0 of 5,614 sections.**
+ · **The 106th Amendment is in**: arts. 330A, 332A and 334A, reservation of seats for women. The
+   105th too — art. 342A goes from 729 characters to 1,221.
+ · **Articles 243I and 243O were simply missing** from the 2020 parse — the Finance Commission for
+   Panchayats, and the bar to interference by courts in electoral matters.
+ · Articles 379 to 391, the repealed transitional provisions, are now carried as the print carries
+   them, with their marginal notes and repeal citations.
+ · Two side effects of the schedule-heading fix, both good: the IT Act and the Motor Vehicles Act
+   stop at their schedules instead of absorbing them, and MV §217A — 6,588 characters of section
+   plus the Act's Statement of Objects and Reasons — is now 1,669 characters of section. It no
+   longer needs the `--accept-residue` D-085 gave it.
+Faithful differences from the 2020 edition, verified against the print and not defects: article 238
+is not set as a numbered article in this consolidation (the omitted Part VII is reduced to one
+bracketed line), and there is no PART VIII heading, so the corpus carries 47 divisions rather than
+48. Article 232's body is the substitution note the print gives it — "[232. Interpretation.—Articles
+230, 231 and 232 subs. by articles 230 and 231…]" — and is accepted as such by name.
+Revisit: the Schedules are still out of scope, as they were in 2020 — twelve of them, including the
+Seventh's legislative lists, which is the one readers ask for. SCST §23 and PCA §31 still absorb
+their Act's trailing Statement of Objects and Reasons; MV and HMA were fixed here and by D-085.
+
+
 ---
 
 *Template for future entries:*

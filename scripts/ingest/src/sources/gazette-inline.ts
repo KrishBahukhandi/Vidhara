@@ -113,7 +113,19 @@ function modalHeight(source: string): { modal: number; words: number } {
   return { modal, words };
 }
 
-const floorFor = (modal: number): number => Math.max(MIN_BODY_HEIGHT, modal * BODY_HEIGHT_FRACTION);
+/**
+ * The floor for one page, given its body type size.
+ *
+ * `floor` overrides the 8.6 clamp for a document whose body type is genuinely
+ * SMALLER than the corpus 8.6 was measured on — see InlineParseOptions. It
+ * cannot be derived, because the thing that would derive it (a page's modal
+ * height) is the footnote tier on any page the footnotes dominate: bounding
+ * the clamp by the page's own modal fixed the Constitution and put footnotes
+ * straight into the bodies of the IPC, the Contract Act and the Transfer of
+ * Property Act, whose footnote-heavy pages then measured 8.15pt.
+ */
+const floorFor = (modal: number, floor = MIN_BODY_HEIGHT): number =>
+  Math.max(floor, modal * BODY_HEIGHT_FRACTION);
 /** Superscript reference markers are ~6.3pt — below every real text tier.
  * Words under this height are dropped unconditionally. */
 const MIN_WORD_HEIGHT = 7;
@@ -435,7 +447,13 @@ const TITLE_APPARATUS = /[[\]*\d]+/g;
 // markers strip the opening brackets, but the one AFTER the period stayed, and
 // the title then began with "]" — which failed the title-shape test and dropped
 // the section.
-const SECTION_START = /^(\d{1,3}[A-Z]{0,2})\s?\.\s*\]?\s*(\S.*)$/;
+// A SPACE may sit inside the number, between the digits and the letter suffix.
+// The 2026 Constitution sets article 243ZI as "243 ZI. Incorporation of
+// co-operative societies.—…" while every one of its neighbours is closed up
+// ("243ZH."), so the article matched nothing and was read as more of 243ZH's
+// definitions. Normalised away below; the plausibility guard downstream is
+// unchanged, so a wrapped cross-reference still cannot open a section.
+const SECTION_START = /^(\d{1,3}\s?[A-Z]{0,2})\s?\.\s*\]?\s*(\S.*)$/;
 // Amendment brackets can eat the number's period ("1[17 “Government”.—…" →
 // "17 “Government”.—…"), and the print sometimes simply drops it: the Juvenile
 // Justice Act's section 86, substituted in 2021, is set as "[86 Classification
@@ -744,6 +762,34 @@ export interface InlineParseOptions {
    * legacy behavior that dropped illustrations along with footnotes — used by
    * the regression parity check when re-ingesting an already-published act. */
   keepIllustrations?: boolean;
+  /**
+   * Smallest word height that counts as body type, replacing the measured 8.6.
+   *
+   * Only for a print whose body is set SMALLER than 8.6, which in this corpus
+   * is the 2026 Constitution alone: it is typeset on a 360×504 page and varies
+   * page by page — 8.96pt on page 34, 8.10pt on page 35, footnotes 7.24pt
+   * throughout. Clamped up to 8.6 every 8.10pt page fell under the floor and
+   * was dropped whole, Preamble and enactment formula included, and the Act
+   * parsed to four articles of 470 with the rest poured into article 4.
+   *
+   * Opt-in per act rather than derived, for the reason floorFor records, and
+   * checked the same way --page-foot is: by the acceptance gates in
+   * repair-footnote-act, against the Act's own arrangement of sections.
+   */
+  minBodyHeight?: number;
+  /**
+   * Smallest word height that is text at all, replacing the measured 7.
+   *
+   * 7 separates a superscript reference marker (~6.3pt) from every real text
+   * tier — in a 9–10pt print. The 2026 Constitution sets its chapter headings
+   * in small caps with a drop cap: "C HAPTER I.—T HE E XECUTIVE" is 8.10pt for
+   * the capitals and 6.26pt for the rest, while its actual superscripts are
+   * 5.4–5.8pt. At 7 the 6.26pt letters were dropped before lines were even
+   * grouped, so the heading reached the parser as "C I.—T E X" and could not be
+   * recovered by any rule: all 22 chapter divisions were lost, and the Act
+   * kept only its Parts.
+   */
+  minWordHeight?: number;
 }
 
 export function parseInlineAct(
@@ -751,6 +797,8 @@ export function parseInlineAct(
   options: InlineParseOptions = {},
 ): GazetteParseResult {
   const keepIllustrations = options.keepIllustrations ?? true;
+  const bodyFloor = options.minBodyHeight;
+  const wordFloor = options.minWordHeight ?? MIN_WORD_HEIGHT;
   const diagnostics: string[] = [];
   const sections: ParsedSection[] = [];
   const chapters: ParsedChapter[] = [];
@@ -1163,7 +1211,7 @@ export function parseInlineAct(
 
   const pages = xhtml.split(/<page /).slice(1);
   const stamps = watermarkTokens(pages);
-  const documentFloor = floorFor(modalHeight(xhtml).modal);
+  const documentFloor = floorFor(modalHeight(xhtml).modal, bodyFloor);
 
   for (const pageXml of pages) {
     if (ended) break;
@@ -1171,12 +1219,12 @@ export function parseInlineAct(
     let footnotesStarted = false;
     const page = modalHeight(pageXml);
     const minBodyHeight =
-      page.words >= MIN_PAGE_WORDS_TO_CALIBRATE ? floorFor(page.modal) : documentFloor;
+      page.words >= MIN_PAGE_WORDS_TO_CALIBRATE ? floorFor(page.modal, bodyFloor) : documentFloor;
     const words: Word[] = [];
     for (const m of pageXml.matchAll(WORD_TAG)) {
       const yMin = Number(m[2]);
       const yMax = Number(m[4]);
-      if (yMax - yMin < MIN_WORD_HEIGHT) continue; // drop superscript markers
+      if (yMax - yMin < wordFloor) continue; // drop superscript markers
       // Page stamps are not statute text at any size — see watermarkTokens.
       if (stamps.has(`${m[5] ?? ""}|${Math.round((yMax - yMin) * 100) / 100}`)) continue;
       words.push({ xMin: Number(m[1]), xMax: Number(m[3]), yMin, baseline: yMax, height: yMax - yMin, text: decodeEntities(m[5] ?? "") });
@@ -1256,6 +1304,27 @@ export function parseInlineAct(
       // and protects the defect. Body text has ordinary word spacing.
       if (flat && /[a-z]/.test(flat)) recordLineWords(flat);
 
+      // THE ENACTMENT FORMULA IS A STRUCTURAL MARKER, not statute text, so
+      // whether the print happens to set it in body type is beside the point.
+      // The 2026 Constitution sets its Preamble page at 8.10pt against 8.96pt
+      // for the rest of the document — under the floor — so the formula was
+      // read as small type, `started` never became true, and all 470 pages
+      // parsed as nothing at all. Tested on the full line for that reason. The
+      // pattern is specific enough ("ENACT AND GIVE TO OURSELVES", "enacted by
+      // Parliament") that no contents page or body sentence reaches it.
+      if (!started && ENACTED_START.test(fullLine)) {
+        started = true;
+        // Adopt a first-division heading printed just above the formula.
+        if (preambleDivision && preambleDivisionAge <= PREAMBLE_DIVISION_MAX_LINES) {
+          pendingChapterNumber = preambleDivision.number;
+          pendingChapterKind = preambleDivision.kind;
+          pendingChapterTitle = preambleDivision.title;
+          sawNumberedDivision = true;
+        }
+        preambleDivision = null;
+        continue;
+      }
+
       const isSmallLine = !flat;
       if (isSmallLine) {
         const full = fullLine;
@@ -1312,18 +1381,6 @@ export function parseInlineAct(
       if (footnotesStarted) continue;
 
       if (!started) {
-        if (ENACTED_START.test(flat)) {
-          started = true;
-          // Adopt a first-division heading printed just above the formula.
-          if (preambleDivision && preambleDivisionAge <= PREAMBLE_DIVISION_MAX_LINES) {
-            pendingChapterNumber = preambleDivision.number;
-            pendingChapterKind = preambleDivision.kind;
-            pendingChapterTitle = preambleDivision.title;
-            sawNumberedDivision = true;
-          }
-          preambleDivision = null;
-          continue;
-        }
         const above = normalizeChapterTitle(flat.replace(LEADING_MARKERS, ""));
         const bare = CHAPTER_HEADING.exec(above);
         const inline = bare ? null : CHAPTER_HEADING_INLINE.exec(above);
@@ -1355,7 +1412,13 @@ export function parseInlineAct(
         ended = true;
         break;
       }
-      if (!stateAmendmentMode && SCHEDULE_START.test(flat)) {
+      // Marker-stripped, because an amendment can bracket the heading itself.
+      // The 2026 Constitution opens its schedules with "1 [FIRST SCHEDULE" —
+      // an amendment marker and a bracket — so the heading was not recognised
+      // and the parse ran a hundred pages on through every Schedule, taking
+      // the Second Schedule's "PART C" and "PART D" for divisions of the Act
+      // and pouring schedule text into article 395.
+      if (!stateAmendmentMode && SCHEDULE_START.test(flat.replace(LEADING_MARKERS, ""))) {
         diagnostics.push(`stopped at schedules: "${flat.slice(0, 40)}"`);
         ended = true;
         break;
@@ -1608,8 +1671,10 @@ export function parseInlineAct(
 
       const match = SECTION_START.exec(headline) ?? SECTION_START_NODOT.exec(headline);
       if (match?.[1]) {
-        const base = parseInt(match[1], 10);
-        const key = deriveSortKey(match[1]);
+        // "243 ZI" is article 243ZI — see SECTION_START.
+        const label = match[1].replace(/\s+/g, "");
+        const base = parseInt(label, 10);
+        const key = deriveSortKey(label);
         // Run-in headings always continue with a Title ("16. Equality of…",
         // "[31. Compulsory…", "31. “…”"). A number at line start followed by
         // lowercase (or nothing) is a WRAPPED cross-reference ("…of article\n
@@ -1621,15 +1686,15 @@ export function parseInlineAct(
         if (plausible) {
           flush();
           lastBase = base;
-          lastNumber = match[1];
+          lastNumber = label;
           lastKey = key;
-          currentNumber = match[1];
+          currentNumber = label;
           currentChapterForSection = currentChapter;
           currentPartForSection = currentChapterPart;
           rawParts = [match[2] ?? ""];
           continue;
         }
-        if (key <= lastKey) diagnostics.push(`skipped non-increasing "${match[1]}." (footnote/list) near §${lastBase}`);
+        if (key <= lastKey) diagnostics.push(`skipped non-increasing "${label}." (footnote/list) near §${lastBase}`);
       }
 
       if (currentNumber !== null) rawParts.push(flat);

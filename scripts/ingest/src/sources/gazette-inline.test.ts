@@ -1731,3 +1731,98 @@ describe("body type size is measured, not assumed (D-085)", () => {
     expect(repealed?.bodyMd).toMatch(/^Rep\. by the Marine Insurance Act/);
   });
 });
+
+describe("a print set smaller than the corpus it was calibrated on (D-086)", () => {
+  const filler = (h: number, n: number) =>
+    Array.from({ length: n }, (_, i) => ({ h, text: `Filler sentence number ${i} of body text.` }));
+
+  it("finds the enactment formula even where it is set below the body floor", () => {
+    // The 2026 Constitution prints its Preamble page at 8.10pt against 8.96pt
+    // for the rest. Under the floor, the formula was read as small type,
+    // `started` never became true, and 470 pages parsed as nothing.
+    const xhtml = doc(
+      lines([
+        { h: 8.1, text: "IN OUR CONSTITUENT ASSEMBLY do HEREBY ADOPT, ENACT AND GIVE TO OURSELVES THIS CONSTITUTION." },
+        { h: 8.96, text: "1. Name and territory.—India, that is Bharat, shall be a Union of States." },
+        ...filler(8.96, 10),
+      ]),
+    );
+    expect(parseInlineAct(xhtml).sections.map((s) => s.number)).toEqual(["1"]);
+  });
+
+  it("keeps 8.10pt body when told the print is set that small", () => {
+    const specs = [
+      { h: 8.1, text: "It is hereby enacted as follows:—" },
+      { h: 8.1, text: "1. Short title.—This Act may be called the Test Act." },
+      ...filler(8.1, 10),
+      { h: 7.24, text: "1. Subs. by the Constitution (Forty-second Amendment) Act, 1976, s. 2." },
+    ];
+    // Default floor: 8.6 clamps above the body, so the page is dropped whole.
+    expect(parseInlineAct(doc(lines(specs))).sections).toHaveLength(0);
+    // Told the body is 8.10pt, the same page reads — and the 7.24pt footnote
+    // still does not, because it is below the floor it was given.
+    const { sections } = parseInlineAct(doc(lines(specs)), { minBodyHeight: 7.7 });
+    expect(sections).toHaveLength(1);
+    expect(sections[0]?.bodyMd).not.toMatch(/Forty-second Amendment/);
+  });
+
+  it("recovers a small-caps division heading whose letters sit under the word floor", () => {
+    // "C HAPTER I.—T HE E XECUTIVE" is 8.10pt for the capitals and 6.26pt for
+    // the rest. At the default word floor of 7 the small letters were dropped
+    // before lines were grouped, the heading arrived as "C I.—T E X", and all
+    // 22 chapter divisions of the Constitution were lost.
+    const heading = [
+      word(100, 78, 8.1, "C"),
+      word(108, 78, 6.26, "HAPTER"),
+      word(140, 78, 8.1, "I.—T"),
+      word(160, 78, 6.26, "HE"),
+      word(172, 78, 8.1, "E"),
+      word(180, 78, 6.26, "XECUTIVE"),
+    ].join("\n");
+    const body = lines(
+      [
+        { h: 8.1, text: "It is hereby enacted as follows:—" },
+        ...filler(8.1, 10),
+        { h: 8.1, text: "52. The President of India.—There shall be a President of India." },
+      ],
+      100,
+    );
+    const opts = { minBodyHeight: 7.7 };
+    expect(parseInlineAct(doc(heading + "\n" + body), opts).chapters).toHaveLength(0);
+    const { chapters } = parseInlineAct(doc(heading + "\n" + body), { ...opts, minWordHeight: 6 });
+    expect(chapters.map((c) => c.number)).toEqual(["I"]);
+  });
+
+  it("reads a section number with a space inside it", () => {
+    // The Constitution sets article 243ZI as "243 ZI." while every neighbour is
+    // closed up, so it matched nothing and was read as more of 243ZH's text.
+    const xhtml = doc(
+      lines([
+        PREAMBLE,
+        { h: 10, text: "1. Definitions.—In this Part, unless the context otherwise requires." },
+        { h: 10, text: "1 ZI. Incorporation of societies.—Subject to the provisions of this Part." },
+      ]),
+    );
+    const { sections } = parseInlineAct(xhtml);
+    expect(sections.map((s) => s.number)).toEqual(["1", "1ZI"]);
+    expect(sections[1]?.marginalNote).toBe("Incorporation of societies");
+  });
+
+  it("stops at a schedule heading the print has bracketed", () => {
+    // "1 [FIRST SCHEDULE" — an amendment marker and a bracket. Unrecognised,
+    // the parse ran a hundred pages on through every Schedule of the
+    // Constitution, taking the Second Schedule's "PART C" for a division.
+    const xhtml = doc(
+      lines([
+        PREAMBLE,
+        { h: 10, text: "1. Short title.—This Act may be called the Test Act." },
+        { h: 10, text: "[FIRST SCHEDULE" },
+        { h: 10, text: "PART C" },
+        { h: 10, text: "7. Provisions as to salaries.—There shall be paid such salaries." },
+      ]),
+    );
+    const { sections, chapters } = parseInlineAct(xhtml);
+    expect(sections.map((s) => s.number)).toEqual(["1"]);
+    expect(chapters).toHaveLength(0);
+  });
+});

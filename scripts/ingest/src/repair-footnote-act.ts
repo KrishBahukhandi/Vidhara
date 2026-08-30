@@ -24,7 +24,7 @@ const [slug, input, ...flags] = process.argv.slice(2);
 if (!slug || !input) {
   console.error(
     "Usage: tsx src/repair-footnote-act.ts <slug> <act.xhtml> [--rule-delimited] " +
-      "[--page-foot 0.65] [--accept-residue 1,60]",
+      "[--page-foot 0.65] [--accept-residue 1,60] [--min-body-height 7.7] [--min-word-height 6]",
   );
   process.exit(1);
 }
@@ -62,6 +62,27 @@ const ruleDelimited = flags.includes("--rule-delimited");
  * Named per run rather than stored, so an accepted defect stays visible in the
  * command that produced the bundle instead of becoming invisible.
  */
+/**
+ * Smallest word height that counts as body type, for a print set below 8.6.
+ *
+ * The 2026 Constitution alone needs it here: 8.96pt body on some pages, 8.10pt
+ * on others, footnotes 7.24pt throughout. See InlineParseOptions.minBodyHeight.
+ */
+const floorFlag = flags.indexOf("--min-body-height");
+const minBodyHeight = floorFlag >= 0 ? Number(flags[floorFlag + 1]) : undefined;
+if (floorFlag >= 0 && !(minBodyHeight! > 0 && minBodyHeight! < 20)) {
+  console.error("--min-body-height takes a point size, e.g. 7.7");
+  process.exit(1);
+}
+
+/** Smallest word height that is text at all — see InlineParseOptions. */
+const wordFlag = flags.indexOf("--min-word-height");
+const minWordHeight = wordFlag >= 0 ? Number(flags[wordFlag + 1]) : undefined;
+if (wordFlag >= 0 && !(minWordHeight! > 0 && minWordHeight! < 20)) {
+  console.error("--min-word-height takes a point size, e.g. 6");
+  process.exit(1);
+}
+
 const acceptFlag = flags.indexOf("--accept-residue");
 const accepted = acceptFlag >= 0 ? (flags[acceptFlag + 1] ?? "").split(",").filter(Boolean) : [];
 
@@ -74,9 +95,9 @@ if (pageFootFlag >= 0 && !(pageFoot! > 0 && pageFoot! < 1)) {
 
 const xhtml = readFileSync(input, "utf8");
 const expected = contentsSections(xhtml);
-const before = parseInlineAct(xhtml);
-const { filtered, dropped } = stripBodyHeightFootnotes(xhtml, { ruleDelimited, pageFoot });
-const after = parseInlineAct(filtered);
+const before = parseInlineAct(xhtml, { minBodyHeight, minWordHeight });
+const { filtered, dropped } = stripBodyHeightFootnotes(xhtml, { ruleDelimited, pageFoot, minBodyHeight });
+const after = parseInlineAct(filtered, { minBodyHeight, minWordHeight });
 
 console.log(`${slug}: dropped ${dropped.length} body-height footnote line(s) at the page foot`);
 console.log(`${slug}: sections ${before.sections.length} → ${after.sections.length}`);
