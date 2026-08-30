@@ -50,6 +50,28 @@ const FOOTNOTE =
  * way sections actually look is never removed.
  */
 const RUN_IN_HEADING = /^\d{1,3}[A-Z]{0,2}\.\s*[^―—–]{3,120}[.\]]\s*[―—–]/;
+/**
+ * A REPEALED section, which the India Code prints WITHOUT a run-in dash.
+ *
+ * The bracket closes the marginal note instead, in either of two placements:
+ *
+ *   48. [Execution barred in certain cases.] Rep. by the Limitation Act, 1963…
+ *   [130A. Transfer of policy of marine insurance.] Rep. by the Marine…
+ *
+ * With no dash, RUN_IN_HEADING does not protect them, and the footnote shape
+ * matches both — a number, a full stop, and "Rep." further along. CPC §48 sits
+ * at 0.80 of its page and was stripped outright.
+ *
+ * No footnote has this shape. A footnote's number is followed straight away by
+ * the amendment verb ("1. Subs. by Act 3 of 1921…"); it never carries a
+ * bracketed marginal note, and the bracket must close on a full stop for this
+ * to match at all.
+ */
+const REPEALED_HEADING =
+  /^\[?\s*\d{1,3}[A-Z]{0,2}\.\s*\[?\s*[^[\]]{3,120}\.\s*\]\s*(Rep\b|Omitted|Repealed)/i;
+/** Either shape of section start — neither may be taken for a footnote. */
+const SECTION_HEADING = (text: string): boolean =>
+  RUN_IN_HEADING.test(text) || REPEALED_HEADING.test(text);
 
 /** Where the footnote block may begin, as a fraction of page height. */
 export const DEFAULT_PAGE_FOOT = 0.77;
@@ -100,12 +122,48 @@ export function contentsSections(xhtml: string): string[] {
   for (const chunk of xhtml.split(/<page\b/).slice(1)) {
     for (const [, row] of groupRows(chunk)) {
       const text = row.map((w) => w.text).join(" ").replace(/\s+/g, " ").trim();
-      if (/enacted\s+as\b|enacted\s+by\s+Parliament|ENACT\s+AND\s+GIVE/i.test(text)) return found;
+      if (/enacted\s+as\b|enacted\s+by\s+Parliament|ENACT\s+AND\s+GIVE/i.test(text)) {
+        return longestAscendingRun(found);
+      }
       const m = /^(\d{1,3}[A-Z]{0,2})\.\s+[A-Z]/.exec(text);
-      if (m?.[1] && !found.includes(m[1])) found.push(m[1]);
+      if (m?.[1]) found.push(m[1]);
     }
   }
-  return found;
+  return longestAscendingRun(found);
+}
+
+/**
+ * The arrangement of sections, picked out of everything else numbered like one.
+ *
+ * Section numbers ascend, so a number that goes backwards has left the list.
+ * The front matter before the enactment formula can hold SEVERAL such lists,
+ * and the CPC holds three kinds: it opens with 53 numbered amending Acts ("51.
+ * The Factoring Regulation Act, 2011 (12 of 2011)."), then the 158 sections,
+ * then the arrangement of the First Schedule's ORDERS, whose rules restart at 1
+ * and are numbered in the same shape ("3A.", "8A.", "46C.") — 880 entries in
+ * 54 runs. Read straight through, 44 Order rules were collected as sections the
+ * Act was missing and the gate below could never pass; stopping at the first
+ * reset instead kept the 53 amending Acts and lost every real section. Orders
+ * are a separate table entirely (D-068).
+ *
+ * The arrangement is the longest of those runs. Every other act held here has
+ * exactly one run, so this is inert for all of them.
+ */
+function longestAscendingRun(entries: string[]): string[] {
+  const runs: string[][] = [];
+  let current: string[] = [];
+  let previous = 0;
+  for (const entry of entries) {
+    const base = Number.parseInt(entry, 10);
+    if (base < previous) {
+      runs.push(current);
+      current = [];
+    }
+    if (!current.includes(entry)) current.push(entry);
+    previous = base;
+  }
+  runs.push(current);
+  return runs.reduce((best, run) => (run.length > best.length ? run : best), [] as string[]);
 }
 
 /**
@@ -159,9 +217,9 @@ export function stripBodyHeightFootnotes(
       }
 
       if (!inFootnotes) {
-        if (y / height < pageFoot || !FOOTNOTE.test(text) || RUN_IN_HEADING.test(text)) continue;
+        if (y / height < pageFoot || !FOOTNOTE.test(text) || SECTION_HEADING(text)) continue;
         inFootnotes = true;
-      } else if (RUN_IN_HEADING.test(text)) {
+      } else if (SECTION_HEADING(text)) {
         break;
       }
       dropped.push(text);

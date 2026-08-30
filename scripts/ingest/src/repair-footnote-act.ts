@@ -22,16 +22,60 @@ import { parseInlineAct } from "./sources/gazette-inline";
 
 const [slug, input, ...flags] = process.argv.slice(2);
 if (!slug || !input) {
-  console.error("Usage: tsx src/repair-footnote-act.ts <slug> <act.xhtml> [--rule-delimited]");
+  console.error(
+    "Usage: tsx src/repair-footnote-act.ts <slug> <act.xhtml> [--rule-delimited] " +
+      "[--page-foot 0.65] [--accept-residue 1,60]",
+  );
   process.exit(1);
 }
 /** The PDF draws rules around its footnote blocks (Indian Succession). */
 const ruleDelimited = flags.includes("--rule-delimited");
+/**
+ * Where the footnote block may begin, as a fraction of page height.
+ *
+ * 0.77 fits most prints. The CPC needs 0.65: its page 56 opens a block at 0.675
+ * and left §60 (property liable to attachment) carrying two amendment notes
+ * mid-body. Swept from 0.77 down to 0.50 the act holds at 171 sections with no
+ * section missing from its own arrangement, and the parse stops changing below
+ * 0.65 — so that is the loosest setting that buys anything and the tightest
+ * that buys all of it.
+ */
+/**
+ * Sections whose footnote residue is KNOWN, inspected, and accepted.
+ *
+ * The gate below refuses to write a bundle that still carries amendment
+ * apparatus in a body, and that refusal is the point — it is what makes a
+ * filter this aggressive safe to run. But a blanket refusal on one irreducible
+ * section also means shipping the twelve the run does fix, which is the worse
+ * trade.
+ *
+ * The one entry this exists for is CPC §1. Its extent footnote runs from 0.43
+ * to 0.90 of page 34 and opens "1. This Act has been amended in its application
+ * to Assam by Assam Acts 2 of 1941 and 3 of 1953" — footnote-shaped to a reader
+ * but carrying none of the amendment verbs FOOTNOTE keys on ("by Assam Acts",
+ * not "by Act"), so nothing arms the latch and no page-foot threshold from 0.77
+ * down to 0.50 reaches it. Widening the verb list, or reading the page's body
+ * size as the tallest well-represented class rather than the modal one, both
+ * work here and both put every chapter-opener page in the corpus at risk of
+ * having its body read as heading type. Not worth one section.
+ *
+ * Named per run rather than stored, so an accepted defect stays visible in the
+ * command that produced the bundle instead of becoming invisible.
+ */
+const acceptFlag = flags.indexOf("--accept-residue");
+const accepted = acceptFlag >= 0 ? (flags[acceptFlag + 1] ?? "").split(",").filter(Boolean) : [];
+
+const pageFootFlag = flags.indexOf("--page-foot");
+const pageFoot = pageFootFlag >= 0 ? Number(flags[pageFootFlag + 1]) : undefined;
+if (pageFootFlag >= 0 && !(pageFoot! > 0 && pageFoot! < 1)) {
+  console.error("--page-foot takes a fraction of page height, e.g. 0.65");
+  process.exit(1);
+}
 
 const xhtml = readFileSync(input, "utf8");
 const expected = contentsSections(xhtml);
 const before = parseInlineAct(xhtml);
-const { filtered, dropped } = stripBodyHeightFootnotes(xhtml, { ruleDelimited });
+const { filtered, dropped } = stripBodyHeightFootnotes(xhtml, { ruleDelimited, pageFoot });
 const after = parseInlineAct(filtered);
 
 console.log(`${slug}: dropped ${dropped.length} body-height footnote line(s) at the page foot`);
@@ -46,8 +90,13 @@ if (missing.length) console.log(`  MISSING: ${missing.join(", ")}`);
 // out of the contents. They are reported, not treated as failures.
 if (extra.length) console.log(`  extra (verify each is a repealed section): ${extra.join(", ")}`);
 
+// Length alone is a poor test: "Costs", "Notice", "Sale" and "Decree" are all
+// real marginal notes in the CPC, and flagging CPC §35 ("Costs") failed a parse
+// that was correct. The footnote-fragment shapes are caught by the alternation
+// beside it, which is what actually matters — "Subs", "Ins" and "Rep" are
+// matched there whole.
 const suspect = after.sections.filter(
-  (s) => s.marginalNote.length < 6 || /^(Subs|Ins|Rep|Omitted|The words)\.\s|^(Subs|Ins|Rep)$/.test(s.marginalNote),
+  (s) => s.marginalNote.length < 4 || /^(Subs|Ins|Rep|Omitted|The words)\.\s|^(Subs|Ins|Rep)$/.test(s.marginalNote),
 );
 if (suspect.length) {
   console.log(`  SUSPECT NOTES: ${suspect.map((s) => `§${s.number} "${s.marginalNote}"`).join("; ")}`);
@@ -64,11 +113,21 @@ const residue = after.sections.filter(
     !REPEAL_BODY.test(s.bodyMd) &&
     /Subs\. by|Ins\. by|w\.e\.f\.|omitted by Act|, ibid\./.test(s.bodyMd),
 );
+const unexpected = residue.filter((s) => !accepted.includes(s.number));
 if (residue.length) {
-  console.log(`  FOOTNOTE RESIDUE: ${residue.map((s) => `§${s.number}`).join(", ")}`);
+  console.log(
+    `  FOOTNOTE RESIDUE: ${residue.map((s) => `§${s.number}${accepted.includes(s.number) ? " (accepted)" : ""}`).join(", ")}`,
+  );
+}
+const staleAccepts = accepted.filter((n) => !residue.some((s) => s.number === n));
+if (staleAccepts.length) {
+  // An accept that no longer matches anything is a claim about the parse that
+  // has stopped being true; it must not sit in a command line unnoticed.
+  console.error(`\n${slug}: --accept-residue names ${staleAccepts.join(", ")}, which have no residue. Drop them.`);
+  process.exit(1);
 }
 
-if (missing.length > 0 || suspect.length > 0 || residue.length > 0) {
+if (missing.length > 0 || suspect.length > 0 || unexpected.length > 0) {
   console.error(`\n${slug}: refusing to write — the parse does not match the Act's own contents.`);
   process.exit(1);
 }

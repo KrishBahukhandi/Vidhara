@@ -7,7 +7,7 @@
     "year": 1956,
     "category": "family",
     "status": "active",
-    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/1713"
+    "sourceUrl": "https://indiacode.gov.in/handle/123456789/496402"
   },
-  "provenance": "Official India Code text: The Hindu Succession Act, 1956, English PDF (bitstream 123456789/1713/1/AAA1956suc___30.pdf, 257,077 bytes, sha256 8ee27226825b9021...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-03. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+  "provenance": "Official India Code text: The Hindu Succession Act, 1956 (30 of 1956), English PDF (bitstream a1956-30.pdf, 289,911 bytes, sha256 7fb1895e…) fetched from indiacode.gov.in on 2026-08-29 via the DSpace 7 REST API (item handle 123456789/496402, CENTRAL community › Acts collection; the portal migrated from indiacode.nic.in and re-issued every handle). The same edition as the 2026-08-03 fetch, renamed by the migration. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes/amendment history excluded; spot-verified; full clause-level proofread pending. Amendment footnotes set at body height were removed before parsing (D-085): the parser's body-height floor is now scaled to the document's own modal type size, per page, so a footnote set smaller than the body reaches the footnote latch instead of the statute text."
 }

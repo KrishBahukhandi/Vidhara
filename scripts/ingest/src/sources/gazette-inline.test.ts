@@ -1650,3 +1650,84 @@ describe("sentence-case titles set flush with their heading (D-076)", () => {
     expect(chapters.find((c) => c.kind === "chapter")?.title).toBe("Preliminary");
   });
 });
+
+describe("body type size is measured, not assumed (D-085)", () => {
+  /**
+   * Enough body words to clear MIN_PAGE_WORDS_TO_CALIBRATE, so the page sets
+   * its own floor rather than borrowing the document's.
+   */
+  const filler = (h: number, n: number) =>
+    Array.from({ length: n }, (_, i) => ({ h, text: `Filler sentence number ${i} of body text.` }));
+
+  it("treats 9.96pt as a footnote where the body is 12.22pt", () => {
+    // The NDPS and CPC prints. 8.6 was measured on the IPC/ICA/CrPC, whose body
+    // is 9–10pt; on a 12.22pt body their 9.96pt footnotes cleared it, were read
+    // as body, and so never reached the path where the footnote latch lives.
+    const xhtml = doc(
+      lines([
+        { h: 12.22, text: "It is hereby enacted as follows:—" },
+        { h: 12.22, text: "1. Short title.—This Act may be called the Test Act." },
+        ...filler(12.22, 10),
+        { h: 12.22, text: "2. Definitions.—In this Act, cannabis means the following:" },
+        { h: 9.96, text: "1. Subs. by Act 16 of 2014, s. 7, for “six months” (w.e.f. 1-5-2014)." },
+      ]),
+    );
+    const { sections } = parseInlineAct(xhtml);
+    expect(sections.map((s) => s.number)).toEqual(["1", "2"]);
+    for (const s of sections) expect(s.bodyMd).not.toMatch(/Subs\. by Act 16/);
+  });
+
+  it("keeps 9.96pt as body where the page is set in 9.96pt", () => {
+    // The CPC switches size between pages: 319 at 12.22pt and 28 at 11.69,
+    // 11.03, 10.55, 9.96 and 9.20. Calibrated once over the whole document its
+    // four 9.96pt pages fell under the floor and sections 52 to 67 vanished —
+    // §60, property liable to attachment, among them.
+    const xhtml = doc(
+      lines([
+        { h: 9.96, text: "It is hereby enacted as follows:—" },
+        { h: 9.96, text: "1. Short title.—This Act may be called the Test Act." },
+        ...filler(9.96, 10),
+        { h: 9.96, text: "2. Property liable to attachment.—The following property is liable." },
+        ...filler(9.96, 10),
+      ]),
+    );
+    const { sections } = parseInlineAct(xhtml);
+    expect(sections.map((s) => s.number)).toEqual(["1", "2"]);
+    expect(sections[1]?.bodyMd).toMatch(/The following property is liable/);
+  });
+
+  it("never drops below the measured 8.6 floor on a small-set page", () => {
+    // Raising a threshold can only move small type out of the body; lowering
+    // one could move footnotes in. So a 9pt-body print keeps 8.6 and its 8.2pt
+    // footnotes stay out, rather than getting a floor of 7.65.
+    const xhtml = doc(
+      lines([
+        { h: 9, text: "It is hereby enacted as follows:—" },
+        { h: 9, text: "1. Short title.—This Act may be called the Test Act." },
+        ...filler(9, 10),
+        { h: 8.2, text: "1. Subs. by Act 4 of 1898, s. 2, for “six months”." },
+      ]),
+    );
+    const { sections } = parseInlineAct(xhtml);
+    expect(sections).toHaveLength(1);
+    expect(sections[0]?.bodyMd).not.toMatch(/Subs\. by Act 4/);
+  });
+
+  it("reads a repealed section whose note is closed by a bracket, not a dash", () => {
+    // "[130A. Transfer of policy of marine insurance.] Rep. by …" — the bracket
+    // opens before the NUMBER, so by the time the number is consumed the raw
+    // has a closing bracket and never opened one. With no dash either it fell
+    // to the first-full-stop rule, which cut inside the citation and titled the
+    // section "Transfer of policy of marine insurance. Rep".
+    const xhtml = doc(
+      lines([
+        { h: 10, text: "It is hereby enacted as follows:—" },
+        { h: 10, text: "1. Transfer of policy.—A policy may be transferred." },
+        { h: 10, text: "[1A. Transfer of policy of marine insurance.] Rep. by the Marine Insurance Act, 1963 (11 of 1963), s. 92 (w.e.f. 1-8-1963)." },
+      ]),
+    );
+    const repealed = parseInlineAct(xhtml).sections.find((s) => s.number === "1A");
+    expect(repealed?.marginalNote).toBe("Transfer of policy of marine insurance");
+    expect(repealed?.bodyMd).toMatch(/^Rep\. by the Marine Insurance Act/);
+  });
+});

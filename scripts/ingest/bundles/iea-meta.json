@@ -7,7 +7,7 @@
     "year": 1872,
     "category": "criminal",
     "status": "replaced",
-    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/15351"
+    "sourceUrl": "https://indiacode.gov.in/handle/123456789/547821"
   },
-  "provenance": "Official India Code text: The Indian Evidence Act, 1872 (1 of 1872), English PDF (iea_1872.pdf) retrieved via Internet Archive Wayback Machine snapshot 2021-09-03 of indiacode.nic.in (portal unreachable from ingest network). Extracted via pdftotext 26.07 -bbox and @nexlex/ingest inline parser on 2026-07-15. Repealed by BSA 2023 w.e.f. 2024-07-01. Automated parse; footnotes/amendment history excluded; spot-verified; full clause-level proofread pending."
+  "provenance": "Official India Code text: The Indian Evidence Act, 1872 (1 of 1872), English PDF (bitstream indian_evidence_act.pdf, 452,020 bytes, sha256 a36ef40d…) fetched from indiacode.gov.in on 2026-08-29 via the DSpace 7 REST API (item handle 123456789/547821, CENTRAL community › Acts collection; the portal migrated from indiacode.nic.in and re-issued every handle). Replaces an Internet Archive Wayback snapshot with a direct fetch from the official portal. Repealed by the BSA 2023 w.e.f. 2024-07-01. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes/amendment history excluded; spot-verified; full clause-level proofread pending. Amendment footnotes set at body height were removed before parsing (D-085): the parser's body-height floor is now scaled to the document's own modal type size, per page, so a footnote set smaller than the body reaches the footnote latch instead of the statute text."
 }

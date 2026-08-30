@@ -652,6 +652,68 @@ classify. Harmless while collapsed, but if an "Act creates offences" fact ever b
 from source, scope it with that.
 
 
+**D-085 · 2026-08-29 · 8.6pt was never a fact about footnotes. It was a fact about three PDFs.**
+Context: 68 sections across nine Acts carried amendment footnotes spliced into the middle of their
+text — "(a) cultivates any cannabis plant; or 1. Subs. by Act 16 of 2014, s. 7, for “six months”
+(w.e.f. 1-5-2014). (b) produces, manufactures…". The parser has had footnote machinery since D-050,
+and it works: a small-type line matching FOOTNOTE_START latches the rest of the page out of the
+body. These never reached it.
+**MIN_BODY_HEIGHT = 8.6 was measured on the IPC, ICA and CrPC, whose body is 9–10pt and whose
+footnotes are ~8.2pt.** The NDPS and CPC prints set body at 12.22pt and footnotes at 9.96pt. Both
+clear 8.6, so both were read as body type, and a footnote that is body type can never arm a latch
+that only fires on small type. The threshold was not describing footnotes; it was describing three
+files.
+Decision: scale the threshold to the type size the document is actually set in — the modal word
+height — and never let it fall below the measured 8.6. Raising a floor can only move small type out
+of the body; lowering one could move footnotes in, so every act whose body is under ~10.1pt keeps
+exactly the behaviour it has today. Eight of the ten prints held locally parse byte-identically.
+**And measured PER PAGE.** Calibrated once over the whole file, the CPC lost sections 52 to 67 —
+§60, property liable to attachment, among them — and §6 was cut from 5,693 characters to 250. The
+act is set at 12.22pt for 319 pages and at 11.69, 11.03, 10.55, 9.96 and 9.20pt for the other 28.
+The same 9.96pt is footnote type where the body is 12.22pt and body type where the body is 9.96pt,
+which is exactly what it is in each place.
+Three further defects surfaced and were fixed because this one moved:
+ · **Bracketed repealed sections were being eaten.** "48. [Execution barred in certain cases.] Rep.
+   by the Limitation Act, 1963" has no run-in dash, so RUN_IN_HEADING did not protect it while the
+   footnote shape matched. CPC §48 was stripped outright. No footnote has that shape — a footnote's
+   number is followed straight away by the amendment verb, never by a bracketed marginal note.
+ · **A bracket that closes a note was cutting inside a citation.** TP §130A came out titled
+   "Transfer of policy of marine insurance. Rep" with a body starting "by the Marine Insurance Act".
+ · **A run-in dash with no full stop before it matched nothing.** The 2026 Motor Vehicles print sets
+   "9. Grant of driving licence—(1) Any person…", so the never-empty fallback took the first 80
+   characters of the raw as the marginal note. Ten sections across four acts.
+And the acceptance gate itself had two faults, both of which made it refuse correct parses: it read
+the CPC's 880-entry front matter straight through, collecting 53 numbered amending Acts and 44
+First Schedule ORDER rules as sections the Act was missing (the arrangement is the longest ascending
+run of the several the front matter holds); and it flagged any marginal note under 6 characters,
+which is "Costs", "Notice", "Sale" and "Decree".
+Result: **68 sections carrying inline footnotes → 1.** No section lost anywhere; three recovered.
+ · **NDPS §2 was truncated at definition (iv)** and had lost every definition from (iva) on —
+   including "commercial quantity" and "small quantity", the two the entire Act turns on. 11,217
+   characters now against 7,000-odd before.
+ · **NDPS §3 was missing outright**, its number claimed by a footnote. CPC §3's body was 21
+   characters. §§3, 4, 5, 6 and 8 of the CPC and §4 of the NDPS and of the MV Act carried footnote
+   fragments — "Subs", "Ins" — as their marginal notes.
+ · ITA §43 and §72A had truncated notes ("Penalty and compensation", "Penalty"); both are now whole.
+ · HMA §30 no longer swallows the Statement of Objects and Reasons.
+Six acts had to be re-fetched, India Code having migrated to indiacode.gov.in and split every Act
+into per-section items — the whole-Act PDFs are in the CENTRAL community's "Acts" collection under
+new UUIDs. MV came back as a newer edition carrying §2A (e-cart and e-rickshaw) and §2B (promotion
+of innovation), and §182B correctly retitled "Penalty for contravention of section 62A".
+Accepted and NOT fixed: CPC §1 and IEA §3 keep their extent footnotes, and MV §217A its repeal
+citation. Each is an extension-note block whose opening line carries none of the amendment verbs
+FOOTNOTE keys on ("by Assam Acts", not "by Act"), and no page-foot threshold from 0.77 down to 0.50
+reaches them. Widening the verb list, or reading a page's body size as the tallest well-represented
+class rather than the modal one, both work and both risk reading a chapter-opener's heading type as
+its body. Named per run via --accept-residue so an accepted defect stays visible in the command that
+produced the bundle.
+Revisit: the Constitution is the last act with the defect (1 section). Fixing it means re-ingesting
+from the 2026 English consolidation now on India Code, which would also close the 105th/106th
+Amendment gap the backlog records — a content decision worth taking deliberately, not as a side
+effect of a footnote fix. Separately, MV §217A, SCST §23 and PCA §31 still absorb their Act's
+trailing Statement of Objects and Reasons.
+
+
 ---
 
 *Template for future entries:*

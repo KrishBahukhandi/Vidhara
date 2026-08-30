@@ -1,8 +1,13 @@
 {
   "act": {
-    "slug": "hma", "title": "The Hindu Marriage Act, 1955", "shortTitle": "Hindu Marriage Act",
-    "abbreviation": "HMA", "year": 1955, "category": "family", "status": "active",
-    "sourceUrl": "https://www.indiacode.nic.in/handle/123456789/1560"
+    "slug": "hma",
+    "title": "The Hindu Marriage Act, 1955",
+    "shortTitle": "Hindu Marriage Act",
+    "abbreviation": "HMA",
+    "year": 1955,
+    "category": "family",
+    "status": "active",
+    "sourceUrl": "https://indiacode.gov.in/handle/123456789/496388"
   },
-  "provenance": "Official India Code text: The Hindu Marriage Act, 1955 (25 of 1955), English PDF (bitstream 123456789/1560/1/A1955-25Eng.pdf, 355,565 bytes, sha256 e0989d90e686ef3e...) fetched directly from indiacode.nic.in (Akamai edge, DNS via dns.google) on 2026-08-01. The same handle carries a Hindi edition (H1955-25Hi.pdf); the English 'Eng' file is the one ingested. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes and amendment history excluded. Spot-verified against the PDF; full clause-level proofread pending."
+  "provenance": "Official India Code text: The Hindu Marriage Act, 1955 (25 of 1955), English PDF (bitstream a1955-25.pdf, 362,571 bytes, sha256 f219e8e6…) fetched from indiacode.gov.in on 2026-08-29 via the DSpace 7 REST API (item handle 123456789/496388, CENTRAL community › Acts collection; the portal migrated from indiacode.nic.in and re-issued every handle). The same edition as the 2026-08-01 fetch, renamed by the migration. Extracted via pdftotext 26.07 -bbox and the @nexlex/ingest inline parser. Automated parse; footnotes/amendment history excluded; spot-verified; full clause-level proofread pending. Amendment footnotes set at body height were removed before parsing (D-085): the parser's body-height floor is now scaled to the document's own modal type size, per page, so a footnote set smaller than the body reaches the footnote latch instead of the statute text."
 }

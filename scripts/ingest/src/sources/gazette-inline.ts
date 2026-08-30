@@ -45,8 +45,75 @@ const WORD_TAG =
   /<word xMin="([\d.]+)" yMin="([\d.]+)" xMax="([\d.]+)" yMax="([\d.]+)">([^<]*)<\/word>/g;
 /** Body type is 9–10pt; footnotes/illustrations ~8.2pt. Threshold sits
  * between so borderline body pages (≈9.0pt) survive while small type routes
- * through the illustration/footnote logic below. */
+ * through the illustration/footnote logic below.
+ *
+ * This is the FLOOR, not the whole rule — see bodyHeightFloor. */
 const MIN_BODY_HEIGHT = 8.6;
+/**
+ * The same threshold, scaled to the type size the document is actually set in.
+ *
+ * 8.6 was measured on the IPC/ICA/CrPC prints, whose body is 9–10pt and whose
+ * footnotes are ~8.2pt. It is not a property of footnotes; it is a property of
+ * those three PDFs. The NDPS and CPC prints set body at 12.22pt and footnotes
+ * at 9.96pt — both comfortably above 8.6 — so their footnotes were read as body
+ * type, never reached the small-type path, and so could never arm the footnote
+ * latch that lives there. They flowed into whatever section was open.
+ *
+ * The damage was not cosmetic. NDPS §2 stopped dead at definition (iv),
+ * losing every definition from (iva) on — including "commercial quantity" and
+ * "small quantity", the two the whole Act turns on — and §3 vanished outright
+ * because a footnote numbered 3 had claimed the number. CPC §3's body was 21
+ * characters, and §§3, 4, 5, 6 and 8 carried footnote fragments ("Subs", "Ins")
+ * as their marginal notes.
+ *
+ * Scaled to the document's modal word height, which IS its body type: 92% of
+ * NDPS's words are 12.22pt, 82% of the CPC's. 0.85 sits below the widest
+ * same-tier spread in the corpus (the Succession Act prints body at both 10.24
+ * and 10.15, and the IPC at 10.0, 9.94 and 9.85) and above every footnote tier.
+ *
+ * NEVER BELOW 8.6. Raising a threshold can only move small type out of the
+ * body; lowering one could move footnotes in. Every act whose body is under
+ * ~10.1pt therefore keeps exactly the behaviour it has today, which is all
+ * eight of the other prints held locally — verified line-for-line, no act but
+ * NDPS and the CPC changes at all.
+ *
+ * AND MEASURED PER PAGE, because the body size is not constant through a
+ * document. The CPC is set at 12.22pt for 319 of its pages and at 11.69, 11.03,
+ * 10.55, 9.96 and 9.20pt for the other 28. Calibrated once over the whole file
+ * its four 9.96pt pages fall under the floor, and the latch then swallows them:
+ * sections 52 to 67 disappeared, §60 (property liable to attachment, 8,935
+ * characters) among them, and §6 was cut from 5,693 characters to 250. Per page
+ * the same 9.96pt is footnote type where the body is 12.22pt and body type
+ * where the body is 9.96pt, which is what it actually is in each place.
+ */
+const BODY_HEIGHT_FRACTION = 0.85;
+/** Below this a page is too sparse to calibrate — a title or a part-opener —
+ * and borrows the document's size rather than setting policy from a handful of
+ * words. */
+const MIN_PAGE_WORDS_TO_CALIBRATE = 40;
+
+/** Modal word height of a chunk of `<word>` markup — its body type size. */
+function modalHeight(source: string): { modal: number; words: number } {
+  const heights = new Map<number, number>();
+  let words = 0;
+  for (const m of source.matchAll(WORD_TAG)) {
+    const height = Math.round((Number(m[4]) - Number(m[2])) * 100) / 100;
+    if (height < MIN_WORD_HEIGHT) continue;
+    heights.set(height, (heights.get(height) ?? 0) + 1);
+    words++;
+  }
+  let modal = 0;
+  let best = 0;
+  for (const [height, count] of heights) {
+    if (count > best) {
+      best = count;
+      modal = height;
+    }
+  }
+  return { modal, words };
+}
+
+const floorFor = (modal: number): number => Math.max(MIN_BODY_HEIGHT, modal * BODY_HEIGHT_FRACTION);
 /** Superscript reference markers are ~6.3pt — below every real text tier.
  * Words under this height are dropped unconditionally. */
 const MIN_WORD_HEIGHT = 7;
@@ -411,7 +478,51 @@ const TITLE_PERIOD_SPLIT = /^(.{3,120}?)\.\s+([\s\S]*)$/;
  * "Repeals.―Rep" as the title. Tried FIRST for that reason; the dash after the
  * bracket is optional because the Partnership Act prints none.
  */
-const TITLE_BRACKET_SPLIT = /^\[\s*([^\]]{3,160}?)\s*\]\s*\.?\s*(?:[—–]+|―)?\s*([\s\S]*)$/;
+// What follows the bracket has to look like the END of a marginal note: a
+// run-in dash, or the repeal citation that stands in for one. Accepting
+// anything at all made the bracket win over the dash whenever an amendment
+// bracketed only PART of a note — the 2019 Motor Vehicles print substitutes one
+// word, "182B. [Penalty] for contravention of section 62A.—Whoever…", and the
+// section came out titled "Penalty" with a body opening "for contravention of
+// section 62A". The dash rule handles that correctly, so this must decline it.
+const TITLE_BRACKET_SPLIT =
+  /^\[\s*([^\]]{3,160}?)\s*\]\s*\.?\s*(?:(?:[—–]+|―)\s*|(?=(?:Rep\b|Omitted|Repealed)))([\s\S]*)$/;
+/**
+ * The same bracket, opened BEFORE the section number.
+ *
+ * TITLE_BRACKET_SPLIT wants the raw to start with "[", which it does when the
+ * print brackets only the note ("31. [Repeals.]―Rep. by …"). The Transfer of
+ * Property Act brackets the number too — "[130A. Transfer of policy of marine
+ * insurance.] Rep. by the Marine Insurance Act, 1963" — and by the time the
+ * number has been consumed the opening bracket has gone with it, leaving a raw
+ * that ends its note on a CLOSING bracket and never opened one.
+ *
+ * With no dash either, that fell through to TITLE_PERIOD_SPLIT, which takes the
+ * first full stop followed by a space — and the first one here is inside the
+ * citation. §130A came out titled "Transfer of policy of marine insurance. Rep"
+ * with a body starting "by the Marine Insurance Act", which reads as a section
+ * whose text is a fragment rather than as the repealed section it is.
+ *
+ * Tried AFTER the dash rule, so it only picks up what that rule cannot: a
+ * section printed with a dash keeps exactly the split it has today.
+ */
+/**
+ * A run-in dash with NO full stop before it.
+ *
+ * TITLE_SPLIT requires the stop, and most prints set one. The 2026 Motor
+ * Vehicles edition does not — "9. Grant of driving licence—(1) Any person who
+ * is not for the time being disqualified…" — so nothing matched and the
+ * never-empty fallback took the first 80 characters of the raw as the note,
+ * body text and all.
+ *
+ * Tried after both stop rules, and it accepts ONLY a real em/en dash or
+ * horizontal bar. TITLE_SPLIT also honours a plain hyphen, which is safe there
+ * because a stop must precede it; without that anchor a hyphen would cut every
+ * hyphenated word in a marginal note in half.
+ */
+const TITLE_DASH_SPLIT = /^(.{3,160}?)\s*(?:[—–]+|―)\s*([\s\S]*)$/;
+const TITLE_BRACKET_CLOSE_SPLIT =
+  /^([^[\]]{3,160}?)\.?\s*\]\s*\.?\s*(?:[—–]+|―)?\s*([\s\S]*)$/;
 /** Amendment/footnote glyphs that can precede a section number at line start —
  * brackets/stars, and a body-height footnote digit directly before an opening
  * bracket ("4 [174A. Non-appearance…"). */
@@ -789,7 +900,11 @@ export function parseInlineAct(
     if (currentNumber === null) return;
     const raw = rawParts.join(" ").replace(/\s+/g, " ").trim();
     const split =
-      TITLE_BRACKET_SPLIT.exec(raw) ?? TITLE_SPLIT.exec(raw) ?? TITLE_PERIOD_SPLIT.exec(raw);
+      TITLE_BRACKET_SPLIT.exec(raw) ??
+      TITLE_SPLIT.exec(raw) ??
+      TITLE_BRACKET_CLOSE_SPLIT.exec(raw) ??
+      TITLE_DASH_SPLIT.exec(raw) ??
+      TITLE_PERIOD_SPLIT.exec(raw);
     // Strip stray amendment brackets from an extracted title.
     let marginalNote = split ? (split[1] ?? "").replace(/[[\]]/g, "").trim() : "";
     const bodyMd = split ? (split[2] ?? "").trim() : raw;
@@ -1048,11 +1163,15 @@ export function parseInlineAct(
 
   const pages = xhtml.split(/<page /).slice(1);
   const stamps = watermarkTokens(pages);
+  const documentFloor = floorFor(modalHeight(xhtml).modal);
 
   for (const pageXml of pages) {
     if (ended) break;
     /** Footnotes claim the rest of the page's small text once they start. */
     let footnotesStarted = false;
+    const page = modalHeight(pageXml);
+    const minBodyHeight =
+      page.words >= MIN_PAGE_WORDS_TO_CALIBRATE ? floorFor(page.modal) : documentFloor;
     const words: Word[] = [];
     for (const m of pageXml.matchAll(WORD_TAG)) {
       const yMin = Number(m[2]);
@@ -1066,7 +1185,7 @@ export function parseInlineAct(
     for (const line of groupIntoLines(words)) {
       // Legacy view: body-height words only — everything below routes through
       // the illustration/footnote branch and NEVER reaches the pipeline.
-      const bodyHeight = joinLineWords(line.filter((w) => w.height >= MIN_BODY_HEIGHT));
+      const bodyHeight = joinLineWords(line.filter((w) => w.height >= minBodyHeight));
       const fullLine = joinLineWords(line);
       // A chapter title is set in small caps with an enlarged first letter, so
       // the height filter alone truncated the Limitation Act's part titles to

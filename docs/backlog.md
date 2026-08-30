@@ -240,6 +240,28 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
 - [ ] Residual rule shows on BSA and IEA section pages, which create no offences to classify.
       Harmless while collapsed; scope it if an "Act creates offences" fact ever comes from source.
 
+- [x] **Inline footnotes are out of the statute text (D-085) — 68 sections → 1.** Amendment
+      footnotes were being spliced mid-sentence into bodies across nine Acts. The cause was that
+      `MIN_BODY_HEIGHT = 8.6` had been measured on three PDFs whose body is 9–10pt; the NDPS and CPC
+      set body at 12.22pt and footnotes at 9.96pt, so their footnotes read as body type and could
+      never arm the footnote latch, which only fires on small type. Now scaled to the document's own
+      modal height, per page, and never below the measured 8.6 — eight of ten local prints parse
+      byte-identically.
+      **The damage was not cosmetic.** NDPS §2 had lost every definition from (iva) on, including
+      "commercial quantity" and "small quantity"; NDPS §3 was missing outright; CPC §3's body was 21
+      characters; and §§3, 4, 5, 6, 8 of the CPC plus §4 of the NDPS and MV carried footnote
+      fragments ("Subs", "Ins") as marginal notes. Also fixed: bracketed repealed sections being
+      stripped (CPC §48), a bracket cutting inside a repeal citation (TP §130A), and a run-in dash
+      with no preceding full stop matching nothing (10 sections, 4 acts).
+      Six acts were re-fetched — India Code has migrated to indiacode.gov.in and split every Act
+      into per-section items; whole-Act PDFs are in the CENTRAL community's "Acts" collection.
+- [ ] **Constitution is the last act with inline footnotes** (1 section). Fixing it means
+      re-ingesting from the **2026 English consolidation** now on India Code, which would also close
+      the 105th/106th Amendment gap recorded above — worth doing deliberately, not as a side effect.
+- [ ] **MV §217A, SCST §23 and PCA §31 absorb their Act's trailing Statement of Objects and
+      Reasons.** The last section of an act runs on into the appendix. HMA §30 was fixed by D-085's
+      re-ingest; these three remain.
+
 ## 6. Product gaps named in their own entries
 
 - [~] **On-demand revalidation** — `POST /api/v1/revalidate` is built, bounded and secret-gated,
