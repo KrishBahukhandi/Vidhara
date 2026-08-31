@@ -32,6 +32,39 @@ pnpm --filter @nexlex/ingest ingest publish bundles/<act>.json --status publishe
 pnpm --filter @nexlex/ingest ingest emit-sql bundles/<act>.json --out out.sql --status published --publish-act
 ```
 
+### Schedules that are tables
+
+A schedule whose rows are a table, not sectional text, goes to `act_schedules` +
+`act_schedule_articles` rather than to `act_sections` (D-035/D-036). Two parsers produce that
+bundle, and the difference is the width:
+
+```bash
+# Three named columns — the Limitation Act's Schedule: description, period, commencement,
+# with the lettered limbs Articles 114-116 carry inside them.
+ingest parse-schedule lim.xhtml --meta bundles/lim-schedule-meta.json --out bundles/lim-schedule.json
+
+# Any width — a table read by its own printed headings, which come from the meta file's
+# schedule.columnLabels and are both what the page stores and how the header row is found.
+ingest column-table coi.xhtml --meta bundles/<x>-meta.json --out bundles/<x>.json \
+  [--group-heading '^ENCLAVES IN'] [--ends-at-line '^THE THIRD SCHEDULE$'] [--skip-lines '…']
+
+# Either bundle publishes the same way, after it has been read against the PDF:
+ingest publish-schedule bundles/<x>.json --status published
+```
+
+Both are parse-only: a table of three hundred rows is proofread from the bundle, not from a
+terminal. `column-table` refuses to write one at all if a row is not as wide as the headings, if
+two rows collide on (group, number), or if a cell still carries footnote apparatus — a boundary
+read one word out produces a table that looks entirely plausible and files every cell after it
+under the wrong heading.
+
+The **annexure to Appendix I of the Constitution** (pp. 384-400, the 2015 India-Bangladesh
+boundary agreement) is what `column-table` was written for. Its inventory is:
+
+    Sl. No. | Name of Chhits | Chhit No. | Lying within PS Bangladesh | Lying within PS W. Bengal | Area in acres
+
+Those six strings are the meta file's `schedule.columnLabels`, verbatim and in order.
+
 ### Gazette parser notes (learned on BNS/BNSS/BSA 2023 — two different PDF producers)
 
 `gazette-bbox.ts` is the canonical, **producer-independent** path. Design (do not regress these):

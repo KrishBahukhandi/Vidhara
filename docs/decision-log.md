@@ -1,6 +1,6 @@
 # Vidhara — Decision Log
 
-> **Status**: Living document — append-only. · **Last updated**: 2026-08-16 (D-065)
+> **Status**: Living document — append-only. · **Last updated**: 2026-08-31 (D-092)
 > Product/strategy decisions with rationale and a revisit trigger. Architecture decisions stay in `architecture.md` §16 (ADR-1…11); this log covers product strategy from the 2026-07-16 lean reset onward. Updated the day a decision is made — not at release boundaries.
 
 ---
@@ -972,6 +972,73 @@ the appendix ends where its own text does, rather than running 11,372 characters
 Revisit: generalise act_schedule_articles (nullable Limitation columns, a `cells text[]` for
 arbitrary widths) and ingest the enclave inventory.
 
+
+**D-092 · 2026-08-31 · A schedule that is a table can have six columns; the table that stores one had three.**
+Context: D-091 published the Constitution's three appendices and named what it left out — the
+annexure to Appendix I, pages 384 to 400, being the First and Third Schedules to the 2015
+India–Bangladesh boundary agreement. Its inventory of roughly 300 enclaves is a clean six-column
+table with named headings at fixed x positions ("Sl. No. | Name of Chhits | Chhit No. | Lying
+within PS Bangladesh | Lying within PS W. Bengal | Area in acres"), so the parse was never the
+blocker: its rows are numbered and ascending, so they open as ENTRIES of the appendix and cannot be
+suspended out, and its right home — act_schedule_articles, the table 0011 built for exactly this
+shape, with the headings already stored in column_labels — could not take it. 0011 wrote the
+LIMITATION ACT'S OWN COLUMNS into that table: description, period and commencement, all NOT NULL,
+and a `rows` jsonb whose limbs carry one of each.
+Decision: **generalise the table rather than add a third one.** An article is now one of two shapes,
+and 0026's check constraint says which. LIMBED is 0011 unchanged — `rows` plus the three flattened
+projections derived from it. CELLED is `cells text[]`, one string per heading in printed order, with
+description/period/commencement NULL rather than "": a period is not blank for an enclave, it is not
+a fact about one, and a description would have to be a lossy join of six unrelated fields. Four
+consequences, each smaller than it looks:
+ · **fts had to be rebuilt, and could not simply call array_to_string.** That function is
+   polymorphic — for a timestamptz[] its output depends on TimeZone — so it is marked STABLE and a
+   generated column may not call it. Fixed to text[] with a constant separator it is the identity on
+   its elements, so `public.schedule_cells_text` narrows it to that and is immutable honestly rather
+   than by assertion. A celled row's cells weigh what a description does: the name of a chhit is
+   what a reader searches for.
+ · **The key is coalesced on the group.** A table that groups its rows numbers each group from 1 —
+   the enclaves transferred one way are numbered independently of those transferred the other — so
+   (schedule, number) collides on every row of the second group. This is 0024's problem one table
+   over, and its answer: a unique index on (schedule_id, coalesce(division, ''), number).
+ · **Publishing REPLACES rather than upserts.** An expression index cannot be an upsert's conflict
+   target — the same wall publish-list-schedule hit — and it is the stricter reading of D-052
+   anyway: an article the parse no longer produces must not outlive the defect that produced it.
+ · **Sort keys come from the print for a celled table.** Derived from the number they would
+   interleave two groups that both start at 1, which is D-090's finding applied to columns.
+**A new parser, `column-table.ts`**, reads a table of any width by its own printed headings. The
+headings are given, not discovered, because they are content — act_schedules stores them — and they
+double as how the header row is found, which is what keeps the parse off a contents page that merely
+names the table (the trap schedule-table.ts, offence-schedule.ts and list-schedule.ts each recorded
+on a different print). Columns are anchored on each heading's FIRST word, because a heading that
+does not fit its column wraps and two that wrap together interleave: read in order the block gives
+"Lying within", "Lying within", "PS Bangladesh", "PS W. Bengal" and no heading appears whole. The
+boundary between two anchors is the least-covered x between them, per page and inherited by a page
+that reprints no headings — occupancy rather than arithmetic, since a centred heading sits well
+right of the column it labels. What the anchors leave behind is consumed as the header's tail, on
+the test schedule-table.ts uses for the "limitation" the Limitation print drops onto a line of its
+own; unconsumed it arrives as the table's first row of cells, which is how it was first read here.
+**The gates refuse rather than warn**: a row not as wide as the headings, two rows colliding on
+(group, number), or a cell still carrying footnote apparatus stops the bundle being written at all.
+A boundary read one word out produces a table that looks entirely plausible and files every cell
+after it under the wrong heading, which is the failure this shape actually has.
+**Rendering**: `ScheduleCells` — a card of labelled fields below `md`, a real table row above it,
+from one piece of markup, for the reason ScheduleTable records: six columns in a 390px viewport is
+either a horizontal scroll or unreadable wrapping. Filter first, because nobody reads three hundred
+enclaves in order.
+Verified: 0011 then 0026 applied to a real Postgres (PGlite) with a Limitation article already
+stored — the article survives, still matches its own text through fts, and a celled row is found by
+a name in its cells; row 1 of a second group is accepted and row 1 of the same group twice is not;
+a row that is both shapes, neither shape, or one column wide is rejected by the constraint.
+**195 ingest tests** (11 new for the parser, 4 for the bundle shapes), typecheck clean across six
+workspaces, web lint and production build clean.
+Revisit: **the ingest itself has not run, and this is the one thing outstanding.** It needs the
+Constitution's source PDF, which is not in the repo — sources never are — and could not be fetched
+in the environment this was written in (indiacode.gov.in is refused by that network's policy). The
+remaining step is one `column-table` run and one `publish-schedule`, both recorded in the ingest
+README with the six headings verbatim. Three things only the print can settle: which of the two
+schedules the inventory sits in, whether its numbering restarts under a group heading (0026 now
+copes either way), and where to bracket the pages. Section 3 of Appendix I is already cut at "THE
+FIRST SCHEDULE", so nothing renders the annexure as prose in the meantime.
 
 ---
 

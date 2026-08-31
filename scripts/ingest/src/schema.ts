@@ -92,13 +92,32 @@ export const scheduleRowSchema = z.object({
   commencement: z.string().trim().default(""),
 });
 
-export const scheduleArticleSchema = z.object({
-  number: z.string().trim().regex(/^\d{1,4}[A-Z]{0,2}$/, "Article number like 1, 137"),
-  division: z.string().trim().min(1).optional(),
-  partNumber: z.string().trim().min(1).optional(),
-  partTitle: z.string().trim().min(1).optional(),
-  rows: z.array(scheduleRowSchema).min(1, "An article must have at least one row"),
-});
+/**
+ * A row of a schedule that is a table, in one of the two shapes 0026 allows.
+ *
+ * LIMBED — `rows`: the Limitation Act's three named columns, with the lettered
+ *   limbs an Article may carry inside them.
+ * CELLED — `cells`: one string per heading in the schedule's columnLabels, in
+ *   printed order, for a table of any other width. The annexure to the
+ *   Constitution's Appendix I is six of them.
+ *
+ * Never both, and never neither: a row stored as both could be read either way
+ * and the two readings do not agree.
+ */
+export const scheduleArticleSchema = z
+  .object({
+    number: z.string().trim().regex(/^\d{1,4}[A-Z]{0,2}$/, "Article number like 1, 137"),
+    division: z.string().trim().min(1).optional(),
+    partNumber: z.string().trim().min(1).optional(),
+    partTitle: z.string().trim().min(1).optional(),
+    rows: z.array(scheduleRowSchema).min(1, "An article must have at least one row").optional(),
+    /** Blank cells are kept as "": the print left the cell empty, and dropping
+     * it would shift every cell after it one column left. */
+    cells: z.array(z.string().trim()).min(2, "A celled row needs at least two cells").optional(),
+  })
+  .refine((article) => (article.rows === undefined) !== (article.cells === undefined), {
+    message: "An article carries rows or cells — never both, never neither",
+  });
 
 export const scheduleBundleSchema = z.object({
   /** The act must already exist — schedules attach to it, never create it. */
@@ -113,6 +132,24 @@ export const scheduleBundleSchema = z.object({
   }),
   articles: z.array(scheduleArticleSchema).min(1, "A schedule bundle must contain articles"),
   provenance: z.string().trim().min(10, "Describe the source and preparer"),
+}).superRefine((bundle, ctx) => {
+  // A celled row is positional — cell 3 is whatever columnLabels[2] names it —
+  // so a row of the wrong width is not a row that lost a value, it is a row
+  // whose every value after the gap is filed under the wrong heading. The
+  // gate belongs here rather than in the database, which cannot see the
+  // headings from the article table.
+  const width = bundle.schedule.columnLabels.length;
+  bundle.articles.forEach((article, index) => {
+    if (article.cells && article.cells.length !== width) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["articles", index, "cells"],
+        message:
+          `row ${article.number} has ${article.cells.length} cells against ` +
+          `${width} column heading(s) — one of the two is misread`,
+      });
+    }
+  });
 });
 
 export type ScheduleBundle = z.infer<typeof scheduleBundleSchema>;

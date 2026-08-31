@@ -47,7 +47,7 @@ export function LimitationWorksheet({ articles }: { articles: ScheduleArticle[] 
       .filter(
         (a) =>
           a.number === q ||
-          a.rows.some((r) => `${r.description} ${r.commencement}`.toLowerCase().includes(q)),
+          (a.rows ?? []).some((r) => `${r.description} ${r.commencement}`.toLowerCase().includes(q)),
       )
       .slice(0, 12);
   }, [articles, query]);
@@ -55,7 +55,9 @@ export function LimitationWorksheet({ articles }: { articles: ScheduleArticle[] 
   const selected = articles.find((a) => a.id === selectedId) ?? null;
   // Limbs that carry a period of their own — a lead-in limb has none and is not
   // something you can compute from.
-  const limbs = selected?.rows.filter((r) => parseLimitationPeriod(r.period)) ?? [];
+  // `rows` is null only for a CELLED schedule (0026), which this worksheet
+  // never loads: it reads the Limitation Act's own Schedule and nothing else.
+  const limbs = selected?.rows?.filter((r) => parseLimitationPeriod(r.period)) ?? [];
   const limb = limbs[limbIndex] ?? limbs[0] ?? null;
   const period: LimitationPeriod | null = limb ? parseLimitationPeriod(limb.period) : null;
   // s.12(2)-(4) only reaches appeals, leave to appeal, revision, review and
@@ -113,7 +115,7 @@ export function LimitationWorksheet({ articles }: { articles: ScheduleArticle[] 
                   <span className="min-w-10 font-mono text-small font-bold text-brand">
                     {article.number}
                   </span>
-                  <span className="text-body text-text">{article.rows[0]?.description}</span>
+                  <span className="text-body text-text">{article.rows?.[0]?.description}</span>
                 </button>
               </li>
             ))}

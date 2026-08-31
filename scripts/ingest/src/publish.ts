@@ -200,13 +200,16 @@ export async function publishBundle(
 }
 
 /**
- * Upserts a schedule and its articles. The act must already exist — a schedule
- * is part of an act, never a way to create one, so a missing act is an error
- * rather than a silent insert.
+ * Publishes a schedule that is a TABLE, in either shape 0026 allows: the
+ * Limitation Act's three named columns (`rows`), or a table of any width whose
+ * cells are positional against the schedule's own headings (`cells`). The act
+ * must already exist — a schedule is part of an act, never a way to create
+ * one, so a missing act is an error rather than a silent insert.
  *
- * `rows` is the record of truth; `description`/`period`/`commencement` are
- * derived here so the flattened copy used for search can never drift from the
- * structure used for rendering.
+ * For a limbed article `rows` is the record of truth and
+ * `description`/`period`/`commencement` are derived here, so the flattened copy
+ * used for search can never drift from the structure used for rendering. For a
+ * celled one the cells are both, and the three are NULL.
  */
 export async function publishSchedule(
   bundle: ScheduleBundle,
@@ -253,23 +256,42 @@ export async function publishSchedule(
   if (scheduleError) throw new Error(`schedule upsert failed: ${scheduleError.message}`);
 
   const join = (parts: string[]) => parts.filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
-  const rows = bundle.articles.map((article) => ({
+  const rows = bundle.articles.map((article, index) => ({
     schedule_id: schedule.id,
     number: article.number,
-    sort_key: deriveSortKey(article.number),
+    // A LIMBED article sorts by its number, which is what the Limitation Act's
+    // print does too. A CELLED one sorts by where it was printed: a table that
+    // groups its rows numbers each group from 1, so a key derived from the
+    // number interleaves the groups (D-090 learned this on the Sixth
+    // Schedule's table).
+    sort_key: article.cells ? index : deriveSortKey(article.number),
     division: article.division ?? null,
     part_number: article.partNumber ?? null,
     part_title: article.partTitle ?? null,
-    rows: article.rows,
-    description: join(article.rows.map((row) => row.description)),
-    period: join(article.rows.map((row) => row.period)),
-    commencement: join(article.rows.map((row) => row.commencement)),
+    rows: article.rows ?? null,
+    cells: article.cells ?? null,
+    // The flattened projections belong to the Limitation Act's three columns.
+    // For a celled row they are not blank, they are not facts about it (0026),
+    // and its cells carry its searchable text instead.
+    description: article.rows ? join(article.rows.map((row) => row.description)) : null,
+    period: article.rows ? join(article.rows.map((row) => row.period)) : null,
+    commencement: article.rows ? join(article.rows.map((row) => row.commencement)) : null,
   }));
 
-  const { error: articlesError } = await db
+  // REPLACED, not upserted, for the reason publish-list-schedule records: 0026
+  // made the key a coalesced expression index so that a table whose numbering
+  // restarts under each group still cannot publish the same row twice, and an
+  // expression index cannot be an upsert's conflict target. It is also the
+  // stricter reading of D-052 — an article the parse no longer produces must
+  // not outlive the parser defect that produced it.
+  const { error: clearError } = await db
     .from("act_schedule_articles")
-    .upsert(rows, { onConflict: "schedule_id,number" });
-  if (articlesError) throw new Error(`schedule articles upsert failed: ${articlesError.message}`);
+    .delete()
+    .eq("schedule_id", schedule.id);
+  if (clearError) throw new Error(`clearing schedule articles failed: ${clearError.message}`);
+
+  const { error: articlesError } = await db.from("act_schedule_articles").insert(rows);
+  if (articlesError) throw new Error(`schedule articles insert failed: ${articlesError.message}`);
 
   return { scheduleId: schedule.id, articles: rows.length };
 }

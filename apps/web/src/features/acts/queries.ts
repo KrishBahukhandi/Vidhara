@@ -423,13 +423,20 @@ export interface ScheduleRow {
   commencement: string;
 }
 
+/**
+ * A row of a schedule that is a table, in one of the two shapes 0026 stores:
+ * `rows` for the Limitation Act's three named columns and their limbs, `cells`
+ * for a table of any other width — one string per heading in the schedule's
+ * column_labels, in printed order. Never both.
+ */
 export interface ScheduleArticle {
   id: string;
   number: string;
   division: string | null;
   part_number: string | null;
   part_title: string | null;
-  rows: ScheduleRow[];
+  rows: ScheduleRow[] | null;
+  cells: string[] | null;
 }
 
 export async function listSchedulesByAct(slug: string): Promise<ActSchedule[]> {
@@ -513,7 +520,7 @@ export async function getSchedule(
 
   const { data: articles, error: articlesError } = await client
     .from("act_schedule_articles")
-    .select("id, number, division, part_number, part_title, rows")
+    .select("id, number, division, part_number, part_title, rows, cells")
     .eq("schedule_id", schedule.id)
     .order("sort_key", { ascending: true });
   if (articlesError) throw new Error(`getSchedule articles: ${articlesError.message}`);
@@ -532,7 +539,7 @@ export async function getSchedule(
     schedule,
     articles: articles.map((article) => ({
       ...article,
-      rows: article.rows as unknown as ScheduleRow[],
+      rows: article.rows as unknown as ScheduleRow[] | null,
     })),
     entries: (entryRows ?? []).map((row) => ({
       listNumber: row.list_number,
