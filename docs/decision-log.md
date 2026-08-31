@@ -934,6 +934,45 @@ and "sixth-table" — since the paragraph says "the table below" and there is no
 Revisit: nothing outstanding on the Constitution's Schedules.
 
 
+**D-091 · 2026-08-30 · The appendices are documents, and one of them has no numbering to hold on to.**
+Context: three appendices follow the Schedules — the Constitution (One Hundredth Amendment) Act,
+2015; the Constitution (Application to Jammu and Kashmir) Order, 2019 (C.O. 272); and the
+declaration under article 370(3) (C.O. 273). The last two are the operative instruments behind the
+2019 change to Jammu and Kashmir's status, and the corpus had none of them.
+Decision: publish them as APPENDICES, not as schedules. act_appendices (0016) already exists, the
+/acts/<act>/appendices route already renders it, and the shape matches: a lettered annexure holding
+numbered pieces of text. What did not match is the RENDERING — that table was built for the CPC,
+whose Appendices A to H are forms, and a form is a layout as much as a text, so its bodies are set
+preformatted with their line breaks intact. Rendered that way, an Act's sections would be a wall of
+text with the PDF's wrapping frozen into them. 0025 adds `kind`, which is the whole of the
+difference: whether a body is a layout to preserve or prose to set.
+Two parser gaps, both found by Appendix III:
+ · **A document with no numbering parsed to nothing.** It is one declaration; nothing opens an
+   entry, so nothing was collected. The rule that keeps an unnumbered line where a group has no
+   numbered ones — written for Part IIA of the Sixth Schedule's table (D-090) — now applies to a
+   schedule with no groups at all, creating the implicit one it needs. A numbered schedule is
+   unaffected: its heading and authority note are still discarded, because entries turn up to
+   displace them.
+ · **The heading became the body.** For a numbered schedule nothing is collected before the first
+   entry, so the title lines never mattered; for a prose one everything is the entry. The heading is
+   now always skipped, and `skipLines` names the rest — a title, a citation like "C.O. 273".
+Result: **Appendix I (3 provisions), II (2), III (1)**, at /acts/constitution/appendices/. The CPC's
+65 forms in Appendix A render exactly as before.
+**NOT published, and this is the finding.** Appendix I's own First and Third Schedules — pages 384 to
+400 — are left out. They are the annexure to the 2015 India–Bangladesh boundary agreement: lists of
+transferred territories, boundary descriptions pillar by pillar, and an inventory of roughly 300
+enclaves. The inventory is a proper six-column table with named headings ("Sl. No. | Name of Chhits
+| Chhit No. | Lying within Police station Bangladesh | Lying within Police station W. Bengal | Area
+in acres") at fixed x positions, so it is very parseable — but its rows are numbered and ascending,
+which means they open as entries of the appendix and cannot simply be suspended out. Its right home
+is act_schedule_articles, the table 0011 built for exactly this shape, with the headings in
+`column_labels`; that table's description/period/commencement are NOT NULL for the Limitation Act
+and need generalising before anything else can use it. Section 3 is cut at "THE FIRST SCHEDULE" so
+the appendix ends where its own text does, rather than running 11,372 characters into an annexure.
+Revisit: generalise act_schedule_articles (nullable Limitation columns, a `cells text[]` for
+arbitrary widths) and ingest the enclave inventory.
+
+
 ---
 
 *Template for future entries:*

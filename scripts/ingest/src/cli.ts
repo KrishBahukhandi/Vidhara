@@ -18,6 +18,7 @@ import process from "node:process";
 
 import { emitSqlFromRaw } from "./emit-sql";
 import { publishClassificationRules, publishClassifications } from "./publish-classifications";
+import { publishAppendix } from "./publish-appendix";
 import { publishListSchedule } from "./publish-list-schedule";
 import { parseListSchedule } from "./sources/list-schedule";
 import { parseOffenceRules, parseOffenceSchedule } from "./sources/offence-schedule";
@@ -150,7 +151,7 @@ async function listScheduleCommand(inputPath: string, flags: string[]): Promise<
         "--title 'Seventh Schedule' --heading SEVENTHSCHEDULE --ends-before EIGHTHSCHEDULE " +
         "[--group-by list|part|none] [--split-heading] [--roman] [--closing-note '^Explanation'] " +
         "[--two-column auto] [--section-heading '…'] [--row-body-starts '…'] " +
-        "[--ends-at-line '…'] [--entry-ends-at '…'] " +
+        "[--ends-at-line '…'] [--entry-ends-at '…'] [--skip-lines '…'] [--appendix I] " +
         "[--subtitle '…'] " +
         "[--sort-order 7] [--min-height 7.7] [--max-height 11] " +
         "[--publish] [--status published] [--provenance '…']",
@@ -177,6 +178,7 @@ async function listScheduleCommand(inputPath: string, flags: string[]): Promise<
     rowBodyStarts: at("--row-body-starts") ? new RegExp(at("--row-body-starts")!) : undefined,
     endsAtLine: at("--ends-at-line") ? new RegExp(at("--ends-at-line")!) : undefined,
     entryEndsAt: at("--entry-ends-at") ? new RegExp(at("--entry-ends-at")!) : undefined,
+    skipLines: at("--skip-lines") ? new RegExp(at("--skip-lines")!, "i") : undefined,
   });
   for (const d of result.diagnostics) console.log(`  \u00b7 ${d}`);
   console.log(`\nAuthority: ${result.authority ?? "(none found)"}`);
@@ -220,6 +222,25 @@ async function listScheduleCommand(inputPath: string, flags: string[]): Promise<
     console.error(`Invalid --status "${statusFlag}"`);
     process.exit(1);
   }
+  // An appendix is the same shape stored elsewhere: a lettered annexure of
+  // numbered text, which the /appendices route already renders.
+  const letter = at("--appendix");
+  if (letter) {
+    const outcome = await publishAppendix(result, {
+      actSlug,
+      letter,
+      title,
+      sortOrder: Number(at("--sort-order") ?? 0),
+      reviewStatus: statusFlag as "draft" | "reviewed" | "published",
+      provenance: at("--provenance") ?? `${title}, automated parse`,
+    });
+    console.log(
+      `Published: ${outcome.pieces} piece(s) of Appendix ${letter} to ${actSlug.toUpperCase()}` +
+        (outcome.removed > 0 ? `; ${outcome.removed} stale removed` : ""),
+    );
+    return;
+  }
+
   const outcome = await publishListSchedule(result, {
     actSlug,
     slug,

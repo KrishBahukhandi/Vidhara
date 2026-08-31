@@ -311,6 +311,21 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
       page at a time and the table shares page 336 with paragraph 20A), a Part pattern that copes
       with small caps collapsing "PART" to "P", and a rule for a Part whose whole content is one
       unnumbered line. Sort keys now come from the print rather than from the number.
+- [x] **The Constitution's three appendices are live (D-091).** Appendix I (3 provisions), II (2),
+      III (1) at /acts/constitution/appendices/ — including the two instruments behind the 2019
+      change to Jammu and Kashmir's status (C.O. 272 and the article 370(3) declaration).
+      Published as appendices, not schedules: act_appendices already existed and the route already
+      rendered it. What did not match was the rendering — that table was built for the CPC's forms,
+      whose bodies are layouts set preformatted; 0025 adds `kind` so a document is set as prose.
+      Two parser gaps found by Appendix III, which is one declaration with no numbering: a document
+      with no numbered entries parsed to nothing, and its heading became its body.
+- [ ] **Appendix I's own First and Third Schedules are not ingested** (pp. 384–400): the annexure to
+      the 2015 India–Bangladesh boundary agreement — transferred territories, boundary descriptions,
+      and an inventory of ~300 enclaves. The inventory is a proper six-column table with named
+      headings at fixed positions, so it parses readily; its right home is `act_schedule_articles`
+      (the table 0011 built for this shape, with `column_labels`), which first needs generalising —
+      its description/period/commencement are NOT NULL for the Limitation Act, and arbitrary-width
+      rows want a `cells text[]`.
 - [ ] **SCST §23 and PCA §31 absorb their Act's trailing Statement of Objects and Reasons.** The
       last section runs on into the appendix. MV §217A and HMA §30 were fixed by D-085/D-086; these
       two remain and need their acts re-ingested.

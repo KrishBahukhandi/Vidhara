@@ -171,6 +171,16 @@ export interface ListScheduleOptions {
    * until an entry opens.
    */
   entryEndsAt?: RegExp;
+  /**
+   * Lines that are the document's own furniture rather than its content — the
+   * title under the heading, a citation line like "C.O. 273".
+   *
+   * The heading itself is always skipped; these are the lines beneath it that
+   * a numbered schedule never reaches (nothing is collected before its first
+   * entry) but a schedule of pure prose does, because for that one everything
+   * is the entry.
+   */
+  skipLines?: RegExp;
 }
 
 interface Word {
@@ -504,9 +514,14 @@ export function parseListSchedule(
 
   /** A group ends: an orphan line stands as its only entry, or is discarded. */
   const closeGroup = () => {
-    const group = lists[lists.length - 1];
-    if (group && group.entries.length === 0 && orphan) {
-      group.entries.push({ number: "", text: orphan.replace(/\s+/g, " ").trim() });
+    // currentList(), not the last group, because a schedule of pure prose has
+    // no group at all until something is put in one — Appendix III is a single
+    // declaration under article 370(3) and never opens a numbered entry.
+    if (orphan) {
+      const group = currentList();
+      if (group.entries.length === 0) {
+        group.entries.push({ number: "", text: orphan.replace(/\s+/g, " ").trim() });
+      }
     }
     orphan = "";
   };
@@ -560,6 +575,7 @@ export function parseListSchedule(
     if (!line) continue;
     if (options.endsAtLine?.test(line)) break;
     if (FURNITURE.some((re) => re.test(left || line))) continue;
+    if (headingLine.test(bare(line)) || options.skipLines?.test(line)) continue;
     if (options.entryEndsAt?.test(line)) {
       closeEntry();
       suspended = true;
@@ -715,15 +731,17 @@ export function parseListSchedule(
       open.text += ` ${line}`;
       continue;
     }
-    // Held, not kept. A group whose whole content is ONE unnumbered line does
-    // exist — Part IIA of the table appended to the Sixth Schedule's paragraph
-    // 20 is the single "Tripura Tribal Areas District", and the print gives it
-    // no number because there is nothing to distinguish it from. But an
-    // ordinary Part opens with its own title set in small caps, and taking
-    // that for an entry gave the Second and Fifth Schedules a spurious one
-    // each. So the line is remembered and becomes an entry only if the group
-    // turns out to have no numbered ones.
-    if (groupBy !== "none" && lists.length > 0) {
+    // Held, not kept. A group whose whole content is unnumbered does exist —
+    // Part IIA of the table appended to the Sixth Schedule's paragraph 20 is
+    // the single "Tripura Tribal Areas District", and Appendix III is one
+    // declaration with no numbering at all — and the print gives them no
+    // number because there is nothing to distinguish them from. But an
+    // ordinary Part opens with its own title set in small caps, and a numbered
+    // schedule opens with its heading and authority note; taking either for an
+    // entry gave the Second and Fifth Schedules a spurious one each. So the
+    // line is remembered and becomes an entry only if nothing numbered turns
+    // up to displace it.
+    if (groupBy !== "none" ? lists.length > 0 : true) {
       // An asterisk row is an OMITTED entry and is kept where it stands: Part
       // III of the table opens with the "* * *" that stands for the Mizo
       // District, struck out in 1972. Held to the end of the group it would

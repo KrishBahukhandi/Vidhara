@@ -782,30 +782,62 @@ export async function listAppendices(actSlug: string): Promise<AppendixSummary[]
   }));
 }
 
+interface AppendixRow {
+  letter: string;
+  title: string;
+  kind: string | null;
+  act_appendix_forms: { number: string; title: string; body_md: string; sort_order: number }[] | null;
+}
+
+interface AppendixQuery {
+  from(table: "act_appendices"): {
+    select(columns: string): {
+      eq(
+        c: string,
+        v: string,
+      ): {
+        eq(
+          c: string,
+          v: string,
+        ): {
+          eq(c: string, v: string): { maybeSingle(): Promise<{ data: AppendixRow | null; error: unknown }> };
+        };
+      };
+    };
+  };
+}
+
 export async function getAppendixWithForms(
   actSlug: string,
   letter: string,
-): Promise<{ letter: string; title: string; forms: AppendixForm[] } | null> {
+): Promise<{ letter: string; title: string; kind: string; forms: AppendixForm[] } | null> {
   if (!isContentConfigured) return null;
-  const { data, error } = await getServerClient()
+  // Cast for the same reason getOffenceClassifications is: `Tables<>` is
+  // generated from the live schema, and 0025's `kind` is newer than the last
+  // run of generate_typescript_types. Delete the cast once that is re-run.
+  const { data, error } = await (getServerClient() as unknown as AppendixQuery)
     .from("act_appendices")
-    .select("letter, title, acts!inner(slug), act_appendix_forms(number, title, body_md, sort_order)")
+    .select(
+      "letter, title, kind, acts!inner(slug), act_appendix_forms(number, title, body_md, sort_order)",
+    )
     .eq("acts.slug", actSlug)
     .eq("letter", letter.toUpperCase())
     .eq("review_status", "published")
     .maybeSingle();
-  if (error) throw new Error(`getAppendixWithForms: ${error.message}`);
+  if (error) throw new Error(`getAppendixWithForms: ${String(error)}`);
   if (!data) return null;
-  const forms = ((data.act_appendix_forms ?? []) as unknown as {
-    number: string;
-    title: string;
-    body_md: string;
-    sort_order: number;
-  }[])
+  const forms = (data.act_appendix_forms ?? [])
     // Ordered by printed position, not number — Appendix A's numbering restarts.
     .sort((a, b) => a.sort_order - b.sort_order)
     .map((f) => ({ number: f.number, title: f.title, bodyMd: f.body_md }));
-  return { letter: data.letter as string, title: data.title as string, forms };
+  return {
+    letter: data.letter,
+    title: data.title,
+    // "forms" is the CPC's appendices, whose bodies are layouts; "prose" is the
+    // Constitution's, which are documents (0025).
+    kind: data.kind ?? "forms",
+    forms,
+  };
 }
 
 export interface AppendixFormHit {

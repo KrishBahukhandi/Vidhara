@@ -496,3 +496,66 @@ describe("a table appended to a paragraph (D-090)", () => {
     expect(lists[0]?.entries.map((e) => e.number)).toEqual(["1"]);
   });
 });
+
+describe("a document with no numbering at all (D-091)", () => {
+  const page = (c: string) => `<page width="360" height="504">\n${c}\n</page>`;
+  const doc4 = (...p: string[]) =>
+    `<?xml version="1.0"?>\n<html><body>\n${p.map(page).join("\n")}\n</body></html>`;
+
+  it("keeps a schedule of pure prose as one entry", () => {
+    // Appendix III is a single declaration under article 370(3). Nothing opens
+    // a numbered entry, and before this it parsed to nothing at all.
+    const { lists } = parseListSchedule(
+      doc4(
+        lines([
+          { text: "APPENDIX III", x: 150 },
+          { text: "DECLARATION UNDER ARTICLE 370(3) OF THE CONSTITUTION", x: 52 },
+          { text: "C.O. 273", x: 163 },
+          { text: "In exercise of the powers conferred by clause (3) of article 370," },
+          { text: "the President is pleased to declare as follows." },
+        ]),
+      ),
+      {
+        heading: /APPENDIXIII/i,
+        endsBefore: /NOTHINGMATCHESTHIS/,
+        skipLines: /^(DECLARATION UNDER|C\.O\. \d+)/i,
+      },
+    );
+    expect(lists).toHaveLength(1);
+    expect(lists[0]?.entries).toEqual([
+      {
+        number: "",
+        text: "In exercise of the powers conferred by clause (3) of article 370, the President is pleased to declare as follows.",
+      },
+    ]);
+  });
+
+  it("does not let a heading or a citation become the entry", () => {
+    // The heading is skipped always; the lines under it are named by the
+    // caller, because a numbered schedule never reaches them and a prose one
+    // treats everything as content.
+    const { lists } = parseListSchedule(
+      doc4(lines([{ text: "APPENDIX III", x: 150 }, { text: "C.O. 273", x: 163 }])),
+      { heading: /APPENDIXIII/i, endsBefore: /NOTHINGMATCHESTHIS/, skipLines: /^C\.O\. \d+$/ },
+    );
+    expect(lists.flatMap((l) => l.entries)).toHaveLength(0);
+  });
+
+  it("still discards an unnumbered preamble when numbered entries follow", () => {
+    // The Eighth Schedule's heading and authority note precede its languages;
+    // they must not become an entry of their own.
+    const { lists } = parseListSchedule(
+      doc4(
+        lines([
+          { text: "EIGHTH SCHEDULE", x: 133 },
+          { text: "[Articles 344(1) and 351]", x: 135 },
+          { text: "Languages", x: 159 },
+          { text: "1. Assamese.", x: 60 },
+        ]),
+        lines([{ text: "NINTH SCHEDULE", x: 136 }]),
+      ),
+      { heading: /EIGHTHSCHEDULE/i, endsBefore: /NINTHSCHEDULE/i },
+    );
+    expect(lists[0]?.entries.map((e) => e.text)).toEqual(["Assamese."]);
+  });
+});
