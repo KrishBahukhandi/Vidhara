@@ -420,3 +420,79 @@ describe("a two-column schedule (D-089)", () => {
     });
   });
 });
+
+describe("a table appended to a paragraph (D-090)", () => {
+  const page = (c: string) => `<page width="360" height="504">\n${c}\n</page>`;
+  const doc3 = (...p: string[]) =>
+    `<?xml version="1.0"?>\n<html><body>\n${p.map(page).join("\n")}\n</body></html>`;
+  const OPTS = { heading: /SIXTHSCHEDULE/i, endsBefore: /SEVENTHSCHEDULE/i };
+
+  const body = lines(
+    [
+      { text: "SIXTH SCHEDULE", x: 146 },
+      { text: "20. Tribal areas.—(1) The areas specified in Parts I and II below.", x: 75 },
+      { text: "T", x: 174 },
+      { text: "P I", x: 173 },
+      { text: "1. The North Cachar Hills District.", x: 93 },
+      { text: "2. [The Karbi Anglong District.]", x: 93 },
+      { text: "[P IIA]", x: 167 },
+      { text: "Tripura Tribal Areas District]", x: 105 },
+      { text: "Part III", x: 172 },
+      { text: "* * *", x: 99 },
+      { text: "1. The Chakma District.", x: 96 },
+      { text: "[20A. Dissolution of the Mizo District Council.—(1) Notwithstanding.", x: 75 },
+    ],
+    80,
+  );
+
+  it("stops a paragraph before the table it merely refers to", () => {
+    // Read straight through, paragraph 20 ends "…below. T P I 1. The North
+    // Cachar Hills District. …" — its own text running into a table.
+    const { lists } = parseListSchedule(
+      doc3(body, lines([{ text: "SEVENTH SCHEDULE", x: 133 }])),
+      { ...OPTS, splitHeading: true, entryEndsAt: /^\[?\s*T$|^TABLE$/ },
+    );
+    const twenty = lists[0]?.entries.find((e) => e.number === "20");
+    expect(twenty?.label).toBe("Tribal areas");
+    expect(twenty?.text).toBe("(1) The areas specified in Parts I and II below.");
+    // 20A still opens normally once the suspension lifts.
+    expect(lists[0]?.entries.map((e) => e.number)).toEqual(["20", "20A"]);
+  });
+
+  it("reads the table's Parts, including a Roman one set in small caps", () => {
+    // "PART" collapses to "P", and "PART IIA" carries a letter after the
+    // numeral. A line-level stop is needed because the table and the paragraph
+    // that follows it share a page.
+    const { lists } = parseListSchedule(
+      doc3(body, lines([{ text: "SEVENTH SCHEDULE", x: 133 }])),
+      { ...OPTS, heading: /20\.Tribalareas.*/i, groupBy: "part", endsAtLine: /^\[?\s*20A\./ },
+    );
+    expect(lists.map((l) => l.number)).toEqual(["I", "IIA", "III"]);
+    expect(lists[0]?.entries.map((e) => e.text)).toEqual([
+      "The North Cachar Hills District.",
+      "[The Karbi Anglong District.]",
+    ]);
+    // A Part whose whole content is one unnumbered line keeps it, unnumbered.
+    expect(lists[1]?.entries).toEqual([{ number: "", text: "Tripura Tribal Areas District]" }]);
+    // An omitted row stays where the print puts it — above the districts.
+    expect(lists[2]?.entries.map((e) => e.text)).toEqual(["* * *", "The Chakma District."]);
+  });
+
+  it("does not take a Part's own small-caps title for an entry", () => {
+    // The Second and Fifth Schedules set a title under each PART heading. An
+    // eager unnumbered-entry rule gave each of them a spurious entry.
+    const { lists } = parseListSchedule(
+      doc3(
+        lines([
+          { text: "SIXTH SCHEDULE", x: 146 },
+          { text: "PART A", x: 163 },
+          { text: "P ROVISIONS AS TO THE P RESIDENT", x: 53 },
+          { text: "1. There shall be paid to the President such emoluments.", x: 54 },
+        ]),
+        lines([{ text: "SEVENTH SCHEDULE", x: 133 }]),
+      ),
+      { ...OPTS, groupBy: "part" },
+    );
+    expect(lists[0]?.entries.map((e) => e.number)).toEqual(["1"]);
+  });
+});

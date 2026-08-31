@@ -113,8 +113,11 @@ export function ScheduleEntries({ entries }: { entries: ScheduleEntry[] }) {
                     key={`${list.number}-${entry.number}`}
                     id={`${list.number}-${entry.number}`}
                     className="flex gap-3 scroll-mt-24">
+                    {/* An entry the print does not number shows no number —
+                        a bare full stop reads as a numbering slip rather than
+                        as the print's own choice. */}
                     <span className="w-14 shrink-0 pt-0.5 text-small font-medium tabular-nums text-text-muted">
-                      {entry.number}.
+                      {entry.number ? `${entry.number}.` : ""}
                     </span>
                     {/* An omitted entry's body is the print's asterisk row and
                         nothing else. Left at full weight it reads as missing

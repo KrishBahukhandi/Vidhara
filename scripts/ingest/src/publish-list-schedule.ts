@@ -7,7 +7,6 @@
  */
 import { createClient } from "@supabase/supabase-js";
 
-import { deriveSortKey } from "./sort-key";
 import type { ListScheduleResult } from "./sources/list-schedule";
 
 export interface PublishListScheduleOptions {
@@ -23,34 +22,6 @@ export interface PublishListScheduleOptions {
   sortOrder: number;
   reviewStatus: "draft" | "reviewed" | "published";
   provenance: string;
-}
-
-const ROMAN: Record<string, number> = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000 };
-
-/**
- * A sort key for a number that may not be one.
- *
- * deriveSortKey handles "1", "2A", "92C" — the shapes act sections take — and
- * THROWS on anything else. Two things here are not those: the Third Schedule
- * numbers its Forms in Roman ("I" to "VIII"), and a closing rider is named by
- * what the print calls it ("Explanation", "Total"). Both need to sort, and a
- * rider closes its schedule, so it sorts after everything in it.
- */
-function sortKeyFor(number: string): number {
-  try {
-    return deriveSortKey(number);
-  } catch {
-    if (/^[IVXLCDM]+$/.test(number)) {
-      let total = 0;
-      for (let i = 0; i < number.length; i++) {
-        const here = ROMAN[number[i]!]!;
-        const next = ROMAN[number[i + 1]!];
-        total += next && next > here ? -here : here;
-      }
-      return total;
-    }
-    return 1_000_000;
-  }
 }
 
 export async function publishListSchedule(
@@ -96,13 +67,19 @@ export async function publishListSchedule(
   if (scheduleError) throw new Error(`publishing schedule: ${scheduleError.message}`);
 
   const payload = parsed.lists.flatMap((list, listIndex) =>
-    list.entries.map((entry) => ({
+    list.entries.map((entry, index) => ({
       schedule_id: schedule.id,
       list_number: list.number,
       list_title: list.title,
       list_order: listIndex + 1,
       number: entry.number,
-      sort_key: sortKeyFor(entry.number),
+      // PRINTED order, not an order derived from the number. The parse already
+      // emits entries as the page sets them, and several of these numbers do
+      // not sort at all: the Third's Forms are Roman, a closing rider is named
+      // ("Explanation", "Total"), and an omitted row has no number to sort by.
+      // Deriving a key put the Mizo District's "* * *" after the districts it
+      // is printed above.
+      sort_key: index,
       label: entry.label ?? null,
       body: entry.text,
     })),

@@ -900,6 +900,40 @@ paragraph 20 (the tribal areas) are carried as part of that paragraph's text, wh
 print puts them, but they would read better as a table of their own.
 
 
+**D-090 · 2026-08-30 · A table a paragraph refers to is not that paragraph's text.**
+Context: D-089 closed the Schedules and left one note: the tribal-areas tables appended to the
+Sixth Schedule's paragraph 20 were carried inside that paragraph, which is where the print puts
+them. Read as prose they are unusable — the paragraph ended "…Autonomous District Council Act,
+1979.] T P I 1. The North Cachar Hills District. 2. [The Karbi Anglong District.] …", its own text
+running straight into a table it only refers to, with "T" the surviving drop cap of TABLE.
+Decision: publish the table beside the schedule rather than inside it —
+/acts/constitution/schedule/sixth-table — and cut it out of paragraph 20, which now ends where its
+own sentence does. Two line-level boundaries make that possible, and both are general:
+`entryEndsAt` closes an entry without opening another, and `endsAtLine` stops the parse at a line
+rather than at a page. The second is needed because `endsBefore` works a page at a time and the
+table and the paragraph 20A that follows it share page 336.
+Three smaller things the table needed:
+ · **"PART" collapses to "P".** The headings are set in small caps, so they arrive as "P I", "P II",
+   "[P IIA]" and "Part III". The pattern now takes the word as optional and the number as a letter
+   OR a Roman numeral with an optional letter after it — "PART IIA" is the Tripura tribal areas.
+ · **A Part whose whole content is one UNNUMBERED line.** Part IIA is the single "Tripura Tribal
+   Areas District", and the print gives it no number because there is nothing to distinguish it
+   from. Such a line is HELD rather than kept, and becomes an entry only if the Part turns out to
+   have no numbered ones — an ordinary Part opens with its own title in small caps, and taking that
+   for an entry gave the Second and Fifth Schedules a spurious entry each.
+ · **An omitted row keeps its place.** Part III opens with the "* * *" standing for the Mizo
+   District, struck out in 1972. Held to the end of the group it sorted after the districts it is
+   printed above, so an asterisk row is pushed where it stands.
+And sort keys now come from the PRINT rather than from the number. Deriving them needed a special
+case for Roman numerals and another for a rider named "Explanation" or "Total", and still put the
+Mizo District's asterisks last. The parse already emits entries in printed order; the index is that
+order, and it cannot disagree with the page.
+Result: **thirteen schedule pages, 710 entries.** Paragraph 20 is 1,232 characters of its own text,
+and the table is four Parts and eleven rows. The two are linked both ways from the slug — "sixth"
+and "sixth-table" — since the paragraph says "the table below" and there is no table below.
+Revisit: nothing outstanding on the Constitution's Schedules.
+
+
 ---
 
 *Template for future entries:*

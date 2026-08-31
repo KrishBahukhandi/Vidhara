@@ -153,6 +153,24 @@ export interface ListScheduleOptions {
    * the geometric split, and the gates report the label that results.
    */
   rowBodyStarts?: RegExp;
+  /**
+   * A line that ends the parse, wherever on a page it falls.
+   *
+   * `endsBefore` works a page at a time, which cannot separate two things
+   * printed on the SAME page: the table appended to the Sixth Schedule's
+   * paragraph 20 and the paragraph 20A that follows it share page 336.
+   */
+  endsAtLine?: RegExp;
+  /**
+   * A line that ends the entry it falls in without opening another.
+   *
+   * The same table, read as part of paragraph 20, flattens to "…Council Act,
+   * 1979.] T P I 1. The North Cachar Hills District. 2. [The Karbi Anglong
+   * District.]…" — the paragraph's own text runs straight into a table it only
+   * refers to. Matched, the paragraph closes and nothing is collected again
+   * until an entry opens.
+   */
+  entryEndsAt?: RegExp;
 }
 
 interface Word {
@@ -276,8 +294,16 @@ function gutterOf(lines: Line[]): number | null {
 /** A dot-leader row whose number carries no stop: "31 Jammu and Kashmir……4]". */
 const DOT_LEADER_ROW = /^(\d{1,3}[A-Z]?)[.\]\s]+(\S[\s\S]*)$/;
 const LEADING_ASTERISK = /^[*\u2020\u2021\uf000-\uf0ff]+\s*/;
-/** "PART A" — the grouping the Second and Fifth Schedules use. */
-const PART_HEADING = /^PART\s+([A-Z])\s*$/;
+/**
+ * "PART A" in the Second and Fifth Schedules; "PART I" to "PART III" in the
+ * table appended to the Sixth's paragraph 20.
+ *
+ * "Part" collapses to "P" because the print sets these in small caps — the
+ * "ART" is below the height any of this reads — so the word is optional and
+ * the number may be a letter or a Roman numeral with an optional letter after
+ * it ("PART IIA", the Tripura tribal areas).
+ */
+const PART_HEADING = /^\[?\s*P(?:art)?\s+([IVX]+A?|[A-Z])\s*\]?$/i;
 /** A Form's number in the Third Schedule: a Roman numeral, alone on its line. */
 const ROMAN_HEADING = /^([IVX]{1,6})$/;
 /**
@@ -461,6 +487,10 @@ export function parseListSchedule(
   /** Entry numbers ascend within a group; one that goes backwards is not an
    * entry opening but a wrapped line that happens to start with a numeral. */
   let highest = 0;
+  /** Set by entryEndsAt: nothing is collected until an entry opens again. */
+  let suspended = false;
+  /** An unnumbered line under a group that has no numbered entries yet. */
+  let orphan = "";
 
   /** A schedule with no Lists or Parts still has one run of entries to put
    * them in; it simply has no name. */
@@ -470,6 +500,15 @@ export function parseListSchedule(
     const only: ScheduleList = { number: null, title: null, entries: [] };
     lists.push(only);
     return only;
+  };
+
+  /** A group ends: an orphan line stands as its only entry, or is discarded. */
+  const closeGroup = () => {
+    const group = lists[lists.length - 1];
+    if (group && group.entries.length === 0 && orphan) {
+      group.entries.push({ number: "", text: orphan.replace(/\s+/g, " ").trim() });
+    }
+    orphan = "";
   };
 
   const closeEntry = () => {
@@ -519,7 +558,13 @@ export function parseListSchedule(
     const right = usable ? join(row.words.filter((w) => w.xMin >= split!)) : "";
     const line = (twoColumn ? left || right : row.text).trim();
     if (!line) continue;
+    if (options.endsAtLine?.test(line)) break;
     if (FURNITURE.some((re) => re.test(left || line))) continue;
+    if (options.entryEndsAt?.test(line)) {
+      closeEntry();
+      suspended = true;
+      continue;
+    }
     if (twoColumn && right && FURNITURE.some((re) => re.test(right))) continue;
 
     if (options.sectionHeading?.test(line)) {
@@ -594,6 +639,7 @@ export function parseListSchedule(
       const heading = LIST_HEADING.exec(line);
       if (heading?.[1] && heading[2]) {
         closeEntry();
+        closeGroup();
         lists.push({ number: heading[1], title: heading[2], entries: [] });
         highest = 0;
         continue;
@@ -605,10 +651,16 @@ export function parseListSchedule(
       const part = PART_HEADING.exec(line);
       if (part?.[1]) {
         closeEntry();
+        closeGroup();
         lists.push({ number: part[1], title: null, entries: [] });
         highest = 0;
+        suspended = false;
         continue;
       }
+      // Everything before the first Part is the schedule's own heading and its
+      // authority note — or, for a table appended to a paragraph, that
+      // paragraph's text, which belongs to the paragraph and not here.
+      if (lists.length === 0) continue;
     }
 
     const stripped = line.replace(LEADING_ASTERISK, "").replace(LEADING_APPARATUS, "");
@@ -648,6 +700,8 @@ export function parseListSchedule(
     const base = start?.[1] ? Number.parseInt(start[1], 10) : 0;
     if (start?.[1] && start[2] && base >= highest) {
       closeEntry();
+      suspended = false;
+      orphan = "";
       highest = base;
       open = { number: start[1], text: start[2] };
       continue;
@@ -656,10 +710,35 @@ export function parseListSchedule(
       diagnostics.push(`ignored non-ascending "${start[1]}." after entry ${highest}`);
     }
 
-    if (open) open.text += ` ${line}`;
-    else diagnostics.push(`before the first entry: ${line.slice(0, 60)}`);
+    if (suspended) continue;
+    if (open) {
+      open.text += ` ${line}`;
+      continue;
+    }
+    // Held, not kept. A group whose whole content is ONE unnumbered line does
+    // exist — Part IIA of the table appended to the Sixth Schedule's paragraph
+    // 20 is the single "Tripura Tribal Areas District", and the print gives it
+    // no number because there is nothing to distinguish it from. But an
+    // ordinary Part opens with its own title set in small caps, and taking
+    // that for an entry gave the Second and Fifth Schedules a spurious one
+    // each. So the line is remembered and becomes an entry only if the group
+    // turns out to have no numbered ones.
+    if (groupBy !== "none" && lists.length > 0) {
+      // An asterisk row is an OMITTED entry and is kept where it stands: Part
+      // III of the table opens with the "* * *" that stands for the Mizo
+      // District, struck out in 1972. Held to the end of the group it would
+      // have sorted after the districts that follow it in the print.
+      if (!/[A-Za-z]/.test(line)) {
+        currentList().entries.push({ number: "", text: line });
+        continue;
+      }
+      orphan = orphan ? `${orphan} ${line}` : line;
+      continue;
+    }
+    diagnostics.push(`before the first entry: ${line.slice(0, 60)}`);
   }
   closeEntry();
+  closeGroup();
 
   for (const list of lists) {
     const name = list.number ? `${groupBy === "part" ? "Part" : "List"} ${list.number}` : "entries";

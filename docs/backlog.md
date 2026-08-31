@@ -302,9 +302,15 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
       the footnote latch was missing the verb "deleted"; and **the columns genuinely overlap on the
       line that opens a row** — a short name lets the body start at x=94 against a column at 107. So
       the opening line is split on content and every line after it on geometry.
-- [ ] The three-column tables inside the Sixth Schedule's paragraph 20 (the tribal areas) are
-      carried as part of that paragraph's text, which is where the print puts them, but they would
-      read better as a table of their own.
+- [x] **The Sixth Schedule's tribal-areas table is its own page (D-090) — 13 schedule pages, 710
+      entries.** It was carried inside paragraph 20, which ended "…Act, 1979.] T P I 1. The North
+      Cachar Hills District. …" — the paragraph's own text running into a table it only refers to.
+      Now at /acts/constitution/schedule/sixth-table, four Parts and eleven rows, linked both ways
+      with the paragraph that refers to it.
+      Needed two general line-level boundaries (`entryEndsAt`, `endsAtLine` — `endsBefore` works a
+      page at a time and the table shares page 336 with paragraph 20A), a Part pattern that copes
+      with small caps collapsing "PART" to "P", and a rule for a Part whose whole content is one
+      unnumbered line. Sort keys now come from the print rather than from the number.
 - [ ] **SCST §23 and PCA §31 absorb their Act's trailing Statement of Objects and Reasons.** The
       last section runs on into the appendix. MV §217A and HMA §30 were fixed by D-085/D-086; these
       two remain and need their acts re-ingested.

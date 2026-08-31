@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { ScheduleEntries } from "@/components/schedule-entries";
 import { ScheduleTable } from "@/components/schedule-table";
 import { PageShell } from "@/components/site-chrome";
-import { getActBySlug, getSchedule } from "@/features/acts/queries";
+import { getActBySlug, getSchedule, listSchedulesByAct } from "@/features/acts/queries";
 import { TrackEvent } from "@/lib/analytics";
 
 export const revalidate = 3600;
@@ -33,8 +33,23 @@ export async function generateMetadata({
 
 export default async function SchedulePage({ params }: { params: Promise<Params> }) {
   const { slug, scheduleSlug } = await params;
-  const [act, result] = await Promise.all([getActBySlug(slug), getSchedule(slug, scheduleSlug)]);
+  const [act, result, siblings] = await Promise.all([
+    getActBySlug(slug),
+    getSchedule(slug, scheduleSlug),
+    listSchedulesByAct(slug),
+  ]);
   if (!act || !result) notFound();
+
+  // A schedule can carry a table of its own — the Sixth's paragraph 20 appends
+  // one listing the tribal areas — and it is published beside it rather than
+  // flattened into the paragraph that refers to it. The paragraph says "the
+  // table below" and there is no table below, so the two are linked both ways.
+  // The relationship is in the slug: "sixth" and "sixth-table".
+  const child = siblings.find((s) => s.slug.startsWith(`${scheduleSlug}-`));
+  const parent = scheduleSlug.includes("-")
+    ? siblings.find((s) => s.slug === scheduleSlug.split("-")[0])
+    : undefined;
+  const related = child ?? parent;
 
   const { schedule, articles, entries } = result;
   // A schedule is columnar (0011) or entry-shaped (0023), never both.
@@ -72,6 +87,17 @@ export default async function SchedulePage({ params }: { params: Promise<Params>
             Limitation worksheet
           </Link>{" "}
           — it applies s.12(1) and lists what would move the date.
+        </p>
+      ) : null}
+
+      {related ? (
+        <p className="mt-3 text-small text-text-muted">
+          {child ? "This schedule appends a table: " : "Table to "}
+          <Link href={`/acts/${act.slug}/schedule/${related.slug}`} className="text-brand hover:underline">
+            {related.title}
+            {related.subtitle ? ` — ${related.subtitle}` : ""}
+          </Link>
+          .
         </p>
       ) : null}
 

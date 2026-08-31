@@ -150,6 +150,7 @@ async function listScheduleCommand(inputPath: string, flags: string[]): Promise<
         "--title 'Seventh Schedule' --heading SEVENTHSCHEDULE --ends-before EIGHTHSCHEDULE " +
         "[--group-by list|part|none] [--split-heading] [--roman] [--closing-note '^Explanation'] " +
         "[--two-column auto] [--section-heading '…'] [--row-body-starts '…'] " +
+        "[--ends-at-line '…'] [--entry-ends-at '…'] " +
         "[--subtitle '…'] " +
         "[--sort-order 7] [--min-height 7.7] [--max-height 11] " +
         "[--publish] [--status published] [--provenance '…']",
@@ -174,6 +175,8 @@ async function listScheduleCommand(inputPath: string, flags: string[]): Promise<
     twoColumnAt: at("--two-column") === "auto" ? "auto" : at("--two-column") ? Number(at("--two-column")) : undefined,
     sectionHeading: at("--section-heading") ? new RegExp(at("--section-heading")!, "i") : undefined,
     rowBodyStarts: at("--row-body-starts") ? new RegExp(at("--row-body-starts")!) : undefined,
+    endsAtLine: at("--ends-at-line") ? new RegExp(at("--ends-at-line")!) : undefined,
+    entryEndsAt: at("--entry-ends-at") ? new RegExp(at("--entry-ends-at")!) : undefined,
   });
   for (const d of result.diagnostics) console.log(`  \u00b7 ${d}`);
   console.log(`\nAuthority: ${result.authority ?? "(none found)"}`);
