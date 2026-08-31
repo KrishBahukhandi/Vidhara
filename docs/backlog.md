@@ -319,13 +319,24 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
       whose bodies are layouts set preformatted; 0025 adds `kind` so a document is set as prose.
       Two parser gaps found by Appendix III, which is one declaration with no numbering: a document
       with no numbered entries parsed to nothing, and its heading became its body.
-- [ ] **Appendix I's own First and Third Schedules are not ingested** (pp. 384–400): the annexure to
-      the 2015 India–Bangladesh boundary agreement — transferred territories, boundary descriptions,
-      and an inventory of ~300 enclaves. The inventory is a proper six-column table with named
-      headings at fixed positions, so it parses readily; its right home is `act_schedule_articles`
-      (the table 0011 built for this shape, with `column_labels`), which first needs generalising —
-      its description/period/commencement are NOT NULL for the Limitation Act, and arbitrary-width
-      rows want a `cells text[]`.
+- [~] **Appendix I's own First and Third Schedules (pp. 384–400) — everything but the run (D-092).**
+      The annexure to the 2015 India–Bangladesh boundary agreement: transferred territories,
+      boundary descriptions pillar by pillar, and an inventory of ~300 enclaves in six columns.
+      - [x] `act_schedule_articles` **generalised** (migration 0026): an article is limbed (the
+            Limitation Act's three named columns) or celled (`cells text[]`, one per heading),
+            enforced by a check constraint; description/period/commencement nullable; `fts` covers
+            the cells; the key is coalesced on `division` so a table whose numbering restarts under
+            each group cannot collide. Verified against a real Postgres, old rows intact.
+      - [x] **A parser** (`column-table.ts`) and the `ingest column-table` command — a table of any
+            width read by its own printed headings, with gates that refuse a bundle whose rows are
+            not as wide as its headings. **A page** (`ScheduleCells`) that renders one.
+      - [ ] **The ingest has not run.** It needs the Constitution's source PDF — not in the repo,
+            and unreachable from the environment D-092 was written in. Two commands, both in
+            `scripts/ingest/README.md` with the six headings verbatim. Only the print can say which
+            of the two schedules the inventory sits in, whether the numbering restarts, and where
+            the pages bracket.
+      - [ ] Once it is published, **link it from Appendix I** the way `sixth` and `sixth-table` link
+            to each other — the appendix's section 3 refers to a schedule the reader cannot reach.
 - [ ] **SCST §23 and PCA §31 absorb their Act's trailing Statement of Objects and Reasons.** The
       last section runs on into the appendix. MV §217A and HMA §30 were fixed by D-085/D-086; these
       two remain and need their acts re-ingested.

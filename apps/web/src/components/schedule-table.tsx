@@ -8,6 +8,11 @@ import type { ScheduleArticle, ScheduleRow } from "@/features/acts/queries";
  * A statutory schedule that is genuinely a table — the Limitation Act's 137
  * Articles of periods.
  *
+ * THREE NAMED COLUMNS, and the lettered limbs an Article carries inside them.
+ * A table of any other width is celled rather than limbed (0026) and renders
+ * through ScheduleCells; `rows` is null for those, which is why it is read
+ * defensively here.
+ *
  * Two decisions worth keeping:
  *
  * - **Not a `<table>` on phones.** Three columns of statutory prose in a 390px
@@ -35,7 +40,7 @@ export function ScheduleTable({
       (article) =>
         article.number.toLowerCase() === q ||
         article.number.toLowerCase().startsWith(q) ||
-        article.rows.some((row) =>
+        (article.rows ?? []).some((row) =>
           `${row.description} ${row.period} ${row.commencement}`.toLowerCase().includes(q),
         ),
     );
@@ -114,7 +119,7 @@ export function ScheduleTable({
                           className="font-mono text-small font-bold text-brand hover:underline">
                           {article.number}
                         </a>
-                        {article.rows.map((row, index) => (
+                        {(article.rows ?? []).map((row, index) => (
                           <ArticleRow
                             key={index}
                             row={row}

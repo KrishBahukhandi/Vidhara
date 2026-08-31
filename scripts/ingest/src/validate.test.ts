@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { toPlainText } from "./publish";
+import { scheduleBundleSchema } from "./schema";
 import { deriveSortKey } from "./sort-key";
 import { validateBundle } from "./validate";
 
@@ -115,5 +116,71 @@ describe("toPlainText", () => {
     expect(toPlainText("**Whoever** commits *murder*\n\nshall be punished")).toBe(
       "Whoever commits murder shall be punished",
     );
+  });
+});
+
+/**
+ * A schedule bundle is a table in one of two shapes (0026): the Limitation
+ * Act's three named columns, or a table of any width whose cells are
+ * positional. The gates here are the ones a wrong parse would otherwise slip
+ * past looking like law.
+ */
+describe("schedule bundles", () => {
+  const celled = {
+    actSlug: "constitution",
+    schedule: {
+      slug: "appendix-i-first",
+      title: "First Schedule",
+      columnLabels: ["Sl. No.", "Name of Chhits", "Chhit No.", "Area in acres"],
+      sortOrder: 1,
+    },
+    articles: [{ number: "1", cells: ["1", "Baragachhi", "12", "34.90"] }],
+    provenance: "Official India Code text, automated parse of the annexure",
+  };
+
+  it("accepts a celled table whose rows are as wide as its headings", () => {
+    expect(scheduleBundleSchema.safeParse(celled).success).toBe(true);
+  });
+
+  it("rejects a row that is not as wide as the headings", () => {
+    // Not a row that lost a value: a row whose every cell after the gap is
+    // filed under the wrong heading.
+    const bundle = structuredClone(celled);
+    bundle.articles[0]!.cells = ["1", "Baragachhi", "34.90"];
+    const parsed = scheduleBundleSchema.safeParse(bundle);
+    expect(parsed.success).toBe(false);
+    expect(JSON.stringify(parsed.error?.issues)).toContain("3 cells against 4 column heading(s)");
+  });
+
+  it("rejects an article that is neither limbed nor celled", () => {
+    const bundle = structuredClone(celled) as { articles: { number: string; cells?: string[] }[] };
+    delete bundle.articles[0]!.cells;
+    expect(scheduleBundleSchema.safeParse(bundle).success).toBe(false);
+  });
+
+  it("still takes the Limitation Act's three columns", () => {
+    const limbed = {
+      ...celled,
+      actSlug: "lim",
+      schedule: {
+        slug: "schedule",
+        title: "The Schedule",
+        columnLabels: ["Description of suit", "Period of limitation", "Time from which period begins to run"],
+        sortOrder: 0,
+      },
+      articles: [
+        {
+          number: "137",
+          rows: [
+            {
+              description: "Any other application for which no period of limitation is provided elsewhere in this Division.",
+              period: "Three years",
+              commencement: "When the right to apply accrues.",
+            },
+          ],
+        },
+      ],
+    };
+    expect(scheduleBundleSchema.safeParse(limbed).success).toBe(true);
   });
 });

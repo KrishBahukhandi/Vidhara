@@ -28,6 +28,7 @@ import { parseGazetteBBox } from "./sources/gazette-bbox";
 import { parseInlineAct } from "./sources/gazette-inline";
 import { parseGazetteLayoutText } from "./sources/gazette-pdf";
 import { parseNcrbTable } from "./sources/ncrb-table";
+import { parseColumnTable } from "./sources/column-table";
 import { parseScheduleTable } from "./sources/schedule-table";
 import { validateBundle } from "./validate";
 
@@ -256,6 +257,103 @@ async function listScheduleCommand(inputPath: string, flags: string[]): Promise<
   );
 }
 
+/**
+ * A schedule that is a TABLE OF ANY WIDTH, read by its own printed headings.
+ *
+ * Parse-only, like parse-schedule: it writes the bundle and stops. A table of
+ * three hundred rows is proofread against the PDF before it is published, and
+ * the bundle is what it is proofread from (README: bundles are the artifacts of
+ * record). `publish-schedule` takes it from there.
+ *
+ * The headings come from the meta file's columnLabels — the same strings the
+ * schedule is stored with — because they are what the reader sees as the table
+ * header AND what identifies the header row on the page.
+ */
+function columnTableCommand(inputPath: string, flags: string[]): void {
+  const at = (flag: string): string | undefined => {
+    const i = flags.indexOf(flag);
+    return i >= 0 ? flags[i + 1] : undefined;
+  };
+  const metaPath = at("--meta");
+  const outPath = at("--out");
+  if (!metaPath || !outPath) {
+    console.error(
+      "Usage: ingest column-table <bbox.xhtml> --meta <schedule-meta.json> --out <bundle.json> " +
+        "[--group-heading '^ENCLAVES'] [--skip-lines '…'] [--ends-at-line '…'] " +
+        "[--ends-before 'THETHIRDSCHEDULE'] [--min-height 7.7] [--max-height 11]",
+    );
+    process.exit(1);
+  }
+
+  const meta = JSON.parse(readFileSync(metaPath, "utf8")) as {
+    schedule?: { columnLabels?: string[] };
+  };
+  const columns = meta.schedule?.columnLabels;
+  if (!columns || columns.length < 2) {
+    console.error(`${metaPath} must carry schedule.columnLabels — the headings as printed, in order`);
+    process.exit(1);
+  }
+
+  const result = parseColumnTable(readFileSync(inputPath, "utf8"), {
+    columns,
+    groupHeading: at("--group-heading") ? new RegExp(at("--group-heading")!, "i") : undefined,
+    skipLines: at("--skip-lines") ? new RegExp(at("--skip-lines")!, "i") : undefined,
+    endsAtLine: at("--ends-at-line") ? new RegExp(at("--ends-at-line")!, "i") : undefined,
+    endsBefore: at("--ends-before") ? new RegExp(at("--ends-before")!, "i") : undefined,
+    minHeight: at("--min-height") ? Number(at("--min-height")) : undefined,
+    maxHeight: at("--max-height") ? Number(at("--max-height")) : undefined,
+  });
+  for (const d of result.diagnostics) console.log(`  \u00b7 ${d}`);
+  console.log(`\n${columns.join(" | ")}`);
+  for (const row of result.rows.slice(0, 5)) console.log(`   ${row.cells.join(" | ")}`);
+
+  // The gates. A table this wide fails silently: a boundary read one word out
+  // files every cell after it under the wrong heading, and the result still
+  // looks like a table. So the shape is checked rather than eyeballed.
+  const complaints: string[] = [];
+  if (result.rows.length === 0) complaints.push("no rows found");
+  const seen = new Set<string>();
+  for (const row of result.rows) {
+    const where = `row ${row.division ? `${row.division} ` : ""}${row.number}`;
+    if (row.cells.length !== columns.length) {
+      complaints.push(`${where}: ${row.cells.length} cells against ${columns.length} headings`);
+    }
+    // The number and the group together, exactly as 0026 keys them.
+    const key = `${row.division ?? ""}|${row.number}`;
+    if (seen.has(key)) complaints.push(`${where}: duplicate — the numbering restarts unmarked`);
+    seen.add(key);
+    if (row.cells.slice(1).every((cell) => !cell.trim())) complaints.push(`${where}: no content`);
+    for (const cell of row.cells) {
+      if (/Subs\. by|Ins\. by|w\.e\.f\./.test(cell)) {
+        complaints.push(`${where}: retains footnote apparatus — "${cell.slice(0, 40)}"`);
+      }
+    }
+  }
+  if (complaints.length > 0) {
+    for (const c of complaints.slice(0, 20)) console.error(`  \u2716 ${c}`);
+    if (complaints.length > 20) console.error(`  \u2716 …and ${complaints.length - 20} more`);
+    console.error("\nRefusing to write a bundle — the parse did not validate.");
+    process.exit(1);
+  }
+
+  const bundle = {
+    ...meta,
+    articles: result.rows.map((row) => ({
+      number: row.number,
+      ...(row.division ? { division: row.division } : {}),
+      cells: row.cells,
+    })),
+  };
+  writeFileSync(outPath, `${JSON.stringify(bundle, null, 2)}\n`);
+  const groups = new Set(result.rows.map((r) => r.division ?? ""));
+  console.log(
+    `\nParsed ${result.rows.length} row(s) of ${columns.length} column(s)` +
+      (groups.size > 1 ? `, ${groups.size} group(s)` : "") +
+      ` \u2192 ${outPath}`,
+  );
+  console.log("Next: ingest publish-schedule, after spot-checking against the PDF.");
+}
+
 function printReport(errors: string[], warnings: string[]): void {
   for (const error of errors) console.error(`  ✖ ${error}`);
   for (const warning of warnings) console.warn(`  ⚠ ${warning}`);
@@ -331,18 +429,32 @@ async function main(): Promise<void> {
   if (
     !command ||
     !bundlePath ||
-    !["validate", "publish", "parse-gazette", "parse-ncrb", "parse-schedule", "publish-schedule", "classify-offences", "list-schedule", "emit-sql"].includes(
-      command,
-    )
+    ![
+      "validate",
+      "publish",
+      "parse-gazette",
+      "parse-ncrb",
+      "parse-schedule",
+      "column-table",
+      "publish-schedule",
+      "classify-offences",
+      "list-schedule",
+      "emit-sql",
+    ].includes(command)
   ) {
     console.error(
-      "Usage: ingest <parse-gazette|parse-schedule|list-schedule|classify-offences|validate|publish|publish-schedule|emit-sql> <file> [--meta m.json] [--out f] [--status s] [--publish-act]",
+      "Usage: ingest <parse-gazette|parse-schedule|column-table|list-schedule|classify-offences|validate|publish|publish-schedule|emit-sql> <file> [--meta m.json] [--out f] [--status s] [--publish-act]",
     );
     process.exit(1);
   }
 
   if (command === "classify-offences") {
     await classifyOffencesCommand(bundlePath, flags);
+    return;
+  }
+
+  if (command === "column-table") {
+    columnTableCommand(bundlePath, flags);
     return;
   }
 
@@ -428,9 +540,17 @@ async function main(): Promise<void> {
       process.exit(1);
     }
 
-    const rows = parsed.data.articles.reduce((total, article) => total + article.rows.length, 0);
+    // A limbed article counts its limbs; a celled one is one row of cells.
+    const rows = parsed.data.articles.reduce(
+      (total, article) => total + (article.rows?.length ?? 1),
+      0,
+    );
+    const celled = parsed.data.articles.filter((article) => article.cells).length;
     console.log(
-      `Validation OK: ${parsed.data.actSlug}/${parsed.data.schedule.slug} — ${parsed.data.articles.length} article(s), ${rows} row(s).`,
+      `Validation OK: ${parsed.data.actSlug}/${parsed.data.schedule.slug} — ${parsed.data.articles.length} article(s), ${rows} row(s)` +
+        (celled > 0
+          ? `, ${celled} celled against ${parsed.data.schedule.columnLabels.length} heading(s).`
+          : "."),
     );
     const result = await publishSchedule(parsed.data, { reviewStatus, publishAct: false });
     console.log(

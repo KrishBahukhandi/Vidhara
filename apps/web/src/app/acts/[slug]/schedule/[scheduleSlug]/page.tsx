@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { ScheduleCells } from "@/components/schedule-cells";
 import { ScheduleEntries } from "@/components/schedule-entries";
 import { ScheduleTable } from "@/components/schedule-table";
 import { PageShell } from "@/components/site-chrome";
@@ -24,9 +25,14 @@ export async function generateMetadata({
   const [act, result] = await Promise.all([getActBySlug(slug), getSchedule(slug, scheduleSlug)]);
   if (!act || !result) return {};
   const { schedule } = result;
+  // A celled table is not read article by article and is not searched by the
+  // kind of suit — it is a list of things, looked up by name.
+  const celled = result.articles.some((article) => article.cells);
   return {
     title: `${schedule.title}${schedule.subtitle ? ` (${schedule.subtitle})` : ""} — ${act.abbreviation}`,
-    description: `${schedule.title} to the ${act.title}${schedule.subtitle ? `: ${schedule.subtitle.toLowerCase()}` : ""}, article by article. Search by article number or by the kind of suit. Free on Vidhara.`,
+    description: celled
+      ? `${schedule.title} to the ${act.title}${schedule.subtitle ? `: ${schedule.subtitle.toLowerCase()}` : ""} — ${result.articles.length} rows, as printed. Search by ${(schedule.column_labels[1] ?? "name").toLowerCase()}. Free on Vidhara.`
+      : `${schedule.title} to the ${act.title}${schedule.subtitle ? `: ${schedule.subtitle.toLowerCase()}` : ""}, article by article. Search by article number or by the kind of suit. Free on Vidhara.`,
     alternates: { canonical: `/acts/${act.slug}/schedule/${schedule.slug}` },
   };
 }
@@ -52,8 +58,11 @@ export default async function SchedulePage({ params }: { params: Promise<Params>
   const related = child ?? parent;
 
   const { schedule, articles, entries } = result;
-  // A schedule is columnar (0011) or entry-shaped (0023), never both.
+  // A schedule is columnar (0011/0026) or entry-shaped (0023), never both — and
+  // a columnar one is limbed (the Limitation Act's three named columns) or
+  // celled (a table of any width, 0026).
   const isEntryShaped = entries.length > 0;
+  const isCelled = articles.some((article) => article.cells);
 
   return (
     <PageShell>
@@ -76,7 +85,12 @@ export default async function SchedulePage({ params }: { params: Promise<Params>
         ) : null}
       </h1>
       <p className="mt-1 text-small text-text-muted">
-        {act.abbreviation} · {isEntryShaped ? `${entries.length} entries` : `${articles.length} articles`}
+        {act.abbreviation} ·{" "}
+        {isEntryShaped
+          ? `${entries.length} entries`
+          : isCelled
+            ? `${articles.length} rows`
+            : `${articles.length} articles`}
         {schedule.authority_note ? ` · [${schedule.authority_note}]` : ""}
       </p>
 
@@ -107,6 +121,8 @@ export default async function SchedulePage({ params }: { params: Promise<Params>
         <p className="mt-8 text-body text-text-muted">
           This schedule is still being ingested.
         </p>
+      ) : isCelled ? (
+        <ScheduleCells articles={articles} columnLabels={schedule.column_labels} />
       ) : (
         <ScheduleTable articles={articles} columnLabels={schedule.column_labels} />
       )}
@@ -121,7 +137,12 @@ export default async function SchedulePage({ params }: { params: Promise<Params>
              particular law falls within it is a question of pith and substance that the courts
              decide, and articles 246 to 254 govern what happens when Lists overlap. Verify against
              the bare text before relying on it.`
-          : `Reproduced from the official India Code text. A period is only a starting point —
+          : isCelled
+            ? `Reproduced from the official India Code text, row by row and column by column as
+               printed. A table like this records what the schedule lists and nothing more — it
+               settles no question that turns on the instrument the schedule belongs to. Verify
+               against the bare text before relying on it.`
+            : `Reproduced from the official India Code text. A period is only a starting point —
              sections 4 to 24 of the Act govern how it is computed, and the ${act.abbreviation}
              sections page carries those. Verify against the bare act before filing.`}
       </p>

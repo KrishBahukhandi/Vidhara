@@ -66,50 +66,55 @@ export type Database = {
         ]
       }
       act_schedule_articles: {
+        // A row is LIMBED (rows + the three Limitation columns) or CELLED
+        // (cells, one per heading in the schedule's column_labels) — 0026.
         Row: {
-          commencement: string
+          cells: string[] | null
+          commencement: string | null
           created_at: string
-          description: string
+          description: string | null
           division: string | null
           fts: unknown
           id: string
           number: string
           part_number: string | null
           part_title: string | null
-          period: string
-          rows: Json
+          period: string | null
+          rows: Json | null
           schedule_id: string
           sort_key: number
           updated_at: string
         }
         Insert: {
-          commencement: string
+          cells?: string[] | null
+          commencement?: string | null
           created_at?: string
-          description: string
+          description?: string | null
           division?: string | null
           fts?: unknown
           id?: string
           number: string
           part_number?: string | null
           part_title?: string | null
-          period: string
-          rows: Json
+          period?: string | null
+          rows?: Json | null
           schedule_id: string
           sort_key: number
           updated_at?: string
         }
         Update: {
-          commencement?: string
+          cells?: string[] | null
+          commencement?: string | null
           created_at?: string
-          description?: string
+          description?: string | null
           division?: string | null
           fts?: unknown
           id?: string
           number?: string
           part_number?: string | null
           part_title?: string | null
-          period?: string
-          rows?: Json
+          period?: string | null
+          rows?: Json | null
           schedule_id?: string
           sort_key?: number
           updated_at?: string

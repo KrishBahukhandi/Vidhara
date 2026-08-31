@@ -162,7 +162,10 @@ export async function listScheduleArticles(
       division,
       part_number,
       part_title,
-      rows: rows as unknown as ScheduleRow[],
+      // Null for a CELLED schedule (0026) — a table of any width, which this
+      // screen does not render; the Limitation worksheet is the only caller
+      // and its Schedule is limbed.
+      rows: (rows ?? []) as unknown as ScheduleRow[],
     })),
   );
 }
