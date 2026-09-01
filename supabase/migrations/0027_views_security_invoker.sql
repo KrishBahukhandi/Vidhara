@@ -1,0 +1,35 @@
+-- The three content views run as their creator; make them run as their reader.
+--
+-- Revert strategy: `alter view … set (security_invoker = false)` on all three,
+-- which restores the semantics they were created with. Nothing else changes —
+-- no column, no row, no policy.
+--
+-- Postgres evaluates a view with the permissions and the row-level security of
+-- the view's OWNER unless told otherwise, and 0017, 0021 and 0022 did not tell
+-- it otherwise. All three are owned by postgres, which bypasses RLS, so every
+-- read through them has been answered without the base tables' policies ever
+-- being consulted.
+--
+-- NOTHING HAS LEAKED. Each view carries `where review_status = 'published'` in
+-- its own body, which is the same line the policies enforce, so the rows they
+-- return are the rows they should return. But that is the point: the safety of
+-- these three has been a property of a WHERE clause rather than of the policy
+-- system, and one edit to a view body away from not being true. A draft
+-- classification is invisible today because someone remembered; after this it
+-- is invisible because the table says so. Supabase's linter flags exactly this
+-- (0010_security_definer_view), and it is right to.
+--
+-- MEASURED BEFORE FLIPPING, on the production database rather than reasoned
+-- about: as `anon`, the three views return 728 / 827 / 6 rows, and the same
+-- joins read straight off the base tables with RLS applied return 728 / 827 / 6.
+-- Every act is published (36 of 36), and anon holds SELECT on all five base
+-- tables, which is what an invoker view needs and what a definer view hid the
+-- absence of. The reader sees exactly what it saw; what changes is who
+-- guarantees it.
+--
+-- The service role bypasses RLS and is unaffected — publishing still works. No
+-- database function reads these views, so nothing inherits a different
+-- effective user through one.
+alter view public.v_order_rules set (security_invoker = true);
+alter view public.v_offence_classifications set (security_invoker = true);
+alter view public.v_offence_classification_rules set (security_invoker = true);
