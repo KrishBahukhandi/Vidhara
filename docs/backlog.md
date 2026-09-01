@@ -342,12 +342,26 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
             the pages bracket.
       - [ ] Once it is published, **link it from Appendix I** the way `sixth` and `sixth-table` link
             to each other — the appendix's section 3 refers to a schedule the reader cannot reach.
-- [ ] **Migration 0026 is not applied to production (D-094).** It is the only thing between the
-      corpus and the enclave inventory, and until it runs the web reads `act_schedule_articles`
-      through a fallback that skips `cells`. Apply
-      `supabase/migrations/0026_schedule_articles_cells.sql`, then delete the fallback in
-      `getSchedule` (it names itself). Publishing a schedule — even the Limitation Act's — fails
-      until it is applied; the publisher says so by name.
+- [x] **Migration 0026 is applied to production** (2026-09-01 06:01 UTC, run directly against the
+      database rather than through the migration system). Verified after the fact: the `cells`
+      column, the `act_schedule_articles_shape` check, the coalesced `act_schedule_articles_key`,
+      the rebuilt `fts` (its expression calls `schedule_cells_text`) and the function itself are
+      all present; the old `(schedule_id, number)` unique constraint is gone; 137 Limitation
+      articles are intact, still limbed, and still matching through `fts`; no celled row exists
+      yet. This closes D-094's revisit, and the enclave inventory is now blocked only on the
+      source PDF.
+      - [x] **The migration ledger did not know.** `supabase_migrations.schema_migrations` ran to
+            0025 while the schema was at 0026, because the SQL was applied outside the migration
+            path that recorded the previous twenty-five. A `supabase db push` would then have
+            tried to re-run 0026 and died on `drop constraint
+            act_schedule_articles_schedule_id_number_key`, which no longer exists — mid-deploy,
+            on whatever day someone next pushed. Recorded as applied (version 20260901000000),
+            the same repair `supabase migration repair --status applied` performs.
+      - [ ] **The `getSchedule` fallback is now dead code — and it is worth keeping anyway.**
+            Postgres logged the missing column at 05:58:20 during the PR #2 preview build, which
+            went green 19 seconds later: the fallback ran, in production, and did its job. It
+            costs one round trip only on a database that has not migrated, so it stays until
+            there is a reason to spend a deploy on removing it.
 - [ ] **SCST §23 and PCA §31 absorb their Act's trailing Statement of Objects and Reasons.** The
       last section runs on into the appendix. MV §217A and HMA §30 were fixed by D-085/D-086; these
       two remain and need their acts re-ingested.
