@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { AccountLink } from "@/components/account-link";
+import { NavLink } from "@/components/nav-link";
 import { NAV_LINKS } from "@/lib/nav";
 
 /** Hamburger → dropdown for narrow screens. Closes on route change + Escape. */
@@ -69,11 +69,12 @@ export function MobileNav() {
             <ul className="flex flex-col">
               {NAV_LINKS.map((link) => (
                 <li key={link.href}>
-                  <Link
+                  <NavLink
                     href={link.href}
-                    className="block border-b border-border py-4 text-body font-medium text-text transition-colors hover:text-brand">
+                    className="block border-b border-border py-4 text-body font-medium text-text transition-colors hover:text-brand"
+                    activeClassName="!text-brand">
                     {link.label}
-                  </Link>
+                  </NavLink>
                 </li>
               ))}
               <li>

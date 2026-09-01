@@ -89,6 +89,11 @@ reminders (built, still inert — needs the Edge Function secrets above).
       serving: 278 impressions, avg position 38.8, impressions climbing. Sitemap now carries
       `lastmod` on 5,630 URLs, and section pages emit `BreadcrumbList`.
       **Check the sitemap flipped from "Couldn't fetch" to Success.**
+      **After D-093 ships, three things to read in Console rather than guess at:** whether indexed
+      coverage rises now that every Chapter and Part of every act is linked by name; whether the
+      Legislation / CollectionPage / FAQPage markup appears under Enhancements; and whether
+      average position moves off 38.8 for the queries that already impress. Position 38.8 is page
+      four — the distance to page one is authority, not markup.
 - [~] **OG cards technically verified** — 1200×630, `image/png`, absolute URLs, every page type
       covered, and D-026's tofu-box fix confirmed holding by rendering the images. **Still needs a
       human with the apps**: WhatsApp, Telegram, and the Facebook Sharing Debugger's *Scrape Again*
@@ -372,6 +377,17 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
 - [ ] `ChapterListItem` and its grouping logic are duplicated web/mobile — the rule of three says
       the next consumer moves it into `packages/shared` (D-040)
 - [ ] Advocate surfaces need re-framing as a companion rather than the pitch (D-049)
+- [x] **Navigation and discoverability, D-093** — a real 404 (there was none), active state in the
+      chrome, a skip link, a chapter jump list on every act page with the section page naming the
+      division it sits in, `WebSite`/`SearchAction`/`Organization` site-wide, `Legislation` and
+      `CollectionPage` on the act and library pages, a homepage FAQ, `lang="en-IN"`, and the two
+      footer routes the sitemap never declared.
+- [ ] **What D-093 deliberately left** — a "other sections in this chapter" block on section pages
+      (more internal links, but a 60-section chapter would bury the statute); an OG image per act
+      page (they fall back to the site card); and the `?via=browse` link params, which spawn a
+      non-canonical variant of every section URL. The canonical tag handles them correctly, so this
+      is crawl budget rather than correctness — worth revisiting only if Console shows the variants
+      being crawled at volume.
 
 ## 7. Beta / go-to-market — none of this has started
 

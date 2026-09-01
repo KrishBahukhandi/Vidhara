@@ -15,6 +15,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticEntries: MetadataRoute.Sitemap = [
     { url: SITE_URL, changeFrequency: "weekly", priority: 1 },
     { url: `${SITE_URL}/acts`, changeFrequency: "daily", priority: 0.9 },
+    // Listed low rather than left out: both are linked from every page's
+    // footer, and a URL a crawler keeps meeting but never sees declared reads
+    // as an oversight. Neither competes with a section page for anything.
+    { url: `${SITE_URL}/feedback`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${SITE_URL}/privacy`, changeFrequency: "yearly", priority: 0.3 },
     { url: `${SITE_URL}/mapping`, changeFrequency: "weekly", priority: 0.9 },
     // Quiz surfaces: the daily question changes every day, practice is evergreen.
     { url: `${SITE_URL}/daily`, changeFrequency: "daily", priority: 0.8 },
@@ -92,6 +97,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   for (const { slug, updatedAt } of sectionPaths) {
     const current = actLastMod.get(slug);
     if (!current || updatedAt > current) actLastMod.set(slug, updatedAt);
+  }
+  // The two pages that are indexes OF the corpus are as fresh as the freshest
+  // thing in it — otherwise the hubs look static while everything beneath them
+  // moves, which is the opposite of what is true.
+  const corpusLastMod = [...actLastMod.values()].sort().pop();
+  for (const entry of staticEntries) {
+    if (entry.url === SITE_URL || entry.url === `${SITE_URL}/acts`) {
+      entry.lastModified = corpusLastMod;
+    }
   }
 
   return [

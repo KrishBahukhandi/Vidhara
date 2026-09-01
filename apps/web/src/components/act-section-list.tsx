@@ -5,6 +5,7 @@ import type React from "react";
 import { useMemo, useState } from "react";
 
 import type { ChapterListItem, SectionListItem } from "@/features/acts/queries";
+import { MAIN_CONTENT_ID } from "@/lib/nav";
 
 /** Heading whose level follows the division's depth, so the document outline
  * matches the act's structure rather than the rendering order: every Part is an
@@ -35,10 +36,14 @@ export function ActSectionList({
   slug,
   sections,
   chapters,
+  anchors,
 }: {
   slug: string;
   sections: SectionListItem[];
   chapters: ChapterListItem[];
+  /** Chapter id → the fragment the act page's jump list points at. Given
+   * rather than derived so the two cannot drift; see lib/chapter-anchors. */
+  anchors: Record<string, string>;
 }) {
   const [query, setQuery] = useState("");
 
@@ -117,7 +122,12 @@ export function ActSectionList({
             const showParent =
               parent !== null && (previous?.part_number || null) !== parent;
             return (
-              <section key={chapter?.id ?? "prelim"}>
+              <section
+                key={chapter?.id ?? "prelim"}
+                id={chapter ? anchors[chapter.id] : "prelim"}
+                // The header is sticky, so an anchored heading would otherwise
+                // land underneath it.
+                className="scroll-mt-20">
                 {showParent && chapter ? (
                   <h2 className="mb-1 text-small font-semibold uppercase tracking-wide text-text-faint">
                     <span className="font-mono">Part {chapter.part_number}</span>
@@ -155,6 +165,19 @@ export function ActSectionList({
       ) : (
         rows(sections)
       )}
+
+      {/* A plain anchor, not a scroll handler: the BNSS is 531 rows and the
+          filter box, the chapter jump list and the header search all live at
+          the top of the page. Getting back to them should not need a flick. */}
+      {sections.length > 40 ? (
+        <p className="mt-6 text-right">
+          <a
+            href={`#${MAIN_CONTENT_ID}`}
+            className="text-small text-text-muted transition-colors hover:text-brand">
+            ↑ Back to top
+          </a>
+        </p>
+      ) : null}
     </div>
   );
 }

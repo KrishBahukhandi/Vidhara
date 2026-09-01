@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { ContinueReading } from "@/components/continue-reading";
 import { FakeDoor } from "@/components/fake-door";
 import { LandingLookup } from "@/components/landing-lookup";
 import { Reveal } from "@/components/reveal";
+import { MAIN_CONTENT_ID } from "@/lib/nav";
+import { SITE_URL } from "@/lib/site";
 import {
   countPublishedMappings,
   countPublishedSections,
@@ -36,6 +39,102 @@ const STEPS = [
 ];
 
 const nf = new Intl.NumberFormat("en-IN");
+
+// The homepage had no canonical of its own, so the root URL was left to be
+// inferred — and this site is reachable at two origins (the Vercel one still
+// serves links shared before the domain cutover).
+export const metadata: Metadata = { alternates: { canonical: "/" } };
+
+/**
+ * The questions people actually type, answered on the page rather than only in
+ * the product.
+ *
+ * Each one is a real query shape — "is bare act text official", "which BNS
+ * section replaced IPC 420", "IPC to BNS converter free" — and each answer
+ * links into the part of the site that answers it in full. That is the point:
+ * a homepage that only advertises gives a reader nowhere to go and a crawler
+ * nothing to follow.
+ */
+const FAQS = [
+  {
+    q: "Which BNS section replaced IPC Section 420?",
+    a: (
+      <>
+        Cheating is now <strong className="font-semibold text-text">BNS Section 318</strong>. Every
+        such pairing comes from the government&rsquo;s own concordance — open the{" "}
+        <Link href="/mapping" className="font-medium text-brand hover:underline">
+          IPC ⇄ BNS mapping
+        </Link>{" "}
+        for the whole table, or type a section into the box above to jump straight to it with both
+        texts side by side.
+      </>
+    ),
+  },
+  {
+    q: "Is the bare-act text here official?",
+    a: (
+      <>
+        It is reproduced from the Gazette of India and India Code, with the source recorded on every
+        act and shown at the foot of every section. It is a reference, not a certified copy — verify
+        against the Gazette before you rely on it in court.{" "}
+        <Link href="/verification" className="font-medium text-brand hover:underline">
+          How we verify, and the mistakes we have fixed
+        </Link>
+        .
+      </>
+    ),
+  },
+  {
+    q: "Does it cover CrPC → BNSS and the Evidence Act → BSA as well?",
+    a: (
+      <>
+        Yes — all three transitions, in both directions, with a note on what changed. So do the
+        other central acts in the{" "}
+        <Link href="/acts" className="font-medium text-brand hover:underline">
+          library
+        </Link>
+        : the Constitution, the Contract Act, the CPC, the NI Act, POCSO, the Hindu Marriage Act,
+        the Limitation Act and more.
+      </>
+    ),
+  },
+  {
+    q: "Is Vidhara free? Do I need an account?",
+    a: (
+      <>
+        Free, and no sign-up to read anything. An account only remembers what you bookmark across
+        devices.
+      </>
+    ),
+  },
+  {
+    q: "Can I use it to prepare for judiciary exams?",
+    a: (
+      <>
+        That is who it is built for. Read the sections, then test yourself on the{" "}
+        <Link href="/daily" className="font-medium text-brand hover:underline">
+          daily question
+        </Link>{" "}
+        or with{" "}
+        <Link href="/practice" className="font-medium text-brand hover:underline">
+          unlimited practice
+        </Link>{" "}
+        — every question is generated from the official mapping, never invented.
+      </>
+    ),
+  },
+];
+
+/** The same five questions as data, for the search engines. Answers are the
+ * plain-text version of what is rendered, because schema that does not match
+ * the page is worse than none. */
+const FAQ_TEXT = [
+  "Cheating is now BNS Section 318. Every such pairing comes from the government's own concordance; the full IPC ⇄ BNS mapping is at /mapping, and typing a section number jumps straight to it with both texts side by side.",
+  "It is reproduced from the Gazette of India and India Code, with the source recorded on every act and shown at the foot of every section. It is a reference, not a certified copy — verify against the Gazette before relying on it in court.",
+  "Yes — all three transitions, in both directions, with a note on what changed. The library also carries the Constitution, the Contract Act, the CPC, the NI Act, POCSO, the Hindu Marriage Act, the Limitation Act and more.",
+  "Free, and no sign-up to read anything. An account only remembers what you bookmark across devices.",
+  "That is who it is built for. Read the sections, then test yourself on the daily question or with unlimited practice — every question is generated from the official mapping, never invented.",
+];
 
 function features(sectionCount: number, actCount: number) {
   return [
@@ -71,7 +170,25 @@ export default async function HomePage() {
   ];
 
   return (
-    <main className="mx-auto flex w-full max-w-content flex-1 flex-col px-5 sm:px-6">
+    <main
+      id={MAIN_CONTENT_ID}
+      className="mx-auto flex w-full max-w-content flex-1 flex-col px-5 scroll-mt-20 sm:px-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: FAQS.map((faq, index) => ({
+              "@type": "Question",
+              name: faq.q,
+              acceptedAnswer: { "@type": "Answer", text: FAQ_TEXT[index] },
+            })),
+            isPartOf: { "@id": `${SITE_URL}/#website` },
+          }),
+        }}
+      />
+
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="flex flex-col gap-6 pt-16 pb-12 sm:pt-24">
         <p
@@ -245,6 +362,19 @@ export default async function HomePage() {
             description="Highlight a passage and keep your own notes against any section"
           />
         </div>
+      </Reveal>
+
+      {/* ── Questions people arrive with ─────────────────────── */}
+      <Reveal as="section" className="border-t border-border py-14 sm:py-20">
+        <h2 className="font-serif text-h1 font-semibold text-text">Common questions</h2>
+        <dl className="mt-8 max-w-measure space-y-6">
+          {FAQS.map((faq) => (
+            <div key={faq.q}>
+              <dt className="text-h3 font-semibold text-text">{faq.q}</dt>
+              <dd className="mt-2 text-body text-text-muted">{faq.a}</dd>
+            </div>
+          ))}
+        </dl>
       </Reveal>
 
       {/* ── Final CTA ────────────────────────────────────────── */}
