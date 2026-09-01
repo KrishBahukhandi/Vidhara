@@ -342,6 +342,12 @@ Corpus is **36 acts / 5,594 sections at 0 SEV1**. Remaining work is characterise
             the pages bracket.
       - [ ] Once it is published, **link it from Appendix I** the way `sixth` and `sixth-table` link
             to each other — the appendix's section 3 refers to a schedule the reader cannot reach.
+- [ ] **Migration 0026 is not applied to production (D-094).** It is the only thing between the
+      corpus and the enclave inventory, and until it runs the web reads `act_schedule_articles`
+      through a fallback that skips `cells`. Apply
+      `supabase/migrations/0026_schedule_articles_cells.sql`, then delete the fallback in
+      `getSchedule` (it names itself). Publishing a schedule — even the Limitation Act's — fails
+      until it is applied; the publisher says so by name.
 - [ ] **SCST §23 and PCA §31 absorb their Act's trailing Statement of Objects and Reasons.** The
       last section runs on into the appendix. MV §217A and HMA §30 were fixed by D-085/D-086; these
       two remain and need their acts re-ingested.

@@ -503,6 +503,66 @@ interface EntryQuery {
   };
 }
 
+/**
+ * act_schedule_articles as 0026 left it, and as 0011 left it.
+ *
+ * A DEPLOY MUST SURVIVE ITS MIGRATION NOT HAVING RUN YET. It did not: 0026 adds
+ * `cells`, the query asked for it, and against a database still on 0011 that is
+ * a hard 42703 — which took down the whole production build, because
+ * /limitation prerenders a schedule and a prerender error fails the export.
+ * rules.md §13 already says this ("backward-compatible one release"); this is
+ * what obeying it looks like for a read.
+ *
+ * The fallback costs one wasted round trip on a database that has not migrated
+ * and nothing at all on one that has, since the first query then succeeds. It
+ * can be deleted once 0026 is applied everywhere this code is deployed —
+ * and a database without `cells` has no celled schedule to lose by it.
+ */
+const ARTICLE_COLUMNS = "id, number, division, part_number, part_title, rows, cells";
+const ARTICLE_COLUMNS_BEFORE_0026 = "id, number, division, part_number, part_title, rows";
+
+interface ScheduleArticleRow {
+  id: string;
+  number: string;
+  division: string | null;
+  part_number: string | null;
+  part_title: string | null;
+  rows: unknown;
+  cells: string[] | null;
+}
+
+/** PostgREST passes Postgres's own 42703 through, naming the column in the
+ * message: `column act_schedule_articles.cells does not exist`. */
+function isMissingColumn(error: { code?: string; message?: string }, column: string): boolean {
+  const message = error.message ?? "";
+  return (error.code === "42703" || /does not exist/i.test(message)) && message.includes(column);
+}
+
+async function selectScheduleArticles(
+  client: ReturnType<typeof getServerClient>,
+  scheduleId: string,
+): Promise<ScheduleArticleRow[]> {
+  const query = (columns: string) =>
+    client
+      .from("act_schedule_articles")
+      .select(columns)
+      .eq("schedule_id", scheduleId)
+      .order("sort_key", { ascending: true });
+
+  const current = await query(ARTICLE_COLUMNS);
+  if (!current.error) return current.data as unknown as ScheduleArticleRow[];
+  if (!isMissingColumn(current.error, "cells")) {
+    throw new Error(`getSchedule articles: ${current.error.message}`);
+  }
+
+  const legacy = await query(ARTICLE_COLUMNS_BEFORE_0026);
+  if (legacy.error) throw new Error(`getSchedule articles: ${legacy.error.message}`);
+  return (legacy.data as unknown as Omit<ScheduleArticleRow, "cells">[]).map((row) => ({
+    ...row,
+    cells: null,
+  }));
+}
+
 export async function getSchedule(
   actSlug: string,
   scheduleSlug: string,
@@ -518,12 +578,7 @@ export async function getSchedule(
   if (error) throw new Error(`getSchedule(${actSlug}/${scheduleSlug}): ${error.message}`);
   if (!schedule) return null;
 
-  const { data: articles, error: articlesError } = await client
-    .from("act_schedule_articles")
-    .select("id, number, division, part_number, part_title, rows, cells")
-    .eq("schedule_id", schedule.id)
-    .order("sort_key", { ascending: true });
-  if (articlesError) throw new Error(`getSchedule articles: ${articlesError.message}`);
+  const articles = await selectScheduleArticles(client, schedule.id);
 
   // A schedule is columnar (0011) or entry-shaped (0023), never both, so one
   // of these comes back empty and the page renders whichever it got.

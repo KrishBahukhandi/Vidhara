@@ -1,6 +1,6 @@
 # Vidhara — Decision Log
 
-> **Status**: Living document — append-only. · **Last updated**: 2026-09-01 (D-093)
+> **Status**: Living document — append-only. · **Last updated**: 2026-09-01 (D-094)
 > Product/strategy decisions with rationale and a revisit trigger. Architecture decisions stay in `architecture.md` §16 (ADR-1…11); this log covers product strategy from the 2026-07-16 lean reset onward. Updated the day a decision is made — not at release boundaries.
 
 ---
@@ -1096,6 +1096,37 @@ indexed-page coverage rises now that every division of every act is linked with 
 whether the breadcrumb and Legislation markup starts appearing in the enhancement reports, and
 whether the queries that already impress at all move. None of this has been measured yet — the
 changes have not shipped as of this entry.
+
+**D-094 · 2026-09-01 · A deploy must survive its own migration not having run yet.**
+Context: D-092 and D-093 merged to main and the production build FAILED, on a page neither entry
+had touched: `Error occurred prerendering page "/limitation"` — `getSchedule articles: column
+act_schedule_articles.cells does not exist`. D-092 added `cells` to the schedule query and to
+migration 0026, and 0026 has not been applied to the production database. Against a database still
+on 0011 that select is a hard 42703. Two things then turned a missing column into a failed deploy:
+/limitation PRERENDERS the Limitation Act's Schedule, and a prerender error is fatal to the whole
+Next export — so a column used by one route took down the build for all 57 pages. rules.md §13 has
+said "backward-compatible one release (expand→migrate→contract)" since before any of this, and the
+rule was simply not applied to a READ. It is easy to see why: adding a column is the safe half of
+expand/contract, and the danger looks like it belongs to the writer. It does not. The reader is what
+runs first, on every deploy, against whatever schema the database happens to be on.
+Decision: the query asks for `cells` and, on exactly that error, asks again without it. The
+predicate matches Postgres's own 42703 and the column named in the message — which is verbatim what
+the failed build printed — and the fallback maps `cells: null`, which is what a database that has
+no such column has. One wasted round trip where the migration has not run, none where it has, and a
+database without `cells` has no celled schedule to lose by it. Deletable once 0026 is applied
+everywhere this code deploys, and marked as such in the code. The ingest publisher, which cannot
+work without the column, now names the migration in its error instead of passing along one opaque
+line about a column.
+The corpus is unaffected either way: no celled schedule has been published (D-092's ingest has not
+run), so the site is whole without 0026. What the missing migration cost was the deploy, not the
+content — and the previous deployment kept serving throughout, which is the one thing that went
+right here.
+Revisit: **0026 still needs applying to production**, and it is now the only thing standing between
+the corpus and the enclave inventory. Two lessons worth keeping past this instance: a prerendered
+page makes every column it reads a build-time dependency for the WHOLE site, and CI cannot catch
+this class of bug at all — it builds without database credentials, so `isContentConfigured` is
+false, every query short-circuits, and the schema mismatch is invisible. The check that would have
+caught it is a build against a database, which only Vercel does.
 
 ---
 
