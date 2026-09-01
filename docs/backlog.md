@@ -64,6 +64,20 @@ reminders (built, still inert — needs the Edge Function secrets above).
       Verified: the new key authenticates as service_role against a table with no SELECT policy,
       and the Edge Functions picked it up automatically from Supabase's injected env. This closed
       the item that had trailed every decision entry from **D-032 to D-063**.
+- [x] **The three content views enforce RLS (migration 0027, D-095).** `v_order_rules`,
+      `v_offence_classifications` and `v_offence_classification_rules` ran as their owner, so the
+      base tables' policies were never consulted on a read through them — Supabase's linter had
+      all three at ERROR. `security_invoker = true` on each; measured either side of the flip, as
+      `anon`, at 728 / 827 / 6 rows both times. Nothing had leaked (each view carries its own
+      `where review_status = 'published'`), and that was the problem: the guarantee lived in a
+      WHERE clause instead of the policy system.
+- [ ] **Four security-advisor findings remain, none from this work.** Two are INFO and probably
+      correct as they stand — `ai_explanations` and `ai_usage` have RLS on with no policy, which
+      denies every client and leaves them to the service role, which is what they are for; worth
+      confirming that is deliberate rather than left over. Two are WARN: `pg_trgm` is installed in
+      `public` (moving it is a migration with a search_path blast radius), and Supabase Auth's
+      leaked-password protection is off — one toggle in the dashboard, and the only one of the
+      four a user would ever feel.
 
 ## 3. Founder-account items (launch critical path)
 

@@ -1,6 +1,6 @@
 # Vidhara — Decision Log
 
-> **Status**: Living document — append-only. · **Last updated**: 2026-09-01 (D-094)
+> **Status**: Living document — append-only. · **Last updated**: 2026-09-01 (D-095)
 > Product/strategy decisions with rationale and a revisit trigger. Architecture decisions stay in `architecture.md` §16 (ADR-1…11); this log covers product strategy from the 2026-07-16 lean reset onward. Updated the day a decision is made — not at release boundaries.
 
 ---
@@ -1127,6 +1127,38 @@ page makes every column it reads a build-time dependency for the WHOLE site, and
 this class of bug at all — it builds without database credentials, so `isContentConfigured` is
 false, every query short-circuits, and the schema mismatch is invisible. The check that would have
 caught it is a build against a database, which only Vercel does.
+
+**D-095 · 2026-09-01 · A view that is safe because of its WHERE clause is not safe because of RLS.**
+Context: running Supabase's security advisors after 0026 turned up three ERROR-level findings that
+predate it — `v_order_rules` (0017), `v_offence_classifications` (0021) and
+`v_offence_classification_rules` (0022) are all SECURITY DEFINER views. Postgres evaluates a view
+with the permissions and the row-level security of its OWNER unless told otherwise, and none of the
+three told it otherwise; all are owned by postgres, which bypasses RLS. So every public read through
+them since August has been answered without the base tables' policies ever being consulted.
+NOTHING LEAKED, and that is exactly why it was worth fixing. Each of the three carries `where
+review_status = 'published'` in its own body — the same line the policies enforce — so the rows they
+returned were the rows they should have returned. The safety was real but it was a property of a
+WHERE clause, one edit away from not being true, and it was being provided by the layer this
+codebase had already decided should not provide it: rules.md §11 puts RLS on every table,
+default-deny, and D-032's whole posture is that unpublished content must be unreachable by
+construction rather than by care.
+Decision: `security_invoker = true` on all three (0027), which makes the base tables' policies do
+the work they were written for. MEASURED RATHER THAN REASONED ABOUT, on the production database and
+before the change: as `anon` the views returned 728 / 827 / 6 rows, and the same joins read straight
+off the base tables with RLS applied returned 728 / 827 / 6. Two preconditions an invoker view needs
+and a definer view hides the absence of were checked too — every act is published (36 of 36), so the
+join to `acts` under its own policy drops nothing, and `anon` holds SELECT on all five base tables.
+After the flip, the same counts again, and the advisors report the three findings gone.
+Also fixed while there: **0026 was applied to production out of band** (06:01 UTC, straight against
+the database), so the schema was at 0026 while `supabase_migrations.schema_migrations` still read
+0025. The next `supabase db push` would have tried to re-run it and died on a constraint drop for a
+constraint that no longer exists. Recorded as applied. 0027 went through `apply_migration`, so the
+ledger and the schema now agree.
+Revisit: four advisor findings remain, none from this work and none of them ERROR. `ai_explanations`
+and `ai_usage` have RLS on with no policy, which denies every client and leaves the tables to the
+service role — almost certainly deliberate, worth confirming once. `pg_trgm` sits in `public`.
+Supabase Auth's leaked-password protection is off, which is a dashboard toggle and the only one of
+the four a user would ever feel.
 
 ---
 
