@@ -291,7 +291,17 @@ export async function publishSchedule(
   if (clearError) throw new Error(`clearing schedule articles failed: ${clearError.message}`);
 
   const { error: articlesError } = await db.from("act_schedule_articles").insert(rows);
-  if (articlesError) throw new Error(`schedule articles insert failed: ${articlesError.message}`);
+  if (articlesError) {
+    // Every insert here names `cells`, so a database still on 0011 rejects the
+    // whole batch with one opaque line about a column. Say which migration.
+    const unmigrated = /column .*cells.* does not exist/i.test(articlesError.message);
+    throw new Error(
+      `schedule articles insert failed: ${articlesError.message}` +
+        (unmigrated
+          ? " — apply supabase/migrations/0026_schedule_articles_cells.sql to this database first"
+          : ""),
+    );
+  }
 
   return { scheduleId: schedule.id, articles: rows.length };
 }
