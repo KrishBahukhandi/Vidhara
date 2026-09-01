@@ -3,8 +3,9 @@ import type { ReactNode } from "react";
 
 import { AccountLink } from "@/components/account-link";
 import { MobileNav } from "@/components/mobile-nav";
+import { NavLink } from "@/components/nav-link";
 import { SearchPalette } from "@/components/search-palette";
-import { NAV_LINKS } from "@/lib/nav";
+import { MAIN_CONTENT_ID, NAV_LINKS } from "@/lib/nav";
 
 export function SiteHeader() {
   return (
@@ -25,12 +26,13 @@ export function SiteHeader() {
 
         <nav className="hidden items-center gap-6 md:flex md:order-3" aria-label="Primary">
           {NAV_LINKS.map((link) => (
-            <Link
+            <NavLink
               key={link.href}
               href={link.href}
-              className="text-small font-medium text-text-muted transition-colors hover:text-text">
+              className="text-small font-medium text-text-muted transition-colors hover:text-text"
+              activeClassName="!text-text underline decoration-brand decoration-2 underline-offset-8">
               {link.label}
-            </Link>
+            </NavLink>
           ))}
           <AccountLink className="text-small font-medium text-text-muted transition-colors hover:text-text" />
           <span className="rounded-md bg-brand px-3 py-1.5 text-small font-medium text-on-brand">
@@ -110,7 +112,30 @@ export function SiteFooter() {
 export function PageShell({ children }: { children: ReactNode }) {
   return (
     // pb-24 clears the fixed FeedbackFab, which otherwise sits on top of the
-    // last line of every page.
-    <main className="mx-auto w-full max-w-content flex-1 px-5 pt-10 pb-24 sm:px-6">{children}</main>
+    // last line of every page. `id` is the skip link's destination: the header
+    // holds a search control and five links, and a keyboard or screen-reader
+    // user should not walk them again on every page of a 5,600-page corpus.
+    <main
+      id={MAIN_CONTENT_ID}
+      className="mx-auto w-full max-w-content flex-1 px-5 pt-10 pb-24 scroll-mt-20 sm:px-6">
+      {children}
+    </main>
+  );
+}
+
+/**
+ * The first thing in the tab order, and invisible until it is focused.
+ *
+ * Not decoration: the sticky header is the same on all 5,600 pages, so without
+ * this every keyboard reader tabs past the logo, the search control and five
+ * nav links before reaching the statute they came for.
+ */
+export function SkipLink() {
+  return (
+    <a
+      href={`#${MAIN_CONTENT_ID}`}
+      className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded-md focus:border focus:border-brand focus:bg-surface focus:px-4 focus:py-2 focus:text-small focus:font-medium focus:text-text">
+      Skip to content
+    </a>
   );
 }

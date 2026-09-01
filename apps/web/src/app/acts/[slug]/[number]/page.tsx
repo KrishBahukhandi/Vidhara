@@ -24,8 +24,10 @@ import {
   getOffenceClassifications,
   getSectionWithAct,
   getStateAmendmentsForSection,
+  listChaptersByAct,
 } from "@/features/acts/queries";
 import { TrackEvent } from "@/lib/analytics";
+import { chapterAnchors, chapterLabel } from "@/lib/chapter-anchors";
 import { SITE_URL } from "@/lib/site";
 
 export const revalidate = 3600;
@@ -76,13 +78,23 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
   const section = await getSectionWithAct(slug, decodeURIComponent(number));
   if (!section) notFound();
 
-  const [mappings, adjacent, stateAmendments, classifications, hasOwnSchedule] = await Promise.all([
-    getMappingsForSection(section.id),
-    getAdjacentSections(section.act_id, section.sort_key),
-    getStateAmendmentsForSection(section.id),
-    getOffenceClassifications(slug, section.number),
-    actHasOwnSchedule(slug),
-  ]);
+  const [mappings, adjacent, stateAmendments, classifications, hasOwnSchedule, chapters] =
+    await Promise.all([
+      getMappingsForSection(section.id),
+      getAdjacentSections(section.act_id, section.sort_key),
+      getStateAmendmentsForSection(section.id),
+      getOffenceClassifications(slug, section.number),
+      actHasOwnSchedule(slug),
+      listChaptersByAct(slug),
+    ]);
+  // Which Chapter or Part of the act this section sits in. Prev/next says what
+  // is on either side; this says where you ARE — the one orientation question a
+  // reader who arrived from a search result cannot answer, since they came
+  // straight into the middle of a 500-section act. It is also the internal link
+  // that carries a division's real name, which is the anchor text a crawler
+  // needs to make sense of the tree.
+  const chapter = chapters.find((c) => c.id === section.chapter_id) ?? null;
+  const chapterHref = chapter ? `/acts/${slug}#${chapterAnchors(chapters)[chapter.id]}` : null;
   // Part II — shown only where Part I does not reach, which is every Act but
   // the BNS and the IPC. It answers by punishment rather than by section, so it
   // is a rule the reader applies, not a verdict this page states.
@@ -104,7 +116,11 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
     "@type": "Legislation",
     name: `${section.acts.abbreviation} Section ${section.number} — ${section.marginal_note}`,
     legislationIdentifier: `${section.acts.abbreviation} Section ${section.number}`,
-    isPartOf: { "@type": "Legislation", name: section.acts.title },
+    isPartOf: {
+      "@type": "Legislation",
+      name: section.acts.title,
+      url: `${SITE_URL}/acts/${slug}`,
+    },
     legislationJurisdiction: "IN",
     inLanguage: "en",
     // Freshness signal that matches what the sitemap claims for this URL —
@@ -183,7 +199,20 @@ export default async function SectionPage({ params }: { params: Promise<Params> 
       />
 
       <article className="mt-3">
-        <p className="text-small text-text-muted">{section.acts.title}</p>
+        <p className="text-small text-text-muted">
+          <Link href={`/acts/${slug}`} className="hover:text-text">
+            {section.acts.title}
+          </Link>
+          {chapter && chapterHref ? (
+            <>
+              {" · "}
+              <Link href={chapterHref} className="hover:text-text">
+                {chapterLabel(chapter)}
+                {chapter.unnumbered ? "" : ` — ${chapter.title}`}
+              </Link>
+            </>
+          ) : null}
+        </p>
         <div className="mt-1 flex flex-wrap items-start justify-between gap-3">
           <h1 className="max-w-measure font-serif text-h1 font-semibold text-text">
             Section {section.number} — {section.marginal_note}

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ActSectionList } from "@/components/act-section-list";
+import { ChapterNav } from "@/components/chapter-nav";
 import { PageShell } from "@/components/site-chrome";
 import {
   getActBySlug,
@@ -12,6 +13,8 @@ import {
   listSectionsByAct,
 } from "@/features/acts/queries";
 import { TrackEvent } from "@/lib/analytics";
+import { chapterAnchors } from "@/lib/chapter-anchors";
+import { SITE_URL } from "@/lib/site";
 
 export const revalidate = 3600;
 
@@ -49,10 +52,50 @@ export default async function ActPage({ params }: { params: Promise<Params> }) {
     listChaptersByAct(slug),
     listSchedulesByAct(slug),
   ]);
+  const anchors = chapterAnchors(chapters);
+
+  // An act page is the hub of everything under it, and until now it said so
+  // only to a human: no structured data at all, so a crawler had 5,600 section
+  // pages and no statement of what they belong to. `Legislation` names the act
+  // as the thing it is, and the breadcrumb mirrors the one on screen.
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Legislation",
+    name: act.title,
+    alternateName: act.abbreviation,
+    legislationIdentifier: `${act.abbreviation}, ${act.year}`,
+    legislationJurisdiction: "IN",
+    legislationDate: `${act.year}`,
+    inLanguage: "en",
+    url: `${SITE_URL}/acts/${act.slug}`,
+    ...(act.source_url ? { isBasedOn: act.source_url } : {}),
+    // What a reader gets here, said in the terms a search engine counts in.
+    hasPart: sections.slice(0, 25).map((section) => ({
+      "@type": "Legislation",
+      name: `Section ${section.number} — ${section.marginal_note}`,
+      url: `${SITE_URL}/acts/${act.slug}/${encodeURIComponent(section.number)}`,
+    })),
+  };
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Bare Acts", item: `${SITE_URL}/acts` },
+      { "@type": "ListItem", position: 2, name: act.title, item: `${SITE_URL}/acts/${act.slug}` },
+    ],
+  };
 
   return (
     <PageShell>
       <TrackEvent name="act_opened" props={{ act: act.abbreviation }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <nav className="text-small text-text-muted" aria-label="Breadcrumb">
         <Link href="/acts" className="hover:text-text">
           Bare Acts
@@ -117,7 +160,15 @@ export default async function ActPage({ params }: { params: Promise<Params> }) {
           Sections for this act are still being ingested.
         </p>
       ) : (
-        <ActSectionList slug={slug} sections={sections} chapters={chapters} />
+        <>
+          <ChapterNav chapters={chapters} anchors={anchors} />
+          <ActSectionList
+            slug={slug}
+            sections={sections}
+            chapters={chapters}
+            anchors={anchors}
+          />
+        </>
       )}
     </PageShell>
   );

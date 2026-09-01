@@ -1,6 +1,6 @@
 # Vidhara — Decision Log
 
-> **Status**: Living document — append-only. · **Last updated**: 2026-08-31 (D-092)
+> **Status**: Living document — append-only. · **Last updated**: 2026-09-01 (D-093)
 > Product/strategy decisions with rationale and a revisit trigger. Architecture decisions stay in `architecture.md` §16 (ADR-1…11); this log covers product strategy from the 2026-07-16 lean reset onward. Updated the day a decision is made — not at release boundaries.
 
 ---
@@ -1039,6 +1039,63 @@ README with the six headings verbatim. Three things only the print can settle: w
 schedules the inventory sits in, whether its numbering restarts under a group heading (0026 now
 copes either way), and where to bracket the pages. Section 3 of Appendix I is already cut at "THE
 FIRST SCHEDULE", so nothing renders the annexure as prose in the meantime.
+
+**D-093 · 2026-09-01 · Orientation and discoverability: what a 5,600-page corpus was not saying about itself.**
+Context: the founder asked for easier navigation and for rankings. Audited both together, because on
+a corpus of numbered pages they are the same problem — a reader who lands on IPC §302 from a search
+result and a crawler that lands on it have the same question, "what is this part of?", and the page
+answered neither. The metadata hygiene was already good (canonical on every route, noindex on the
+private ones and on /search, a sitemap carrying every URL with `lastModified` from `updated_at`), so
+what was left was structure, not tags.
+Decision: eight changes, each fixing something that was absent rather than wrong.
+ · **There was no 404 page.** Next's default — "404 | This page could not be found", no header, no
+   footer, no way onward — is what every reader saw who mistyped a section, followed a stale link or
+   asked for a section not yet ingested, which on a library of numbered pages is the likeliest wrong
+   turn there is. `not-found.tsx` now opens with the search box (a citation resolves directly, so
+   "420 IPC" goes to the section rather than to a results page) and four routes onward.
+ · **The chrome never said where you were.** No active state at all, so three levels into the
+   library nothing pointed at "Bare Acts". `NavLink` marks the branch it owns — a section page IS
+   the Bare Acts branch, so the match is on the subtree, not the exact path — and sets
+   `aria-current="page"`, which is what a screen reader announces.
+ · **A chapter was unreachable.** The BNSS lists 531 sections on one page and the only ways in were
+   the filter box and the scrollbar. Act pages now carry a jump list of every Chapter or Part, and
+   a section page names the division it sits in and links back to it. Real links, server-rendered:
+   they work before hydration, and they are how a crawler learns that 5,600 pages are a tree rather
+   than a heap. Anchors are computed once per act and passed to everything that renders them —
+   readable (`/acts/bns#ch-v`, not a uuid) and unique, since the Arbitration Act prints a CHAPTER I
+   under two different Parts.
+ · **No skip link**, so every keyboard reader tabbed the logo, the search control and five nav links
+   on every page before reaching the statute.
+ · **Nothing said what the site IS.** `WebSite` + `SearchAction` (what a sitelinks search box is
+   built from) and `Organization`, in the root layout so they are on the pages people actually land
+   on rather than only on the homepage. Act pages and the library index had no structured data at
+   all and now carry `Legislation`, `CollectionPage`/`ItemList` and their breadcrumbs.
+ · **The homepage answered nothing.** Five questions people actually type — which BNS section
+   replaced IPC 420, is the text official, does it cover CrPC→BNSS and Evidence→BSA, is it free,
+   can I prepare for judiciary exams with it — visible on the page, each linking into the part of
+   the site that answers it in full, with `FAQPage` alongside. Google restricted FAQ rich results to
+   government and health sites in 2023, so this is for the long-tail queries and for the answer
+   engines, not for a rich snippet.
+ · **`lang` said "en"** on a corpus of Indian legislation read from India.
+ · **The sitemap under-declared the corpus.** /feedback and /privacy are linked from every page's
+   footer but were never listed, and the two pages that are indexes OF the corpus — the homepage
+   and the library — carried no `lastModified` while everything beneath them did, so the hubs
+   looked static while the corpus moved.
+Verified: typecheck across six workspaces, web lint at `--max-warnings=0`, production build clean,
+and the built HTML checked for what it should contain — `lang="en-IN"`, the SearchAction, the
+FAQPage, the skip link, and the canonical on both `/` and `/acts`. The custom 404 renders as
+`Page not found · Vidhara`.
+Revisit: **this is the half that is code, and it is the precondition rather than the outcome.**
+Ranking top five for "IPC 302" against Indian Kanoon and Devgan is an authority question — domain
+age, citations, inbound links — that no amount of markup settles. The baseline to measure against
+already exists and is in the backlog: Search Console is verified as a domain property with the
+sitemap submitted, and at the last reading it showed **278 impressions at an average position of
+38.8**. Position 38.8 is page four; the distance from there to page one is mostly not technical.
+What is worth watching in Console over the next few weeks is narrower and answerable: whether
+indexed-page coverage rises now that every division of every act is linked with its own name,
+whether the breadcrumb and Legislation markup starts appearing in the enhancement reports, and
+whether the queries that already impress at all move. None of this has been measured yet — the
+changes have not shipped as of this entry.
 
 ---
 
